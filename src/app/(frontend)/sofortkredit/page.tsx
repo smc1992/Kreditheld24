@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import UnverbindlichAnfragenButton from '@/components/UnverbindlichAnfragenButton'
 
 const SofortkreditPage = () => {
   const [loanAmount, setLoanAmount] = useState(15000)
@@ -161,15 +162,7 @@ const SofortkreditPage = () => {
                     <i className="ri-arrow-right-line"></i>
                   </div>
                 </Link>
-                <Link 
-                  href="#prozess" 
-                  className="border border-gray-300 hover:border-primary text-gray-700 hover:text-primary font-medium py-3 px-6 rounded-button whitespace-nowrap flex items-center justify-center transition-all"
-                >
-                  <div className="w-5 h-5 mr-2 flex items-center justify-center">
-                    <i className="ri-information-line"></i>
-                  </div>
-                  <span>So funktioniert&apos;s</span>
-                </Link>
+                <UnverbindlichAnfragenButton variant="secondary" size="md" className="py-3 px-6" />
               </div>
             </div>
           </div>
@@ -441,98 +434,6 @@ const SofortkreditPage = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white pt-12 pb-6">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <h3 className="text-xl font-['Pacifico'] text-primary mb-4">Kreditheld24</h3>
-              <p className="text-gray-300 mb-4">
-                Ihr unabhängiger Kreditvergleich für maßgeschneiderte Finanzierungslösungen zu Top-Konditionen.
-              </p>
-              <div className="flex space-x-4">
-                <Link href="#" className="text-gray-300 hover:text-primary">
-                  <div className="w-8 h-8 flex items-center justify-center">
-                    <i className="ri-facebook-fill ri-lg"></i>
-                  </div>
-                </Link>
-                <Link href="#" className="text-gray-300 hover:text-primary">
-                  <div className="w-8 h-8 flex items-center justify-center">
-                    <i className="ri-twitter-fill ri-lg"></i>
-                  </div>
-                </Link>
-                <Link href="#" className="text-gray-300 hover:text-primary">
-                  <div className="w-8 h-8 flex items-center justify-center">
-                    <i className="ri-instagram-fill ri-lg"></i>
-                  </div>
-                </Link>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-medium text-lg mb-4">Kreditarten</h4>
-              <ul className="space-y-2">
-                <li><Link href="/ratenkredite" className="text-gray-300 hover:text-primary">Ratenkredit</Link></li>
-                <li><Link href="/umschuldung" className="text-gray-300 hover:text-primary">Umschuldung</Link></li>
-                <li><Link href="/schufa-neutral" className="text-gray-300 hover:text-primary">Kredit trotz SCHUFA</Link></li>
-                <li><Link href="/kreditarten" className="text-gray-300 hover:text-primary">Zurück zu Kreditangeboten</Link></li>
-                <li><Link href="/kredit-selbststaendige" className="text-gray-300 hover:text-primary">Kredit für Selbstständige</Link></li>
-                <li><Link href="/autokredit" className="text-gray-300 hover:text-primary">Autokredit</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-medium text-lg mb-4">Über uns</h4>
-              <ul className="space-y-2">
-                <li><Link href="/unternehmen" className="text-gray-300 hover:text-primary">Unternehmen</Link></li>
-                <li><Link href="/team" className="text-gray-300 hover:text-primary">Team</Link></li>
-                <li><Link href="/karriere" className="text-gray-300 hover:text-primary">Karriere</Link></li>
-                <li><Link href="/presse" className="text-gray-300 hover:text-primary">Presse</Link></li>
-                <li><Link href="/partnerprogramm" className="text-gray-300 hover:text-primary">Partnerprogramm</Link></li>
-                <li><Link href="/kontakt" className="text-gray-300 hover:text-primary">Kontakt</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-medium text-lg mb-4">Kontakt</h4>
-              <ul className="space-y-2">
-                <li className="flex items-start">
-                  <div className="w-5 h-5 flex items-center justify-center text-primary mr-2 mt-1">
-                    <i className="ri-map-pin-line"></i>
-                  </div>
-                  <span className="text-gray-300">Kreditheldenstraße 24<br />10115 Berlin</span>
-                </li>
-                <li className="flex items-center">
-                  <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
-                    <i className="ri-phone-line"></i>
-                  </div>
-                  <Link href="tel:+4930123456789" className="text-gray-300 hover:text-primary">
-                    030 / 123 456 789
-                  </Link>
-                </li>
-                <li className="flex items-center">
-                  <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
-                    <i className="ri-mail-line"></i>
-                  </div>
-                  <Link href="mailto:info@kreditheld24.de" className="text-gray-300 hover:text-primary">
-                    info@kreditheld24.de
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-700 pt-6">
-            <div className="flex flex-col md:flex-row md:justify-between">
-              <div className="mb-4 md:mb-0">
-                <p className="text-gray-400 text-sm">&copy; 2025 Kreditheld24. Alle Rechte vorbehalten.</p>
-              </div>
-              <div className="flex flex-wrap gap-4">
-                <Link href="/impressum" className="text-gray-400 text-sm hover:text-primary">Impressum</Link>
-                <Link href="/datenschutz" className="text-gray-400 text-sm hover:text-primary">Datenschutz</Link>
-                <Link href="/agb" className="text-gray-400 text-sm hover:text-primary">AGB</Link>
-                <Link href="/cookie-einstellungen" className="text-gray-400 text-sm hover:text-primary">Cookie-Einstellungen</Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }

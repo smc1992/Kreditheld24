@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import UnverbindlichAnfragenButton from '@/components/UnverbindlichAnfragenButton'
 
 const SchufaNeutralPage = () => {
   const [loanAmount, setLoanAmount] = useState(10000)
@@ -95,15 +96,7 @@ const SchufaNeutralPage = () => {
                   <i className="ri-arrow-right-line"></i>
                 </div>
               </Link>
-              <Link 
-                href="#beratung" 
-                className="border border-gray-300 hover:border-primary text-gray-700 hover:text-primary font-medium py-3 px-6 rounded-button whitespace-nowrap flex items-center justify-center transition-all"
-              >
-                <div className="w-5 h-5 mr-2 flex items-center justify-center">
-                  <i className="ri-customer-service-2-line"></i>
-                </div>
-                <span>Kostenlose Beratung</span>
-              </Link>
+              <UnverbindlichAnfragenButton variant="secondary" size="md" className="py-3 px-6" />
             </div>
           </div>
         </div>

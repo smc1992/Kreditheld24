@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Metadata } from 'next'
+import UnverbindlichAnfragenButton from '@/components/UnverbindlichAnfragenButton'
 
 const AutokreditPage = () => {
   const [vehiclePrice, setVehiclePrice] = useState(25000)
@@ -86,15 +87,7 @@ const AutokreditPage = () => {
                   <i className="ri-arrow-right-line"></i>
                 </div>
               </Link>
-              <Link
-                href="#process"
-                className="border-2 border-primary text-primary hover:bg-primary hover:text-white font-medium py-3 sm:py-4 px-6 sm:px-8 rounded-button flex items-center justify-center transition-all text-sm sm:text-base group bg-white/90 hover:bg-primary"
-              >
-                <div className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex items-center justify-center">
-                  <i className="ri-information-line"></i>
-                </div>
-                <span>Mehr erfahren</span>
-              </Link>
+              <UnverbindlichAnfragenButton variant="secondary" size="md" className="py-3 sm:py-4 px-6 sm:px-8 text-sm sm:text-base" />
             </div>
             
             {/* Mobile Trust Indicators */}

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Metadata } from 'next'
+import UnverbindlichAnfragenButton from '@/components/UnverbindlichAnfragenButton'
 
 const HomePage = () => {
   const [loanAmount, setLoanAmount] = useState(10000)
@@ -53,15 +54,7 @@ const HomePage = () => {
                   <i className="ri-arrow-right-line"></i>
                 </div>
               </Link>
-              <button
-                onClick={() => setShowInfoModal(true)}
-                className="border border-gray-300 hover:border-primary text-gray-700 hover:text-primary font-medium py-3 px-6 rounded-button whitespace-nowrap flex items-center justify-center transition-all"
-              >
-                <div className="w-5 h-5 mr-2 flex items-center justify-center">
-                  <i className="ri-information-line"></i>
-                </div>
-                <span>Mehr erfahren</span>
-              </button>
+              <UnverbindlichAnfragenButton variant="secondary" size="md" />
             </div>
           </div>
         </div>

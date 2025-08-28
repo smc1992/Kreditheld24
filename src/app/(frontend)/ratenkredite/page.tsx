@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Metadata } from 'next'
+import UnverbindlichAnfragenButton from '@/components/UnverbindlichAnfragenButton'
 
 const RatenkreditePage = () => {
   const [loanAmount, setLoanAmount] = useState(10000)
@@ -83,15 +84,7 @@ const RatenkreditePage = () => {
                     <i className="ri-arrow-right-line"></i>
                   </div>
                 </Link>
-                <Link
-                  href="#process"
-                  className="group bg-white/90 hover:bg-white border-2 border-primary text-primary hover:text-primary/80 font-medium py-4 px-8 rounded-button whitespace-nowrap flex items-center justify-center transition-all text-lg hover:shadow-lg"
-                >
-                  <div className="w-5 h-5 mr-2 flex items-center justify-center">
-                    <i className="ri-information-line"></i>
-                  </div>
-                  <span>Ablauf kennenlernen</span>
-                </Link>
+                <UnverbindlichAnfragenButton variant="secondary" size="lg" className="py-4 px-8 text-lg" />
               </div>
               <div className="mt-12 flex items-center gap-8">
                 <div className="flex items-center gap-2">

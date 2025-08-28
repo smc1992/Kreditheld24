@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Script from 'next/script'
+import UnverbindlichAnfragenButton from '@/components/UnverbindlichAnfragenButton'
 
 const KreditSelbststaendigePage = () => {
   const [loanAmount, setLoanAmount] = useState(25000)
@@ -245,15 +246,7 @@ const KreditSelbststaendigePage = () => {
                     <i className="ri-arrow-right-line"></i>
                   </div>
                 </Link>
-                <Link 
-                  href="#beratung" 
-                  className="border border-gray-300 hover:border-primary text-gray-700 hover:text-primary font-medium py-3 px-6 rounded-button whitespace-nowrap flex items-center justify-center transition-all"
-                >
-                  <div className="w-5 h-5 mr-2 flex items-center justify-center">
-                    <i className="ri-customer-service-line"></i>
-                  </div>
-                  <span>Beratung anfordern</span>
-                </Link>
+                <UnverbindlichAnfragenButton variant="secondary" size="md" className="py-3 px-6" />
               </div>
             </div>
           </div>

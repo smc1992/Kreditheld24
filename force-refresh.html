@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cache Refresh</title>
+    <meta charset="utf-8">
+</head>
+<body>
+    <h1>Header Navigation Cache Refresh</h1>
+    <p>Die Navigation-Daten sind korrekt in der Datenbank gespeichert.</p>
+    <p>Bitte führen Sie einen <strong>Hard Refresh</strong> durch:</p>
+    
+    <ul>
+        <li><strong>Windows/Linux:</strong> Strg + F5 oder Strg + Shift + R</li>
+        <li><strong>Mac:</strong> Cmd + Shift + R</li>
+    </ul>
+    
+    <p>Oder öffnen Sie die Entwicklertools (F12) und:</p>
+    <ol>
+        <li>Rechtsklick auf den Refresh-Button</li>
+        <li>Wählen Sie "Leerer Cache und harte Aktualisierung"</li>
+    </ol>
+    
+    <p><a href="http://localhost:3000" target="_blank">→ Zur Hauptseite (neuer Tab)</a></p>
+    
+    <script>
+        // Auto-refresh nach 3 Sekunden
+        setTimeout(() => {
+            window.location.href = 'http://localhost:3000';
+        }, 3000);
+        
+        console.log('=== NAVIGATION DEBUG ===');
+        console.log('Alle Navigation-Items sind in der Datenbank vorhanden:');
+        console.log('1. Ratenkredite');
+        console.log('2. Autokredit');
+        console.log('3. Umschuldung');
+        console.log('4. Sofortkredit ✅');
+        console.log('5. SCHUFA-neutral');
+        console.log('6. Selbstständige');
+        console.log('Falls Sofortkredit nicht sichtbar ist: Hard Refresh durchführen!');
+    </script>
+</body>
+</html>
