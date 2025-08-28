@@ -27,9 +27,8 @@ ENV NODE_ENV=production
 ENV NODE_OPTIONS=--no-deprecation
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Set environment variables for build (use dummy DB for build-time)
+# Set environment variables for build (minimal for static generation)
     ENV PAYLOAD_SECRET=pE+sqfjsiieXAVuGVsnPBMaP6TNnQ5ajLaN0AfK84eg=
-    ENV DATABASE_URI=postgresql://postgres:postgres@localhost:5432/postgres
     ENV NODE_ENV=production
     ENV NEXT_PUBLIC_SERVER_URL=https://kreditheld24.de
     ENV PORT=3000
