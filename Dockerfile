@@ -35,8 +35,8 @@ ENV NEXT_TELEMETRY_DISABLED=1
     ENV NODE_OPTIONS=--no-deprecation
     ENV NEXT_TELEMETRY_DISABLED=1
 
-    # Build the application
-    RUN pnpm build
+    # Build the application without DB connection (official Payload CMS solution)
+    RUN pnpm next build --experimental-build-mode compile
 
 # Production image, copy all the files and run next
 FROM base AS runner
