@@ -98,15 +98,35 @@ export interface Config {
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: string;
+    defaultIDType: number;
   };
   globals: {
     header: Header;
     footer: Footer;
+    homepage: Homepage;
+    ratenkredite: Ratenkredite;
+    autokredit: Autokredit;
+    umschuldung: Umschuldung;
+    kontakt: Kontakt;
+    'kredit-selbststaendige': KreditSelbststaendige;
+    kreditarten: Kreditarten;
+    'schufa-neutral': SchufaNeutral;
+    sofortkredit: Sofortkredit;
+    'ueber-uns': UeberUn;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    homepage: HomepageSelect<false> | HomepageSelect<true>;
+    ratenkredite: RatenkrediteSelect<false> | RatenkrediteSelect<true>;
+    autokredit: AutokreditSelect<false> | AutokreditSelect<true>;
+    umschuldung: UmschuldungSelect<false> | UmschuldungSelect<true>;
+    kontakt: KontaktSelect<false> | KontaktSelect<true>;
+    'kredit-selbststaendige': KreditSelbststaendigeSelect<false> | KreditSelbststaendigeSelect<true>;
+    kreditarten: KreditartenSelect<false> | KreditartenSelect<true>;
+    'schufa-neutral': SchufaNeutralSelect<false> | SchufaNeutralSelect<true>;
+    sofortkredit: SofortkreditSelect<false> | SofortkreditSelect<true>;
+    'ueber-uns': UeberUnsSelect<false> | UeberUnsSelect<true>;
   };
   locale: null;
   user: User & {
@@ -146,7 +166,7 @@ export interface UserAuthOperations {
  * via the `definition` "pages".
  */
 export interface Page {
-  id: string;
+  id: number;
   title: string;
   hero: {
     type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
@@ -173,11 +193,11 @@ export interface Page {
             reference?:
               | ({
                   relationTo: 'pages';
-                  value: string | Page;
+                  value: number | Page;
                 } | null)
               | ({
                   relationTo: 'posts';
-                  value: string | Post;
+                  value: number | Post;
                 } | null);
             url?: string | null;
             label: string;
@@ -189,15 +209,59 @@ export interface Page {
           id?: string | null;
         }[]
       | null;
-    media?: (string | null) | Media;
+    media?: (number | null) | Media;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
+  layout: (
+    | CallToActionBlock
+    | ContentBlock
+    | MediaBlock
+    | ArchiveBlock
+    | FormBlock
+    | {
+        title: string;
+        subtitle?: string | null;
+        kreditart: 'ratenkredit' | 'autokredit' | 'umschuldung';
+        /**
+         * Minimaler Kreditbetrag in Euro
+         */
+        minBetrag: number;
+        /**
+         * Maximaler Kreditbetrag in Euro
+         */
+        maxBetrag: number;
+        /**
+         * Standard-Kreditbetrag in Euro
+         */
+        defaultBetrag: number;
+        /**
+         * Minimale Laufzeit in Monaten
+         */
+        minLaufzeit: number;
+        /**
+         * Maximale Laufzeit in Monaten
+         */
+        maxLaufzeit: number;
+        /**
+         * Standard-Laufzeit in Monaten
+         */
+        defaultLaufzeit: number;
+        /**
+         * Effektiver Jahreszins in Prozent
+         */
+        zinssatz: number;
+        buttonText?: string | null;
+        buttonLink?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'kreditrechner';
+      }
+  )[];
   meta?: {
     title?: string | null;
     /**
      * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
      */
-    image?: (string | null) | Media;
+    image?: (number | null) | Media;
     description?: string | null;
   };
   publishedAt?: string | null;
@@ -212,9 +276,9 @@ export interface Page {
  * via the `definition` "posts".
  */
 export interface Post {
-  id: string;
+  id: number;
   title: string;
-  heroImage?: (string | null) | Media;
+  heroImage?: (number | null) | Media;
   content: {
     root: {
       type: string;
@@ -230,18 +294,18 @@ export interface Post {
     };
     [k: string]: unknown;
   };
-  relatedPosts?: (string | Post)[] | null;
-  categories?: (string | Category)[] | null;
+  relatedPosts?: (number | Post)[] | null;
+  categories?: (number | Category)[] | null;
   meta?: {
     title?: string | null;
     /**
      * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
      */
-    image?: (string | null) | Media;
+    image?: (number | null) | Media;
     description?: string | null;
   };
   publishedAt?: string | null;
-  authors?: (string | User)[] | null;
+  authors?: (number | User)[] | null;
   populatedAuthors?:
     | {
         id?: string | null;
@@ -259,7 +323,7 @@ export interface Post {
  * via the `definition` "media".
  */
 export interface Media {
-  id: string;
+  id: number;
   alt?: string | null;
   caption?: {
     root: {
@@ -351,14 +415,14 @@ export interface Media {
  * via the `definition` "categories".
  */
 export interface Category {
-  id: string;
+  id: number;
   title: string;
   slug?: string | null;
   slugLock?: boolean | null;
-  parent?: (string | null) | Category;
+  parent?: (number | null) | Category;
   breadcrumbs?:
     | {
-        doc?: (string | null) | Category;
+        doc?: (number | null) | Category;
         url?: string | null;
         label?: string | null;
         id?: string | null;
@@ -372,7 +436,7 @@ export interface Category {
  * via the `definition` "users".
  */
 export interface User {
-  id: string;
+  id: number;
   name?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -420,11 +484,11 @@ export interface CallToActionBlock {
           reference?:
             | ({
                 relationTo: 'pages';
-                value: string | Page;
+                value: number | Page;
               } | null)
             | ({
                 relationTo: 'posts';
-                value: string | Post;
+                value: number | Post;
               } | null);
           url?: string | null;
           label: string;
@@ -470,11 +534,11 @@ export interface ContentBlock {
           reference?:
             | ({
                 relationTo: 'pages';
-                value: string | Page;
+                value: number | Page;
               } | null)
             | ({
                 relationTo: 'posts';
-                value: string | Post;
+                value: number | Post;
               } | null);
           url?: string | null;
           label: string;
@@ -495,7 +559,7 @@ export interface ContentBlock {
  * via the `definition` "MediaBlock".
  */
 export interface MediaBlock {
-  media: string | Media;
+  media: number | Media;
   id?: string | null;
   blockName?: string | null;
   blockType: 'mediaBlock';
@@ -522,12 +586,12 @@ export interface ArchiveBlock {
   } | null;
   populateBy?: ('collection' | 'selection') | null;
   relationTo?: 'posts' | null;
-  categories?: (string | Category)[] | null;
+  categories?: (number | Category)[] | null;
   limit?: number | null;
   selectedDocs?:
     | {
         relationTo: 'posts';
-        value: string | Post;
+        value: number | Post;
       }[]
     | null;
   id?: string | null;
@@ -539,7 +603,7 @@ export interface ArchiveBlock {
  * via the `definition` "FormBlock".
  */
 export interface FormBlock {
-  form: string | Form;
+  form: number | Form;
   enableIntro?: boolean | null;
   introContent?: {
     root: {
@@ -565,7 +629,7 @@ export interface FormBlock {
  * via the `definition` "forms".
  */
 export interface Form {
-  id: string;
+  id: number;
   title: string;
   fields?:
     | (
@@ -739,7 +803,7 @@ export interface Form {
  * via the `definition` "redirects".
  */
 export interface Redirect {
-  id: string;
+  id: number;
   /**
    * You will need to rebuild the website when changing this field.
    */
@@ -749,11 +813,11 @@ export interface Redirect {
     reference?:
       | ({
           relationTo: 'pages';
-          value: string | Page;
+          value: number | Page;
         } | null)
       | ({
           relationTo: 'posts';
-          value: string | Post;
+          value: number | Post;
         } | null);
     url?: string | null;
   };
@@ -765,8 +829,8 @@ export interface Redirect {
  * via the `definition` "form-submissions".
  */
 export interface FormSubmission {
-  id: string;
-  form: string | Form;
+  id: number;
+  form: number | Form;
   submissionData?:
     | {
         field: string;
@@ -784,18 +848,18 @@ export interface FormSubmission {
  * via the `definition` "search".
  */
 export interface Search {
-  id: string;
+  id: number;
   title?: string | null;
   priority?: number | null;
   doc: {
     relationTo: 'posts';
-    value: string | Post;
+    value: number | Post;
   };
   slug?: string | null;
   meta?: {
     title?: string | null;
     description?: string | null;
-    image?: (string | null) | Media;
+    image?: (number | null) | Media;
   };
   categories?:
     | {
@@ -813,7 +877,7 @@ export interface Search {
  * via the `definition` "payload-jobs".
  */
 export interface PayloadJob {
-  id: string;
+  id: number;
   /**
    * Input data provided to the job
    */
@@ -905,52 +969,52 @@ export interface PayloadJob {
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: string;
+  id: number;
   document?:
     | ({
         relationTo: 'pages';
-        value: string | Page;
+        value: number | Page;
       } | null)
     | ({
         relationTo: 'posts';
-        value: string | Post;
+        value: number | Post;
       } | null)
     | ({
         relationTo: 'media';
-        value: string | Media;
+        value: number | Media;
       } | null)
     | ({
         relationTo: 'categories';
-        value: string | Category;
+        value: number | Category;
       } | null)
     | ({
         relationTo: 'users';
-        value: string | User;
+        value: number | User;
       } | null)
     | ({
         relationTo: 'redirects';
-        value: string | Redirect;
+        value: number | Redirect;
       } | null)
     | ({
         relationTo: 'forms';
-        value: string | Form;
+        value: number | Form;
       } | null)
     | ({
         relationTo: 'form-submissions';
-        value: string | FormSubmission;
+        value: number | FormSubmission;
       } | null)
     | ({
         relationTo: 'search';
-        value: string | Search;
+        value: number | Search;
       } | null)
     | ({
         relationTo: 'payload-jobs';
-        value: string | PayloadJob;
+        value: number | PayloadJob;
       } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   updatedAt: string;
   createdAt: string;
@@ -960,10 +1024,10 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: string;
+  id: number;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   key?: string | null;
   value?:
@@ -983,7 +1047,7 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: string;
+  id: number;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
@@ -1025,6 +1089,24 @@ export interface PagesSelect<T extends boolean = true> {
         mediaBlock?: T | MediaBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
+        kreditrechner?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              kreditart?: T;
+              minBetrag?: T;
+              maxBetrag?: T;
+              defaultBetrag?: T;
+              minLaufzeit?: T;
+              maxLaufzeit?: T;
+              defaultLaufzeit?: T;
+              zinssatz?: T;
+              buttonText?: T;
+              buttonLink?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
   meta?:
     | T
@@ -1551,7 +1633,11 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  * via the `definition` "header".
  */
 export interface Header {
-  id: string;
+  id: number;
+  logo?: {
+    text?: string | null;
+    fontFamily?: string | null;
+  };
   navItems?:
     | {
         link: {
@@ -1560,11 +1646,11 @@ export interface Header {
           reference?:
             | ({
                 relationTo: 'pages';
-                value: string | Page;
+                value: number | Page;
               } | null)
             | ({
                 relationTo: 'posts';
-                value: string | Post;
+                value: number | Post;
               } | null);
           url?: string | null;
           label: string;
@@ -1580,8 +1666,18 @@ export interface Header {
  * via the `definition` "footer".
  */
 export interface Footer {
-  id: string;
-  navItems?:
+  id: number;
+  company?: {
+    name?: string | null;
+    description?: string | null;
+    fontFamily?: string | null;
+  };
+  contact?: {
+    address?: string | null;
+    phone?: string | null;
+    email?: string | null;
+  };
+  kreditarten?:
     | {
         link: {
           type?: ('reference' | 'custom') | null;
@@ -1589,11 +1685,11 @@ export interface Footer {
           reference?:
             | ({
                 relationTo: 'pages';
-                value: string | Page;
+                value: number | Page;
               } | null)
             | ({
                 relationTo: 'posts';
-                value: string | Post;
+                value: number | Post;
               } | null);
           url?: string | null;
           label: string;
@@ -1601,6 +1697,517 @@ export interface Footer {
         id?: string | null;
       }[]
     | null;
+  serviceLinks?:
+    | {
+        link: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: number | Page;
+              } | null)
+            | ({
+                relationTo: 'posts';
+                value: number | Post;
+              } | null);
+          url?: string | null;
+          label: string;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  legalLinks?:
+    | {
+        link: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: number | Page;
+              } | null)
+            | ({
+                relationTo: 'posts';
+                value: number | Post;
+              } | null);
+          url?: string | null;
+          label: string;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  socialMedia?:
+    | {
+        platform: 'facebook' | 'twitter' | 'instagram' | 'linkedin' | 'youtube';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  copyright?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage".
+ */
+export interface Homepage {
+  id: number;
+  hero: {
+    title: string;
+    subtitle: string;
+    ctaText?: string | null;
+  };
+  features?: {
+    title?: string | null;
+    subtitle?: string | null;
+    items?:
+      | {
+          title: string;
+          description: string;
+          icon: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  calculator?: {
+    title?: string | null;
+    subtitle?: string | null;
+  };
+  process?: {
+    title?: string | null;
+    subtitle?: string | null;
+    steps?:
+      | {
+          title: string;
+          description: string;
+          icon: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  cta?: {
+    title?: string | null;
+    subtitle?: string | null;
+    primaryButtonText?: string | null;
+    secondaryButtonText?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ratenkredite".
+ */
+export interface Ratenkredite {
+  id: number;
+  hero: {
+    title: string;
+    subtitle: string;
+  };
+  benefits?: {
+    title?: string | null;
+    subtitle?: string | null;
+    items?:
+      | {
+          title: string;
+          description: string;
+          icon: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  calculator?: {
+    title?: string | null;
+    subtitle?: string | null;
+  };
+  faq?: {
+    title?: string | null;
+    subtitle?: string | null;
+    items?:
+      | {
+          question: string;
+          answer: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  cta?: {
+    title?: string | null;
+    subtitle?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "autokredit".
+ */
+export interface Autokredit {
+  id: number;
+  hero: {
+    title: string;
+    subtitle: string;
+  };
+  benefits?: {
+    title?: string | null;
+    items?:
+      | {
+          title: string;
+          description: string;
+          icon: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  calculator?: {
+    title?: string | null;
+    subtitle?: string | null;
+  };
+  process?: {
+    title?: string | null;
+    steps?:
+      | {
+          title: string;
+          description: string;
+          icon: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  faq?: {
+    title?: string | null;
+    items?:
+      | {
+          question: string;
+          answer: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "umschuldung".
+ */
+export interface Umschuldung {
+  id: number;
+  hero: {
+    title: string;
+    subtitle: string;
+  };
+  benefits?: {
+    title?: string | null;
+    items?:
+      | {
+          title: string;
+          description: string;
+          icon: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  calculator?: {
+    title?: string | null;
+    subtitle?: string | null;
+  };
+  faq?: {
+    title?: string | null;
+    items?:
+      | {
+          question: string;
+          answer: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "kontakt".
+ */
+export interface Kontakt {
+  id: number;
+  hero: {
+    title: string;
+    subtitle: string;
+  };
+  contactInfo?: {
+    phone?: string | null;
+    email?: string | null;
+    address?: string | null;
+    openingHours?: string | null;
+  };
+  form?: {
+    title?: string | null;
+    subtitle?: string | null;
+  };
+  alternatives?: {
+    title?: string | null;
+    items?:
+      | {
+          title: string;
+          description: string;
+          icon: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "kredit-selbststaendige".
+ */
+export interface KreditSelbststaendige {
+  id: number;
+  hero: {
+    title: string;
+    subtitle: string;
+  };
+  benefits?: {
+    title?: string | null;
+    items?:
+      | {
+          title: string;
+          description: string;
+          icon: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  calculator?: {
+    title?: string | null;
+    subtitle?: string | null;
+  };
+  requirements?: {
+    title?: string | null;
+    items?:
+      | {
+          title: string;
+          description: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  faq?: {
+    title?: string | null;
+    items?:
+      | {
+          question: string;
+          answer: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "kreditarten".
+ */
+export interface Kreditarten {
+  id: number;
+  hero: {
+    title: string;
+    subtitle: string;
+  };
+  creditTypes?: {
+    title?: string | null;
+    subtitle?: string | null;
+    items?:
+      | {
+          title: string;
+          description: string;
+          features?:
+            | {
+                feature: string;
+                id?: string | null;
+              }[]
+            | null;
+          icon: string;
+          link: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  statistics?: {
+    title?: string | null;
+    items?:
+      | {
+          number: string;
+          description: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  cta?: {
+    title?: string | null;
+    subtitle?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "schufa-neutral".
+ */
+export interface SchufaNeutral {
+  id: number;
+  hero: {
+    title: string;
+    subtitle: string;
+  };
+  benefits?: {
+    title?: string | null;
+    items?:
+      | {
+          title: string;
+          description: string;
+          icon: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  calculator?: {
+    title?: string | null;
+    subtitle?: string | null;
+  };
+  faq?: {
+    title?: string | null;
+    subtitle?: string | null;
+    items?:
+      | {
+          question: string;
+          answer: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sofortkredit".
+ */
+export interface Sofortkredit {
+  id: number;
+  hero: {
+    title: string;
+    subtitle: string;
+  };
+  benefits?: {
+    title?: string | null;
+    subtitle?: string | null;
+    items?:
+      | {
+          title: string;
+          description: string;
+          icon: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  calculator?: {
+    title?: string | null;
+    subtitle?: string | null;
+  };
+  process?: {
+    title?: string | null;
+    subtitle?: string | null;
+    steps?:
+      | {
+          title: string;
+          description: string;
+          icon: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  faq?: {
+    title?: string | null;
+    subtitle?: string | null;
+    items?:
+      | {
+          question: string;
+          answer: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ueber-uns".
+ */
+export interface UeberUn {
+  id: number;
+  hero: {
+    title: string;
+    subtitle: string;
+  };
+  mission?: {
+    title?: string | null;
+    description?: string | null;
+    values?:
+      | {
+          title: string;
+          description: string;
+          icon: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  statistics?: {
+    title?: string | null;
+    subtitle?: string | null;
+    items?:
+      | {
+          number: string;
+          description: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  team?: {
+    title?: string | null;
+    subtitle?: string | null;
+    members?:
+      | {
+          name: string;
+          position: string;
+          description: string;
+          image: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  history?: {
+    title?: string | null;
+    subtitle?: string | null;
+    milestones?:
+      | {
+          year: string;
+          title: string;
+          description: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  contact?: {
+    title?: string | null;
+    subtitle?: string | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1609,6 +2216,12 @@ export interface Footer {
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
+  logo?:
+    | T
+    | {
+        text?: T;
+        fontFamily?: T;
+      };
   navItems?:
     | T
     | {
@@ -1632,7 +2245,21 @@ export interface HeaderSelect<T extends boolean = true> {
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
-  navItems?:
+  company?:
+    | T
+    | {
+        name?: T;
+        description?: T;
+        fontFamily?: T;
+      };
+  contact?:
+    | T
+    | {
+        address?: T;
+        phone?: T;
+        email?: T;
+      };
+  kreditarten?:
     | T
     | {
         link?:
@@ -1645,6 +2272,599 @@ export interface FooterSelect<T extends boolean = true> {
               label?: T;
             };
         id?: T;
+      };
+  serviceLinks?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
+        id?: T;
+      };
+  legalLinks?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
+        id?: T;
+      };
+  socialMedia?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  copyright?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage_select".
+ */
+export interface HomepageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        ctaText?: T;
+      };
+  features?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              icon?: T;
+              id?: T;
+            };
+      };
+  calculator?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+      };
+  process?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        steps?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              icon?: T;
+              id?: T;
+            };
+      };
+  cta?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        primaryButtonText?: T;
+        secondaryButtonText?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ratenkredite_select".
+ */
+export interface RatenkrediteSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+      };
+  benefits?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              icon?: T;
+              id?: T;
+            };
+      };
+  calculator?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+      };
+  faq?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        items?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+              id?: T;
+            };
+      };
+  cta?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "autokredit_select".
+ */
+export interface AutokreditSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+      };
+  benefits?:
+    | T
+    | {
+        title?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              icon?: T;
+              id?: T;
+            };
+      };
+  calculator?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+      };
+  process?:
+    | T
+    | {
+        title?: T;
+        steps?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              icon?: T;
+              id?: T;
+            };
+      };
+  faq?:
+    | T
+    | {
+        title?: T;
+        items?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+              id?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "umschuldung_select".
+ */
+export interface UmschuldungSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+      };
+  benefits?:
+    | T
+    | {
+        title?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              icon?: T;
+              id?: T;
+            };
+      };
+  calculator?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+      };
+  faq?:
+    | T
+    | {
+        title?: T;
+        items?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+              id?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "kontakt_select".
+ */
+export interface KontaktSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+      };
+  contactInfo?:
+    | T
+    | {
+        phone?: T;
+        email?: T;
+        address?: T;
+        openingHours?: T;
+      };
+  form?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+      };
+  alternatives?:
+    | T
+    | {
+        title?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              icon?: T;
+              id?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "kredit-selbststaendige_select".
+ */
+export interface KreditSelbststaendigeSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+      };
+  benefits?:
+    | T
+    | {
+        title?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              icon?: T;
+              id?: T;
+            };
+      };
+  calculator?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+      };
+  requirements?:
+    | T
+    | {
+        title?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              id?: T;
+            };
+      };
+  faq?:
+    | T
+    | {
+        title?: T;
+        items?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+              id?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "kreditarten_select".
+ */
+export interface KreditartenSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+      };
+  creditTypes?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              features?:
+                | T
+                | {
+                    feature?: T;
+                    id?: T;
+                  };
+              icon?: T;
+              link?: T;
+              id?: T;
+            };
+      };
+  statistics?:
+    | T
+    | {
+        title?: T;
+        items?:
+          | T
+          | {
+              number?: T;
+              description?: T;
+              id?: T;
+            };
+      };
+  cta?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "schufa-neutral_select".
+ */
+export interface SchufaNeutralSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+      };
+  benefits?:
+    | T
+    | {
+        title?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              icon?: T;
+              id?: T;
+            };
+      };
+  calculator?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+      };
+  faq?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        items?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+              id?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sofortkredit_select".
+ */
+export interface SofortkreditSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+      };
+  benefits?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              icon?: T;
+              id?: T;
+            };
+      };
+  calculator?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+      };
+  process?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        steps?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              icon?: T;
+              id?: T;
+            };
+      };
+  faq?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        items?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+              id?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ueber-uns_select".
+ */
+export interface UeberUnsSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+      };
+  mission?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        values?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              icon?: T;
+              id?: T;
+            };
+      };
+  statistics?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        items?:
+          | T
+          | {
+              number?: T;
+              description?: T;
+              id?: T;
+            };
+      };
+  team?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        members?:
+          | T
+          | {
+              name?: T;
+              position?: T;
+              description?: T;
+              image?: T;
+              id?: T;
+            };
+      };
+  history?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        milestones?:
+          | T
+          | {
+              year?: T;
+              title?: T;
+              description?: T;
+              id?: T;
+            };
+      };
+  contact?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -1661,14 +2881,14 @@ export interface TaskSchedulePublish {
     doc?:
       | ({
           relationTo: 'pages';
-          value: string | Page;
+          value: number | Page;
         } | null)
       | ({
           relationTo: 'posts';
-          value: string | Post;
+          value: number | Post;
         } | null);
     global?: string | null;
-    user?: (string | null) | User;
+    user?: (number | null) | User;
   };
   output?: unknown;
 }
