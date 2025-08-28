@@ -31,6 +31,10 @@ const nextConfig = {
   },
   reactStrictMode: true,
   redirects,
+  // Coolify optimization: Enable standalone output for Docker
+  output: 'standalone',
+  // Disable telemetry for production
+  telemetry: false,
 }
 
 export default withPayload(nextConfig, { devBundleServerPackages: false })
