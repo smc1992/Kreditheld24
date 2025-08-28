@@ -9,14 +9,10 @@ PNPM_VERSION = "8"
 nixPkgs = ["nodejs_18", "pnpm"]
 
 [phases.install]
-cmds = [
-  "pnpm install --frozen-lockfile"
-]
+cmd = "pnpm install --frozen-lockfile"
 
 [phases.build]
-cmds = [
-  "pnpm build"
-]
+cmd = "pnpm build"
 
 [start]
 cmd = "pnpm start"
