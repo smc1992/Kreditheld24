@@ -27,8 +27,17 @@ ENV NODE_ENV=production
 ENV NODE_OPTIONS=--no-deprecation
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Build the application
-RUN pnpm build
+# Set environment variables for build
+    ENV PAYLOAD_SECRET=pE+sqfjsiieXAVuGVsnPBMaP6TNnQ5ajLaN0AfK84eg=
+    ENV DATABASE_URI=postgresql://postgres:postgres@postgresql-database-wcwg8084g00g48c8g4g8:5432/postgres
+    ENV NODE_ENV=production
+    ENV NEXT_PUBLIC_SERVER_URL=https://kreditheld24.de
+    ENV PORT=3000
+    ENV NODE_OPTIONS=--no-deprecation
+    ENV NEXT_TELEMETRY_DISABLED=1
+
+    # Build the application
+    RUN pnpm build
 
 # Production image, copy all the files and run next
 FROM base AS runner
