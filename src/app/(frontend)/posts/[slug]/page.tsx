@@ -16,23 +16,34 @@ import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const posts = await payload.find({
-    collection: 'posts',
-    draft: false,
-    limit: 1000,
-    overrideAccess: false,
-    pagination: false,
-    select: {
-      slug: true,
-    },
-  })
+  try {
+    // Only generate static params if DATABASE_URI is available
+    if (!process.env.DATABASE_URI) {
+      console.log('⚠️ DATABASE_URI not available during build - skipping posts static generation')
+      return []
+    }
 
-  const params = posts.docs.map(({ slug }) => {
-    return { slug }
-  })
+    const payload = await getPayload({ config: configPromise })
+    const posts = await payload.find({
+      collection: 'posts',
+      draft: false,
+      limit: 1000,
+      overrideAccess: false,
+      pagination: false,
+      select: {
+        slug: true,
+      },
+    })
 
-  return params
+    const params = posts.docs.map(({ slug }) => {
+      return { slug }
+    })
+
+    return params || []
+  } catch (error) {
+    console.log('⚠️ Error during posts static generation - falling back to dynamic rendering:', error instanceof Error ? error.message : 'Unknown error')
+    return []
+  }
 }
 
 type Args = {
