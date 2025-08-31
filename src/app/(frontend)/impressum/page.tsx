@@ -182,7 +182,7 @@ export default function ImpressumPage() {
                   <h2 className="text-xl font-bold text-gray-900 mb-4">Rechtliche Hinweise</h2>
                   <p className="text-sm text-gray-600 mb-2">
                     <strong>Hinweis:</strong> Dieses Impressum wurde erstellt gemäß den Anforderungen des 
-                    Digitale-Dienste-Gesetzes (DDG), welches am 14. Mai 2024 das Telemediengesetz (TMG) abgelöst hat. <mcreference link="https://www.e-recht24.de/news/datenschutz/13296-webseitenbetreiber-aufgepasst-das-tmg-wird-zum-digitale-dienste-gesetz-aktualisieren-sie-jetzt-ihr-impressum.html" index="1">1</mcreference>
+                    Digitale-Dienste-Gesetzes (DDG), welches am 14. Mai 2024 das Telemediengesetz (TMG) abgelöst hat.
                   </p>
                   <p className="text-sm text-gray-600">
                     Stand: Januar 2025

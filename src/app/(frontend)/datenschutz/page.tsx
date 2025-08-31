@@ -54,7 +54,7 @@ export default function DatenschutzPage() {
                 <div id="verantwortlicher" className="mb-12">
                   <h2 className="text-2xl font-bold text-gray-900 mb-6">1. Verantwortlicher</h2>
                   <p className="text-gray-700 mb-4">
-                    Verantwortlicher für die Datenverarbeitung auf dieser Website ist: <mcreference link="https://dsgvo-gesetz.de/art-13-dsgvo/" index="5">5</mcreference>
+                    Verantwortlicher für die Datenverarbeitung auf dieser Website ist:
                   </p>
                   <div className="bg-gray-50 p-4 rounded">
                     <p className="text-gray-700">
@@ -77,7 +77,7 @@ export default function DatenschutzPage() {
                       <p className="text-gray-700">
                         Wir verarbeiten personenbezogene Daten unserer Nutzer grundsätzlich nur, soweit dies zur Bereitstellung 
                         einer funktionsfähigen Website sowie unserer Inhalte und Leistungen erforderlich ist. Die Verarbeitung 
-                        personenbezogener Daten unserer Nutzer erfolgt regelmäßig nur nach Einwilligung des Nutzers. <mcreference link="https://www.e-recht24.de/muster-datenschutzerklaerung.html" index="1">1</mcreference>
+                        personenbezogener Daten unserer Nutzer erfolgt regelmäßig nur nach Einwilligung des Nutzers.
                       </p>
                     </div>
                     
@@ -101,7 +101,7 @@ export default function DatenschutzPage() {
                 <div id="rechtsgrundlagen" className="mb-12">
                   <h2 className="text-2xl font-bold text-gray-900 mb-6">3. Rechtsgrundlagen der Verarbeitung</h2>
                   <p className="text-gray-700 mb-4">
-                    Die Verarbeitung personenbezogener Daten erfolgt auf Grundlage der folgenden Rechtsgrundlagen der DSGVO: <mcreference link="https://dsgvo-vorlagen.de/muster-informationspflichten-nach-art-13-und-14-dsgvo-mit-pflichtangaben" index="4">4</mcreference>
+                    Die Verarbeitung personenbezogener Daten erfolgt auf Grundlage der folgenden Rechtsgrundlagen der DSGVO:
                   </p>
                   <ul className="space-y-3 text-gray-700">
                     <li><strong>Art. 6 Abs. 1 lit. a DSGVO:</strong> Einwilligung der betroffenen Person</li>
@@ -242,7 +242,7 @@ export default function DatenschutzPage() {
                 <div id="betroffenenrechte" className="mb-12">
                   <h2 className="text-2xl font-bold text-gray-900 mb-6">8. Rechte der betroffenen Person</h2>
                   <p className="text-gray-700 mb-4">
-                    Sie haben folgende Rechte bezüglich Ihrer personenbezogenen Daten: <mcreference link="https://www.e-recht24.de/muster-datenschutzerklaerung.html" index="1">1</mcreference>
+                    Sie haben folgende Rechte bezüglich Ihrer personenbezogenen Daten:
                   </p>
                   
                   <div className="space-y-4">
@@ -381,7 +381,7 @@ export default function DatenschutzPage() {
                   <p className="text-sm text-gray-600">
                     <strong>Stand dieser Datenschutzerklärung:</strong> Januar 2025<br />
                     Diese Datenschutzerklärung wurde erstellt unter Berücksichtigung der aktuellen Anforderungen 
-                    der Datenschutz-Grundverordnung (DSGVO). <mcreference link="https://www.e-recht24.de/muster-datenschutzerklaerung.html" index="1">1</mcreference>
+                    der Datenschutz-Grundverordnung (DSGVO).
                   </p>
                 </div>
 
