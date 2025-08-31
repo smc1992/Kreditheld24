@@ -1,6 +1,6 @@
 import React from 'react'
 import { Metadata } from 'next'
-import KreditanfrageForm from '@/components/KreditanfrageForm'
+import KreditanfrageFormWrapper from '@/components/KreditanfrageFormWrapper'
 
 export const metadata: Metadata = {
   title: 'Unverbindliche Kreditanfrage - Kreditheld24',
@@ -69,7 +69,7 @@ export default function KreditanfragePage() {
                   </p>
                 </div>
                 
-                <KreditanfrageForm />
+                <KreditanfrageFormWrapper />
               </div>
             </div>
           </div>
@@ -119,7 +119,7 @@ export default function KreditanfragePage() {
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
-              <KreditanfrageForm />
+              <KreditanfrageFormWrapper />
             </div>
           </div>
         </section>

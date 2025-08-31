@@ -23,7 +23,7 @@ async function updateHeader() {
         ...(header.navItems || []),
         {
           link: {
-            type: 'custom',
+            type: 'custom' as const,
             label: 'Sofortkredit',
             url: '/sofortkredit',
           },
