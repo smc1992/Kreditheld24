@@ -25,14 +25,18 @@ const nextConfig = {
     ],
   },
   async rewrites() {
+    const wordpressUrl = process.env.WORDPRESS_URL || process.env.NEXT_PUBLIC_WORDPRESS_URL
+    if (!wordpressUrl) {
+      return []
+    }
     return [
       {
         source: '/wp-admin/:path*',
-        destination: `${process.env.WORDPRESS_URL}/wp-admin/:path*`,
+        destination: `${wordpressUrl}/wp-admin/:path*`,
       },
       {
         source: '/wp-content/:path*',
-        destination: `${process.env.WORDPRESS_URL}/wp-content/:path*`,
+        destination: `${wordpressUrl}/wp-content/:path*`,
       },
     ]
   },
@@ -51,4 +55,4 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig
+export default nextConfig
