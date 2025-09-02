@@ -214,7 +214,7 @@ export default function KreditanfrageForm() {
       setEmailVerificationSent(false)
       setEmailVerified(false)
       setVerificationToken('')
-    } catch (error) {
+    } catch {
       setSubmitStatus('error')
     } finally {
       setIsSubmitting(false)

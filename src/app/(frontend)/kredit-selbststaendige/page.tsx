@@ -11,7 +11,6 @@ const KreditSelbststaendigePage = () => {
   const [businessType, setBusinessType] = useState('einzelunternehmen')
   const [businessYears, setBusinessYears] = useState('3-5')
   const [loanPurpose, setLoanPurpose] = useState('betriebsmittel')
-  const [currentSlide, setCurrentSlide] = useState(0)
   const [openFaq, setOpenFaq] = useState<number | null>(null)
   const [formData, setFormData] = useState({
     firstName: '',
@@ -70,62 +69,13 @@ const KreditSelbststaendigePage = () => {
 
   const loanCalculation = calculateLoan()
 
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone) {
-      alert('Bitte füllen Sie alle Pflichtfelder aus.')
-      return
-    }
-    if (!formData.privacy) {
-      alert('Bitte akzeptieren Sie die Datenschutzbestimmungen.')
-      return
-    }
-    alert('Vielen Dank für Ihre Anfrage! Wir werden uns innerhalb von 24 Stunden bei Ihnen melden.')
-    setFormData({
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      businessForm: 'einzelunternehmen',
-      businessYears: '3-5',
-      loanAmount: '25000',
-      loanPurpose: 'betriebsmittel',
-      privacy: false
-    })
-  }
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
-    }))
-  }
+  // Removed unused form handling functions
 
   const toggleFaq = (index: number) => {
     setOpenFaq(openFaq === index ? null : index)
   }
 
-  const testimonials = [
-    {
-      name: "Michael Weber",
-      business: "Handwerksbetrieb",
-      text: "Dank Kreditheld24 konnte ich schnell und unkompliziert eine neue Maschine finanzieren. Der Service war erstklassig!",
-      rating: 5
-    },
-    {
-      name: "Sarah Müller",
-      business: "Online-Shop",
-      text: "Als Selbstständige war es schwer, einen fairen Kredit zu bekommen. Hier fand ich endlich die richtige Lösung.",
-      rating: 5
-    },
-    {
-      name: "Thomas Klein",
-      business: "Beratungsunternehmen",
-      text: "Professionelle Beratung und transparente Konditionen. Kann ich jedem Unternehmer empfehlen!",
-      rating: 5
-    }
-  ]
+  // Removed unused testimonials array
 
   const faqData = [
     {
@@ -221,32 +171,33 @@ const KreditSelbststaendigePage = () => {
       <div className="font-sans text-gray-800 bg-white">
 
         {/* Hero Section */}
-        <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 overflow-hidden">
+        <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 overflow-hidden min-h-[500px] sm:min-h-[600px] lg:min-h-[700px]">
           <div 
-            className="absolute inset-0 bg-right bg-no-repeat bg-contain" 
+            className="absolute inset-0 bg-right bg-no-repeat bg-contain opacity-20 sm:opacity-40 md:opacity-60 lg:opacity-90" 
             style={{
               backgroundImage: "url('https://readdy.ai/api/search-image?query=professional%2520business%2520person%2520working%2520on%2520laptop%2520in%2520modern%2520office%252C%2520business%2520documents%2520and%2520calculator%2520nearby%252C%2520soft%2520natural%2520lighting%252C%2520green%2520plants%2520in%2520background%252C%2520business%2520finance%2520concept%252C%2520entrepreneurship%2520theme%252C%2520clean%2520minimal%2520workspace%252C%2520with%2520plenty%2520of%2520empty%2520space%2520on%2520the%2520left%2520side%2520for%2520text&width=800&height=600&seq=self123&orientation=landscape')"
             }}
           ></div>
-          <div className="container mx-auto px-4 py-16 md:py-24 relative z-10">
-            <div className="max-w-xl">
+          <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-green-50/80 to-transparent sm:from-green-50/90 sm:via-green-50/70 md:from-green-50/80 md:via-green-50/60"></div>
+          <div className="container mx-auto px-4 py-12 sm:py-16 md:py-20 lg:py-24 relative z-10 flex items-center min-h-[500px] sm:min-h-[600px] lg:min-h-[700px]">
+            <div className="max-w-xl lg:max-w-2xl">
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">
                 Kredite für Selbstständige – maßgeschneiderte Finanzlösungen
               </h1>
               <p className="text-lg md:text-xl text-gray-700 mb-8">
                 Speziell entwickelte Kreditangebote für Unternehmer, Freiberufler und Gewerbetreibende mit flexiblen Konditionen.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <Link 
                   href="#calculator" 
-                  className="bg-primary hover:bg-green-500 text-white font-medium py-3 px-6 rounded-button whitespace-nowrap shadow-md transition-all flex items-center justify-center"
+                  className="bg-primary hover:bg-green-500 text-white font-medium py-3 sm:py-4 px-6 sm:px-8 rounded-button shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base group"
                 >
                   <span>Jetzt Kredit berechnen</span>
-                  <div className="w-5 h-5 ml-2 flex items-center justify-center">
+                  <div className="w-4 h-4 sm:w-5 sm:h-5 ml-2 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
                     <i className="ri-arrow-right-line"></i>
                   </div>
                 </Link>
-                <UnverbindlichAnfragenButton variant="secondary" size="md" className="py-3 px-6" />
+                <UnverbindlichAnfragenButton variant="secondary" size="md" className="py-3 sm:py-4 px-6 sm:px-8 text-sm sm:text-base" />
               </div>
             </div>
           </div>
@@ -479,78 +430,7 @@ const KreditSelbststaendigePage = () => {
           </div>
         </section>
 
-        {/* Footer */}
-        <footer className="bg-gray-800 text-white pt-12 pb-6">
-          <div className="container mx-auto px-4">
-            <div className="grid md:grid-cols-4 gap-8 mb-8">
-              <div>
-                <h3 className="text-xl font-['Pacifico'] text-primary mb-4">Kreditheld24</h3>
-                <p className="text-gray-300 mb-4">
-                  Ihr unabhängiger Kreditvergleich für maßgeschneiderte Finanzierungslösungen zu Top-Konditionen.
-                </p>
-              </div>
-              <div>
-                <h4 className="font-medium text-lg mb-4">Kreditarten</h4>
-                <ul className="space-y-2">
-                  <li><Link href="/ratenkredite" className="text-gray-300 hover:text-primary">Ratenkredit</Link></li>
-                  <li><Link href="/umschuldung" className="text-gray-300 hover:text-primary">Umschuldung</Link></li>
-                  <li><Link href="/schufa-neutral" className="text-gray-300 hover:text-primary">Kredit trotz SCHUFA</Link></li>
-                  <li><Link href="/sofortkredit" className="text-gray-300 hover:text-primary">Sofortkredit</Link></li>
-                  <li><Link href="/kredit-selbststaendige" className="text-primary hover:text-primary">Kredit für Selbstständige</Link></li>
-                  <li><Link href="/autokredit" className="text-gray-300 hover:text-primary">Autokredit</Link></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-medium text-lg mb-4">Über uns</h4>
-                <ul className="space-y-2">
-                  <li><Link href="/unternehmen" className="text-gray-300 hover:text-primary">Unternehmen</Link></li>
-                  <li><Link href="/team" className="text-gray-300 hover:text-primary">Team</Link></li>
-                  <li><Link href="/kontakt" className="text-gray-300 hover:text-primary">Kontakt</Link></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-medium text-lg mb-4">Kontakt</h4>
-                <ul className="space-y-2">
-                  <li className="flex items-start">
-                    <div className="w-5 h-5 flex items-center justify-center text-primary mr-2 mt-1">
-                      <i className="ri-map-pin-line"></i>
-                    </div>
-                    <span className="text-gray-300">Kreditheldenstraße 24<br />10115 Berlin</span>
-                  </li>
-                  <li className="flex items-center">
-                    <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
-                      <i className="ri-phone-line"></i>
-                    </div>
-                    <Link href="tel:+4930123456789" className="text-gray-300 hover:text-primary">
-                      030 / 123 456 789
-                    </Link>
-                  </li>
-                  <li className="flex items-center">
-                    <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
-                      <i className="ri-mail-line"></i>
-                    </div>
-                    <Link href="mailto:info@kreditheld24.de" className="text-gray-300 hover:text-primary">
-                      info@kreditheld24.de
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div className="border-t border-gray-700 pt-6">
-              <div className="flex flex-col md:flex-row md:justify-between">
-                <div className="mb-4 md:mb-0">
-                  <p className="text-gray-400 text-sm">&copy; 2025 Kreditheld24. Alle Rechte vorbehalten.</p>
-                </div>
-                <div className="flex flex-wrap gap-4">
-                  <Link href="/impressum" className="text-gray-400 text-sm hover:text-primary">Impressum</Link>
-                  <Link href="/datenschutz" className="text-gray-400 text-sm hover:text-primary">Datenschutz</Link>
-                  <Link href="/agb" className="text-gray-400 text-sm hover:text-primary">AGB</Link>
-                  <Link href="/cookie-einstellungen" className="text-gray-400 text-sm hover:text-primary">Cookie-Einstellungen</Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </footer>
+
       </div>
     </>
   )

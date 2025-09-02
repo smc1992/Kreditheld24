@@ -1,7 +1,6 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
-import { Metadata } from 'next'
 import UnverbindlichAnfragenButton from '@/components/UnverbindlichAnfragenButton'
 
 const AutokreditPage = () => {

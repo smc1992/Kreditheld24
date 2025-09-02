@@ -73,30 +73,31 @@ const SchufaNeutralPage = () => {
     <div className="font-sans text-gray-800 bg-white">
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-green-50 to-green-100">
+      <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 overflow-hidden min-h-[500px] sm:min-h-[600px] lg:min-h-[700px]">
         <div 
-          className="absolute inset-0 bg-right bg-no-repeat bg-contain opacity-20" 
+          className="absolute inset-0 bg-right bg-no-repeat bg-contain opacity-20 sm:opacity-40 md:opacity-60 lg:opacity-90" 
           style={{
-            backgroundImage: "url('https://readdy.ai/api/search-image?query=professional%20modern%20office%20environment%20with%20financial%20documents%20and%20calculator%20on%20desk%2C%20soft%20natural%20lighting%2C%20minimalist%20design%20with%20green%20accents%2C%20blurred%20background%20showing%20financial%20success%20and%20stability&width=1280&height=720&seq=hero1&orientation=landscape')"
+            backgroundImage: "url('https://readdy.ai/api/search-image?query=professional%20modern%20office%20environment%20with%20financial%20documents%20and%20calculator%20on%20desk%2C%20soft%20natural%20lighting%2C%20minimalist%20design%20with%20green%20accents%2C%20blurred%20background%20showing%20financial%20success%20and%20stability&width=800&height=600&seq=hero1&orientation=landscape')"
           }}
         ></div>
-        <div className="container mx-auto px-4 py-16 relative">
-          <div className="max-w-3xl">
+        <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-green-50/80 to-transparent sm:from-green-50/90 sm:via-green-50/70 md:from-green-50/80 md:via-green-50/60"></div>
+        <div className="container mx-auto px-4 py-12 sm:py-16 md:py-20 lg:py-24 relative z-10 flex items-center min-h-[500px] sm:min-h-[600px] lg:min-h-[700px]">
+          <div className="max-w-xl lg:max-w-2xl">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">Kredit trotz negativer SCHUFA</h1>
             <p className="text-xl text-gray-700 mb-8">
               Auch mit einer negativen SCHUFA-Bewertung haben Sie Chancen auf einen Kredit. Wir zeigen Ihnen die besten Möglichkeiten und unterstützen Sie bei der Antragstellung.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <Link 
                 href="#kreditrechner" 
-                className="bg-primary hover:bg-green-500 text-white font-medium py-3 px-6 rounded-button whitespace-nowrap shadow-md transition-all flex items-center justify-center"
+                className="bg-primary hover:bg-green-500 text-white font-medium py-3 sm:py-4 px-6 sm:px-8 rounded-button shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base group"
               >
                 <span>Jetzt Kredit berechnen</span>
-                <div className="w-5 h-5 ml-2 flex items-center justify-center">
+                <div className="w-4 h-4 sm:w-5 sm:h-5 ml-2 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
                   <i className="ri-arrow-right-line"></i>
                 </div>
               </Link>
-              <UnverbindlichAnfragenButton variant="secondary" size="md" className="py-3 px-6" />
+              <UnverbindlichAnfragenButton variant="secondary" size="md" className="py-3 sm:py-4 px-6 sm:px-8 text-sm sm:text-base" />
             </div>
           </div>
         </div>
@@ -307,81 +308,7 @@ const SchufaNeutralPage = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white pt-12 pb-6">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <h3 className="text-xl font-['Pacifico'] text-primary mb-4">Kreditheld24</h3>
-              <p className="text-gray-300 mb-4">
-                Ihr Spezialist für Kredite auch bei negativer SCHUFA - schnell, diskret und zuverlässig.
-              </p>
-              <div className="flex space-x-4">
-                <Link href="#" className="text-gray-300 hover:text-primary">
-                  <div className="w-8 h-8 flex items-center justify-center">
-                    <i className="ri-facebook-fill"></i>
-                  </div>
-                </Link>
-                <Link href="#" className="text-gray-300 hover:text-primary">
-                  <div className="w-8 h-8 flex items-center justify-center">
-                    <i className="ri-twitter-fill"></i>
-                  </div>
-                </Link>
-                <Link href="#" className="text-gray-300 hover:text-primary">
-                  <div className="w-8 h-8 flex items-center justify-center">
-                    <i className="ri-instagram-fill"></i>
-                  </div>
-                </Link>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-medium text-lg mb-4">Kreditarten</h4>
-              <ul className="space-y-2">
-                <li><Link href="/ratenkredite" className="text-gray-300 hover:text-primary">Ratenkredit</Link></li>
-                <li><Link href="/umschuldung" className="text-gray-300 hover:text-primary">Umschuldung</Link></li>
-                <li><Link href="/autokredit" className="text-gray-300 hover:text-primary">Autokredit</Link></li>
-                <li><Link href="/sofortkredit" className="text-gray-300 hover:text-primary">Sofortkredit</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-medium text-lg mb-4">Service</h4>
-              <ul className="space-y-2">
-                <li><Link href="#" className="text-gray-300 hover:text-primary">FAQ</Link></li>
-                <li><Link href="/kontakt" className="text-gray-300 hover:text-primary">Kontakt</Link></li>
-                <li><Link href="/ueber-uns" className="text-gray-300 hover:text-primary">Über uns</Link></li>
-                <li><Link href="#" className="text-gray-300 hover:text-primary">Blog</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-medium text-lg mb-4">Kontakt</h4>
-              <ul className="space-y-2">
-                <li className="flex items-center">
-                  <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
-                    <i className="ri-phone-line"></i>
-                  </div>
-                  <span>0800 123 456 789</span>
-                </li>
-                <li className="flex items-center">
-                  <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
-                    <i className="ri-mail-line"></i>
-                  </div>
-                  <span>info@kreditheld24.de</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-700 pt-6">
-            <div className="flex flex-col md:flex-row md:justify-between">
-              <p className="text-sm text-gray-400">&copy; 2025 Kreditheld24. Alle Rechte vorbehalten.</p>
-              <div className="flex flex-wrap gap-4 mt-4 md:mt-0">
-                <Link href="/impressum" className="text-sm text-gray-400 hover:text-primary">Impressum</Link>
-                <Link href="/datenschutz" className="text-sm text-gray-400 hover:text-primary">Datenschutz</Link>
-                <Link href="/agb" className="text-sm text-gray-400 hover:text-primary">AGB</Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+
     </div>
   )
 }

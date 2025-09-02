@@ -136,36 +136,35 @@ const SofortkreditPage = () => {
       </div>
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-green-50 to-green-100 overflow-hidden">
+      <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 overflow-hidden min-h-[500px] sm:min-h-[600px] lg:min-h-[700px]">
         <div 
-          className="absolute inset-0 bg-cover bg-center" 
+          className="absolute inset-0 bg-right bg-no-repeat bg-contain opacity-20 sm:opacity-40 md:opacity-60 lg:opacity-90" 
           style={{
-            backgroundImage: "url('https://readdy.ai/api/search-image?query=modern%20minimalist%20financial%20office%20environment%20with%20soft%20natural%20lighting%2C%20clean%20workspace%20with%20digital%20displays%20showing%20financial%20data%2C%20contemporary%20professional%20setting%20with%20green%20accent%20colors%2C%20abstract%20geometric%20patterns%20in%20background%2C%20no%20people%20visible%2C%20professional%20and%20trustworthy%20atmosphere&width=1920&height=600&seq=sofortkredit_hero&orientation=landscape')"
+            backgroundImage: "url('https://readdy.ai/api/search-image?query=modern%20minimalist%20financial%20office%20environment%20with%20soft%20natural%20lighting%2C%20clean%20workspace%20with%20digital%20displays%20showing%20financial%20data%2C%20contemporary%20professional%20setting%20with%20green%20accent%20colors%2C%20abstract%20geometric%20patterns%20in%20background%2C%20no%20people%20visible%2C%20professional%20and%20trustworthy%20atmosphere&width=800&height=600&seq=sofortkredit_hero&orientation=landscape')"
           }}
         ></div>
-        <div className="relative bg-gradient-to-r from-white/90 to-white/60">
-          <div className="container mx-auto px-4 py-16 md:py-24">
-            <div className="max-w-xl">
+        <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-green-50/80 to-transparent sm:from-green-50/90 sm:via-green-50/70 md:from-green-50/80 md:via-green-50/60"></div>
+        <div className="container mx-auto px-4 py-12 sm:py-16 md:py-20 lg:py-24 relative z-10 flex items-center min-h-[500px] sm:min-h-[600px] lg:min-h-[700px]">
+          <div className="max-w-xl lg:max-w-2xl">
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">
                 Sofortkredit mit Auszahlung in 24 Stunden
               </h1>
               <p className="text-lg text-gray-700 mb-8">
                 Schnelle und unkomplizierte Finanzierung für dringende Vorhaben. 100% online, minimaler Aufwand, maximale Flexibilität.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <Link 
                   href="#calculator" 
-                  className="bg-primary hover:bg-green-500 text-white font-medium py-3 px-6 rounded-button whitespace-nowrap shadow-md transition-all flex items-center justify-center"
+                  className="bg-primary hover:bg-green-500 text-white font-medium py-3 sm:py-4 px-6 sm:px-8 rounded-button shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base group"
                 >
                   <span>Jetzt Sofortkredit berechnen</span>
-                  <div className="w-5 h-5 ml-2 flex items-center justify-center">
+                  <div className="w-4 h-4 sm:w-5 sm:h-5 ml-2 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
                     <i className="ri-arrow-right-line"></i>
                   </div>
                 </Link>
-                <UnverbindlichAnfragenButton variant="secondary" size="md" className="py-3 px-6" />
+                <UnverbindlichAnfragenButton variant="secondary" size="md" className="py-3 sm:py-4 px-6 sm:px-8 text-sm sm:text-base" />
               </div>
             </div>
-          </div>
         </div>
       </section>
 

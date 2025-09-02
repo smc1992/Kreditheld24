@@ -1,7 +1,7 @@
 'use client'
-
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import UnverbindlichAnfragenButton from '@/components/UnverbindlichAnfragenButton'
 import Script from 'next/script'
 
 const UmschuldungPage = () => {
@@ -95,6 +95,7 @@ const UmschuldungPage = () => {
       if (typeof window !== 'undefined' && (window as any).echarts) {
         const chartDom = document.getElementById('savings-chart')
         if (chartDom) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const myChart = (window as any).echarts.init(chartDom)
           const option = {
             animation: true,
@@ -106,8 +107,10 @@ const UmschuldungPage = () => {
               textStyle: {
                 color: '#1f2937'
               },
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               formatter: function(params: any) {
                 let result = params[0].name + '<br/>'
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 params.forEach((param: any) => {
                   result += param.marker + param.seriesName + ': ' + param.value.toLocaleString() + ' €<br/>'
                 })
@@ -218,41 +221,33 @@ const UmschuldungPage = () => {
       <div className="font-sans text-gray-800 bg-white">
 
         {/* Hero Section */}
-        <section className="relative w-full overflow-hidden">
+        <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 overflow-hidden min-h-[500px] sm:min-h-[600px] lg:min-h-[700px]">
           <div 
-            className="absolute inset-0 bg-center bg-no-repeat bg-cover" 
+            className="absolute inset-0 bg-right bg-no-repeat bg-contain opacity-20 sm:opacity-40 md:opacity-60 lg:opacity-90"
             style={{
-              backgroundImage: "url('https://readdy.ai/api/search-image?query=professional%2520financial%2520advisor%2520discussing%2520debt%2520consolidation%2520with%2520client%252C%2520showing%2520charts%2520on%2520tablet%252C%2520modern%2520office%2520setting%252C%2520bright%2520and%2520airy%2520space%252C%2520green%2520plants%2520in%2520background%252C%2520soft%2520natural%2520lighting%252C%2520documents%2520with%2520graphs%2520showing%2520savings%252C%2520left%2520side%2520with%2520clean%2520white%2520space%2520for%2520text&width=1920&height=800&seq=umschuldung123&orientation=landscape')"
+              backgroundImage: "url('https://readdy.ai/api/search-image?query=professional%2520financial%2520advisor%2520discussing%2520debt%2520consolidation%2520with%2520client%252C%2520showing%2520charts%2520on%2520tablet%252C%2520modern%2520office%2520setting%252C%2520bright%2520and%2520airy%2520space%252C%2520green%2520plants%2520in%2520background%252C%2520soft%2520natural%2520lighting%252C%2520documents%2520with%2520graphs%2520showing%2520savings%252C%2520left%2520side%2520with%2520clean%2520white%2520space%2520for%2520text&width=800&height=600&seq=umschuldung123&orientation=landscape')"
             }}
           ></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent"></div>
-          <div className="container mx-auto px-4 py-16 md:py-32 relative z-10">
-            <div className="max-w-sm sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto md:mx-0 text-center md:text-left">
+          <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-green-50/80 to-transparent sm:from-green-50/90 sm:via-green-50/70 md:from-green-50/80 md:via-green-50/60"></div>
+          <div className="container mx-auto px-4 py-12 sm:py-16 md:py-20 lg:py-24 relative z-10 flex items-center min-h-[500px] sm:min-h-[600px] lg:min-h-[700px]">
+            <div className="max-w-xl lg:max-w-2xl">
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 mb-4 sm:mb-6 leading-tight">
                 Clever umschulden und Geld sparen
               </h1>
               <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-700 mb-8 sm:mb-10 leading-relaxed">
                 Fassen Sie bestehende Kredite zu besseren Konditionen zusammen und reduzieren Sie Ihre monatliche Belastung deutlich.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <Link 
                   href="#calculator" 
-                  className="bg-primary hover:bg-green-500 text-white font-medium text-sm sm:text-base py-2.5 sm:py-3 px-5 sm:px-6 rounded-button whitespace-nowrap shadow-md transition-all flex items-center justify-center"
+                  className="bg-primary hover:bg-green-500 text-white font-medium py-3 sm:py-4 px-6 sm:px-8 rounded-button shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base group"
                 >
                   <span>Sparpotenzial berechnen</span>
-                  <div className="w-4 sm:w-5 h-4 sm:h-5 ml-2 flex items-center justify-center">
+                  <div className="w-4 h-4 sm:w-5 sm:h-5 ml-2 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
                     <i className="ri-arrow-right-line"></i>
                   </div>
                 </Link>
-                <Link 
-                  href="#advantages" 
-                  className="border border-gray-300 hover:border-primary text-gray-700 hover:text-primary font-medium text-sm sm:text-base py-2.5 sm:py-3 px-5 sm:px-6 rounded-button whitespace-nowrap flex items-center justify-center transition-all"
-                >
-                  <div className="w-4 sm:w-5 h-4 sm:h-5 mr-2 flex items-center justify-center">
-                    <i className="ri-information-line"></i>
-                  </div>
-                  <span>Vorteile entdecken</span>
-                </Link>
+                <UnverbindlichAnfragenButton variant="secondary" size="md" className="py-3 sm:py-4 px-6 sm:px-8 text-sm sm:text-base" />
               </div>
             </div>
           </div>
@@ -1009,103 +1004,7 @@ const UmschuldungPage = () => {
           </div>
         </section>
 
-        {/* Footer */}
-        <footer className="bg-gray-800 text-white pt-12 pb-6">
-          <div className="container mx-auto px-4">
-            <div className="grid md:grid-cols-4 gap-8 mb-8">
-              <div>
-                <h3 className="text-xl font-['Pacifico'] text-primary mb-4">Kreditheld24</h3>
-                <p className="text-gray-300 mb-4">
-                  Ihr unabhängiger Kreditvergleich für maßgeschneiderte Finanzierungslösungen zu Top-Konditionen.
-                </p>
-                <div className="flex space-x-4">
-                  <Link href="#" className="text-gray-300 hover:text-primary">
-                    <div className="w-8 h-8 flex items-center justify-center">
-                      <i className="ri-facebook-fill ri-lg"></i>
-                    </div>
-                  </Link>
-                  <Link href="#" className="text-gray-300 hover:text-primary">
-                    <div className="w-8 h-8 flex items-center justify-center">
-                      <i className="ri-twitter-fill ri-lg"></i>
-                    </div>
-                  </Link>
-                  <Link href="#" className="text-gray-300 hover:text-primary">
-                    <div className="w-8 h-8 flex items-center justify-center">
-                      <i className="ri-instagram-fill ri-lg"></i>
-                    </div>
-                  </Link>
-                  <Link href="#" className="text-gray-300 hover:text-primary">
-                    <div className="w-8 h-8 flex items-center justify-center">
-                      <i className="ri-linkedin-fill ri-lg"></i>
-                    </div>
-                  </Link>
-                </div>
-              </div>
-              <div>
-                <h4 className="font-medium text-lg mb-4">Kreditarten</h4>
-                <ul className="space-y-2">
-                  <li><Link href="/ratenkredite" className="text-gray-300 hover:text-primary">Ratenkredit</Link></li>
-                  <li><Link href="/umschuldung" className="text-gray-300 hover:text-primary">Umschuldung</Link></li>
-                  <li><Link href="/schufa-neutral" className="text-gray-300 hover:text-primary">Kredit trotz SCHUFA</Link></li>
-                  <li><Link href="/sofortkredit" className="text-gray-300 hover:text-primary">Sofortkredit</Link></li>
-                  <li><Link href="/kredit-selbststaendige" className="text-gray-300 hover:text-primary">Kredit für Selbstständige</Link></li>
-                  <li><Link href="/autokredit" className="text-gray-300 hover:text-primary">Autokredit</Link></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-medium text-lg mb-4">Über uns</h4>
-                <ul className="space-y-2">
-                  <li><Link href="/unternehmen" className="text-gray-300 hover:text-primary">Unternehmen</Link></li>
-                  <li><Link href="/team" className="text-gray-300 hover:text-primary">Team</Link></li>
-                  <li><Link href="/karriere" className="text-gray-300 hover:text-primary">Karriere</Link></li>
-                  <li><Link href="/presse" className="text-gray-300 hover:text-primary">Presse</Link></li>
-                  <li><Link href="/partnerprogramm" className="text-gray-300 hover:text-primary">Partnerprogramm</Link></li>
-                  <li><Link href="/kontakt" className="text-gray-300 hover:text-primary">Kontakt</Link></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-medium text-lg mb-4">Kontakt</h4>
-                <ul className="space-y-2">
-                  <li className="flex items-start">
-                    <div className="w-5 h-5 flex items-center justify-center text-primary mr-2 mt-1">
-                      <i className="ri-map-pin-line"></i>
-                    </div>
-                    <span className="text-gray-300">Kreditheldenstraße 24<br />10115 Berlin</span>
-                  </li>
-                  <li className="flex items-center">
-                    <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
-                      <i className="ri-phone-line"></i>
-                    </div>
-                    <Link href="tel:+4930123456789" className="text-gray-300 hover:text-primary">
-                      030 / 123 456 789
-                    </Link>
-                  </li>
-                  <li className="flex items-center">
-                    <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
-                      <i className="ri-mail-line"></i>
-                    </div>
-                    <Link href="mailto:info@kreditheld24.de" className="text-gray-300 hover:text-primary">
-                      info@kreditheld24.de
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div className="border-t border-gray-700 pt-6">
-              <div className="flex flex-col md:flex-row md:justify-between">
-                <div className="mb-4 md:mb-0">
-                  <p className="text-gray-400 text-sm">&copy; 2025 Kreditheld24. Alle Rechte vorbehalten.</p>
-                </div>
-                <div className="flex flex-wrap gap-4">
-                  <Link href="/impressum" className="text-gray-400 text-sm hover:text-primary">Impressum</Link>
-                  <Link href="/datenschutz" className="text-gray-400 text-sm hover:text-primary">Datenschutz</Link>
-                  <Link href="/agb" className="text-gray-400 text-sm hover:text-primary">AGB</Link>
-                  <Link href="/cookie-einstellungen" className="text-gray-400 text-sm hover:text-primary">Cookie-Einstellungen</Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </footer>
+
       </div>
     </>
   )

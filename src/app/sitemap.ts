@@ -1,39 +1,102 @@
 import { MetadataRoute } from 'next'
-import { getAllPosts, getAllPages, getCustomPostType } from '../../lib/wordpress'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kreditheld24.de'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const staticRoutes: MetadataRoute.Sitemap = [
+    {
+      url: `${SITE_URL}`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 1,
+    },
+    {
+      url: `${SITE_URL}/ratenkredite`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${SITE_URL}/autokredit`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${SITE_URL}/umschuldung`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${SITE_URL}/kredit-selbststaendige`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: `${SITE_URL}/schufa-neutral`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: `${SITE_URL}/sofortkredit`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: `${SITE_URL}/kreditarten`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: `${SITE_URL}/tipps-kreditaufnahme`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+    {
+      url: `${SITE_URL}/kontakt`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+    {
+      url: `${SITE_URL}/ueber-uns`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    },
+    {
+      url: `${SITE_URL}/impressum`,
+      lastModified: new Date(),
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
+    {
+      url: `${SITE_URL}/datenschutz`,
+      lastModified: new Date(),
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
+  ]
+
+  // Check if WordPress is configured
+  const wordpressUrl = process.env.WORDPRESS_URL || process.env.NEXT_PUBLIC_WORDPRESS_URL
+  
+  if (!wordpressUrl) {
+    console.warn('WordPress URL not configured, returning static sitemap only')
+    return staticRoutes
+  }
+
   try {
-    const sitemapEntries: MetadataRoute.Sitemap = []
-
-    // Static pages
-    const staticPages = [
-      '',
-      '/impressum',
-      '/datenschutz',
-      '/kontakt',
-      '/ueber-uns',
-      '/kreditanfrage',
-      '/ratenkredite',
-      '/autokredit',
-      '/umschuldung',
-      '/kredit-selbststaendige',
-      '/kreditarten',
-      '/schufa-neutral',
-      '/sofortkredit',
-      '/tipps-kreditaufnahme',
-    ]
-
-    // Add static pages to sitemap
-    staticPages.forEach((path) => {
-      sitemapEntries.push({
-        url: `${SITE_URL}${path}`,
-        lastModified: new Date(),
-        changeFrequency: path === '' ? 'daily' : 'weekly',
-        priority: path === '' ? 1 : 0.8,
-      })
-    })
+    // Dynamic import to avoid build-time errors
+    const { getAllPosts, getAllPages, getCustomPostType } = await import('../../lib/wordpress')
+    
+    const sitemapEntries: MetadataRoute.Sitemap = [...staticRoutes]
 
     try {
       // Fetch WordPress posts
@@ -55,7 +118,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const pages = await getAllPages()
       pages.forEach((page) => {
         // Skip pages that are already in static pages
-        if (!staticPages.includes(`/${page.slug}`)) {
+        const staticPaths = staticRoutes.map(route => new URL(route.url).pathname)
+        if (!staticPaths.includes(`/${page.slug}`)) {
           sitemapEntries.push({
             url: `${SITE_URL}/${page.slug}`,
             lastModified: new Date(page.modified),
@@ -104,28 +168,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     return sitemapEntries
   } catch (error) {
-    console.error('Error generating sitemap:', error)
-    
-    // Return minimal sitemap with static pages only
-    return [
-      {
-        url: SITE_URL,
-        lastModified: new Date(),
-        changeFrequency: 'daily',
-        priority: 1,
-      },
-      {
-        url: `${SITE_URL}/impressum`,
-        lastModified: new Date(),
-        changeFrequency: 'yearly',
-        priority: 0.3,
-      },
-      {
-        url: `${SITE_URL}/datenschutz`,
-        lastModified: new Date(),
-        changeFrequency: 'yearly',
-        priority: 0.3,
-      },
-    ]
+    console.warn('Failed to fetch WordPress data for sitemap:', error)
+    // Return only static routes if WordPress is not available
+    return staticRoutes
   }
 }

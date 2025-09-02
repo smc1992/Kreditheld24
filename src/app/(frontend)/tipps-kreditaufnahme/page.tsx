@@ -1,7 +1,6 @@
 'use client'
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { Metadata } from 'next'
 
 const TippsKreditaufnahmePage = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null)

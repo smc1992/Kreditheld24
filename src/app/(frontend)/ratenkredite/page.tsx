@@ -1,7 +1,6 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
-import { Metadata } from 'next'
 import UnverbindlichAnfragenButton from '@/components/UnverbindlichAnfragenButton'
 
 const RatenkreditePage = () => {
@@ -56,17 +55,16 @@ const RatenkreditePage = () => {
   return (
     <div className="font-sans text-gray-800 bg-white">
       {/* Hero Section */}
-      <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 overflow-hidden min-h-[600px] flex items-center">
+      <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 overflow-hidden min-h-[500px] sm:min-h-[600px] lg:min-h-[700px]">
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-90"
+          className="absolute inset-0 bg-right bg-no-repeat bg-contain opacity-20 sm:opacity-40 md:opacity-60 lg:opacity-90"
           style={{
-            backgroundImage: "url('https://readdy.ai/api/search-image?query=modern%2520minimalist%2520office%2520interior%2520with%2520financial%2520advisor%2520desk%252C%2520soft%2520natural%2520lighting%252C%2520glass%2520walls%252C%2520subtle%2520green%2520plants%252C%2520sleek%2520computer%2520displays%2520showing%2520financial%2520charts%252C%2520clean%2520and%2520professional%2520atmosphere%252C%2520muted%2520color%2520palette%2520with%2520light%2520greens%2520and%2520whites&width=1920&height=1080&seq=ratenkredit789&orientation=landscape')"
+            backgroundImage: "url('https://readdy.ai/api/search-image?query=modern%2520minimalist%2520office%2520interior%2520with%2520financial%2520advisor%2520desk%252C%2520soft%2520natural%2520lighting%252C%2520glass%2520walls%252C%2520subtle%2520green%2520plants%252C%2520sleek%2520computer%2520displays%2520showing%2520financial%2520charts%252C%2520clean%2520and%2520professional%2520atmosphere%252C%2520muted%2520color%2520palette%2520with%2520light%2520greens%2520and%2520whites&width=800&height=600&seq=ratenkredit789&orientation=landscape')"
           }}
         ></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-green-50/80 to-transparent"></div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="max-w-2xl">
+        <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-green-50/80 to-transparent sm:from-green-50/90 sm:via-green-50/70 md:from-green-50/80 md:via-green-50/60"></div>
+        <div className="container mx-auto px-4 py-12 sm:py-16 md:py-20 lg:py-24 relative z-10 flex items-center min-h-[500px] sm:min-h-[600px] lg:min-h-[700px]">
+          <div className="max-w-xl lg:max-w-2xl">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 leading-tight mb-6">
                 Ratenkredite zu <span className="text-primary">Top-Konditionen</span>
               </h1>
@@ -74,17 +72,17 @@ const RatenkreditePage = () => {
               <p className="text-lg md:text-xl text-gray-700 mb-8 leading-relaxed">
                 Flexible Laufzeiten, günstige Zinsen und schnelle Auszahlung – Ihr maßgeschneiderter Ratenkredit bei Kreditheld24.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <Link
                   href="#calculator"
-                  className="group bg-primary hover:bg-green-500 text-white font-medium py-4 px-8 rounded-button whitespace-nowrap shadow-lg hover:shadow-xl transition-all flex items-center justify-center text-lg"
+                  className="bg-primary hover:bg-green-500 text-white font-medium py-3 sm:py-4 px-6 sm:px-8 rounded-button shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base group"
                 >
                   <span>Jetzt Ratenkredit berechnen</span>
-                  <div className="w-5 h-5 ml-2 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
+                  <div className="w-4 h-4 sm:w-5 sm:h-5 ml-2 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
                     <i className="ri-arrow-right-line"></i>
                   </div>
                 </Link>
-                <UnverbindlichAnfragenButton variant="secondary" size="lg" className="py-4 px-8 text-lg" />
+                <UnverbindlichAnfragenButton variant="secondary" size="md" className="py-3 sm:py-4 px-6 sm:px-8 text-sm sm:text-base" />
               </div>
               <div className="mt-12 flex items-center gap-8">
                 <div className="flex items-center gap-2">
@@ -105,8 +103,6 @@ const RatenkreditePage = () => {
                 </div>
               </div>
             </div>
-            <div className="hidden md:block"></div>
-          </div>
         </div>
       </section>
 
