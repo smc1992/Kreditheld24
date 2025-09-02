@@ -1,6 +1,6 @@
 import type { Theme } from './types'
 
-export const themeLocalStorageKey = 'payload-theme'
+export const themeLocalStorageKey = 'kreditheld24-theme'
 
 export const defaultTheme = 'light'
 

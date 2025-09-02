@@ -1,43 +1,29 @@
 import type { Metadata } from 'next'
 
-import { cn } from '@/utilities/ui'
 import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
 import React from 'react'
+import { clsx } from 'clsx'
 
-import { AdminBar } from '@/components/AdminBar'
-import { Footer } from '@/Footer/Component'
-import { Header } from '@/Header/Component'
 import { Providers } from '@/providers'
-import { InitTheme } from '@/providers/Theme/InitTheme'
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
-import { draftMode } from 'next/headers'
 
 import './globals.css'
-import { getServerSideURL } from '@/utilities/getURL'
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kreditheld24.de'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const { isEnabled } = await draftMode()
-
   return (
-    <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
-      <head>
-        <InitTheme />
-        <link href="/favicon.ico" rel="icon" sizes="32x32" />
-        <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet" />
-      </head>
-      <body>
+    <html
+      className={clsx(GeistSans.variable, GeistMono.variable)}
+      lang="de"
+      suppressHydrationWarning
+    >
+      <head />
+      <body className="antialiased">
         <Providers>
-          <AdminBar
-            adminBarProps={{
-              preview: isEnabled,
-            }}
-          />
-
-          <Header />
-          {children}
-          <Footer />
+          <div className="min-h-screen flex flex-col">
+            <main className="flex-1">{children}</main>
+          </div>
         </Providers>
       </body>
     </html>
@@ -45,10 +31,27 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL(getServerSideURL()),
-  openGraph: mergeOpenGraph(),
+  metadataBase: new URL(SITE_URL),
+  openGraph: {
+    type: 'website',
+    locale: 'de_DE',
+    url: SITE_URL,
+    siteName: 'Kreditheld24',
+    images: [
+      {
+        url: `${SITE_URL}/website-template-OG.webp`,
+        width: 1200,
+        height: 630,
+        alt: 'Kreditheld24 - Ihr Kreditvergleich',
+      },
+    ],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   twitter: {
     card: 'summary_large_image',
-    creator: '@payloadcms',
+    creator: '@kreditheld24',
   },
 }

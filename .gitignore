@@ -5,8 +5,8 @@ node_modules
 .env
 .next
 .vercel
-
-# Payload default media upload directory
+# WordPress media uploads
+/wp-content/uploads
 public/media/
 
 public/robots.txt
