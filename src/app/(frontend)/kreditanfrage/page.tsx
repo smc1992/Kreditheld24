@@ -115,14 +115,7 @@ export default function KreditanfragePage() {
           </div>
         </section>
         
-        {/* Formular Section */}
-        <section className="py-16">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <KreditanfrageFormWrapper />
-            </div>
-          </div>
-        </section>
+
       </main>
     </div>
   )
