@@ -4,7 +4,7 @@
  * Provides type-safe WordPress REST API integration
  */
 
-import { WordPressPost, WordPressPage, WordPressCategory, WordPressTag, WordPressAuthor, WordPressMedia } from './wordpress.d'
+import { WordPressPost, WordPressPage, WordPressCategory, WordPressTag, WordPressAuthor, WordPressMedia } from './wordpress.d.js'
 
 // WordPress API Error Class
 class WordPressAPIError extends Error {
