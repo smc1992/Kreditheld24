@@ -1,11 +1,20 @@
 [phases.setup]
-nixPkgs = ['nodejs', 'pnpm']
+nixPkgs = ['nodejs_20', 'pnpm']
+nixLibs = ['glibc']
 
 [phases.install]
-cmds = ['pnpm install']
+cmds = [
+  'corepack enable',
+  'corepack prepare pnpm@latest --activate',
+  'pnpm install --frozen-lockfile'
+]
 
 [phases.build]
-cmds = ['pnpm build']
+cmds = ['pnpm run build']
 
 [start]
 cmd = 'pnpm start'
+
+[variables]
+NODE_ENV = 'production'
+PORT = '3000'
