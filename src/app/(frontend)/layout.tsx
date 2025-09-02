@@ -8,6 +8,7 @@ import { clsx } from 'clsx'
 import { Providers } from '@/providers'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
+import Breadcrumb from '@/components/Breadcrumb'
 
 import './globals.css'
 
@@ -36,6 +37,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <Providers>
           <div className="min-h-screen flex flex-col">
             <Header />
+            <Breadcrumb />
             <main className="flex-1">{children}</main>
             <Footer />
           </div>

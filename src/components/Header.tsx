@@ -16,7 +16,16 @@ const navigation = [
       { name: 'Sofortkredit', href: '/sofortkredit' },
     ]
   },
-  { name: 'Tipps & Ratgeber', href: '/tipps-kreditaufnahme' },
+  { 
+    name: 'Service', 
+    href: '#',
+    submenu: [
+      { name: 'Aktuelle Zinssätze', href: '/zinssaetze' },
+      { name: 'Kreditglossar', href: '/glossar' },
+      { name: 'Rechtliche Hinweise', href: '/rechtliche-hinweise' },
+      { name: 'Tipps & Ratgeber', href: '/tipps-kreditaufnahme' },
+    ]
+  },
   { name: 'Über uns', href: '/ueber-uns' },
   { name: 'Kontakt', href: '/kontakt' },
 ]
