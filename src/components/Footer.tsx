@@ -1,118 +1,146 @@
 import Link from 'next/link'
-import { Logo } from '@/components/Logo/Logo'
 
-const navigation = {
-  main: [
-    { name: 'Startseite', href: '/' },
-    { name: 'Ratenkredite', href: '/ratenkredite' },
-    { name: 'Autokredit', href: '/autokredit' },
-    { name: 'Umschuldung', href: '/umschuldung' },
-    { name: 'Kredit für Selbstständige', href: '/kredit-selbststaendige' },
-    { name: 'Kreditarten', href: '/kreditarten' },
-    { name: 'SCHUFA-neutral', href: '/schufa-neutral' },
-    { name: 'Sofortkredit', href: '/sofortkredit' },
-  ],
-  service: [
-    { name: 'Über uns', href: '/ueber-uns' },
-    { name: 'Kontakt', href: '/kontakt' },
-    { name: 'Tipps Kreditaufnahme', href: '/tipps-kreditaufnahme' },
-    { name: 'Kreditanfrage', href: '/kreditanfrage' },
-  ],
-  legal: [
-    { name: 'Impressum', href: '/impressum' },
-    { name: 'Datenschutz', href: '/datenschutz' },
-  ],
-}
+const kreditarten = [
+  { name: 'Ratenkredit', href: '/ratenkredite' },
+  { name: 'Umschuldung', href: '/umschuldung' },
+  { name: 'Kredit trotz SCHUFA', href: '/schufa-neutral' },
+  { name: 'Sofortkredit', href: '/sofortkredit' },
+  { name: 'Kredit für Selbstständige', href: '/kredit-selbststaendige' },
+  { name: 'Autokredit', href: '/autokredit' },
+]
+
+const ueberUns = [
+  { name: 'Unternehmen', href: '/ueber-uns' },
+  { name: 'Team', href: '/team' },
+  { name: 'Kontakt', href: '/kontakt' },
+]
+
+const rechtliches = [
+  { name: 'Impressum', href: '/impressum' },
+  { name: 'Datenschutz', href: '/datenschutz' },
+  { name: 'AGB', href: '/agb' },
+  { name: 'Cookie-Einstellungen', href: '/cookie-einstellungen' },
+]
 
 export function Footer() {
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Logo und Beschreibung */}
-          <div className="col-span-1 md:col-span-2">
-            <div className="mb-4">
-              <Logo />
-            </div>
-            <p className="text-gray-300 text-sm leading-relaxed max-w-md">
-              Kreditheld24 ist Ihr vertrauensvoller Partner für Kreditvergleiche. 
-              Wir helfen Ihnen dabei, den passenden Kredit zu den besten Konditionen zu finden.
+    <footer className="bg-gray-800 text-white pt-12 pb-6">
+      <div className="container mx-auto px-4">
+        <div className="grid md:grid-cols-4 gap-8 mb-8">
+          <div>
+            <h3 className="text-xl font-['Pacifico'] text-primary mb-4">
+              Kreditheld24
+            </h3>
+            <p className="text-gray-300 mb-4">
+              Ihr unabhängiger Kreditvergleich für maßgeschneiderte
+              Finanzierungslösungen zu Top-Konditionen.
             </p>
-            <div className="mt-6">
-              <p className="text-gray-400 text-xs">
-                © {new Date().getFullYear()} Kreditheld24. Alle Rechte vorbehalten.
-              </p>
+            <div className="flex space-x-4">
+              <Link href="#" className="text-gray-300 hover:text-primary">
+                <div className="w-8 h-8 flex items-center justify-center">
+                  <i className="ri-facebook-fill ri-lg"></i>
+                </div>
+              </Link>
+              <Link href="#" className="text-gray-300 hover:text-primary">
+                <div className="w-8 h-8 flex items-center justify-center">
+                  <i className="ri-twitter-fill ri-lg"></i>
+                </div>
+              </Link>
+              <Link href="#" className="text-gray-300 hover:text-primary">
+                <div className="w-8 h-8 flex items-center justify-center">
+                  <i className="ri-instagram-fill ri-lg"></i>
+                </div>
+              </Link>
+              <Link href="#" className="text-gray-300 hover:text-primary">
+                <div className="w-8 h-8 flex items-center justify-center">
+                  <i className="ri-linkedin-fill ri-lg"></i>
+                </div>
+              </Link>
             </div>
           </div>
-
-          {/* Kreditarten */}
+          
           <div>
-            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
-              Kreditarten
-            </h3>
+            <h4 className="font-medium text-lg mb-4">Kreditarten</h4>
             <ul className="space-y-2">
-              {navigation.main.map((item) => (
+              {kreditarten.map((item) => (
                 <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className="text-gray-300 hover:text-white text-sm transition-colors duration-200"
-                  >
+                  <Link href={item.href} className="text-gray-300 hover:text-primary">
                     {item.name}
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
-
-          {/* Service & Rechtliches */}
+          
           <div>
-            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
-              Service
-            </h3>
-            <ul className="space-y-2 mb-6">
-              {navigation.service.map((item) => (
+            <h4 className="font-medium text-lg mb-4">Über uns</h4>
+            <ul className="space-y-2">
+              {ueberUns.map((item) => (
                 <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className="text-gray-300 hover:text-white text-sm transition-colors duration-200"
-                  >
+                  <Link href={item.href} className="text-gray-300 hover:text-primary">
                     {item.name}
                   </Link>
                 </li>
               ))}
             </ul>
-            
-            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
-              Rechtliches
-            </h3>
+          </div>
+          
+          <div>
+            <h4 className="font-medium text-lg mb-4">Kontakt</h4>
             <ul className="space-y-2">
-              {navigation.legal.map((item) => (
-                <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className="text-gray-300 hover:text-white text-sm transition-colors duration-200"
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
+              <li className="flex items-start">
+                <div className="w-5 h-5 flex items-center justify-center text-primary mr-2 mt-1">
+                  <i className="ri-map-pin-line"></i>
+                </div>
+                <span className="text-gray-300">
+                  Brockmannstr. 204<br />48163 Münster<br /><br />Besucheranschrift:<br />Glücksburger Str. 13<br />49477 Ibbenbüren
+                </span>
+              </li>
+              <li className="flex items-center">
+                <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
+                  <i className="ri-phone-line"></i>
+                </div>
+                <Link href="tel:+492511491427" className="text-gray-300 hover:text-primary">
+                  0251. 149 142 77
+                </Link>
+              </li>
+              <li className="flex items-center">
+                <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
+                  <i className="ri-smartphone-line"></i>
+                </div>
+                <Link href="tel:+491795104859" className="text-gray-300 hover:text-primary">
+                  0179. 51 04 859
+                </Link>
+              </li>
+              <li className="flex items-center">
+                <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
+                  <i className="ri-mail-line"></i>
+                </div>
+                <Link href="mailto:info@kreditheld24.de" className="text-gray-300 hover:text-primary">
+                  info@kreditheld24.de
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
-
-        {/* Trennlinie */}
-        <div className="mt-8 pt-8 border-t border-gray-800">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-xs">
-              Kreditheld24 - Ihr Partner für günstige Kredite
-            </p>
-            <div className="mt-4 md:mt-0">
-              <Link
-                href="/kreditanfrage"
-                className="bg-primary text-white px-6 py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors duration-200 text-sm"
-              >
-                Jetzt Kredit anfragen
-              </Link>
+        
+        <div className="border-t border-gray-700 pt-6">
+          <div className="flex flex-col md:flex-row md:justify-between">
+            <div className="mb-4 md:mb-0">
+              <p className="text-gray-400 text-sm">
+                &copy; 2025 Kreditheld24. Alle Rechte vorbehalten.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-4">
+              {rechtliches.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className="text-gray-400 text-sm hover:text-primary"
+                >
+                  {item.name}
+                </Link>
+              ))}
             </div>
           </div>
         </div>

@@ -1,16 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { Logo } from '@/components/Logo/Logo'
 import { useState } from 'react'
-import { Menu, X } from 'lucide-react'
 
 const navigation = [
-  { name: 'Startseite', href: '/' },
-  { name: 'Ratenkredite', href: '/ratenkredite' },
-  { name: 'Autokredit', href: '/autokredit' },
-  { name: 'Umschuldung', href: '/umschuldung' },
+  { name: 'Kreditvergleich', href: '/kreditvergleich' },
   { name: 'Kreditarten', href: '/kreditarten' },
+  { name: 'Ratgeber', href: '/ratgeber' },
+  { name: 'Über uns', href: '/ueber-uns' },
   { name: 'Kontakt', href: '/kontakt' },
 ]
 
@@ -18,76 +15,51 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="bg-white shadow-sm border-b">
-      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
-        <div className="flex w-full items-center justify-between py-4">
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center">
-              <Logo />
+    <header className="sticky top-0 z-50 bg-white shadow-sm">
+      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+        <Link href="/" className="text-2xl font-['Pacifico'] text-primary">
+          Kreditheld24
+        </Link>
+        
+        <nav className="hidden md:flex items-center space-x-8">
+          {navigation.map((item) => (
+            <Link
+              key={item.name}
+              href={item.href}
+              className="text-gray-700 hover:text-primary font-medium"
+            >
+              {item.name}
             </Link>
-          </div>
-          
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex md:items-center md:space-x-8">
+          ))}
+        </nav>
+        
+        <div className="flex items-center space-x-4">
+          <button 
+            className="md:hidden w-6 h-6 flex items-center justify-center"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            <i className="ri-menu-line ri-lg"></i>
+          </button>
+        </div>
+      </div>
+      
+      {/* Mobile Navigation */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t border-gray-200 py-4 bg-white">
+          <div className="container mx-auto px-4 space-y-2">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-gray-700 hover:text-primary font-medium transition-colors duration-200"
+                className="block py-2 text-gray-700 hover:text-primary font-medium"
+                onClick={() => setMobileMenuOpen(false)}
               >
                 {item.name}
               </Link>
             ))}
-            <Link
-              href="/kreditanfrage"
-              className="bg-primary text-white px-6 py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors duration-200"
-            >
-              Kreditanfrage
-            </Link>
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              type="button"
-              className="text-gray-700 hover:text-primary"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              <span className="sr-only">Menü öffnen</span>
-              {mobileMenuOpen ? (
-                <X className="h-6 w-6" aria-hidden="true" />
-              ) : (
-                <Menu className="h-6 w-6" aria-hidden="true" />
-              )}
-            </button>
           </div>
         </div>
-
-        {/* Mobile Navigation */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 py-4">
-            <div className="space-y-2">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="block px-3 py-2 text-gray-700 hover:text-primary font-medium transition-colors duration-200"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
-              <Link
-                href="/kreditanfrage"
-                className="block mx-3 mt-4 bg-primary text-white px-6 py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors duration-200 text-center"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Kreditanfrage
-              </Link>
-            </div>
-          </div>
-        )}
-      </nav>
+      )}
     </header>
   )
 }

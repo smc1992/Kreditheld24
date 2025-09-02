@@ -20,7 +20,18 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       lang="de"
       suppressHydrationWarning
     >
-      <head />
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+          rel="stylesheet"
+        />
+        <link
+          href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
+          rel="stylesheet"
+        />
+      </head>
       <body className="antialiased">
         <Providers>
           <div className="min-h-screen flex flex-col">
