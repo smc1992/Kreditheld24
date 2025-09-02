@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import DragDropFileUpload from '@/components/DragDropFileUpload'
+import ProgressIndicator, { kreditanfrageSteps } from '@/components/ProgressIndicator'
 
 interface FormData {
   // Persönliche Daten
@@ -276,19 +277,12 @@ export default function KreditanfrageForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
-      {/* Progress Bar */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-gray-700">Schritt {currentStep} von {totalSteps}</span>
-          <span className="text-sm text-gray-500">{Math.round((currentStep / totalSteps) * 100)}% abgeschlossen</span>
-        </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div 
-            className="bg-green-600 h-2 rounded-full transition-all duration-300" 
-            style={{ width: `${(currentStep / totalSteps) * 100}%` }}
-          ></div>
-        </div>
-      </div>
+      {/* Progress Indicator */}
+      <ProgressIndicator 
+        steps={kreditanfrageSteps} 
+        currentStep={currentStep - 1} 
+        className="mb-8"
+      />
 
       {/* Step 1: Persönliche Daten */}
       {currentStep === 1 && (
