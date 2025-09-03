@@ -14,7 +14,7 @@ export async function GET(
     }
 
     // Token in Store suchen
-    const verificationData = verificationStore.get(token)
+    const verificationData = getVerificationData(token)
     
     if (!verificationData) {
       return redirect('/kreditanfrage?error=token-not-found')
@@ -25,7 +25,6 @@ export async function GET(
     const maxAge = 24 * 60 * 60 * 1000 // 24 Stunden in Millisekunden
     
     if (tokenAge > maxAge) {
-      verificationStore.delete(token)
       return redirect('/kreditanfrage?error=token-expired')
     }
 
