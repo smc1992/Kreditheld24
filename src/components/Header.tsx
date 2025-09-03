@@ -32,8 +32,10 @@ const navigation = [
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [dropdownOpen, setDropdownOpen] = useState(false)
-  const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false)
+  const [kreditartenDropdownOpen, setKreditartenDropdownOpen] = useState(false)
+  const [serviceDropdownOpen, setServiceDropdownOpen] = useState(false)
+  const [mobileKreditartenDropdownOpen, setMobileKreditartenDropdownOpen] = useState(false)
+  const [mobileServiceDropdownOpen, setMobileServiceDropdownOpen] = useState(false)
 
   // Close menus when clicking outside
   useEffect(() => {
@@ -42,13 +44,15 @@ export function Header() {
       
       // Check if click is outside dropdown
       if (!target.closest('.dropdown-container')) {
-        setDropdownOpen(false)
+        setKreditartenDropdownOpen(false)
+        setServiceDropdownOpen(false)
       }
       
       // Check if click is outside mobile menu
       if (!target.closest('.mobile-menu-container')) {
         setMobileMenuOpen(false)
-        setMobileDropdownOpen(false)
+        setMobileKreditartenDropdownOpen(false)
+        setMobileServiceDropdownOpen(false)
       }
     }
 
@@ -79,18 +83,22 @@ export function Header() {
                         onClick={(e) => {
                           e.stopPropagation()
                           if (item.name === 'Kreditarten') {
-                            setDropdownOpen(!dropdownOpen)
+                            setKreditartenDropdownOpen(!kreditartenDropdownOpen)
+                            setServiceDropdownOpen(false)
+                          } else if (item.name === 'Service') {
+                            setServiceDropdownOpen(!serviceDropdownOpen)
+                            setKreditartenDropdownOpen(false)
                           }
                         }}
                       >
                         {item.name}
                         <i className={`ml-1 text-sm transition-transform duration-200 ${
-                          (item.name === 'Kreditarten' && dropdownOpen) ? 'ri-arrow-up-s-line' : 'ri-arrow-down-s-line'
+                          ((item.name === 'Kreditarten' && kreditartenDropdownOpen) || (item.name === 'Service' && serviceDropdownOpen)) ? 'ri-arrow-up-s-line' : 'ri-arrow-down-s-line'
                         }`}></i>
                       </button>
                       
                       {/* Dropdown Menu */}
-                      {item.name === 'Kreditarten' && dropdownOpen && (
+                      {((item.name === 'Kreditarten' && kreditartenDropdownOpen) || (item.name === 'Service' && serviceDropdownOpen)) && (
                          <div 
                            className="absolute top-full left-0 mt-1 w-64 bg-white rounded-lg shadow-xl border border-gray-100 py-2 transition-all duration-200 z-50"
                            onClick={(e) => e.stopPropagation()}
@@ -158,18 +166,22 @@ export function Header() {
                         className="w-full flex items-center justify-between px-4 py-3 text-gray-700 hover:text-primary hover:bg-gray-50 rounded-lg font-medium transition-all duration-200"
                         onClick={() => {
                           if (item.name === 'Kreditarten') {
-                            setMobileDropdownOpen(!mobileDropdownOpen)
+                            setMobileKreditartenDropdownOpen(!mobileKreditartenDropdownOpen)
+                            setMobileServiceDropdownOpen(false)
+                          } else if (item.name === 'Service') {
+                            setMobileServiceDropdownOpen(!mobileServiceDropdownOpen)
+                            setMobileKreditartenDropdownOpen(false)
                           }
                         }}
                       >
                        {item.name}
                        <i className={`ri-arrow-down-s-line transition-transform duration-200 ${
-                         (item.name === 'Kreditarten' && mobileDropdownOpen) ? 'rotate-180' : ''
+                         ((item.name === 'Kreditarten' && mobileKreditartenDropdownOpen) || (item.name === 'Service' && mobileServiceDropdownOpen)) ? 'rotate-180' : ''
                        }`}></i>
                      </button>
                      
                      <div className={`ml-4 space-y-1 transition-all duration-200 overflow-hidden ${
-                       (item.name === 'Kreditarten' && mobileDropdownOpen) ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                       ((item.name === 'Kreditarten' && mobileKreditartenDropdownOpen) || (item.name === 'Service' && mobileServiceDropdownOpen)) ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
                      }`}>
                       {item.submenu.map((subItem) => (
                         <Link
