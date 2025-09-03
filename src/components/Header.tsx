@@ -66,7 +66,7 @@ export function Header() {
   }, [])
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-lg border-b border-gray-100">
+    <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-lg border-b border-gray-100 dark:border-gray-800 transition-colors duration-300">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
@@ -81,7 +81,7 @@ export function Header() {
                  {item.submenu ? (
                    <>
                      <button
-                        className="flex items-center px-4 py-2 text-gray-700 hover:text-primary font-medium rounded-lg hover:bg-gray-50 transition-all duration-200"
+                        className="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-primary font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200"
                         onClick={(e) => {
                           e.stopPropagation()
                           if (item.name === 'Kreditarten') {
@@ -102,14 +102,14 @@ export function Header() {
                       {/* Dropdown Menu */}
                       {((item.name === 'Kreditarten' && kreditartenDropdownOpen) || (item.name === 'Service' && serviceDropdownOpen)) && (
                          <div 
-                           className="absolute top-full left-0 mt-1 w-64 bg-white rounded-lg shadow-xl border border-gray-100 py-2 transition-all duration-200 z-50"
+                           className="absolute top-full left-0 mt-1 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-100 dark:border-gray-700 py-2 transition-all duration-200 z-50"
                            onClick={(e) => e.stopPropagation()}
                          >
                            {item.submenu.map((subItem) => (
                              <Link
                                key={subItem.name}
                                href={subItem.href}
-                               className="block px-4 py-3 text-gray-700 hover:text-primary hover:bg-gray-50 transition-colors font-medium"
+                               className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:text-primary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
                              >
                                {subItem.name}
                              </Link>
@@ -120,7 +120,7 @@ export function Header() {
                 ) : (
                   <Link
                     href={item.href}
-                    className="px-4 py-2 text-gray-700 hover:text-primary font-medium rounded-lg hover:bg-gray-50 transition-all duration-200"
+                    className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-primary font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200"
                   >
                     {item.name}
                   </Link>
@@ -131,7 +131,9 @@ export function Header() {
           
           {/* Theme Toggle, CTA Button & Mobile Menu */}
           <div className="flex items-center space-x-4">
-            <ThemeToggle />
+            <div className="bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
+              <ThemeToggle />
+            </div>
             
             <Link
               href="/kreditanfrage"
@@ -157,7 +159,7 @@ export function Header() {
       </div>
       
       {/* Mobile Navigation */}
-      <div className={`lg:hidden bg-white border-t border-gray-100 transition-all duration-300 overflow-hidden mobile-menu-container ${
+      <div className={`lg:hidden bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 transition-all duration-300 overflow-hidden mobile-menu-container ${
         mobileMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
       }`}>
         <div className="container mx-auto px-4 py-4">
@@ -167,7 +169,7 @@ export function Header() {
                 {item.submenu ? (
                   <>
                     <button
-                        className="w-full flex items-center justify-between px-4 py-3 text-gray-700 hover:text-primary hover:bg-gray-50 rounded-lg font-medium transition-all duration-200"
+                        className="w-full flex items-center justify-between px-4 py-3 text-gray-700 dark:text-gray-300 hover:text-primary hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-all duration-200"
                         onClick={() => {
                           if (item.name === 'Kreditarten') {
                             setMobileKreditartenDropdownOpen(!mobileKreditartenDropdownOpen)
@@ -191,7 +193,7 @@ export function Header() {
                         <Link
                           key={subItem.name}
                           href={subItem.href}
-                          className="block px-4 py-2.5 text-gray-600 hover:text-primary hover:bg-gray-50 rounded-lg transition-all duration-200"
+                          className="block px-4 py-2.5 text-gray-600 dark:text-gray-400 hover:text-primary hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all duration-200"
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           {subItem.name}
@@ -202,7 +204,7 @@ export function Header() {
                 ) : (
                   <Link
                     href={item.href}
-                    className="block px-4 py-3 text-gray-700 hover:text-primary hover:bg-gray-50 rounded-lg font-medium transition-all duration-200"
+                    className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:text-primary hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg font-medium transition-all duration-200"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     {item.name}

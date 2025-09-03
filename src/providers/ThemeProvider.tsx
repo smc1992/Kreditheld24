@@ -44,6 +44,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       root.classList.remove('light', 'dark')
       root.classList.add(newResolvedTheme)
       
+      // Force re-render by updating data attribute as well
+      root.setAttribute('data-theme', newResolvedTheme)
+      
       // Update meta theme-color
       const metaThemeColor = document.querySelector('meta[name="theme-color"]')
       if (metaThemeColor) {
@@ -74,7 +77,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   if (!mounted) {
     return (
       <ThemeContext.Provider value={{ theme: 'light', setTheme: () => {}, resolvedTheme: 'light' }}>
-        {children}
+        <div className="light">{children}</div>
       </ThemeContext.Provider>
     )
   }

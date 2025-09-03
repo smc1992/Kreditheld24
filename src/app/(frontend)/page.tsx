@@ -2,7 +2,6 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import UnverbindlichAnfragenButton from '@/components/UnverbindlichAnfragenButton'
-import GradientOverlay, { AnimatedGradient } from '@/components/GradientOverlay'
 
 const HomePage = () => {
   const [loanAmount, setLoanAmount] = useState(10000)
@@ -27,9 +26,9 @@ const HomePage = () => {
   const loanCalculation = calculateLoan()
 
   return (
-    <div className="font-sans text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-900 transition-colors duration-300">
+    <div className="font-sans text-gray-800 bg-white">
       {/* Hero Section */}
-      <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 dark:from-gray-900 dark:to-gray-800 overflow-hidden transition-colors duration-300">
+      <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 overflow-hidden">
         <div 
           className="absolute inset-0 bg-right bg-no-repeat bg-cover md:bg-contain opacity-20 md:opacity-100"
           style={{
@@ -58,7 +57,7 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-       </section>
+      </section>
 
       {/* Info Modal */}
       {showInfoModal && (
@@ -202,7 +201,7 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-      </AnimatedGradient>
+      </section>
 
       {/* Benefits */}
       <section className="py-16 bg-gray-50">
@@ -645,9 +644,9 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Final CTA with Animated Gradient */}
-      <AnimatedGradient variant="hero" className="py-16">
-        <div className="container mx-auto px-4 text-center text-white">
+      {/* Final CTA */}
+      <section className="py-16 bg-primary text-white">
+        <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">Bereit für Ihren Wunschkredit?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Starten Sie jetzt Ihren kostenlosen und unverbindlichen Kreditvergleich.
