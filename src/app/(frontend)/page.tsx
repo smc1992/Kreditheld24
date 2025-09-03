@@ -157,7 +157,7 @@ const HomePage = () => {
       )}
 
       {/* How it works */}
-      <section className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">So funktioniert&apos;s</h2>
@@ -166,7 +166,7 @@ const HomePage = () => {
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 text-center transition-all duration-300">
+            <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600 text-center transition-all duration-300">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <div className="w-8 h-8 flex items-center justify-center text-primary">
                   <i className="ri-edit-line ri-xl"></i>
@@ -177,7 +177,7 @@ const HomePage = () => {
                 Geben Sie Ihre gewünschte Kreditsumme, Laufzeit und den Verwendungszweck an.
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 text-center transition-all duration-300">
+            <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600 text-center transition-all duration-300">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <div className="w-8 h-8 flex items-center justify-center text-primary">
                   <i className="ri-scales-3-line ri-xl"></i>
@@ -188,7 +188,7 @@ const HomePage = () => {
                 Vergleichen Sie die besten Angebote von über 20 Banken und Kreditinstituten.
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 text-center transition-all duration-300">
+            <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600 text-center transition-all duration-300">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <div className="w-8 h-8 flex items-center justify-center text-primary">
                   <i className="ri-check-line ri-xl"></i>
@@ -204,7 +204,7 @@ const HomePage = () => {
       </section>
 
       {/* Benefits */}
-      <section className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
+      <section className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Ihre Vorteile bei Kreditheld24</h2>
@@ -213,7 +213,7 @@ const HomePage = () => {
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
                 <div className="w-6 h-6 flex items-center justify-center text-primary">
                   <i className="ri-bank-line ri-lg"></i>
@@ -224,7 +224,7 @@ const HomePage = () => {
                 Wir vergleichen über 20 Banken und Kreditinstitute, um Ihnen das beste Angebot zu präsentieren.
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
                 <div className="w-6 h-6 flex items-center justify-center text-primary">
                   <i className="ri-shield-check-line ri-lg"></i>
@@ -235,7 +235,7 @@ const HomePage = () => {
                 Unsere Vorabanfrage hat keinen Einfluss auf Ihren SCHUFA-Score – garantiert.
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
                 <div className="w-6 h-6 flex items-center justify-center text-primary">
                   <i className="ri-coins-line ri-lg"></i>
@@ -246,7 +246,7 @@ const HomePage = () => {
                 Unser Service ist für Sie zu 100% kostenlos – wir verdienen an den Banken, nicht an Ihnen.
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
                 <div className="w-6 h-6 flex items-center justify-center text-primary">
                   <i className="ri-smartphone-line ri-lg"></i>
@@ -257,7 +257,7 @@ const HomePage = () => {
                 Erledigen Sie den gesamten Kreditantrag online – von der Anfrage bis zur Unterschrift.
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
                 <div className="w-6 h-6 flex items-center justify-center text-primary">
                   <i className="ri-customer-service-2-line ri-lg"></i>
@@ -268,7 +268,7 @@ const HomePage = () => {
                 Bei Fragen steht Ihnen unser Expertenteam telefonisch oder per E-Mail zur Verfügung.
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
                 <div className="w-6 h-6 flex items-center justify-center text-primary">
                   <i className="ri-timer-flash-line ri-lg"></i>
@@ -284,7 +284,7 @@ const HomePage = () => {
       </section>
 
       {/* Loan Types */}
-      <section className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Unsere Kreditangebote</h2>
@@ -294,7 +294,7 @@ const HomePage = () => {
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             <Link href="/ratenkredite" className="group">
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:border-primary hover:shadow-md transition-all duration-300">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600 hover:border-primary hover:shadow-md transition-all duration-300">
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
                   <div className="w-6 h-6 flex items-center justify-center text-primary group-hover:text-white">
                     <i className="ri-money-euro-box-line ri-lg"></i>
@@ -313,7 +313,7 @@ const HomePage = () => {
               </div>
             </Link>
             <Link href="/umschuldung" className="group">
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:border-primary hover:shadow-md transition-all duration-300">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600 hover:border-primary hover:shadow-md transition-all duration-300">
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
                   <div className="w-6 h-6 flex items-center justify-center text-primary group-hover:text-white">
                     <i className="ri-exchange-funds-line ri-lg"></i>
@@ -332,7 +332,7 @@ const HomePage = () => {
               </div>
             </Link>
             <Link href="/schufa-neutral" className="group">
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:border-primary hover:shadow-md transition-all duration-300">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600 hover:border-primary hover:shadow-md transition-all duration-300">
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
                   <div className="w-6 h-6 flex items-center justify-center text-primary group-hover:text-white">
                     <i className="ri-file-shield-line ri-lg"></i>
@@ -351,7 +351,7 @@ const HomePage = () => {
               </div>
             </Link>
             <Link href="/sofortkredit" className="group">
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:border-primary hover:shadow-md transition-all duration-300">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600 hover:border-primary hover:shadow-md transition-all duration-300">
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
                   <div className="w-6 h-6 flex items-center justify-center text-primary group-hover:text-white">
                     <i className="ri-flashlight-line ri-lg"></i>
@@ -370,14 +370,14 @@ const HomePage = () => {
               </div>
             </Link>
             <Link href="/kredit-selbststaendige" className="group">
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:border-primary hover:shadow-md transition-all duration-300">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600 hover:border-primary hover:shadow-md transition-all duration-300">
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
                   <div className="w-6 h-6 flex items-center justify-center text-primary group-hover:text-white">
                     <i className="ri-briefcase-4-line ri-lg"></i>
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">Kredit für Selbstständige</h3>
-                <p className="text-gray-600 mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-primary transition-colors">Kredit für Selbstständige</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4">
                   Spezielle Finanzierungslösungen für Unternehmer, Freiberufler und Gewerbetreibende.
                 </p>
                 <div className="text-primary font-medium flex items-center">
