@@ -153,7 +153,7 @@ export default function MegaMenu({
   width = 'xl' 
 }: MegaMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [activeSection, setActiveSection] = useState(0)
+  const [_activeSection, _setActiveSection] = useState(0)
   const menuRef = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
 

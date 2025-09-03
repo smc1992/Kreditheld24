@@ -208,7 +208,7 @@ export default function SearchFunction({
     }, 150)
 
     return () => clearTimeout(timer)
-  }, [query])
+  }, [query, performSearch])
 
   // Click outside handler
   useEffect(() => {
