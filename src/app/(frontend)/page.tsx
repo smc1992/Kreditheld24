@@ -587,11 +587,11 @@ const HomePage = () => {
                   <i className="ri-star-fill"></i>
                 </div>
               </div>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
                 &quot;Sehr schnelle und unkomplizierte Abwicklung. Innerhalb von 2 Tagen hatte ich mein Geld auf dem Konto. Kann ich nur weiterempfehlen!&quot;
               </p>
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div>
+                <div className="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full mr-3"></div>
                 <div>
                   <p className="font-semibold text-gray-900 dark:text-gray-100">Michael S.</p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">Ratenkredit über 15.000 €</p>
@@ -612,7 +612,7 @@ const HomePage = () => {
                 &quot;Die Umschuldung meiner drei Kredite hat mir monatlich über 200 € gespart. Der Service war top und alles lief reibungslos ab.&quot;
               </p>
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div>
+                <div className="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full mr-3"></div>
                 <div>
                   <p className="font-semibold text-gray-900 dark:text-gray-100">Sandra M.</p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">Umschuldung über 28.000 €</p>
@@ -633,7 +633,7 @@ const HomePage = () => {
                 &quot;Trotz negativer SCHUFA-Einträge konnte mir geholfen werden. Faire Konditionen und transparente Beratung. Vielen Dank!&quot;
               </p>
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div>
+                <div className="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full mr-3"></div>
                 <div>
                   <p className="font-semibold text-gray-900 dark:text-gray-100">Thomas K.</p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">Kredit trotz SCHUFA über 8.000 €</p>
