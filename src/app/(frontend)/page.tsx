@@ -235,7 +235,7 @@ const HomePage = () => {
                 Unsere Vorabanfrage hat keinen Einfluss auf Ihren SCHUFA-Score – garantiert.
               </p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
                 <div className="w-6 h-6 flex items-center justify-center text-primary">
                   <i className="ri-coins-line ri-lg"></i>
@@ -246,7 +246,7 @@ const HomePage = () => {
                 Unser Service ist für Sie zu 100% kostenlos – wir verdienen an den Banken, nicht an Ihnen.
               </p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
                 <div className="w-6 h-6 flex items-center justify-center text-primary">
                   <i className="ri-smartphone-line ri-lg"></i>
@@ -257,7 +257,7 @@ const HomePage = () => {
                 Erledigen Sie den gesamten Kreditantrag online – von der Anfrage bis zur Unterschrift.
               </p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
                 <div className="w-6 h-6 flex items-center justify-center text-primary">
                   <i className="ri-customer-service-2-line ri-lg"></i>
@@ -268,7 +268,7 @@ const HomePage = () => {
                 Bei Fragen steht Ihnen unser Expertenteam telefonisch oder per E-Mail zur Verfügung.
               </p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
                 <div className="w-6 h-6 flex items-center justify-center text-primary">
                   <i className="ri-timer-flash-line ri-lg"></i>
@@ -332,13 +332,13 @@ const HomePage = () => {
               </div>
             </Link>
             <Link href="/schufa-neutral" className="group">
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:border-primary hover:shadow-md transition-all">
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:border-primary hover:shadow-md transition-all duration-300">
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
                   <div className="w-6 h-6 flex items-center justify-center text-primary group-hover:text-white">
                     <i className="ri-file-shield-line ri-lg"></i>
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">Kredit trotz SCHUFA</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-primary transition-colors">Kredit trotz SCHUFA</h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-4">
                   Spezielle Angebote für Kunden mit negativen SCHUFA-Einträgen oder niedrigem Score.
                 </p>
@@ -351,14 +351,14 @@ const HomePage = () => {
               </div>
             </Link>
             <Link href="/sofortkredit" className="group">
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:border-primary hover:shadow-md transition-all">
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:border-primary hover:shadow-md transition-all duration-300">
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
                   <div className="w-6 h-6 flex items-center justify-center text-primary group-hover:text-white">
                     <i className="ri-flashlight-line ri-lg"></i>
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">Sofortkredit</h3>
-                <p className="text-gray-600 mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-primary transition-colors">Sofortkredit</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4">
                   Schnelle Auszahlung innerhalb von 24 Stunden für dringende Finanzierungsbedarfe.
                 </p>
                 <div className="text-primary font-medium flex items-center">
@@ -370,7 +370,7 @@ const HomePage = () => {
               </div>
             </Link>
             <Link href="/kredit-selbststaendige" className="group">
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:border-primary hover:shadow-md transition-all">
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:border-primary hover:shadow-md transition-all duration-300">
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
                   <div className="w-6 h-6 flex items-center justify-center text-primary group-hover:text-white">
                     <i className="ri-briefcase-4-line ri-lg"></i>
@@ -395,8 +395,8 @@ const HomePage = () => {
                     <i className="ri-car-line ri-lg"></i>
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">Autokredit</h3>
-                <p className="text-gray-600 mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-primary transition-colors">Autokredit</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4">
                   Günstige Finanzierung für Neu- und Gebrauchtwagen mit attraktiven Konditionen.
                 </p>
                 <div className="text-primary font-medium flex items-center">
