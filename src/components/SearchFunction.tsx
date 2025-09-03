@@ -1,6 +1,5 @@
 'use client'
-import React, { useState, useEffect, useRef } from 'react'
-import Link from 'next/link'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 
 interface SearchResult {
@@ -163,7 +162,7 @@ export default function SearchFunction({
   const router = useRouter()
 
   // Suche durchführen
-  const performSearch = (searchQuery: string) => {
+  const performSearch = useCallback((searchQuery: string) => {
     if (!searchQuery.trim()) {
       setResults([])
       return
@@ -200,7 +199,7 @@ export default function SearchFunction({
       .slice(0, maxResults)
 
     setResults(searchResults)
-  }
+  }, [maxResults])
 
   // Debounced search
   useEffect(() => {
@@ -374,7 +373,7 @@ export default function SearchFunction({
           {/* No results message */}
           {query && results.length === 0 && (
             <div className="px-4 py-3 text-sm text-gray-500 text-center">
-              Keine Ergebnisse für "{query}" gefunden
+              Keine Ergebnisse für &quot;{query}&quot; gefunden
             </div>
           )}
         </div>
