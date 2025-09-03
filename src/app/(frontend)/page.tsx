@@ -177,7 +177,7 @@ const HomePage = () => {
                 Geben Sie Ihre gewünschte Kreditsumme, Laufzeit und den Verwendungszweck an.
               </p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 text-center">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 text-center transition-all duration-300">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <div className="w-8 h-8 flex items-center justify-center text-primary">
                   <i className="ri-scales-3-line ri-xl"></i>
@@ -188,7 +188,7 @@ const HomePage = () => {
                 Vergleichen Sie die besten Angebote von über 20 Banken und Kreditinstituten.
               </p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 text-center">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 text-center transition-all duration-300">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <div className="w-8 h-8 flex items-center justify-center text-primary">
                   <i className="ri-check-line ri-xl"></i>
@@ -598,7 +598,7 @@ const HomePage = () => {
                 </div>
               </div>
             </div>
-            <div className="bg-gray-50 p-6 rounded-lg">
+            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg transition-colors duration-300">
               <div className="flex items-center mb-4">
                 <div className="flex text-yellow-400">
                   <i className="ri-star-fill"></i>
@@ -608,7 +608,7 @@ const HomePage = () => {
                   <i className="ri-star-fill"></i>
                 </div>
               </div>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
                 &quot;Die Umschuldung meiner drei Kredite hat mir monatlich über 200 € gespart. Der Service war top und alles lief reibungslos ab.&quot;
               </p>
               <div className="flex items-center">
@@ -619,7 +619,7 @@ const HomePage = () => {
                 </div>
               </div>
             </div>
-            <div className="bg-gray-50 p-6 rounded-lg">
+            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg transition-colors duration-300">
               <div className="flex items-center mb-4">
                 <div className="flex text-yellow-400">
                   <i className="ri-star-fill"></i>
@@ -629,7 +629,7 @@ const HomePage = () => {
                   <i className="ri-star-fill"></i>
                 </div>
               </div>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
                 &quot;Trotz negativer SCHUFA-Einträge konnte mir geholfen werden. Faire Konditionen und transparente Beratung. Vielen Dank!&quot;
               </p>
               <div className="flex items-center">
