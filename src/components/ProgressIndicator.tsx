@@ -104,7 +104,7 @@ export default function ProgressIndicator({
                     status === 'completed' 
                       ? 'bg-green-600 text-white ring-4 ring-green-100' 
                       : status === 'current'
-                      ? 'bg-green-600 text-white ring-4 ring-green-100 animate-pulse'
+                      ? 'bg-green-600 text-white ring-4 ring-green-100'
                       : 'bg-gray-100 text-gray-500 border-2 border-gray-200'
                   }
                 `}>
