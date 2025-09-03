@@ -1,12 +1,8 @@
+'use client'
 import React from 'react'
-import { Metadata } from 'next'
 import Link from 'next/link'
 
-export const metadata: Metadata = {
-  title: 'Kreditglossar - Alle wichtigen Begriffe erklärt | Kreditheld24',
-  description: 'Verstehen Sie alle wichtigen Kreditbegriffe. Unser umfassendes Glossar erklärt Ihnen Fachbegriffe rund um Kredite, Zinsen und Finanzierung einfach und verständlich.',
-  keywords: 'Kreditglossar, Kreditbegriffe, Finanzlexikon, Zinsen, Tilgung, SCHUFA, Bonität, Kreditwissen'
-}
+// Metadata wird in layout.tsx oder als separate metadata.ts Datei definiert
 
 interface GlossaryTerm {
   term: string
