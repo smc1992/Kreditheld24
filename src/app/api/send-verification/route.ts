@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 import crypto from 'crypto'
-import { storeVerificationToken } from '../verify-email/[token]/route'
+import { storeVerificationToken } from '@/lib/verification'
 
 // Email-Transporter konfigurieren
 const transporter = nodemailer.createTransport({

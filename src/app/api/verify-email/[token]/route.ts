@@ -1,14 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { redirect } from 'next/navigation'
-
-// Temporärer In-Memory Store für Demo-Zwecke
-// In Produktion sollte eine echte Datenbank verwendet werden
-const verificationStore = new Map<string, {
-  email: string
-  formData: any
-  createdAt: Date
-  verified: boolean
-}>()
+import { getVerificationData, markTokenAsVerified } from '@/lib/verification'
 
 export async function GET(
   request: NextRequest,
@@ -43,8 +35,7 @@ export async function GET(
     }
 
     // E-Mail als verifiziert markieren
-    verificationData.verified = true
-    verificationStore.set(token, verificationData)
+    markTokenAsVerified(token)
 
     // Erfolgreiche Verifizierung
     return redirect('/kreditanfrage?success=email-verified')
@@ -53,27 +44,4 @@ export async function GET(
     console.error('Fehler bei E-Mail-Verifizierung:', error)
     return redirect('/kreditanfrage?error=verification-failed')
   }
-}
-
-// Hilfsfunktion für andere API-Routen
-export function storeVerificationToken(
-  token: string, 
-  email: string, 
-  formData: any
-) {
-  verificationStore.set(token, {
-    email,
-    formData,
-    createdAt: new Date(),
-    verified: false
-  })
-}
-
-export function getVerificationData(token: string) {
-  return verificationStore.get(token)
-}
-
-export function isTokenVerified(token: string): boolean {
-  const data = verificationStore.get(token)
-  return data?.verified || false
 }

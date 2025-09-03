@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getVerificationData } from '../../verify-email/[token]/route'
+import { getVerificationData } from '@/lib/verification'
 
 export async function GET(
   request: NextRequest,

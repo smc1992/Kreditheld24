@@ -47,7 +47,7 @@ export default function Breadcrumb({ items, className = '' }: BreadcrumbProps) {
     ]
     
     let currentPath = ''
-    pathSegments.forEach((segment, index) => {
+    pathSegments.forEach((segment, _index) => {
       currentPath += `/${segment}`
       const label = pageNames[segment] || segment.charAt(0).toUpperCase() + segment.slice(1)
       
