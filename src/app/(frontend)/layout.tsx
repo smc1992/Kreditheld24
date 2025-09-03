@@ -6,6 +6,7 @@ import React from 'react'
 import { clsx } from 'clsx'
 
 import { Providers } from '@/providers'
+import { ThemeProvider } from '@/providers/ThemeProvider'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import Breadcrumb from '@/components/Breadcrumb'
@@ -33,15 +34,17 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           rel="stylesheet"
         />
       </head>
-      <body className="antialiased">
-        <Providers>
-          <div className="min-h-screen flex flex-col">
-            <Header />
-            <Breadcrumb />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
-        </Providers>
+      <body className="antialiased bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+        <ThemeProvider>
+          <Providers>
+            <div className="min-h-screen flex flex-col">
+              <Header />
+              <Breadcrumb />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   )

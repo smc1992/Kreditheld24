@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import { ThemeToggle } from '@/providers/ThemeProvider'
 
 const navigation = [
   { 
@@ -22,6 +23,7 @@ const navigation = [
     submenu: [
       { name: 'Aktuelle Zinssätze', href: '/zinssaetze' },
       { name: 'Kreditglossar', href: '/glossar' },
+      { name: 'FAQ', href: '/faq' },
       { name: 'Rechtliche Hinweise', href: '/rechtliche-hinweise' },
       { name: 'Tipps & Ratgeber', href: '/tipps-kreditaufnahme' },
     ]
@@ -127,8 +129,10 @@ export function Header() {
             ))}
           </nav>
           
-          {/* CTA Button & Mobile Menu */}
+          {/* Theme Toggle, CTA Button & Mobile Menu */}
           <div className="flex items-center space-x-4">
+            <ThemeToggle />
+            
             <Link
               href="/kreditanfrage"
               className="hidden md:inline-flex items-center px-6 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary-600 transition-all duration-200 shadow-md hover:shadow-lg"

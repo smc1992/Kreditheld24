@@ -7,7 +7,7 @@ import Link from 'next/link'
 interface GlossaryTerm {
   term: string
   definition: string
-  category: 'allgemein' | 'zinsen' | 'schufa' | 'tilgung' | 'sicherheiten'
+  category: 'allgemein' | 'zinsen' | 'schufa' | 'tilgung' | 'sicherheiten' | 'kreditarten' | 'rechtliches' | 'banken'
 }
 
 const glossaryTerms: GlossaryTerm[] = [
@@ -100,6 +100,244 @@ const glossaryTerms: GlossaryTerm[] = [
     term: 'Kreditantrag',
     definition: 'Ein verbindlicher Antrag auf einen Kredit, der sich auf den SCHUFA-Score auswirken kann.',
     category: 'schufa'
+  },
+  // Erweiterte Begriffe - Kreditarten
+  {
+    term: 'Ratenkredit',
+    definition: 'Ein Kredit, der in gleichbleibenden monatlichen Raten zurückgezahlt wird. Auch Verbraucherkredit oder Konsumentenkredit genannt.',
+    category: 'kreditarten'
+  },
+  {
+    term: 'Autokredit',
+    definition: 'Ein zweckgebundener Kredit zur Finanzierung eines Fahrzeugs. Oft günstiger als ein freier Ratenkredit.',
+    category: 'kreditarten'
+  },
+  {
+    term: 'Baufinanzierung',
+    definition: 'Langfristige Finanzierung zum Kauf oder Bau einer Immobilie, meist mit Grundschuld als Sicherheit.',
+    category: 'kreditarten'
+  },
+  {
+    term: 'Dispositionskredit',
+    definition: 'Kurzfristige Überziehungsmöglichkeit des Girokontos. Meist mit hohen Zinsen verbunden.',
+    category: 'kreditarten'
+  },
+  {
+    term: 'Rahmenkredit',
+    definition: 'Flexibler Kredit mit einem festen Kreditrahmen, aus dem nach Bedarf Geld abgerufen werden kann.',
+    category: 'kreditarten'
+  },
+  {
+    term: 'Sofortkredit',
+    definition: 'Kredit mit besonders schneller Bearbeitung und Auszahlung, oft innerhalb weniger Stunden.',
+    category: 'kreditarten'
+  },
+  {
+    term: 'Kleinkredit',
+    definition: 'Kredit mit geringer Kreditsumme, meist zwischen 500 und 5.000 Euro.',
+    category: 'kreditarten'
+  },
+  {
+    term: 'Modernisierungskredit',
+    definition: 'Zweckgebundener Kredit für Renovierungs- und Modernisierungsmaßnahmen an Immobilien.',
+    category: 'kreditarten'
+  },
+  // Rechtliche Begriffe
+  {
+    term: 'Widerrufsrecht',
+    definition: 'Das Recht, einen Kreditvertrag innerhalb von 14 Tagen ohne Angabe von Gründen zu widerrufen.',
+    category: 'rechtliches'
+  },
+  {
+    term: 'Kreditvermittlung',
+    definition: 'Dienstleistung zur Vermittlung von Krediten zwischen Kreditnehmern und Kreditgebern.',
+    category: 'rechtliches'
+  },
+  {
+    term: 'Verbraucherkreditgesetz',
+    definition: 'Gesetz zum Schutz von Verbrauchern bei Kreditgeschäften mit besonderen Informations- und Widerrufspflichten.',
+    category: 'rechtliches'
+  },
+  {
+    term: 'Datenschutz',
+    definition: 'Schutz personenbezogener Daten bei der Kreditbearbeitung nach DSGVO-Bestimmungen.',
+    category: 'rechtliches'
+  },
+  {
+    term: 'Impressumspflicht',
+    definition: 'Gesetzliche Verpflichtung zur Angabe bestimmter Informationen auf Websites von Kreditvermittlern.',
+    category: 'rechtliches'
+  },
+  // Banken & Institute
+  {
+    term: 'Direktbank',
+    definition: 'Bank ohne Filialnetz, die ihre Dienstleistungen hauptsächlich online oder telefonisch anbietet.',
+    category: 'banken'
+  },
+  {
+    term: 'Filialbank',
+    definition: 'Traditionelle Bank mit einem Netz von Geschäftsstellen für persönliche Beratung.',
+    category: 'banken'
+  },
+  {
+    term: 'Kreditinstitut',
+    definition: 'Unternehmen, das gewerbsmäßig Bankgeschäfte betreibt und Kredite vergeben darf.',
+    category: 'banken'
+  },
+  {
+    term: 'Fintech',
+    definition: 'Technologieunternehmen, das innovative Finanzdienstleistungen und Kreditprodukte anbietet.',
+    category: 'banken'
+  },
+  {
+    term: 'Peer-to-Peer-Kredit',
+    definition: 'Kredit zwischen Privatpersonen über Online-Plattformen, ohne traditionelle Bank als Vermittler.',
+    category: 'banken'
+  },
+  // Erweiterte Zinsen & Kosten
+  {
+    term: 'Sollzinsbindung',
+    definition: 'Zeitraum, für den der Zinssatz eines Kredits festgeschrieben ist.',
+    category: 'zinsen'
+  },
+  {
+    term: 'Bearbeitungsgebühr',
+    definition: 'Einmalige Gebühr für die Bearbeitung eines Kreditantrags. Bei Verbraucherkrediten meist unzulässig.',
+    category: 'zinsen'
+  },
+  {
+    term: 'Bereitstellungszinsen',
+    definition: 'Zinsen, die anfallen, wenn ein bewilligter Kredit nicht sofort abgerufen wird.',
+    category: 'zinsen'
+  },
+  {
+    term: 'Disagio',
+    definition: 'Abschlag vom Nominalbetrag eines Kredits. Der Kreditnehmer erhält weniger ausgezahlt, als er zurückzahlen muss.',
+    category: 'zinsen'
+  },
+  {
+    term: 'Zinssatz',
+    definition: 'Preis für die Überlassung von Kapital, ausgedrückt als Prozentsatz des Kreditbetrags.',
+    category: 'zinsen'
+  },
+  {
+    term: 'Zinsbindung',
+    definition: 'Vereinbarter Zeitraum, in dem der Zinssatz eines Kredits unverändert bleibt.',
+    category: 'zinsen'
+  },
+  // Erweiterte SCHUFA & Bonität
+  {
+    term: 'Bonitätsprüfung',
+    definition: 'Überprüfung der Kreditwürdigkeit eines Antragstellers durch die Bank vor Kreditvergabe.',
+    category: 'schufa'
+  },
+  {
+    term: 'Negativmerkmal',
+    definition: 'Eintrag in der SCHUFA über nicht erfüllte Zahlungsverpflichtungen oder Kreditausfälle.',
+    category: 'schufa'
+  },
+  {
+    term: 'Selbstauskunft',
+    definition: 'Kostenlose jährliche Auskunft über die bei der SCHUFA gespeicherten Daten.',
+    category: 'schufa'
+  },
+  {
+    term: 'Scoring',
+    definition: 'Mathematisches Verfahren zur Bewertung der Kreditwürdigkeit anhand verschiedener Faktoren.',
+    category: 'schufa'
+  },
+  {
+    term: 'Löschung',
+    definition: 'Entfernung von SCHUFA-Einträgen nach Ablauf bestimmter Fristen oder bei Erledigung.',
+    category: 'schufa'
+  },
+  // Erweiterte Tilgung
+  {
+    term: 'Tilgungsplan',
+    definition: 'Übersicht über die Aufteilung der Kreditraten in Zins- und Tilgungsanteil über die gesamte Laufzeit.',
+    category: 'tilgung'
+  },
+  {
+    term: 'Tilgungsaussetzung',
+    definition: 'Vorübergehende Aussetzung der Tilgung bei finanziellen Schwierigkeiten, nur Zinszahlung.',
+    category: 'tilgung'
+  },
+  {
+    term: 'Tilgungsrate',
+    definition: 'Der Teil der monatlichen Rate, der zur Rückzahlung der Kreditsumme dient.',
+    category: 'tilgung'
+  },
+  {
+    term: 'Endfälligkeit',
+    definition: 'Zeitpunkt, zu dem ein Kredit vollständig zurückgezahlt sein muss.',
+    category: 'tilgung'
+  },
+  {
+    term: 'Ratenpause',
+    definition: 'Möglichkeit, eine oder mehrere Kreditraten auszusetzen, meist gegen Gebühr.',
+    category: 'tilgung'
+  },
+  // Erweiterte Sicherheiten
+  {
+    term: 'Grundschuld',
+    definition: 'Dingliches Recht an einer Immobilie als Sicherheit für einen Kredit.',
+    category: 'sicherheiten'
+  },
+  {
+    term: 'Hypothek',
+    definition: 'Pfandrecht an einer Immobilie, das mit der Tilgung des Kredits abnimmt.',
+    category: 'sicherheiten'
+  },
+  {
+    term: 'Sicherungsübereignung',
+    definition: 'Übertragung des Eigentums an beweglichen Sachen zur Kreditsicherung.',
+    category: 'sicherheiten'
+  },
+  {
+    term: 'Abtretung',
+    definition: 'Übertragung von Forderungen oder Rechten zur Sicherung eines Kredits.',
+    category: 'sicherheiten'
+  },
+  {
+    term: 'Pfandrecht',
+    definition: 'Recht, eine Sache zur Befriedigung einer Forderung zu verwerten.',
+    category: 'sicherheiten'
+  },
+  {
+    term: 'Avalkredit',
+    definition: 'Bürgschaft oder Garantie einer Bank für Verbindlichkeiten ihres Kunden.',
+    category: 'sicherheiten'
+  },
+  // Allgemeine erweiterte Begriffe
+  {
+    term: 'Kreditlinie',
+    definition: 'Maximaler Kreditbetrag, den eine Bank einem Kunden zur Verfügung stellt.',
+    category: 'allgemein'
+  },
+  {
+    term: 'Kreditwürdigkeit',
+    definition: 'Fähigkeit und Bereitschaft eines Schuldners, aufgenommene Kredite zurückzuzahlen.',
+    category: 'allgemein'
+  },
+  {
+    term: 'Liquidität',
+    definition: 'Verfügbarkeit von Geldmitteln zur Erfüllung von Zahlungsverpflichtungen.',
+    category: 'allgemein'
+  },
+  {
+    term: 'Verschuldungsgrad',
+    definition: 'Verhältnis der Gesamtschulden zum verfügbaren Einkommen oder Vermögen.',
+    category: 'allgemein'
+  },
+  {
+    term: 'Kreditvolumen',
+    definition: 'Gesamtbetrag aller von einer Bank oder einem Kreditnehmer vergebenen bzw. aufgenommenen Kredite.',
+    category: 'allgemein'
+  },
+  {
+    term: 'Refinanzierung',
+    definition: 'Beschaffung von Mitteln durch Banken zur Finanzierung ihrer Kreditvergabe.',
+    category: 'allgemein'
   }
 ]
 
@@ -108,7 +346,10 @@ const categories = {
   zinsen: 'Zinsen & Kosten',
   schufa: 'SCHUFA & Bonität',
   tilgung: 'Tilgung & Rückzahlung',
-  sicherheiten: 'Sicherheiten'
+  sicherheiten: 'Sicherheiten',
+  kreditarten: 'Kreditarten',
+  rechtliches: 'Rechtliches',
+  banken: 'Banken & Institute'
 }
 
 export default function GlossarPage() {
