@@ -339,7 +339,7 @@ const HomePage = () => {
                   </div>
                 </div>
                 <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">Kredit trotz SCHUFA</h3>
-                <p className="text-gray-600 mb-4">
+                <p className="text-gray-600 dark:text-gray-300 mb-4">
                   Spezielle Angebote für Kunden mit negativen SCHUFA-Einträgen oder niedrigem Score.
                 </p>
                 <div className="text-primary font-medium flex items-center">
@@ -412,29 +412,29 @@ const HomePage = () => {
       </section>
 
       {/* Calculator */}
-      <section id="calculator" className="py-16 bg-gray-50">
+      <section id="calculator" className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Kreditrechner</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Kreditrechner</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Berechnen Sie Ihre monatliche Rate und finden Sie den passenden Kredit für Ihre Bedürfnisse.
             </p>
           </div>
-          <div className="bg-white rounded-lg shadow-md p-6 md:p-8 max-w-4xl mx-auto">
+          <div className="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 md:p-8 max-w-4xl mx-auto transition-colors duration-300">
             <div className="grid md:grid-cols-2 gap-8">
               <div>
                 <div className="mb-6">
-                  <label className="block text-gray-700 font-medium mb-2">Kreditsumme</label>
+                  <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Kreditsumme</label>
                   <div className="relative">
                     <input
                       type="number"
                       value={loanAmount}
                       onChange={(e) => setLoanAmount(Number(e.target.value))}
-                      className="w-full border border-gray-300 rounded py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300"
                       min="1000"
                       max="100000"
                     />
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">
                       €
                     </div>
                   </div>
@@ -447,18 +447,18 @@ const HomePage = () => {
                     onChange={(e) => setLoanAmount(Number(e.target.value))}
                     className="w-full mt-2"
                   />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
                     <span>1.000 €</span>
                     <span>100.000 €</span>
                   </div>
                 </div>
                 <div className="mb-6">
-                  <label className="block text-gray-700 font-medium mb-2">Laufzeit</label>
+                  <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Laufzeit</label>
                   <div className="relative">
                     <div className="flex">
                       <button
                         onClick={() => setLoanTerm(Math.max(12, loanTerm - 6))}
-                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-l border border-gray-300 rounded-button whitespace-nowrap"
+                        className="bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 font-bold py-3 px-4 rounded-l border border-gray-300 dark:border-gray-600 rounded-button whitespace-nowrap transition-colors duration-300"
                       >
                         <div className="w-4 h-4 flex items-center justify-center">
                           <i className="ri-subtract-line"></i>
@@ -468,20 +468,20 @@ const HomePage = () => {
                         type="number"
                         value={loanTerm}
                         onChange={(e) => setLoanTerm(Number(e.target.value))}
-                        className="w-full border-y border-gray-300 py-3 px-4 text-center focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        className="w-full border-y border-gray-300 dark:border-gray-600 py-3 px-4 text-center bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300"
                         min="12"
                         max="120"
                       />
                       <button
                         onClick={() => setLoanTerm(Math.min(120, loanTerm + 6))}
-                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-r border border-gray-300 rounded-button whitespace-nowrap"
+                        className="bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 font-bold py-3 px-4 rounded-r border border-gray-300 dark:border-gray-600 rounded-button whitespace-nowrap transition-colors duration-300"
                       >
                         <div className="w-4 h-4 flex items-center justify-center">
                           <i className="ri-add-line"></i>
                         </div>
                       </button>
                     </div>
-                    <div className="absolute inset-y-0 right-12 flex items-center pr-3 pointer-events-none text-gray-500">
+                    <div className="absolute inset-y-0 right-12 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">
                       Monate
                     </div>
                   </div>
@@ -500,12 +500,12 @@ const HomePage = () => {
                   </div>
                 </div>
                 <div className="mb-6">
-                  <label className="block text-gray-700 font-medium mb-2">Verwendungszweck</label>
+                  <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Verwendungszweck</label>
                   <div className="relative">
                     <select
                       value={loanPurpose}
                       onChange={(e) => setLoanPurpose(e.target.value)}
-                      className="w-full appearance-none border border-gray-300 rounded py-3 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
+                      className="w-full appearance-none border border-gray-300 dark:border-gray-600 rounded py-3 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 transition-colors duration-300"
                     >
                       <option value="freie_verwendung">Freie Verwendung</option>
                       <option value="auto">Autokauf</option>
@@ -515,7 +515,7 @@ const HomePage = () => {
                       <option value="elektronik">Elektronik</option>
                       <option value="urlaub">Urlaub</option>
                     </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">
                       <div className="w-5 h-5 flex items-center justify-center">
                         <i className="ri-arrow-down-s-line"></i>
                       </div>
@@ -523,31 +523,31 @@ const HomePage = () => {
                   </div>
                 </div>
               </div>
-              <div className="bg-gray-50 rounded-lg p-6">
-                <h3 className="text-xl font-semibold mb-4">Ihre Kreditkonditionen</h3>
+              <div className="bg-gray-50 dark:bg-gray-600 rounded-lg p-6 transition-colors duration-300">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Ihre Kreditkonditionen</h3>
                 <div className="mb-6">
                   <div className="flex justify-between mb-2">
-                    <span className="text-gray-600">Monatliche Rate:</span>
+                    <span className="text-gray-600 dark:text-gray-300">Monatliche Rate:</span>
                     <span className="font-semibold text-lg">{loanCalculation.monthlyPayment} €</span>
                   </div>
                   <div className="flex justify-between mb-2">
-                    <span className="text-gray-600">Effektiver Jahreszins:</span>
+                    <span className="text-gray-600 dark:text-gray-300">Effektiver Jahreszins:</span>
                     <span className="font-semibold">{loanCalculation.interestRate} %</span>
                   </div>
                   <div className="flex justify-between mb-2">
-                    <span className="text-gray-600">Gesamtkosten:</span>
+                    <span className="text-gray-600 dark:text-gray-300">Gesamtkosten:</span>
                     <span className="font-semibold">{loanCalculation.totalCost} €</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Zinsbindung:</span>
+                    <span className="text-gray-600 dark:text-gray-300">Zinsbindung:</span>
                     <span className="font-semibold">Gesamte Laufzeit</span>
                   </div>
                 </div>
                 <div className="mb-6">
-                  <div className="w-full h-2 bg-gray-200 rounded-full">
+                  <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
                     <div className="h-2 bg-primary rounded-full" style={{ width: '85%' }}></div>
                   </div>
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
                     <span>Bonitätsscore: Gut</span>
                     <span>85/100</span>
                   </div>
@@ -558,7 +558,7 @@ const HomePage = () => {
                 >
                   Jetzt Kreditangebote vergleichen
                 </Link>
-                <p className="text-xs text-gray-500 mt-4 text-center">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">
                   100% kostenlos & SCHUFA-neutral
                 </p>
               </div>
@@ -568,16 +568,16 @@ const HomePage = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Das sagen unsere Kunden</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Das sagen unsere Kunden</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Tausende zufriedene Kunden vertrauen auf unseren Service – lesen Sie selbst.
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-gray-50 p-6 rounded-lg">
+            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg transition-colors duration-300">
               <div className="flex items-center mb-4">
                 <div className="flex text-yellow-400">
                   <i className="ri-star-fill"></i>
@@ -593,8 +593,8 @@ const HomePage = () => {
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div>
                 <div>
-                  <p className="font-semibold">Michael S.</p>
-                  <p className="text-sm text-gray-500">Ratenkredit über 15.000 €</p>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100">Michael S.</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Ratenkredit über 15.000 €</p>
                 </div>
               </div>
             </div>
@@ -614,8 +614,8 @@ const HomePage = () => {
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div>
                 <div>
-                  <p className="font-semibold">Sandra M.</p>
-                  <p className="text-sm text-gray-500">Umschuldung über 28.000 €</p>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100">Sandra M.</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Umschuldung über 28.000 €</p>
                 </div>
               </div>
             </div>
@@ -635,8 +635,8 @@ const HomePage = () => {
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div>
                 <div>
-                  <p className="font-semibold">Thomas K.</p>
-                  <p className="text-sm text-gray-500">Kredit trotz SCHUFA über 8.000 €</p>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100">Thomas K.</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Kredit trotz SCHUFA über 8.000 €</p>
                 </div>
               </div>
             </div>
@@ -645,7 +645,7 @@ const HomePage = () => {
       </section>
 
       {/* Final CTA */}
-      <section className="py-16 bg-primary text-white">
+      <section className="py-16 bg-primary dark:bg-green-700 text-white transition-colors duration-300">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">Bereit für Ihren Wunschkredit?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
@@ -654,7 +654,7 @@ const HomePage = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="#calculator"
-              className="bg-white text-primary hover:bg-gray-100 font-medium py-3 px-8 rounded-button shadow-md transition-all inline-flex items-center justify-center"
+              className="bg-white text-primary hover:bg-gray-100 dark:bg-gray-200 dark:hover:bg-gray-300 font-medium py-3 px-8 rounded-button shadow-md transition-all inline-flex items-center justify-center"
             >
               <span>Jetzt vergleichen</span>
               <div className="w-5 h-5 ml-2 flex items-center justify-center">
@@ -663,7 +663,7 @@ const HomePage = () => {
             </Link>
             <Link
               href="/kontakt"
-              className="border-2 border-white text-white hover:bg-white hover:text-primary font-medium py-3 px-8 rounded-button transition-all inline-flex items-center justify-center"
+              className="border-2 border-white text-white hover:bg-white hover:text-primary dark:hover:bg-gray-200 font-medium py-3 px-8 rounded-button transition-all inline-flex items-center justify-center"
             >
               <div className="w-5 h-5 mr-2 flex items-center justify-center">
                 <i className="ri-customer-service-2-line"></i>
