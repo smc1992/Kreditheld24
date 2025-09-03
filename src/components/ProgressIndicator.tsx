@@ -132,12 +132,10 @@ export default function ProgressIndicator({
                 </div>
               </div>
               
-              {/* Connector Line */}
-              {!isLast && (
-                <div className={`flex-1 h-1 mx-4 rounded-full transition-all duration-300 ${
-                  status === 'completed' ? 'bg-green-600' : 'bg-gray-200'
-                }`} />
-              )}
+              {/* Spacer */}
+               {!isLast && (
+                 <div className="flex-1 mx-4" />
+               )}
             </div>
           )
         })}
