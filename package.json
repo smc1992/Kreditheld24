@@ -73,9 +73,5 @@
       "unrs-resolver"
     ]
   },
-  "engines": {
-    "node": ">=20.0.0",
-    "pnpm": ">=8.0.0"
-  },
   "packageManager": "pnpm@9.9.0"
 }
