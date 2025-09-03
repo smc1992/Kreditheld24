@@ -278,16 +278,20 @@ export default function KreditanfrageForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Progress Indicator */}
-      <ProgressIndicator 
-        steps={kreditanfrageSteps} 
-        currentStep={currentStep - 1} 
-        className="mb-8"
-      />
+      <div className="mb-8">
+        <ProgressIndicator 
+          steps={kreditanfrageSteps} 
+          currentStep={currentStep - 1} 
+        />
+      </div>
 
       {/* Step 1: Persönliche Daten */}
       {currentStep === 1 && (
-        <div className="space-y-6">
-          <h3 className="text-xl font-semibold text-gray-900 mb-6">Persönliche Daten</h3>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-6">
+          <div className="border-b border-gray-200 pb-4">
+            <h3 className="text-xl font-semibold text-gray-900">Persönliche Daten</h3>
+            <p className="text-sm text-gray-600 mt-1">Bitte geben Sie Ihre persönlichen Informationen ein</p>
+          </div>
           
           <div className="grid md:grid-cols-3 gap-4">
             <div>

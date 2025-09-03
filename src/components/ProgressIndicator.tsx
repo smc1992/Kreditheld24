@@ -30,7 +30,7 @@ export default function ProgressIndicator({
     return (
       <div className={`bg-white border-b border-gray-200 ${className}`}>
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
             <div className="flex items-center space-x-4">
               <span className="text-sm font-medium text-gray-600">
                 Schritt {currentStep + 1} von {steps.length}
@@ -42,9 +42,9 @@ export default function ProgressIndicator({
             
             {/* Progress Bar */}
             <div className="flex items-center space-x-2">
-              <div className="w-32 bg-gray-200 rounded-full h-2">
+              <div className="w-32 sm:w-40 bg-gray-200 rounded-full h-2">
                 <div 
-                  className="bg-primary h-2 rounded-full transition-all duration-300 ease-in-out"
+                  className="bg-green-600 h-2 rounded-full transition-all duration-300 ease-in-out"
                   style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
                 ></div>
               </div>
@@ -59,109 +59,88 @@ export default function ProgressIndicator({
   }
 
   return (
-    <div className={`bg-white border-b border-gray-200 ${className}`}>
-      <div className="container mx-auto px-4 py-6">
-        <nav aria-label="Fortschritt">
-          <ol className="flex items-center justify-between">
-            {steps.map((step, stepIndex) => {
-              const status = getStepStatus(stepIndex)
-              
-              return (
-                <li key={step.id} className="relative flex-1">
-                  <div className="flex items-center">
-                    {/* Step Circle */}
-                    <div className="relative flex items-center justify-center">
-                      <div
-                        className={`
-                          w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all duration-200
-                          ${
-                            status === 'completed'
-                              ? 'bg-primary border-primary text-white'
-                              : status === 'current'
-                              ? 'bg-white border-primary text-primary ring-4 ring-primary ring-opacity-20'
-                              : 'bg-white border-gray-300 text-gray-400'
-                          }
-                        `}
-                      >
-                        {status === 'completed' ? (
-                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                              fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        ) : (
-                          <span className="text-sm font-semibold">{stepIndex + 1}</span>
-                        )}
-                      </div>
-                    </div>
-                    
-                    {/* Step Content */}
-                    <div className="ml-4 min-w-0 flex-1">
-                      <div
-                        className={`
-                          text-sm font-medium transition-colors duration-200
-                          ${
-                            status === 'completed' || status === 'current'
-                              ? 'text-gray-900'
-                              : 'text-gray-500'
-                          }
-                        `}
-                      >
-                        {step.title}
-                      </div>
-                      {step.description && (
-                        <div
-                          className={`
-                            text-xs mt-1 transition-colors duration-200
-                            ${
-                              status === 'completed' || status === 'current'
-                                ? 'text-gray-600'
-                                : 'text-gray-400'
-                            }
-                          `}
-                        >
-                          {step.description}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  
-                  {/* Connector Line */}
-                  {stepIndex < steps.length - 1 && (
-                    <div className="absolute top-5 left-10 w-full h-0.5 -ml-px">
-                      <div
-                        className={`
-                          h-full transition-colors duration-200
-                          ${
-                            stepIndex < currentStep
-                              ? 'bg-primary'
-                              : 'bg-gray-300'
-                          }
-                        `}
-                      ></div>
-                    </div>
-                  )}
-                </li>
-              )
-            })}
-          </ol>
-        </nav>
-        
-        {/* Progress Percentage */}
-        <div className="mt-6">
-          <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
-            <span>Fortschritt</span>
-            <span>{Math.round(((currentStep + 1) / steps.length) * 100)}% abgeschlossen</span>
+    <div className={`w-full ${className}`}>
+      {/* Mobile Progress Bar */}
+      <div className="block md:hidden mb-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-medium text-gray-600">
+              Schritt {currentStep + 1} von {steps.length}
+            </span>
+            <span className="text-sm font-medium text-green-600">
+              {Math.round(((currentStep + 1) / steps.length) * 100)}% abgeschlossen
+            </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
             <div 
-              className="bg-primary h-2 rounded-full transition-all duration-300 ease-in-out"
+              className="bg-green-600 h-2 rounded-full transition-all duration-300 ease-in-out"
               style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
             ></div>
           </div>
+          <div className="text-center">
+            <div className="text-lg font-semibold text-gray-900">
+              {steps[currentStep]?.title}
+            </div>
+            <div className="text-sm text-gray-500">
+              {steps[currentStep]?.description}
+            </div>
+          </div>
         </div>
+      </div>
+
+      {/* Desktop Step Indicator */}
+      <div className="hidden md:flex items-center justify-between mb-8">
+        {steps.map((step, index) => {
+          const status = getStepStatus(index)
+          const isLast = index === steps.length - 1
+          
+          return (
+            <div key={step.id} className="flex items-center flex-1">
+              {/* Step Circle */}
+              <div className="flex flex-col items-center">
+                <div className={`
+                  w-12 h-12 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-200 shadow-sm
+                  ${
+                    status === 'completed' 
+                      ? 'bg-green-600 text-white ring-4 ring-green-100' 
+                      : status === 'current'
+                      ? 'bg-green-600 text-white ring-4 ring-green-100 animate-pulse'
+                      : 'bg-gray-100 text-gray-500 border-2 border-gray-200'
+                  }
+                `}>
+                  {status === 'completed' ? (
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  ) : (
+                    index + 1
+                  )}
+                </div>
+                
+                {/* Step Title */}
+                <div className="mt-3 text-center max-w-24">
+                  <div className={`text-sm font-medium ${
+                    status === 'current' ? 'text-green-600' : status === 'completed' ? 'text-green-600' : 'text-gray-500'
+                  }`}>
+                    {step.title}
+                  </div>
+                  {step.description && (
+                    <div className="text-xs text-gray-400 mt-1 leading-tight">
+                      {step.description}
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              {/* Connector Line */}
+              {!isLast && (
+                <div className={`flex-1 h-1 mx-4 rounded-full transition-all duration-300 ${
+                  status === 'completed' ? 'bg-green-600' : 'bg-gray-200'
+                }`} />
+              )}
+            </div>
+          )
+        })}
       </div>
     </div>
   )
@@ -175,19 +154,19 @@ export const kreditanfrageSteps: Step[] = [
     description: 'Name, Adresse, Kontaktdaten'
   },
   {
+    id: 'address',
+    title: 'Adresse',
+    description: 'Straße, PLZ, Ort'
+  },
+  {
     id: 'credit',
     title: 'Kreditwunsch',
     description: 'Summe, Laufzeit, Verwendung'
   },
   {
     id: 'income',
-    title: 'Einkommen & Ausgaben',
+    title: 'Einkommen',
     description: 'Finanzielle Situation'
-  },
-  {
-    id: 'documents',
-    title: 'Dokumente',
-    description: 'Upload der Unterlagen'
   },
   {
     id: 'verification',
@@ -195,9 +174,9 @@ export const kreditanfrageSteps: Step[] = [
     description: 'E-Mail-Verifizierung'
   },
   {
-    id: 'submit',
-    title: 'Abschluss',
-    description: 'Antrag einreichen'
+    id: 'documents',
+    title: 'Dokumente',
+    description: 'Upload der Unterlagen'
   }
 ]
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 import crypto from 'crypto'
+import { storeVerificationToken } from '../verify-email/[token]/route'
 
 // Email-Transporter konfigurieren
 const transporter = nodemailer.createTransport({
@@ -89,18 +90,8 @@ export async function POST(request: NextRequest) {
     // E-Mail senden
     await transporter.sendMail(mailOptions)
     
-    // Token in temporärer Datenbank speichern (hier vereinfacht)
-    // In Produktion sollte dies in einer echten Datenbank gespeichert werden
-    const verificationData = {
-      token,
-      email,
-      formData,
-      createdAt: new Date(),
-      verified: false
-    }
-    
-    // Hier würde normalerweise die Datenbank-Speicherung stattfinden
-    // Für Demo-Zwecke geben wir den Token zurück
+    // Token in temporärem Store speichern
+    storeVerificationToken(token, email, formData)
     
     return NextResponse.json({ 
       success: true, 
