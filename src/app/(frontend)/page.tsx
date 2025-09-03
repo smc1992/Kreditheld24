@@ -26,9 +26,9 @@ const HomePage = () => {
   const loanCalculation = calculateLoan()
 
   return (
-    <div className="font-sans text-gray-800 bg-white">
+    <div className="font-sans text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-900 transition-colors duration-300">
       {/* Hero Section */}
-      <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 overflow-hidden">
+      <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 dark:from-gray-900 dark:to-gray-800 overflow-hidden transition-colors duration-300">
         <div 
           className="absolute inset-0 bg-right bg-no-repeat bg-cover md:bg-contain opacity-20 md:opacity-100"
           style={{
@@ -37,10 +37,10 @@ const HomePage = () => {
         ></div>
         <div className="container mx-auto px-4 py-12 md:py-24 relative z-10">
           <div className="max-w-xl md:max-w-2xl mx-auto md:mx-0">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-4 text-center md:text-left">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 dark:text-gray-100 mb-4 text-center md:text-left">
               Schnell zum besten Kredit – vergleichen lohnt sich
             </h1>
-            <p className="text-lg md:text-xl text-gray-700 mb-8 text-center md:text-left">
+            <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-8 text-center md:text-left">
               Jetzt mit wenigen Klicks zu Ihrem Wunschkredit – 100% kostenlos & SCHUFA-neutral.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
@@ -62,11 +62,11 @@ const HomePage = () => {
       {/* Info Modal */}
       {showInfoModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-          <div className="bg-white rounded-lg max-w-2xl w-full mx-4 relative">
+          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full mx-4 relative transition-colors duration-300">
             <div className="absolute top-4 right-4">
               <button
                 onClick={() => setShowInfoModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
               >
                 <div className="w-6 h-6 flex items-center justify-center">
                   <i className="ri-close-line ri-lg"></i>
@@ -74,7 +74,7 @@ const HomePage = () => {
               </button>
             </div>
             <div className="p-6 md:p-8">
-              <h3 className="text-2xl font-bold mb-6">Warum Kreditheld24?</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Warum Kreditheld24?</h3>
               <div className="grid md:grid-cols-2 gap-6 mb-8">
                 <div className="flex items-start">
                   <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-4 shrink-0">
@@ -157,23 +157,23 @@ const HomePage = () => {
       )}
 
       {/* How it works */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">So funktioniert&apos;s</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">So funktioniert&apos;s</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               In nur drei einfachen Schritten zu Ihrem Wunschkredit – schnell, sicher und transparent.
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 text-center">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 text-center transition-all duration-300">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <div className="w-8 h-8 flex items-center justify-center text-primary">
                   <i className="ri-edit-line ri-xl"></i>
                 </div>
               </div>
-              <h3 className="text-xl font-semibold mb-3">1. Kreditwunsch eingeben</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">1. Kreditwunsch eingeben</h3>
+              <p className="text-gray-600 dark:text-gray-300">
                 Geben Sie Ihre gewünschte Kreditsumme, Laufzeit und den Verwendungszweck an.
               </p>
             </div>
@@ -183,8 +183,8 @@ const HomePage = () => {
                   <i className="ri-scales-3-line ri-xl"></i>
                 </div>
               </div>
-              <h3 className="text-xl font-semibold mb-3">2. Angebote vergleichen</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">2. Angebote vergleichen</h3>
+              <p className="text-gray-600 dark:text-gray-300">
                 Vergleichen Sie die besten Angebote von über 20 Banken und Kreditinstituten.
               </p>
             </div>
@@ -194,8 +194,8 @@ const HomePage = () => {
                   <i className="ri-check-line ri-xl"></i>
                 </div>
               </div>
-              <h3 className="text-xl font-semibold mb-3">3. Online abschließen</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">3. Online abschließen</h3>
+              <p className="text-gray-600 dark:text-gray-300">
                 Schließen Sie Ihren Kreditvertrag bequem online ab – ohne Papierkram und Behördengänge.
               </p>
             </div>
@@ -204,34 +204,34 @@ const HomePage = () => {
       </section>
 
       {/* Benefits */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Ihre Vorteile bei Kreditheld24</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Ihre Vorteile bei Kreditheld24</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Wir machen Kreditvergleiche einfach, transparent und sicher – damit Sie die beste Finanzierungslösung finden.
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
                 <div className="w-6 h-6 flex items-center justify-center text-primary">
                   <i className="ri-bank-line ri-lg"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold mb-2">Unabhängiger Bankenvergleich</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Unabhängiger Bankenvergleich</h3>
+              <p className="text-gray-600 dark:text-gray-300">
                 Wir vergleichen über 20 Banken und Kreditinstitute, um Ihnen das beste Angebot zu präsentieren.
               </p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
                 <div className="w-6 h-6 flex items-center justify-center text-primary">
                   <i className="ri-shield-check-line ri-lg"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold mb-2">SCHUFA-neutrale Anfrage</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">SCHUFA-neutrale Anfrage</h3>
+              <p className="text-gray-600 dark:text-gray-300">
                 Unsere Vorabanfrage hat keinen Einfluss auf Ihren SCHUFA-Score – garantiert.
               </p>
             </div>
@@ -241,8 +241,8 @@ const HomePage = () => {
                   <i className="ri-coins-line ri-lg"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold mb-2">Keine versteckten Kosten</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Keine versteckten Kosten</h3>
+              <p className="text-gray-600 dark:text-gray-300">
                 Unser Service ist für Sie zu 100% kostenlos – wir verdienen an den Banken, nicht an Ihnen.
               </p>
             </div>
@@ -252,8 +252,8 @@ const HomePage = () => {
                   <i className="ri-smartphone-line ri-lg"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold mb-2">Digitale Antragsstrecke</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Digitale Antragsstrecke</h3>
+              <p className="text-gray-600 dark:text-gray-300">
                 Erledigen Sie den gesamten Kreditantrag online – von der Anfrage bis zur Unterschrift.
               </p>
             </div>
@@ -263,8 +263,8 @@ const HomePage = () => {
                   <i className="ri-customer-service-2-line ri-lg"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold mb-2">Persönliche Beratung</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Persönliche Beratung</h3>
+              <p className="text-gray-600 dark:text-gray-300">
                 Bei Fragen steht Ihnen unser Expertenteam telefonisch oder per E-Mail zur Verfügung.
               </p>
             </div>
@@ -274,8 +274,8 @@ const HomePage = () => {
                   <i className="ri-timer-flash-line ri-lg"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold mb-2">Schnelle Auszahlung</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Schnelle Auszahlung</h3>
+              <p className="text-gray-600 dark:text-gray-300">
                 Bei vielen Banken erhalten Sie Ihr Geld innerhalb von 24 Stunden nach Vertragsabschluss.
               </p>
             </div>
@@ -284,24 +284,24 @@ const HomePage = () => {
       </section>
 
       {/* Loan Types */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Unsere Kreditangebote</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Unsere Kreditangebote</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Wir bieten maßgeschneiderte Finanzierungslösungen für jeden Bedarf – finden Sie den passenden Kredit für Ihre Situation.
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             <Link href="/ratenkredite" className="group">
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:border-primary hover:shadow-md transition-all">
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:border-primary hover:shadow-md transition-all duration-300">
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
                   <div className="w-6 h-6 flex items-center justify-center text-primary group-hover:text-white">
                     <i className="ri-money-euro-box-line ri-lg"></i>
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">Ratenkredit</h3>
-                <p className="text-gray-600 mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-primary transition-colors">Ratenkredit</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4">
                   Flexible Laufzeiten und Raten für Ihre persönlichen Wünsche und Anschaffungen.
                 </p>
                 <div className="text-primary font-medium flex items-center">
@@ -313,14 +313,14 @@ const HomePage = () => {
               </div>
             </Link>
             <Link href="/umschuldung" className="group">
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:border-primary hover:shadow-md transition-all">
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:border-primary hover:shadow-md transition-all duration-300">
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
                   <div className="w-6 h-6 flex items-center justify-center text-primary group-hover:text-white">
                     <i className="ri-exchange-funds-line ri-lg"></i>
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">Umschuldung</h3>
-                <p className="text-gray-600 mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-primary transition-colors">Umschuldung</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4">
                   Bestehende Kredite zu besseren Konditionen zusammenfassen und Geld sparen.
                 </p>
                 <div className="text-primary font-medium flex items-center">
