@@ -364,10 +364,10 @@ export default function GlossarPage() {
   })
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <main className="pt-20 pb-16">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-green-600 to-green-700 text-white py-16">
+        <section className="bg-gradient-to-br from-green-600 to-green-700 dark:from-green-700 dark:to-green-800 text-white py-16 transition-colors duration-300">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
@@ -384,7 +384,7 @@ export default function GlossarPage() {
         </section>
 
         {/* Search and Filter */}
-        <section className="py-8 bg-white shadow-sm">
+        <section className="py-8 bg-white dark:bg-gray-800 shadow-sm transition-colors duration-300">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
               <div className="flex flex-col md:flex-row gap-4 mb-6">
@@ -395,7 +395,7 @@ export default function GlossarPage() {
                     placeholder="Begriff suchen..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors duration-300"
                   />
                 </div>
                 
@@ -404,7 +404,7 @@ export default function GlossarPage() {
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors duration-300"
                   >
                     <option value="alle">Alle Kategorien</option>
                     {Object.entries(categories).map(([key, label]) => (
@@ -414,7 +414,7 @@ export default function GlossarPage() {
                 </div>
               </div>
               
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 {filteredTerms.length} Begriff{filteredTerms.length !== 1 ? 'e' : ''} gefunden
               </p>
             </div>
@@ -427,18 +427,18 @@ export default function GlossarPage() {
             <div className="max-w-4xl mx-auto">
               <div className="grid gap-6">
                 {filteredTerms.map((term, index) => (
-                  <div key={index} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                  <div key={index} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-all duration-300">
                     <div className="flex flex-col md:flex-row md:items-start gap-4">
                       <div className="md:w-1/3">
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                           {term.term}
                         </h3>
-                        <span className="inline-block px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">
+                        <span className="inline-block px-3 py-1 bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-100 text-sm rounded-full">
                           {categories[term.category]}
                         </span>
                       </div>
                       <div className="md:w-2/3">
-                        <p className="text-gray-700 leading-relaxed">
+                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
                           {term.definition}
                         </p>
                       </div>
@@ -449,7 +449,7 @@ export default function GlossarPage() {
               
               {filteredTerms.length === 0 && (
                 <div className="text-center py-12">
-                  <p className="text-gray-500 text-lg">
+                  <p className="text-gray-500 dark:text-gray-400 text-lg">
                     Keine Begriffe gefunden. Versuchen Sie einen anderen Suchbegriff oder wählen Sie eine andere Kategorie.
                   </p>
                 </div>
@@ -459,13 +459,13 @@ export default function GlossarPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="bg-gray-100 py-16">
+        <section className="bg-gray-100 dark:bg-gray-800 py-16 transition-colors duration-300">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
                 Haben Sie noch Fragen?
               </h2>
-              <p className="text-lg text-gray-600 mb-8">
+              <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
                 Unser Expertenteam steht Ihnen gerne zur Verfügung und beantwortet alle Ihre Fragen rund um Kredite und Finanzierung.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -477,7 +477,7 @@ export default function GlossarPage() {
                 </Link>
                 <Link
                   href="/kreditanfrage"
-                  className="bg-white hover:bg-gray-50 text-primary border-2 border-primary font-medium py-3 px-8 rounded-button shadow-md hover:shadow-lg transition-all"
+                  className="bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-primary dark:text-green-400 border-2 border-primary dark:border-green-400 font-medium py-3 px-8 rounded-button shadow-md hover:shadow-lg transition-all"
                 >
                   Unverbindliche Anfrage
                 </Link>

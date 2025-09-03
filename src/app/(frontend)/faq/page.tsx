@@ -199,9 +199,9 @@ export default function FAQPage() {
   })
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       {/* Header */}
-      <div className="bg-gradient-to-r from-green-600 to-green-700 text-white py-16">
+      <div className="bg-gradient-to-r from-green-600 to-green-700 dark:from-green-700 dark:to-green-800 text-white py-16 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
@@ -219,9 +219,9 @@ export default function FAQPage() {
                   placeholder="Frage suchen..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-6 py-4 text-gray-900 rounded-lg border-0 shadow-lg focus:ring-4 focus:ring-green-300 focus:outline-none text-lg"
+                  className="w-full px-6 py-4 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 rounded-lg border-0 shadow-lg focus:ring-4 focus:ring-green-300 dark:focus:ring-green-500 focus:outline-none text-lg transition-colors duration-300"
                 />
-                <svg className="absolute right-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="absolute right-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
@@ -240,7 +240,7 @@ export default function FAQPage() {
                 className={`px-6 py-3 rounded-full font-medium transition-all duration-200 ${
                   selectedCategory === 'alle'
                     ? 'bg-green-600 text-white shadow-lg'
-                    : 'bg-white text-gray-700 hover:bg-green-50 border border-gray-200'
+                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-600'
                 }`}
               >
                 Alle Fragen ({faqItems.length})
@@ -254,7 +254,7 @@ export default function FAQPage() {
                     className={`px-6 py-3 rounded-full font-medium transition-all duration-200 ${
                       selectedCategory === key
                         ? 'bg-green-600 text-white shadow-lg'
-                        : 'bg-white text-gray-700 hover:bg-green-50 border border-gray-200'
+                        : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-600'
                     }`}
                   >
                     {label} ({count})
@@ -268,29 +268,29 @@ export default function FAQPage() {
           <div className="space-y-4">
             {filteredItems.length === 0 ? (
               <div className="text-center py-12">
-                <div className="text-gray-400 mb-4">
+                <div className="text-gray-400 dark:text-gray-500 mb-4">
                   <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.5-.816-6.207-2.175C5.25 12.09 5.25 11.91 5.25 11.91V6.375c0-1.036.84-1.875 1.875-1.875h8.25c1.035 0 1.875.84 1.875 1.875v5.535z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Keine Fragen gefunden</h3>
-                <p className="text-gray-600">Versuchen Sie andere Suchbegriffe oder wählen Sie eine andere Kategorie.</p>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Keine Fragen gefunden</h3>
+                <p className="text-gray-600 dark:text-gray-300">Versuchen Sie andere Suchbegriffe oder wählen Sie eine andere Kategorie.</p>
               </div>
             ) : (
               filteredItems.map((item) => (
-                <div key={item.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <div key={item.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden transition-colors duration-300">
                   <button
                     onClick={() => toggleItem(item.id)}
-                    className="w-full px-6 py-5 text-left hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:bg-gray-50"
+                    className="w-full px-6 py-5 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700"
                   >
                     <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-semibold text-gray-900 pr-4">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 pr-4">
                         {item.question}
                       </h3>
                       <div className={`flex-shrink-0 transform transition-transform duration-200 ${
                         openItems.has(item.id) ? 'rotate-180' : ''
                       }`}>
-                        <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                         </svg>
                       </div>
@@ -298,8 +298,8 @@ export default function FAQPage() {
                   </button>
                   
                   {openItems.has(item.id) && (
-                    <div className="px-6 pb-5 border-t border-gray-100">
-                      <div className="pt-4 text-gray-700 leading-relaxed">
+                    <div className="px-6 pb-5 border-t border-gray-100 dark:border-gray-700">
+                      <div className="pt-4 text-gray-700 dark:text-gray-300 leading-relaxed">
                         {item.answer}
                       </div>
                     </div>
@@ -310,7 +310,7 @@ export default function FAQPage() {
           </div>
 
           {/* Contact Section */}
-          <div className="mt-16 bg-gradient-to-r from-green-600 to-green-700 rounded-2xl p-8 text-white text-center">
+          <div className="mt-16 bg-gradient-to-r from-green-600 to-green-700 dark:from-green-700 dark:to-green-800 rounded-2xl p-8 text-white text-center transition-colors duration-300">
             <h2 className="text-2xl font-bold mb-4">Ihre Frage war nicht dabei?</h2>
             <p className="text-green-100 mb-6 max-w-2xl mx-auto">
               Kein Problem! Unser Expertenteam steht Ihnen gerne zur Verfügung und beantwortet alle Ihre Fragen rund um Kredite und Finanzierungen.
