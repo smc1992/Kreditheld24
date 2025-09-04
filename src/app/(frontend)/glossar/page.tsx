@@ -367,16 +367,28 @@ export default function GlossarPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <main className="pt-20 pb-16">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-green-600 to-green-700 dark:from-green-700 dark:to-green-800 text-white py-16 transition-colors duration-300">
-          <div className="container mx-auto px-4">
+        <section className="bg-gradient-to-br from-green-600 via-green-700 to-green-800 dark:from-green-700 dark:via-green-800 dark:to-green-900 text-white py-16 transition-colors duration-300 relative overflow-hidden">
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-10 left-10 w-24 h-24 border border-green-300 rounded-full"></div>
+            <div className="absolute bottom-10 right-10 w-32 h-32 border border-green-400 rounded-full"></div>
+            <div className="absolute top-1/2 left-1/2 w-16 h-16 border border-green-200 rounded-full"></div>
+            <div className="absolute top-20 right-20 w-20 h-20 border border-green-300 rounded-full"></div>
+          </div>
+          
+          <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
+              <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full border border-white/30 mb-6">
+                <div className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
+                <span className="text-sm font-medium text-white">Kreditglossar</span>
+              </div>
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
                 Kreditglossar
               </h1>
-              <p className="text-xl md:text-2xl mb-8 opacity-90">
+              <p className="text-xl md:text-2xl mb-8 text-green-100">
                 Alle wichtigen Kreditbegriffe einfach erklärt
               </p>
-              <p className="text-lg opacity-80">
+              <p className="text-lg text-green-200">
                 Verstehen Sie die Fachsprache der Finanzwelt und treffen Sie informierte Entscheidungen
               </p>
             </div>
@@ -384,39 +396,57 @@ export default function GlossarPage() {
         </section>
 
         {/* Search and Filter */}
-        <section className="py-8 bg-white dark:bg-gray-800 shadow-sm transition-colors duration-300">
-          <div className="container mx-auto px-4">
+        <section className="py-12 bg-gradient-to-br from-white via-blue-50/20 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300 relative overflow-hidden">
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute top-20 left-20 w-32 h-32 border border-blue-500 rounded-full"></div>
+            <div className="absolute bottom-20 right-20 w-24 h-24 border border-primary rounded-full"></div>
+            <div className="absolute top-1/2 right-1/4 w-16 h-16 border border-blue-400 rounded-full"></div>
+          </div>
+          
+          <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto">
-              <div className="flex flex-col md:flex-row gap-4 mb-6">
-                {/* Search */}
-                <div className="flex-1">
-                  <input
-                    type="text"
-                    placeholder="Begriff suchen..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors duration-300"
-                  />
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-blue-200 dark:border-blue-700 mb-6">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
+                  <span className="text-sm font-medium text-blue-700 dark:text-blue-400">Suche & Filter</span>
                 </div>
-                
-                {/* Category Filter */}
-                <div className="md:w-64">
-                  <select
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors duration-300"
-                  >
-                    <option value="alle">Alle Kategorien</option>
-                    {Object.entries(categories).map(([key, label]) => (
-                      <option key={key} value={key}>{label}</option>
-                    ))}
-                  </select>
-                </div>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Finden Sie den gesuchten Begriff</h2>
+                <p className="text-gray-600 dark:text-gray-300">Nutzen Sie die Suche oder wählen Sie eine Kategorie aus</p>
               </div>
               
-              <p className="text-gray-600 dark:text-gray-300">
-                {filteredTerms.length} Begriff{filteredTerms.length !== 1 ? 'e' : ''} gefunden
-              </p>
+              <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+                <div className="flex flex-col md:flex-row gap-4 mb-6">
+                  {/* Search */}
+                  <div className="flex-1">
+                    <input
+                      type="text"
+                      placeholder="Begriff suchen..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300"
+                    />
+                  </div>
+                  
+                  {/* Category Filter */}
+                  <div className="md:w-64">
+                    <select
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300"
+                    >
+                      <option value="alle">Alle Kategorien</option>
+                      {Object.entries(categories).map(([key, label]) => (
+                        <option key={key} value={key}>{label}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                
+                <p className="text-gray-600 dark:text-gray-300 text-center">
+                  {filteredTerms.length} Begriff{filteredTerms.length !== 1 ? 'e' : ''} gefunden
+                </p>
+              </div>
             </div>
           </div>
         </section>
