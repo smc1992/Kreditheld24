@@ -677,7 +677,7 @@ const UmschuldungPage = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="w-full border border-gray-300 rounded py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
+                      className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300" 
                       required
                     />
                   </div>
@@ -688,7 +688,7 @@ const UmschuldungPage = () => {
                       name="telefon"
                       value={formData.telefon}
                       onChange={handleInputChange}
-                      className="w-full border border-gray-300 rounded py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300"
                     />
                   </div>
                   <div>
@@ -698,7 +698,7 @@ const UmschuldungPage = () => {
                       name="geburtsdatum"
                       value={formData.geburtsdatum}
                       onChange={handleInputChange}
-                      className="w-full border border-gray-300 rounded py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300"
                     />
                   </div>
                 </div>
@@ -859,13 +859,13 @@ const UmschuldungPage = () => {
                                 <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
                                   <i className="ri-checkbox-circle-line"></i>
                                 </div>
-                                <span className="text-gray-600">Aktuelle Salden</span>
+                                <span className="text-gray-600 dark:text-gray-300">Aktuelle Salden</span>
                               </li>
                               <li className="flex items-center">
                                 <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
                                   <i className="ri-checkbox-circle-line"></i>
                                 </div>
-                                <span className="text-gray-600">Ablöseinformationen</span>
+                                <span className="text-gray-600 dark:text-gray-300">Ablöseinformationen</span>
                               </li>
                             </ul>
                           </div>
@@ -878,9 +878,9 @@ const UmschuldungPage = () => {
                       <div className="md:flex-shrink-0 mb-4 md:mb-0">
                         <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xl z-10 relative md:mr-8">4</div>
                       </div>
-                      <div className="bg-white p-6 rounded-lg shadow-sm flex-grow">
-                        <h3 className="text-xl font-semibold mb-3">Vertragsabschluss</h3>
-                        <p className="text-gray-600 mb-4">
+                      <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm flex-grow transition-colors duration-300">
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Vertragsabschluss</h3>
+                        <p className="text-gray-600 dark:text-gray-300 mb-4">
                           Unterschreiben Sie Ihren neuen Kreditvertrag digital und die Bank kümmert sich um die Ablösung Ihrer bestehenden Kredite.
                         </p>
                         <div className="flex flex-wrap gap-4">
@@ -888,13 +888,13 @@ const UmschuldungPage = () => {
                             <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
                               <i className="ri-check-line"></i>
                             </div>
-                            <span className="text-gray-600">Digitale Unterschrift</span>
+                            <span className="text-gray-600 dark:text-gray-300">Digitale Unterschrift</span>
                           </div>
                           <div className="flex items-center">
                             <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
                               <i className="ri-check-line"></i>
                             </div>
-                            <span className="text-gray-600">Automatische Ablösung</span>
+                            <span className="text-gray-600 dark:text-gray-300">Automatische Ablösung</span>
                           </div>
                           <div className="flex items-center">
                             <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
