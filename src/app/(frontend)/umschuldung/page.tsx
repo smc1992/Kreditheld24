@@ -985,7 +985,7 @@ const UmschuldungPage = () => {
                   <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
                     <i className="ri-check-line"></i>
                   </div>
-                  <span className="text-gray-600">SCHUFA-neutral</span>
+                  <span className="text-gray-600 dark:text-gray-300">SCHUFA-neutral</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
@@ -997,7 +997,7 @@ const UmschuldungPage = () => {
                   <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
                     <i className="ri-check-line"></i>
                   </div>
-                  <span className="text-gray-600">Schnelle Bearbeitung</span>
+                  <span className="text-gray-600 dark:text-gray-300">Schnelle Bearbeitung</span>
                 </div>
               </div>
             </div>
