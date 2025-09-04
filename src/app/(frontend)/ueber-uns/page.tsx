@@ -24,11 +24,11 @@ const UeberUnsPage = () => {
 
   const statistiken = [
     {
-      zahl: "10+",
-      beschreibung: "Jahre Erfahrung"
+      zahl: "2025",
+      beschreibung: "Gegründet"
     },
     {
-      zahl: "50.000+",
+      zahl: "1.000+",
       beschreibung: "Zufriedene Kunden"
     },
     {
@@ -36,31 +36,12 @@ const UeberUnsPage = () => {
       beschreibung: "Partnerbanken"
     },
     {
-      zahl: "98%",
-      beschreibung: "Weiterempfehlungsrate"
+      zahl: "100%",
+      beschreibung: "Digital"
     }
   ]
 
-  const team = [
-    {
-      name: "Michael Weber",
-      position: "Geschäftsführer",
-      beschreibung: "Über 15 Jahre Erfahrung im Finanzwesen und Experte für Kreditvermittlung.",
-      image: "https://readdy.ai/api/search-image?query=professional%20business%20man%20in%20suit%20smiling%20confident%20portrait%20office%20background&width=400&height=400&seq=team1&orientation=square"
-    },
-    {
-      name: "Sarah Müller",
-      position: "Leiterin Kundenberatung",
-      beschreibung: "Spezialistin für individuelle Finanzlösungen und Kundenbetreuung.",
-      image: "https://readdy.ai/api/search-image?query=professional%20business%20woman%20smiling%20confident%20portrait%20office%20background&width=400&height=400&seq=team2&orientation=square"
-    },
-    {
-      name: "Thomas Klein",
-      position: "Leiter IT & Digitalisierung",
-      beschreibung: "Verantwortlich für unsere digitalen Lösungen und Sicherheitsstandards.",
-      image: "https://readdy.ai/api/search-image?query=professional%20IT%20specialist%20man%20smiling%20confident%20portrait%20modern%20office&width=400&height=400&seq=team3&orientation=square"
-    }
-  ]
+
 
   const kontaktInfos = [
     {
@@ -109,7 +90,7 @@ const UeberUnsPage = () => {
               Ihr vertrauenswürdiger Partner für Finanzlösungen
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-gray-700 mb-6 md:mb-8">
-              Seit über 10 Jahren unterstützen wir Menschen dabei, ihre finanziellen Ziele zu erreichen. Mit Expertise, Transparenz und persönlicher Beratung stehen wir Ihnen zur Seite.
+              Als innovatives Online-Portal unterstützen wir Menschen dabei, ihre finanziellen Ziele zu erreichen. Mit Expertise, Transparenz und persönlicher Beratung stehen wir Ihnen zur Seite.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link 
@@ -192,32 +173,7 @@ const UeberUnsPage = () => {
         </div>
       </section>
 
-      {/* Team */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Unser Team</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Lernen Sie die Menschen hinter Kreditheld24 kennen - Experten mit Leidenschaft für Finanzlösungen.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {team.map((mitarbeiter, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                <div 
-                  className="w-full h-64 bg-cover bg-center" 
-                  style={{ backgroundImage: `url('${mitarbeiter.image}')` }}
-                ></div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-2">{mitarbeiter.name}</h3>
-                  <p className="text-primary font-medium mb-3">{mitarbeiter.position}</p>
-                  <p className="text-gray-600">{mitarbeiter.beschreibung}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+
 
       {/* Geschichte */}
       <section className="py-16 bg-gray-50">
@@ -232,45 +188,12 @@ const UeberUnsPage = () => {
             <div className="space-y-8">
               <div className="flex items-start">
                 <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xl mr-6 shrink-0">
-                  2014
+                  2025
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold mb-2">Gründung von Kreditheld24</h3>
                   <p className="text-gray-600">
-                    Mit der Vision, Kreditvergleiche transparent und kundenfreundlich zu gestalten, wurde Kreditheld24 gegründet.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xl mr-6 shrink-0">
-                  2018
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">Digitale Transformation</h3>
-                  <p className="text-gray-600">
-                    Einführung unserer vollständig digitalen Plattform für noch schnellere und effizientere Kreditvergleiche.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xl mr-6 shrink-0">
-                  2022
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">Expansion des Partnernetzwerks</h3>
-                  <p className="text-gray-600">
-                    Erweiterung auf über 20 Partnerbanken für noch bessere Konditionen und mehr Auswahlmöglichkeiten.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xl mr-6 shrink-0">
-                  2025
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">Heute</h3>
-                  <p className="text-gray-600">
-                    Über 50.000 zufriedene Kunden vertrauen auf unsere Expertise und unseren erstklassigen Service.
+                    Mit der Vision, Kreditvergleiche transparent und kundenfreundlich zu gestalten, wurde Kreditheld24 als innovatives Online-Portal gegründet.
                   </p>
                 </div>
               </div>
