@@ -660,18 +660,18 @@ const UmschuldungPage = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 font-medium mb-2">Nachname</label>
+                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Nachname</label>
                     <input 
                       type="text" 
                       name="nachname"
                       value={formData.nachname}
                       onChange={handleInputChange}
-                      className="w-full border border-gray-300 rounded py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
+                      className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300" 
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 font-medium mb-2">E-Mail</label>
+                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">E-Mail</label>
                     <input 
                       type="email" 
                       name="email"
@@ -682,7 +682,7 @@ const UmschuldungPage = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 font-medium mb-2">Telefon</label>
+                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Telefon</label>
                     <input 
                       type="tel" 
                       name="telefon"
@@ -692,7 +692,7 @@ const UmschuldungPage = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 font-medium mb-2">Geburtsdatum</label>
+                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Geburtsdatum</label>
                     <input 
                       type="date" 
                       name="geburtsdatum"
@@ -713,7 +713,7 @@ const UmschuldungPage = () => {
                       className="mt-1 mr-3"
                       required
                     />
-                    <span className="text-gray-700">
+                    <span className="text-gray-700 dark:text-gray-300">
                       Ich habe die <Link href="/datenschutz" className="text-primary hover:underline">Datenschutzerklärung</Link> gelesen und stimme der Verarbeitung meiner Daten zu.
                     </span>
                   </label>
@@ -726,7 +726,7 @@ const UmschuldungPage = () => {
                   >
                     Unverbindliches Angebot anfordern
                   </button>
-                  <p className="text-xs text-gray-500 mt-4 text-center">100% kostenlos & SCHUFA-neutral</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">100% kostenlos & SCHUFA-neutral</p>
                 </div>
               </form>
             </div>
@@ -734,26 +734,26 @@ const UmschuldungPage = () => {
         </section>
 
         {/* Process */}
-        <section className="py-16 bg-gray-50">
+        <section className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">So funktioniert die Umschuldung</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">So funktioniert die Umschuldung</h2>
+              <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
                 In nur vier einfachen Schritten zu Ihrer erfolgreichen Umschuldung.
               </p>
             </div>
             <div className="max-w-4xl mx-auto">
               <div className="relative">
-                <div className="absolute left-8 top-0 bottom-0 w-1 bg-green-100 md:block hidden"></div>
+                <div className="absolute left-8 top-0 bottom-0 w-1 bg-green-100 dark:bg-green-800 md:block hidden"></div>
                 <div className="space-y-12">
                   <div className="relative">
                     <div className="md:flex items-start">
                       <div className="md:flex-shrink-0 mb-4 md:mb-0">
                         <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xl z-10 relative md:mr-8">1</div>
                       </div>
-                      <div className="bg-white p-6 rounded-lg shadow-sm flex-grow">
-                        <h3 className="text-xl font-semibold mb-3">Bonitätsprüfung</h3>
-                        <p className="text-gray-600 mb-4">
+                      <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm flex-grow transition-colors duration-300">
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Bonitätsprüfung</h3>
+                        <p className="text-gray-600 dark:text-gray-300 mb-4">
                           Wir prüfen Ihre Kreditwürdigkeit SCHUFA-neutral und ermitteln, welche Konditionen für Sie möglich sind.
                         </p>
                         <div className="flex flex-wrap gap-4">
@@ -761,7 +761,7 @@ const UmschuldungPage = () => {
                             <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
                               <i className="ri-check-line"></i>
                             </div>
-                            <span className="text-gray-600">Kostenlos</span>
+                            <span className="text-gray-600 dark:text-gray-300">Kostenlos</span>
                           </div>
                           <div className="flex items-center">
                             <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
@@ -773,7 +773,7 @@ const UmschuldungPage = () => {
                             <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
                               <i className="ri-check-line"></i>
                             </div>
-                            <span className="text-gray-600">Schnell & unkompliziert</span>
+                            <span className="text-gray-600 dark:text-gray-300">Schnell & unkompliziert</span>
                           </div>
                         </div>
                       </div>
@@ -784,9 +784,9 @@ const UmschuldungPage = () => {
                       <div className="md:flex-shrink-0 mb-4 md:mb-0">
                         <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xl z-10 relative md:mr-8">2</div>
                       </div>
-                      <div className="bg-white p-6 rounded-lg shadow-sm flex-grow">
-                        <h3 className="text-xl font-semibold mb-3">Kreditvergleich</h3>
-                        <p className="text-gray-600 mb-4">
+                      <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm flex-grow transition-colors duration-300">
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Kreditvergleich</h3>
+                        <p className="text-gray-600 dark:text-gray-300 mb-4">
                           Wir vergleichen die Angebote von über 20 Banken und finden die beste Lösung für Ihre Umschuldung.
                         </p>
                         <div className="flex flex-wrap gap-4">
@@ -794,19 +794,19 @@ const UmschuldungPage = () => {
                             <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
                               <i className="ri-check-line"></i>
                             </div>
-                            <span className="text-gray-600">Unabhängiger Vergleich</span>
+                            <span className="text-gray-600 dark:text-gray-300">Unabhängiger Vergleich</span>
                           </div>
                           <div className="flex items-center">
                             <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
                               <i className="ri-check-line"></i>
                             </div>
-                            <span className="text-gray-600">Über 20 Banken</span>
+                            <span className="text-gray-600 dark:text-gray-300">Über 20 Banken</span>
                           </div>
                           <div className="flex items-center">
                             <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
                               <i className="ri-check-line"></i>
                             </div>
-                            <span className="text-gray-600">Beste Konditionen</span>
+                            <span className="text-gray-600 dark:text-gray-300">Beste Konditionen</span>
                           </div>
                         </div>
                       </div>
@@ -817,43 +817,43 @@ const UmschuldungPage = () => {
                       <div className="md:flex-shrink-0 mb-4 md:mb-0">
                         <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xl z-10 relative md:mr-8">3</div>
                       </div>
-                      <div className="bg-white p-6 rounded-lg shadow-sm flex-grow">
-                        <h3 className="text-xl font-semibold mb-3">Dokumenteneinreichung</h3>
-                        <p className="text-gray-600 mb-4">
+                      <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm flex-grow transition-colors duration-300">
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Dokumenteneinreichung</h3>
+                        <p className="text-gray-600 dark:text-gray-300 mb-4">
                           Reichen Sie alle erforderlichen Unterlagen bequem online ein – ohne Papierkram und Behördengänge.
                         </p>
                         <div className="grid md:grid-cols-2 gap-4 mt-4">
-                          <div className="bg-gray-50 p-4 rounded">
-                            <h4 className="font-medium mb-2">Benötigte Unterlagen:</h4>
+                          <div className="bg-gray-50 dark:bg-gray-600 p-4 rounded transition-colors duration-300">
+                            <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Benötigte Unterlagen:</h4>
                             <ul className="space-y-2">
                               <li className="flex items-center">
                                 <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
                                   <i className="ri-checkbox-circle-line"></i>
                                 </div>
-                                <span className="text-gray-600">Personalausweis</span>
+                                <span className="text-gray-600 dark:text-gray-300">Personalausweis</span>
                               </li>
                               <li className="flex items-center">
                                 <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
                                   <i className="ri-checkbox-circle-line"></i>
                                 </div>
-                                <span className="text-gray-600">Gehaltsabrechnungen (3 Monate)</span>
+                                <span className="text-gray-600 dark:text-gray-300">Gehaltsabrechnungen (3 Monate)</span>
                               </li>
                               <li className="flex items-center">
                                 <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
                                   <i className="ri-checkbox-circle-line"></i>
                                 </div>
-                                <span className="text-gray-600">Kontoauszüge (3 Monate)</span>
+                                <span className="text-gray-600 dark:text-gray-300">Kontoauszüge (3 Monate)</span>
                               </li>
                             </ul>
                           </div>
-                          <div className="bg-gray-50 p-4 rounded">
-                            <h4 className="font-medium mb-2">Für bestehende Kredite:</h4>
+                          <div className="bg-gray-50 dark:bg-gray-600 p-4 rounded transition-colors duration-300">
+                            <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Für bestehende Kredite:</h4>
                             <ul className="space-y-2">
                               <li className="flex items-center">
                                 <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
                                   <i className="ri-checkbox-circle-line"></i>
                                 </div>
-                                <span className="text-gray-600">Kreditverträge</span>
+                                <span className="text-gray-600 dark:text-gray-300">Kreditverträge</span>
                               </li>
                               <li className="flex items-center">
                                 <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
