@@ -204,9 +204,20 @@ const KreditSelbststaendigePage = () => {
         </section>
 
         {/* Calculator */}
-        <section id="calculator" className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
-          <div className="container mx-auto px-4">
+        <section id="calculator" className="py-16 bg-gradient-to-br from-gray-50 via-blue-50/20 to-gray-50 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 transition-colors duration-300 relative overflow-hidden">
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute top-10 right-10 w-24 h-24 border border-blue-500 rounded-full"></div>
+            <div className="absolute bottom-10 left-10 w-32 h-32 border border-primary rounded-full"></div>
+            <div className="absolute top-1/2 left-1/2 w-16 h-16 border border-blue-400 rounded-full"></div>
+          </div>
+          
+          <div className="container mx-auto px-4 relative z-10">
             <div className="text-center mb-12">
+              <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-blue-200 dark:border-blue-700 mb-6">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
+                <span className="text-sm font-medium text-blue-700 dark:text-blue-400">Kostenloser Rechner</span>
+              </div>
               <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Kreditrechner für Selbstständige</h2>
               <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
                 Berechnen Sie Ihre individuellen Kreditkonditionen und finden Sie die optimale Finanzierungslösung für Ihr Unternehmen.
