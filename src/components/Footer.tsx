@@ -98,27 +98,7 @@ export function Footer() {
                 <div className="text-gray-300 text-sm leading-relaxed">
                   <div className="font-medium text-white mb-1">Geschäftsadresse:</div>
                   Brockmannstr. 204<br />48163 Münster
-                  <div className="font-medium text-white mt-3 mb-1">Besucheranschrift:</div>
-                  Glücksburger Str. 13<br />49477 Ibbenbüren
                 </div>
-              </div>
-              
-              <div className="flex items-center">
-                <div className="w-6 h-6 bg-primary/20 rounded-lg flex items-center justify-center text-primary mr-3 flex-shrink-0">
-                  <i className="ri-phone-line text-sm"></i>
-                </div>
-                <Link href="tel:+492511491427" className="text-gray-300 hover:text-primary transition-colors duration-200">
-                  0251. 149 142 77
-                </Link>
-              </div>
-              
-              <div className="flex items-center">
-                <div className="w-6 h-6 bg-primary/20 rounded-lg flex items-center justify-center text-primary mr-3 flex-shrink-0">
-                  <i className="ri-smartphone-line text-sm"></i>
-                </div>
-                <Link href="tel:+491795104859" className="text-gray-300 hover:text-primary transition-colors duration-200">
-                  0179. 51 04 859
-                </Link>
               </div>
               
               <div className="flex items-center">

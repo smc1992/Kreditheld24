@@ -139,43 +139,8 @@ const KontaktPage = () => {
                     <p className="text-gray-600">Brockmannstr. 204<br />48163 Münster</p>
                   </div>
                 </div>
-                <div className="flex items-start">
-                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-4 shrink-0">
-                    <div className="w-5 h-5 flex items-center justify-center text-primary">
-                      <i className="ri-map-pin-line"></i>
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Besucheranschrift</h3>
-                    <p className="text-gray-600">Glücksburger Str. 13<br />49477 Ibbenbüren</p>
-                  </div>
-                </div>
-                <div className="flex items-start">
-                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-4 shrink-0">
-                    <div className="w-5 h-5 flex items-center justify-center text-primary">
-                      <i className="ri-phone-line"></i>
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Telefon</h3>
-                    <p className="text-gray-600">
-                      <a href="tel:+492511491427" className="hover:text-primary">0251. 149 142 77</a>
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start">
-                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-4 shrink-0">
-                    <div className="w-5 h-5 flex items-center justify-center text-primary">
-                      <i className="ri-smartphone-line"></i>
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Mobil</h3>
-                    <p className="text-gray-600">
-                      <a href="tel:+491795104859" className="hover:text-primary">0179. 51 04 859</a>
-                    </p>
-                  </div>
-                </div>
+
+
                 <div className="flex items-start">
                   <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-4 shrink-0">
                     <div className="w-5 h-5 flex items-center justify-center text-primary">
@@ -379,35 +344,20 @@ const KontaktPage = () => {
           <div className="text-center mb-12">
             <h2 className="text-2xl font-bold mb-4">So finden Sie uns</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Besuchen Sie uns in unserer Filiale in Ibbenbüren. Wir freuen uns auf Ihren Besuch!
+              Kontaktieren Sie uns gerne per E-Mail oder über unser Kontaktformular. Wir freuen uns auf Ihre Nachricht!
             </p>
           </div>
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="h-96 relative">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2441.8234567890123!2d7.7234567890123456!3d52.2765432109876!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47b9c1234567890a%3A0x1234567890abcdef!2sGl%C3%BCcksburger%20Str.%2013%2C%2049477%20Ibbenb%C3%BCren%2C%20Germany!5e0!3m2!1sen!2sde!4v1234567890123!5m2!1sen!2sde"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Kreditheld24 Standort Ibbenbüren"
-              ></iframe>
-              <div className="absolute bottom-4 left-4 bg-white p-4 rounded-lg shadow-md max-w-xs">
-                <h3 className="font-semibold mb-2">Kreditheld24</h3>
-                <p className="text-gray-600 text-sm">Glücksburger Str. 13<br />49477 Ibbenbüren</p>
-                <div className="mt-2">
-                  <a 
-                    href="https://maps.google.com/?q=Glücksburger+Str.+13,+49477+Ibbenbüren" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-primary hover:text-green-600 text-sm font-medium flex items-center"
-                  >
-                    <i className="ri-external-link-line mr-1"></i>
-                    In Google Maps öffnen
-                  </a>
+              <div className="bg-gray-100 rounded-lg p-8 text-center h-full flex flex-col justify-center">
+                <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                  <i className="ri-map-pin-line text-white text-2xl"></i>
                 </div>
+                <h3 className="text-xl font-semibold mb-2">Geschäftsadresse</h3>
+                <p className="text-gray-600">Brockmannstr. 204<br />48163 Münster</p>
+                <p className="text-sm text-gray-500 mt-4">
+                  Kontaktieren Sie uns gerne per E-Mail oder Telefon für alle Ihre Fragen.
+                </p>
               </div>
             </div>
           </div>
