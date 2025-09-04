@@ -53,9 +53,9 @@ const RatenkreditePage = () => {
   ]
 
   return (
-    <div className="font-sans text-gray-800 bg-white">
+    <div className="font-sans text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-900 transition-colors duration-300">
       {/* Hero Section */}
-      <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 overflow-hidden min-h-[500px] sm:min-h-[600px] lg:min-h-[700px]">
+      <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 dark:from-gray-900 dark:to-gray-800 overflow-hidden min-h-[500px] sm:min-h-[600px] lg:min-h-[700px] transition-colors duration-300">
         <div 
           className="absolute inset-0 bg-right bg-no-repeat bg-contain opacity-20 sm:opacity-40 md:opacity-60 lg:opacity-90"
           style={{
@@ -65,11 +65,11 @@ const RatenkreditePage = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-green-50/80 to-transparent sm:from-green-50/90 sm:via-green-50/70 md:from-green-50/80 md:via-green-50/60"></div>
         <div className="container mx-auto px-4 py-12 sm:py-16 md:py-20 lg:py-24 relative z-10 flex items-center min-h-[500px] sm:min-h-[600px] lg:min-h-[700px]">
           <div className="max-w-xl lg:max-w-2xl">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 leading-tight mb-6">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 dark:text-gray-100 leading-tight mb-6">
                 Ratenkredite zu <span className="text-primary">Top-Konditionen</span>
               </h1>
               <div className="h-1 w-24 bg-primary rounded mb-8"></div>
-              <p className="text-lg md:text-xl text-gray-700 mb-8 leading-relaxed">
+              <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-8 leading-relaxed">
                 Flexible Laufzeiten, günstige Zinsen und schnelle Auszahlung – Ihr maßgeschneiderter Ratenkredit bei Kreditheld24.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
@@ -107,78 +107,78 @@ const RatenkreditePage = () => {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Vorteile unserer Ratenkredite</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Vorteile unserer Ratenkredite</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Bei Kreditheld24 finden Sie den passenden Ratenkredit zu attraktiven Konditionen – maßgeschneidert für Ihre Bedürfnisse.
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
                 <div className="w-6 h-6 flex items-center justify-center text-primary">
                   <i className="ri-percent-line ri-lg"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold mb-2">Attraktive Zinsen</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Attraktive Zinsen</h3>
+              <p className="text-gray-600 dark:text-gray-300">
                 Profitieren Sie von günstigen Zinssätzen ab 2,99% effektiv p.a. durch unseren Bankenvergleich.
               </p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
                 <div className="w-6 h-6 flex items-center justify-center text-primary">
                   <i className="ri-calendar-check-line ri-lg"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold mb-2">Flexible Laufzeiten</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Flexible Laufzeiten</h3>
+              <p className="text-gray-600 dark:text-gray-300">
                 Wählen Sie Laufzeiten zwischen 12 und 120 Monaten – ganz nach Ihren finanziellen Möglichkeiten.
               </p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
                 <div className="w-6 h-6 flex items-center justify-center text-primary">
                   <i className="ri-money-euro-box-line ri-lg"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold mb-2">Kreditsummen bis 100.000 €</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Kreditsummen bis 100.000 €</h3>
+              <p className="text-gray-600 dark:text-gray-300">
                 Finanzieren Sie kleine Anschaffungen oder große Projekte mit Kreditsummen von 1.000 € bis 100.000 €.
               </p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
                 <div className="w-6 h-6 flex items-center justify-center text-primary">
                   <i className="ri-timer-flash-line ri-lg"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold mb-2">Schnelle Auszahlung</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Schnelle Auszahlung</h3>
+              <p className="text-gray-600 dark:text-gray-300">
                 Erhalten Sie Ihr Geld innerhalb von 24 Stunden nach Vertragsabschluss auf Ihrem Konto.
               </p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
                 <div className="w-6 h-6 flex items-center justify-center text-primary">
                   <i className="ri-refund-2-line ri-lg"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold mb-2">Kostenlose Sondertilgung</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Kostenlose Sondertilgung</h3>
+              <p className="text-gray-600 dark:text-gray-300">
                 Zahlen Sie Ihren Kredit jederzeit teilweise oder vollständig zurück – ohne zusätzliche Gebühren.
               </p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
                 <div className="w-6 h-6 flex items-center justify-center text-primary">
                   <i className="ri-shield-check-line ri-lg"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold mb-2">SCHUFA-neutrale Anfrage</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">SCHUFA-neutrale Anfrage</h3>
+              <p className="text-gray-600 dark:text-gray-300">
                 Unsere Vorabanfrage hat keinen Einfluss auf Ihren SCHUFA-Score – garantiert.
               </p>
             </div>
