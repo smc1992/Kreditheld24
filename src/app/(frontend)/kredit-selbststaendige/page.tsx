@@ -168,23 +168,23 @@ const KreditSelbststaendigePage = () => {
     <>
       <Script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js" />
       
-      <div className="font-sans text-gray-800 bg-white">
+      <div className="font-sans text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-900 transition-colors duration-300">
 
         {/* Hero Section */}
-        <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 overflow-hidden min-h-[500px] sm:min-h-[600px] lg:min-h-[700px]">
+        <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 dark:from-gray-900 dark:to-gray-800 overflow-hidden min-h-[500px] sm:min-h-[600px] lg:min-h-[700px] transition-colors duration-300">
           <div 
             className="absolute inset-0 bg-right bg-no-repeat bg-contain opacity-20 sm:opacity-40 md:opacity-60 lg:opacity-90" 
             style={{
               backgroundImage: "url('https://readdy.ai/api/search-image?query=professional%2520business%2520person%2520working%2520on%2520laptop%2520in%2520modern%2520office%252C%2520business%2520documents%2520and%2520calculator%2520nearby%252C%2520soft%2520natural%2520lighting%252C%2520green%2520plants%2520in%2520background%252C%2520business%2520finance%2520concept%252C%2520entrepreneurship%2520theme%252C%2520clean%2520minimal%2520workspace%252C%2520with%2520plenty%2520of%2520empty%2520space%2520on%2520the%2520left%2520side%2520for%2520text&width=800&height=600&seq=self123&orientation=landscape')"
             }}
           ></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-green-50/80 to-transparent sm:from-green-50/90 sm:via-green-50/70 md:from-green-50/80 md:via-green-50/60"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-green-50/80 to-transparent sm:from-green-50/90 sm:via-green-50/70 md:from-green-50/80 md:via-green-50/60 dark:from-gray-900/95 dark:via-gray-900/80 dark:to-transparent dark:sm:from-gray-900/90 dark:sm:via-gray-900/70 dark:md:from-gray-900/80 dark:md:via-gray-900/60"></div>
           <div className="container mx-auto px-4 py-12 sm:py-16 md:py-20 lg:py-24 relative z-10 flex items-center min-h-[500px] sm:min-h-[600px] lg:min-h-[700px]">
             <div className="max-w-xl lg:max-w-2xl">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 dark:text-gray-100 mb-4">
                 Kredite für Selbstständige – maßgeschneiderte Finanzlösungen
               </h1>
-              <p className="text-lg md:text-xl text-gray-700 mb-8">
+              <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-8">
                 Speziell entwickelte Kreditangebote für Unternehmer, Freiberufler und Gewerbetreibende mit flexiblen Konditionen.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
@@ -204,19 +204,19 @@ const KreditSelbststaendigePage = () => {
         </section>
 
         {/* Calculator */}
-        <section id="calculator" className="py-16 bg-gray-50">
+        <section id="calculator" className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Kreditrechner für Selbstständige</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Kreditrechner für Selbstständige</h2>
+              <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
                 Berechnen Sie Ihre individuellen Kreditkonditionen und finden Sie die optimale Finanzierungslösung für Ihr Unternehmen.
               </p>
             </div>
-            <div className="bg-white rounded-lg shadow-md p-6 md:p-8 max-w-4xl mx-auto">
+            <div className="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 md:p-8 max-w-4xl mx-auto transition-colors duration-300">
               <div className="grid md:grid-cols-2 gap-8">
                 <div>
                   <div className="mb-6">
-                    <label className="block text-gray-700 font-medium mb-2">Kreditsumme</label>
+                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Kreditsumme</label>
                     <div className="relative">
                       <input 
                         type="number" 
