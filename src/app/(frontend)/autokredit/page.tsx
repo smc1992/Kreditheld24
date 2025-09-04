@@ -65,7 +65,7 @@ const AutokreditPage = () => {
             backgroundImage: "url('https://readdy.ai/api/search-image?query=modern%2520luxury%2520car%2520with%2520soft%2520lighting%2520in%2520a%2520minimalist%2520showroom%2520with%2520light%2520green%2520background%252C%2520professional%2520product%2520photography%252C%2520clean%2520composition%252C%2520no%2520people%252C%2520high-end%2520automotive%2520photography%252C%2520elegant%2520atmosphere%252C%2520subtle%2520reflections%2520on%2520polished%2520floor&width=800&height=600&seq=autokredit123&orientation=landscape')"
           }}
         ></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-green-50/80 to-transparent sm:from-green-50/90 sm:via-green-50/70 md:from-green-50/80 md:via-green-50/60"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-green-50/80 to-transparent sm:from-green-50/90 sm:via-green-50/70 md:from-green-50/80 md:via-green-50/60 dark:from-gray-900/95 dark:via-gray-900/80 dark:to-transparent dark:sm:from-gray-900/90 dark:sm:via-gray-900/70 dark:md:from-gray-900/80 dark:md:via-gray-900/60"></div>
         <div className="container mx-auto px-4 py-12 sm:py-16 md:py-20 lg:py-24 relative z-10 flex items-center min-h-[500px] sm:min-h-[600px] lg:min-h-[700px]">
           <div className="max-w-xl lg:max-w-2xl">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-800 dark:text-gray-100 mb-4 sm:mb-6 leading-tight">
@@ -92,28 +92,28 @@ const AutokreditPage = () => {
             {/* Mobile Trust Indicators */}
             <div className="mt-8 sm:mt-12 flex flex-wrap items-center gap-4 sm:gap-6">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/90 flex items-center justify-center">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/90 dark:bg-gray-700/90 flex items-center justify-center">
                   <div className="w-4 h-4 sm:w-6 sm:h-6 flex items-center justify-center text-primary">
                     <i className="ri-shield-check-line"></i>
                   </div>
                 </div>
-                <span className="text-gray-700 font-medium text-sm sm:text-base">100% sicher</span>
+                <span className="text-gray-700 dark:text-gray-300 font-medium text-sm sm:text-base">100% sicher</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/90 flex items-center justify-center">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/90 dark:bg-gray-700/90 flex items-center justify-center">
                   <div className="w-4 h-4 sm:w-6 sm:h-6 flex items-center justify-center text-primary">
                     <i className="ri-timer-line"></i>
                   </div>
                 </div>
-                <span className="text-gray-700 font-medium text-sm sm:text-base">Schnelle Zusage</span>
+                <span className="text-gray-700 dark:text-gray-300 font-medium text-sm sm:text-base">Schnelle Zusage</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/90 flex items-center justify-center">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/90 dark:bg-gray-700/90 flex items-center justify-center">
                   <div className="w-4 h-4 sm:w-6 sm:h-6 flex items-center justify-center text-primary">
                     <i className="ri-money-euro-circle-line"></i>
                   </div>
                 </div>
-                <span className="text-gray-700 font-medium text-sm sm:text-base">Kostenlos</span>
+                <span className="text-gray-700 dark:text-gray-300 font-medium text-sm sm:text-base">Kostenlos</span>
               </div>
             </div>
           </div>
