@@ -201,29 +201,29 @@ const AutokreditPage = () => {
       </section>
 
       {/* Calculator Section */}
-      <section id="calculator" className="py-16 bg-gray-50">
+      <section id="calculator" className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Autokredit-Rechner</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Autokredit-Rechner</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Berechnen Sie Ihre monatliche Rate für Ihren Traumwagen und finden Sie die beste Finanzierung.
             </p>
           </div>
-          <div className="bg-white rounded-lg shadow-md p-6 md:p-8 max-w-4xl mx-auto">
+          <div className="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 md:p-8 max-w-4xl mx-auto transition-colors duration-300">
             <div className="grid md:grid-cols-2 gap-8">
               <div>
                 <div className="mb-6">
-                  <label className="block text-gray-700 font-medium mb-2">Fahrzeugpreis</label>
+                  <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Fahrzeugpreis</label>
                   <div className="relative">
                     <input
                       type="number"
                       value={vehiclePrice}
                       onChange={(e) => setVehiclePrice(Number(e.target.value))}
-                      className="w-full border border-gray-300 rounded py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300"
                       min="5000"
                       max="100000"
                     />
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">
                       €
                     </div>
                   </div>
@@ -236,13 +236,13 @@ const AutokreditPage = () => {
                     onChange={(e) => setVehiclePrice(Number(e.target.value))}
                     className="w-full mt-2"
                   />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
                     <span>5.000 €</span>
                     <span>100.000 €</span>
                   </div>
                 </div>
                 <div className="mb-6">
-                  <label className="block text-gray-700 font-medium mb-2">Anzahlung</label>
+                  <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Anzahlung</label>
                   <div className="relative">
                     <input
                       type="number"
