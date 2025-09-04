@@ -408,21 +408,32 @@ const KreditSelbststaendigePage = () => {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
+        <section className="py-16 bg-gradient-to-br from-white via-blue-50/20 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300 relative overflow-hidden">
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute top-20 left-20 w-32 h-32 border border-blue-500 rounded-full"></div>
+            <div className="absolute bottom-20 right-20 w-24 h-24 border border-primary rounded-full"></div>
+            <div className="absolute top-1/2 right-1/4 w-16 h-16 border border-blue-400 rounded-full"></div>
+          </div>
+          
+          <div className="container mx-auto px-4 relative z-10">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Häufig gestellte Fragen</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
+              <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-blue-200 dark:border-blue-700 mb-6">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
+                <span className="text-sm font-medium text-blue-700 dark:text-blue-400">Häufige Fragen</span>
+              </div>
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Häufig gestellte Fragen</h2>
+              <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
                 Antworten auf die wichtigsten Fragen rund um Kredite für Selbstständige.
               </p>
             </div>
             <div className="max-w-3xl mx-auto">
               <div className="space-y-4">
                 {faqData.map((faq, index) => (
-                  <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+                  <div key={index} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors duration-300">
                     <button 
                       onClick={() => toggleFaq(index)}
-                      className="w-full text-left px-6 py-4 font-medium flex justify-between items-center"
+                      className="w-full text-left px-6 py-4 font-medium flex justify-between items-center text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     >
                       <span>{faq.question}</span>
                       <div className={`w-5 h-5 flex items-center justify-center text-primary transform transition-transform ${openFaq === index ? 'rotate-180' : ''}`}>
@@ -430,8 +441,8 @@ const KreditSelbststaendigePage = () => {
                       </div>
                     </button>
                     {openFaq === index && (
-                      <div className="px-6 py-4 border-t border-gray-100">
-                        <p className="text-gray-600">{faq.answer}</p>
+                      <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-700">
+                        <p className="text-gray-600 dark:text-gray-300">{faq.answer}</p>
                       </div>
                     )}
                   </div>
