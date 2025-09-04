@@ -452,36 +452,78 @@ export default function GlossarPage() {
         </section>
 
         {/* Glossary Terms */}
-        <section className="py-16">
-          <div className="container mx-auto px-4">
+        <section className="py-16 bg-gradient-to-br from-gray-50 via-green-50/10 to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300 relative overflow-hidden">
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute top-20 left-20 w-32 h-32 border border-green-500 rounded-full"></div>
+            <div className="absolute bottom-20 right-20 w-24 h-24 border border-blue-500 rounded-full"></div>
+            <div className="absolute top-1/2 right-1/4 w-16 h-16 border border-green-400 rounded-full"></div>
+          </div>
+          
+          <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-12">
+                <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-green-200 dark:border-green-700 mb-6">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                  <span className="text-sm font-medium text-green-700 dark:text-green-400">Begriffe A-Z</span>
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Alle Kreditbegriffe im Überblick</h2>
+                <p className="text-gray-600 dark:text-gray-300">Erweitern Sie Ihr Finanzwissen mit unseren detaillierten Erklärungen</p>
+              </div>
+              
               <div className="grid gap-6">
-                {filteredTerms.map((term, index) => (
-                  <div key={index} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-all duration-300">
-                    <div className="flex flex-col md:flex-row md:items-start gap-4">
-                      <div className="md:w-1/3">
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-                          {term.term}
-                        </h3>
-                        <span className="inline-block px-3 py-1 bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-100 text-sm rounded-full">
-                          {categories[term.category]}
-                        </span>
-                      </div>
-                      <div className="md:w-2/3">
-                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                          {term.definition}
-                        </p>
+                {filteredTerms.map((term, index) => {
+                  const getCategoryColor = (category: string) => {
+                    const colors = {
+                      allgemein: 'from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-600',
+                      zinsen: 'from-yellow-100 to-yellow-200 dark:from-yellow-800 dark:to-yellow-700 text-yellow-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-600',
+                      schufa: 'from-purple-100 to-purple-200 dark:from-purple-800 dark:to-purple-700 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-600',
+                      tilgung: 'from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 text-green-700 dark:text-green-300 border-green-200 dark:border-green-600',
+                      sicherheiten: 'from-red-100 to-red-200 dark:from-red-800 dark:to-red-700 text-red-700 dark:text-red-300 border-red-200 dark:border-red-600',
+                      kreditarten: 'from-indigo-100 to-indigo-200 dark:from-indigo-800 dark:to-indigo-700 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-600',
+                      rechtliches: 'from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600',
+                      banken: 'from-teal-100 to-teal-200 dark:from-teal-800 dark:to-teal-700 text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-600'
+                    }
+                    return colors[category as keyof typeof colors] || colors.allgemein
+                  }
+                  
+                  return (
+                    <div key={index} className="group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-green-500/30 transform hover:-translate-y-1 p-6">
+                      <div className="flex flex-col md:flex-row md:items-start gap-4">
+                        <div className="md:w-1/3">
+                          <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3 group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors duration-300">
+                            {term.term}
+                          </h3>
+                          <span className={`inline-block px-4 py-2 bg-gradient-to-r ${getCategoryColor(term.category)} text-sm rounded-full border transition-all duration-300 group-hover:scale-105`}>
+                            {categories[term.category]}
+                          </span>
+                        </div>
+                        <div className="md:w-2/3">
+                          <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                            {term.definition}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
               
               {filteredTerms.length === 0 && (
                 <div className="text-center py-12">
-                  <p className="text-gray-500 dark:text-gray-400 text-lg">
-                    Keine Begriffe gefunden. Versuchen Sie einen anderen Suchbegriff oder wählen Sie eine andere Kategorie.
-                  </p>
+                  <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-sm border border-gray-100 dark:border-gray-700">
+                    <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </div>
+                    <p className="text-gray-500 dark:text-gray-400 text-lg mb-2">
+                      Keine Begriffe gefunden
+                    </p>
+                    <p className="text-gray-400 dark:text-gray-500">
+                      Versuchen Sie einen anderen Suchbegriff oder wählen Sie eine andere Kategorie.
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
