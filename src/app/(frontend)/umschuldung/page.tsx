@@ -604,19 +604,19 @@ const UmschuldungPage = () => {
         </section>
 
         {/* Contact Form */}
-        <section id="angebot" className="py-16 bg-gray-50">
+        <section id="angebot" className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Unverbindliches Angebot anfordern</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Unverbindliches Angebot anfordern</h2>
+              <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
                 Füllen Sie das Formular aus und erhalten Sie ein individuelles Umschuldungsangebot von unseren Experten.
               </p>
             </div>
             <div className="max-w-2xl mx-auto">
-              <form onSubmit={handleFormSubmit} className="bg-white rounded-lg shadow-md p-6 md:p-8">
+              <form onSubmit={handleFormSubmit} className="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 md:p-8 transition-colors duration-300">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-gray-700 font-medium mb-2">Anrede</label>
+                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Anrede</label>
                     <div className="flex space-x-4">
                       <label className="flex items-center">
                         <input 
@@ -627,10 +627,10 @@ const UmschuldungPage = () => {
                           onChange={handleInputChange}
                           className="sr-only"
                         />
-                        <div className="w-4 h-4 border-2 border-gray-300 rounded-full mr-2 flex items-center justify-center">
+                        <div className="w-4 h-4 border-2 border-gray-300 dark:border-gray-600 rounded-full mr-2 flex items-center justify-center">
                           <div className={`w-2 h-2 bg-primary rounded-full ${formData.anrede === 'herr' ? 'opacity-100' : 'opacity-0'}`}></div>
                         </div>
-                        <span>Herr</span>
+                        <span className="text-gray-900 dark:text-gray-100">Herr</span>
                       </label>
                       <label className="flex items-center">
                         <input 
@@ -641,21 +641,21 @@ const UmschuldungPage = () => {
                           onChange={handleInputChange}
                           className="sr-only"
                         />
-                        <div className="w-4 h-4 border-2 border-gray-300 rounded-full mr-2 flex items-center justify-center">
+                        <div className="w-4 h-4 border-2 border-gray-300 dark:border-gray-600 rounded-full mr-2 flex items-center justify-center">
                           <div className={`w-2 h-2 bg-primary rounded-full ${formData.anrede === 'frau' ? 'opacity-100' : 'opacity-0'}`}></div>
                         </div>
-                        <span>Frau</span>
+                        <span className="text-gray-900 dark:text-gray-100">Frau</span>
                       </label>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-gray-700 font-medium mb-2">Vorname</label>
+                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Vorname</label>
                     <input 
                       type="text" 
                       name="vorname"
                       value={formData.vorname}
                       onChange={handleInputChange}
-                      className="w-full border border-gray-300 rounded py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
+                      className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300" 
                       required
                     />
                   </div>
@@ -767,7 +767,7 @@ const UmschuldungPage = () => {
                             <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
                               <i className="ri-check-line"></i>
                             </div>
-                            <span className="text-gray-600">SCHUFA-neutral</span>
+                            <span className="text-gray-600 dark:text-gray-300">SCHUFA-neutral</span>
                           </div>
                           <div className="flex items-center">
                             <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
@@ -900,7 +900,7 @@ const UmschuldungPage = () => {
                             <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
                               <i className="ri-check-line"></i>
                             </div>
-                            <span className="text-gray-600">Schnelle Bearbeitung</span>
+                            <span className="text-gray-600 dark:text-gray-300">Schnelle Bearbeitung</span>
                           </div>
                         </div>
                       </div>
@@ -913,30 +913,30 @@ const UmschuldungPage = () => {
         </section>
 
         {/* FAQ */}
-        <section className="py-16 bg-white">
+        <section className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Häufig gestellte Fragen</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Häufig gestellte Fragen</h2>
+              <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
                 Antworten auf die wichtigsten Fragen rund um das Thema Umschuldung.
               </p>
             </div>
             <div className="max-w-3xl mx-auto">
               <div className="space-y-4">
                 {faqData.map((faq, index) => (
-                  <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
+                  <div key={index} className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
                     <button 
                       onClick={() => toggleFaq(index)}
-                      className="w-full flex items-center justify-between p-5 bg-white hover:bg-gray-50 transition-colors"
+                      className="w-full flex items-center justify-between p-5 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     >
-                      <span className="font-medium text-left">{faq.question}</span>
+                      <span className="font-medium text-left text-gray-900 dark:text-gray-100">{faq.question}</span>
                       <div className="w-5 h-5 flex items-center justify-center text-primary">
                         <i className={openFaq === index ? "ri-subtract-line" : "ri-add-line"}></i>
                       </div>
                     </button>
                     {openFaq === index && (
-                      <div className="px-5 pb-5">
-                        <p className="text-gray-600">{faq.answer}</p>
+                      <div className="px-5 pb-5 bg-white dark:bg-gray-800">
+                        <p className="text-gray-600 dark:text-gray-300">{faq.answer}</p>
                       </div>
                     )}
                   </div>
@@ -947,11 +947,11 @@ const UmschuldungPage = () => {
         </section>
 
         {/* CTA */}
-        <section className="py-16 bg-green-50">
+        <section className="py-16 bg-green-50 dark:bg-green-900/20 transition-colors duration-300">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
-              <h2 className="text-3xl font-bold mb-4">Bereit, Ihre Finanzen zu optimieren?</h2>
-              <p className="text-gray-600 text-lg mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Bereit, Ihre Finanzen zu optimieren?</h2>
+              <p className="text-gray-600 dark:text-gray-300 text-lg mb-8">
                 Starten Sie jetzt Ihre Umschuldung und sparen Sie bares Geld. Unser Expertenteam unterstützt Sie bei jedem Schritt.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -966,7 +966,7 @@ const UmschuldungPage = () => {
                 </Link>
                 <Link 
                   href="#angebot" 
-                  className="border border-gray-300 hover:border-primary text-gray-700 hover:text-primary font-medium py-3 px-8 rounded-button whitespace-nowrap flex items-center justify-center transition-all"
+                  className="border border-gray-300 dark:border-gray-600 hover:border-primary text-gray-700 dark:text-gray-300 hover:text-primary font-medium py-3 px-8 rounded-button whitespace-nowrap flex items-center justify-center transition-all"
                 >
                   <div className="w-5 h-5 mr-2 flex items-center justify-center">
                     <i className="ri-customer-service-2-line"></i>
@@ -979,7 +979,7 @@ const UmschuldungPage = () => {
                   <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
                     <i className="ri-check-line"></i>
                   </div>
-                  <span className="text-gray-600">100% kostenlos</span>
+                  <span className="text-gray-600 dark:text-gray-300">100% kostenlos</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
@@ -991,7 +991,7 @@ const UmschuldungPage = () => {
                   <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
                     <i className="ri-check-line"></i>
                   </div>
-                  <span className="text-gray-600">Unverbindlich</span>
+                  <span className="text-gray-600 dark:text-gray-300">Unverbindlich</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
