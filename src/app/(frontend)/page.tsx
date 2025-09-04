@@ -28,32 +28,73 @@ const HomePage = () => {
   return (
     <div className="font-sans text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-900 transition-colors duration-300">
       {/* Hero Section */}
-      <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 dark:from-gray-900 dark:to-gray-800 overflow-hidden transition-colors duration-300">
+      <section className="relative w-full bg-gradient-to-br from-green-50 via-blue-50 to-green-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 overflow-hidden transition-colors duration-300">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-20 left-10 w-32 h-32 bg-primary/10 rounded-full blur-xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-10 w-48 h-48 bg-blue-500/10 rounded-full blur-2xl animate-pulse delay-1000"></div>
+          <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-green-400/10 rounded-full blur-lg animate-pulse delay-500"></div>
+        </div>
+        
         <div 
           className="absolute inset-0 bg-right bg-no-repeat bg-cover md:bg-contain opacity-20 md:opacity-100"
           style={{
             backgroundImage: "url('https://readdy.ai/api/search-image?query=professional%20financial%20advisor%20or%20banker%20working%20with%20digital%20tablet%20in%20modern%20minimalist%20office%2C%20soft%20lighting%20with%20green%20accents%2C%20clean%20and%20simple%20composition%2C%20blurred%20background%20with%20financial%20charts%2C%20elegant%20and%20professional%20atmosphere&width=800&height=600&seq=hero123&orientation=landscape')"
           }}
         ></div>
+        
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-blue-50/80 to-transparent dark:from-gray-900/95 dark:via-gray-800/80 dark:to-transparent"></div>
+        
         <div className="container mx-auto px-4 py-12 md:py-24 relative z-10">
           <div className="max-w-xl md:max-w-2xl mx-auto md:mx-0">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 dark:text-gray-100 mb-4 text-center md:text-left">
-              Schnell zum besten Kredit – vergleichen lohnt sich
+            <div className="mb-6">
+              <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-green-200 dark:border-green-700 mb-6">
+                <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                <span className="text-sm font-medium text-green-700 dark:text-green-400">Deutschlands führender Kreditvergleich</span>
+              </div>
+            </div>
+            
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 dark:text-gray-100 mb-4 text-center md:text-left leading-tight">
+              Schnell zum <span className="bg-gradient-to-r from-primary to-green-600 bg-clip-text text-transparent">besten Kredit</span> – vergleichen lohnt sich
             </h1>
             <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-8 text-center md:text-left">
               Jetzt mit wenigen Klicks zu Ihrem Wunschkredit – 100% kostenlos & SCHUFA-neutral.
             </p>
+            
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Link
                 href="#calculator"
-                className="bg-primary hover:bg-green-500 text-white font-medium py-3 px-6 rounded-button whitespace-nowrap shadow-md transition-all flex items-center justify-center"
+                className="group bg-gradient-to-r from-primary to-green-600 hover:from-green-600 hover:to-primary text-white font-medium py-4 px-8 rounded-button whitespace-nowrap shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center transform hover:scale-105"
               >
                 <span>Jetzt Kredit berechnen</span>
-                <div className="w-5 h-5 ml-2 flex items-center justify-center">
+                <div className="w-5 h-5 ml-2 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
                   <i className="ri-arrow-right-line"></i>
                 </div>
               </Link>
-              <UnverbindlichAnfragenButton variant="secondary" size="md" />
+              <UnverbindlichAnfragenButton variant="secondary" size="md" className="backdrop-blur-sm" />
+            </div>
+            
+            {/* Trust Indicators */}
+            <div className="flex flex-wrap items-center gap-6 mt-8 justify-center md:justify-start">
+              <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                <div className="w-5 h-5 text-green-500 mr-2">
+                  <i className="ri-shield-check-line"></i>
+                </div>
+                <span>100% kostenlos</span>
+              </div>
+              <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                <div className="w-5 h-5 text-green-500 mr-2">
+                  <i className="ri-time-line"></i>
+                </div>
+                <span>In 2 Minuten</span>
+              </div>
+              <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                <div className="w-5 h-5 text-green-500 mr-2">
+                  <i className="ri-user-heart-line"></i>
+                </div>
+                <span>SCHUFA-neutral</span>
+              </div>
             </div>
           </div>
         </div>
@@ -157,44 +198,64 @@ const HomePage = () => {
       )}
 
       {/* How it works */}
-      <section className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
-        <div className="container mx-auto px-4">
+      <section className="py-16 bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 transition-colors duration-300 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-10 left-10 w-20 h-20 border border-primary rounded-full"></div>
+          <div className="absolute bottom-10 right-10 w-32 h-32 border border-blue-500 rounded-full"></div>
+          <div className="absolute top-1/2 left-1/4 w-16 h-16 border border-green-400 rounded-full"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
+            <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-blue-200 dark:border-blue-700 mb-6">
+              <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
+              <span className="text-sm font-medium text-blue-700 dark:text-blue-400">Einfach & Transparent</span>
+            </div>
             <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">So funktioniert&apos;s</h2>
             <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               In nur drei einfachen Schritten zu Ihrem Wunschkredit – schnell, sicher und transparent.
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600 text-center transition-all duration-300">
-              <div className="w-16 h-16 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                <div className="w-8 h-8 flex items-center justify-center text-primary">
-                  <i className="ri-edit-line ri-xl"></i>
+            <div className="group bg-white dark:bg-gray-700 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600 text-center transition-all duration-300 hover:shadow-lg hover:scale-105 hover:border-primary/50">
+              <div className="relative mb-6">
+                <div className="w-20 h-20 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-10 h-10 flex items-center justify-center text-primary">
+                    <i className="ri-edit-line text-2xl"></i>
+                  </div>
                 </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">1. Kreditwunsch eingeben</h3>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Kreditwunsch eingeben</h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Geben Sie Ihre gewünschte Kreditsumme, Laufzeit und den Verwendungszweck an.
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600 text-center transition-all duration-300">
-              <div className="w-16 h-16 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                <div className="w-8 h-8 flex items-center justify-center text-primary">
-                  <i className="ri-scales-3-line ri-xl"></i>
+            <div className="group bg-white dark:bg-gray-700 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600 text-center transition-all duration-300 hover:shadow-lg hover:scale-105 hover:border-blue-500/50">
+              <div className="relative mb-6">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-10 h-10 flex items-center justify-center text-blue-600">
+                    <i className="ri-scales-3-line text-2xl"></i>
+                  </div>
                 </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">2. Angebote vergleichen</h3>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Angebote vergleichen</h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Vergleichen Sie die besten Angebote von über 20 Banken und Kreditinstituten.
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600 text-center transition-all duration-300">
-              <div className="w-16 h-16 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                <div className="w-8 h-8 flex items-center justify-center text-primary">
-                  <i className="ri-check-line ri-xl"></i>
+            <div className="group bg-white dark:bg-gray-700 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600 text-center transition-all duration-300 hover:shadow-lg hover:scale-105 hover:border-green-500/50">
+              <div className="relative mb-6">
+                <div className="w-20 h-20 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-10 h-10 flex items-center justify-center text-green-600">
+                    <i className="ri-check-line text-2xl"></i>
+                  </div>
                 </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold">3</div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">3. Online abschließen</h3>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Online abschließen</h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Schließen Sie Ihren Kreditvertrag bequem online ab – ohne Papierkram und Behördengänge.
               </p>
@@ -204,22 +265,32 @@ const HomePage = () => {
       </section>
 
       {/* Benefits */}
-      <section className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
-        <div className="container mx-auto px-4">
+      <section className="py-16 bg-gradient-to-br from-white via-green-50/30 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300 relative overflow-hidden">
+        {/* Floating Elements */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-20 right-20 w-24 h-24 bg-primary rounded-full blur-xl animate-pulse delay-300"></div>
+          <div className="absolute bottom-20 left-20 w-32 h-32 bg-blue-500 rounded-full blur-2xl animate-pulse delay-700"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Ihre Vorteile bei Kreditheld24</h2>
+            <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-green-200 dark:border-green-700 mb-6">
+              <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+              <span className="text-sm font-medium text-green-700 dark:text-green-400">Ihre Vorteile</span>
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Warum Kreditheld24?</h2>
             <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Wir machen Kreditvergleiche einfach, transparent und sicher – damit Sie die beste Finanzierungslösung finden.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
-                <div className="w-6 h-6 flex items-center justify-center text-primary">
-                  <i className="ri-bank-line ri-lg"></i>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transform hover:-translate-y-2">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-8 h-8 flex items-center justify-center text-primary">
+                  <i className="ri-bank-line text-2xl"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Unabhängiger Bankenvergleich</h3>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Unabhängiger Bankenvergleich</h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Wir vergleichen über 20 Banken und Kreditinstitute, um Ihnen das beste Angebot zu präsentieren.
               </p>
