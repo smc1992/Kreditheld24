@@ -103,49 +103,76 @@ const KontaktPage = () => {
 
 
       {/* Page Title */}
-      <section className="py-12 bg-green-50">
-        <div className="container mx-auto px-4 text-center">
+      <section className="py-16 bg-gradient-to-br from-green-600 via-green-700 to-green-800 dark:from-green-700 dark:via-green-800 dark:to-green-900 text-white transition-colors duration-300 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 w-24 h-24 border border-green-300 rounded-full"></div>
+          <div className="absolute bottom-10 right-10 w-32 h-32 border border-green-400 rounded-full"></div>
+          <div className="absolute top-1/2 left-1/2 w-16 h-16 border border-green-200 rounded-full"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full border border-white/30 mb-6">
+            <div className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
+            <span className="text-sm font-medium text-white">Kontakt & Support</span>
+          </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Kontaktieren Sie uns</h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-green-100 max-w-2xl mx-auto">
             Haben Sie Fragen zu unseren Kreditangeboten oder benötigen Sie Hilfe bei Ihrer Finanzierung? Unser Team steht Ihnen gerne zur Verfügung.
           </p>
         </div>
       </section>
 
       {/* Contact Information */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
+      <section className="py-16 bg-gradient-to-br from-white via-green-50/20 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-20 left-20 w-32 h-32 border border-green-500 rounded-full"></div>
+          <div className="absolute bottom-20 right-20 w-24 h-24 border border-blue-500 rounded-full"></div>
+          <div className="absolute top-1/2 right-1/4 w-16 h-16 border border-green-400 rounded-full"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-green-200 dark:border-green-700 mb-6">
+              <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+              <span className="text-sm font-medium text-green-700 dark:text-green-400">Kontakt Informationen</span>
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Wir sind für Sie da</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              Erreichen Sie uns über verschiedene Kanäle oder nutzen Sie unser Kontaktformular für eine schnelle Antwort.
+            </p>
+          </div>
           <div className="grid md:grid-cols-2 gap-12">
-            <div>
-              <h2 className="text-2xl font-bold mb-6">Unsere Kontaktdaten</h2>
+            <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+              <h3 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">Unsere Kontaktdaten</h3>
               <div className="space-y-6">
-                <div className="flex items-start">
-                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-4 shrink-0">
-                    <div className="w-5 h-5 flex items-center justify-center text-primary">
-                      <i className="ri-map-pin-line"></i>
+                  <div className="flex items-start group">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center mr-4 shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <div className="w-6 h-6 flex items-center justify-center text-primary">
+                        <i className="ri-map-pin-line text-xl"></i>
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-1 text-gray-900 dark:text-gray-100">Geschäftsadresse</h4>
+                      <p className="text-gray-600 dark:text-gray-300">Brockmannstr. 204<br />48163 Münster</p>
                     </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Geschäftsadresse</h3>
-                    <p className="text-gray-600">Brockmannstr. 204<br />48163 Münster</p>
-                  </div>
-                </div>
 
-
-                <div className="flex items-start">
-                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-4 shrink-0">
-                    <div className="w-5 h-5 flex items-center justify-center text-primary">
-                      <i className="ri-mail-line"></i>
+                  <div className="flex items-start group">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-xl flex items-center justify-center mr-4 shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <div className="w-6 h-6 flex items-center justify-center text-blue-600">
+                        <i className="ri-mail-line text-xl"></i>
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-1 text-gray-900 dark:text-gray-100">E-Mail</h4>
+                      <p className="text-gray-600 dark:text-gray-300">
+                        <a href="mailto:info@kreditheld24.de" className="hover:text-primary transition-colors">info@kreditheld24.de</a>
+                      </p>
                     </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">E-Mail</h3>
-                    <p className="text-gray-600">
-                      <a href="mailto:info@kreditheld24.de" className="hover:text-primary">info@kreditheld24.de</a>
-                    </p>
-                  </div>
                 </div>
-              </div>
 
               <div className="mt-10">
                 <h3 className="text-xl font-bold mb-4">Öffnungszeiten</h3>
@@ -196,8 +223,8 @@ const KontaktPage = () => {
               </div>
             </div>
 
-            <div>
-              <h2 className="text-2xl font-bold mb-6">Kontaktformular</h2>
+            <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+              <h3 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">Kontaktformular</h3>
               <form onSubmit={handleFormSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
