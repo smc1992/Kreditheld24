@@ -175,49 +175,81 @@ export default function ZinssaetzePage() {
         </section>
 
         {/* Update Button */}
-        <section className="py-6 bg-white shadow-sm">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto flex justify-between items-center">
-              <div>
-                <p className="text-gray-600">
-                  Zinssätze werden automatisch alle 5 Minuten aktualisiert
-                </p>
+        <section className="py-8 bg-gradient-to-br from-white via-blue-50/20 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300 relative overflow-hidden">
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute top-10 left-10 w-16 h-16 border border-blue-500 rounded-full"></div>
+            <div className="absolute bottom-10 right-10 w-12 h-12 border border-primary rounded-full"></div>
+          </div>
+          
+          <div className="container mx-auto px-4 relative z-10">
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors duration-300">
+                <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                  <div>
+                    <div className="inline-flex items-center px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-sm mb-2">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
+                      <span>Live-Updates</span>
+                    </div>
+                    <p className="text-gray-600 dark:text-gray-300">
+                      Zinssätze werden automatisch alle 5 Minuten aktualisiert
+                    </p>
+                  </div>
+                  <button
+                    onClick={fetchCurrentRates}
+                    disabled={isLoading}
+                    className="bg-primary hover:bg-green-500 disabled:bg-gray-400 text-white px-6 py-3 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
+                  >
+                    {isLoading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                        Aktualisiere...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Jetzt aktualisieren
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
-              <button
-                onClick={fetchCurrentRates}
-                disabled={isLoading}
-                className="bg-primary hover:bg-green-500 disabled:bg-gray-400 text-white px-6 py-2 rounded-lg transition-colors flex items-center gap-2"
-              >
-                {isLoading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                    Aktualisiere...
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                    Jetzt aktualisieren
-                  </>
-                )}
-              </button>
             </div>
           </div>
         </section>
 
         {/* Zinssätze Tabelle */}
-        <section className="py-16">
-          <div className="container mx-auto px-4">
+        <section className="py-16 bg-gradient-to-br from-gray-50 via-green-50/10 to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300 relative overflow-hidden">
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute top-20 left-20 w-32 h-32 border border-green-500 rounded-full"></div>
+            <div className="absolute bottom-20 right-20 w-24 h-24 border border-blue-500 rounded-full"></div>
+            <div className="absolute top-1/2 right-1/4 w-16 h-16 border border-green-400 rounded-full"></div>
+          </div>
+          
+          <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-6xl mx-auto">
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+              <div className="text-center mb-12">
+                <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-green-200 dark:border-green-700 mb-6">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                  <span className="text-sm font-medium text-green-700 dark:text-green-400">Zinssätze-Übersicht</span>
+                </div>
+                <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Alle Zinssätze im Vergleich</h2>
+                <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                  Transparente Übersicht aller aktuellen Zinssätze für verschiedene Kreditarten
+                </p>
+              </div>
+              
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors duration-300">
                 <div className="overflow-x-auto">
                   <table className="w-full">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600">
                       <tr>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Kreditart</th>
-                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Repräsentativer Zinssatz</th>
-                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Zinsspanne</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">Kreditart</th>
+                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900 dark:text-gray-100">Repräsentativer Zinssatz</th>
+                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900 dark:text-gray-100">Zinsspanne</th>
                         <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Laufzeit</th>
                         <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Kreditsumme</th>
                         <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Aktion</th>
