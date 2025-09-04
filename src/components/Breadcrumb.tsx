@@ -31,7 +31,8 @@ const pageNames: Record<string, string> = {
   'glossar': 'Glossar',
   'zinssaetze': 'Zinssätze',
   'rechtliche-hinweise': 'Rechtliche Hinweise',
-  'tipps-kreditaufnahme': 'Tipps für Kreditaufnahme'
+  'tipps-kreditaufnahme': 'Tipps für Kreditaufnahme',
+  'baufinanzierung': 'Baufinanzierung'
 }
 
 export default function Breadcrumb({ items, className = '' }: BreadcrumbProps) {

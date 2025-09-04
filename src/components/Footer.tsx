@@ -7,6 +7,7 @@ const kreditarten = [
   { name: 'Sofortkredit', href: '/sofortkredit' },
   { name: 'Kredit für Selbstständige', href: '/kredit-selbststaendige' },
   { name: 'Autokredit', href: '/autokredit' },
+  { name: 'Baufinanzierung', href: '/baufinanzierung' },
 ]
 
 const ueberUns = [
