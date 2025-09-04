@@ -118,22 +118,7 @@ const SofortkreditPage = () => {
   return (
     <div className="font-sans text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-900 transition-colors duration-300">
 
-      {/* Breadcrumb */}
-      <div className="bg-white dark:bg-gray-900 transition-colors duration-300">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-4">
-            <Link href="/" className="hover:text-primary">Startseite</Link>
-            <div className="w-4 h-4 flex items-center justify-center mx-1">
-              <i className="ri-arrow-right-s-line"></i>
-            </div>
-            <Link href="/kreditarten" className="hover:text-primary">Kreditangebote</Link>
-            <div className="w-4 h-4 flex items-center justify-center mx-1">
-              <i className="ri-arrow-right-s-line"></i>
-            </div>
-            <span>Sofortkredit</span>
-          </div>
-        </div>
-      </div>
+
 
       {/* Hero Section */}
       <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 dark:from-gray-900 dark:to-gray-800 overflow-hidden min-h-[500px] sm:min-h-[600px] lg:min-h-[700px] transition-colors duration-300">

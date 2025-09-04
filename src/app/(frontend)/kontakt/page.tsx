@@ -100,16 +100,7 @@ const KontaktPage = () => {
   return (
     <div className="font-sans text-gray-800 bg-white">
 
-      {/* Breadcrumb */}
-      <div className="bg-gray-50 py-3">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center text-sm text-gray-600">
-            <Link href="/" className="hover:text-primary">Startseite</Link>
-            <div className="mx-2">/</div>
-            <span className="text-gray-800 font-medium">Kontakt</span>
-          </div>
-        </div>
-      </div>
+
 
       {/* Page Title */}
       <section className="py-12 bg-green-50">
