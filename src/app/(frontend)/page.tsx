@@ -295,6 +295,28 @@ const HomePage = () => {
                 Wir vergleichen über 20 Banken und Kreditinstitute, um Ihnen das beste Angebot zu präsentieren.
               </p>
             </div>
+            <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-blue-500/30 transform hover:-translate-y-2">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-8 h-8 flex items-center justify-center text-blue-600">
+                  <i className="ri-shield-check-line text-2xl"></i>
+                </div>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">100% SCHUFA-neutral</h3>
+              <p className="text-gray-600 dark:text-gray-300">
+                Unsere Kreditanfrage hat keinen negativen Einfluss auf Ihren SCHUFA-Score – garantiert sicher.
+              </p>
+            </div>
+            <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-purple-500/30 transform hover:-translate-y-2">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-800 dark:to-purple-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-8 h-8 flex items-center justify-center text-purple-600">
+                  <i className="ri-flashlight-line text-2xl"></i>
+                </div>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Schnelle Auszahlung</h3>
+              <p className="text-gray-600 dark:text-gray-300">
+                Bei vielen Banken erhalten Sie Ihr Geld bereits innerhalb von 24 Stunden nach Zusage.
+              </p>
+            </div>
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
               <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
                 <div className="w-6 h-6 flex items-center justify-center text-primary">
@@ -355,124 +377,135 @@ const HomePage = () => {
       </section>
 
       {/* Loan Types */}
-      <section className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
-        <div className="container mx-auto px-4">
+      <section className="py-16 bg-gradient-to-br from-gray-50 via-blue-50/20 to-gray-50 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 transition-colors duration-300 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-20 left-20 w-32 h-32 border border-primary rounded-full"></div>
+          <div className="absolute bottom-20 right-20 w-24 h-24 border border-blue-500 rounded-full"></div>
+          <div className="absolute top-1/2 right-1/4 w-16 h-16 border border-green-400 rounded-full"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Unsere Kreditangebote</h2>
+            <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-blue-200 dark:border-blue-700 mb-6">
+              <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
+              <span className="text-sm font-medium text-blue-700 dark:text-blue-400">Unsere Kreditlösungen</span>
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Maßgeschneiderte Finanzierung</h2>
             <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Wir bieten maßgeschneiderte Finanzierungslösungen für jeden Bedarf – finden Sie den passenden Kredit für Ihre Situation.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Link href="/ratenkredite" className="group">
-              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600 hover:border-primary hover:shadow-md transition-all duration-300">
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
-                  <div className="w-6 h-6 flex items-center justify-center text-primary group-hover:text-white">
-                    <i className="ri-money-euro-box-line ri-lg"></i>
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600 hover:border-primary/50 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                <div className="w-14 h-14 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-7 h-7 flex items-center justify-center text-primary">
+                    <i className="ri-money-euro-box-line text-xl"></i>
                   </div>
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-primary transition-colors">Ratenkredit</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  Flexible Laufzeiten und Raten für Ihre persönlichen Wünsche und Anschaffungen.
+                <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+                  Flexible Laufzeiten und Raten für Ihre persönlichen Wünsche.
                 </p>
-                <div className="text-primary font-medium flex items-center">
+                <div className="text-primary font-medium flex items-center text-sm">
                   <span>Mehr erfahren</span>
-                  <div className="w-5 h-5 ml-1 flex items-center justify-center">
+                  <div className="w-4 h-4 ml-1 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
                     <i className="ri-arrow-right-line"></i>
                   </div>
                 </div>
               </div>
             </Link>
             <Link href="/umschuldung" className="group">
-              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600 hover:border-primary hover:shadow-md transition-all duration-300">
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
-                  <div className="w-6 h-6 flex items-center justify-center text-primary group-hover:text-white">
-                    <i className="ri-exchange-funds-line ri-lg"></i>
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600 hover:border-blue-500/50 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-7 h-7 flex items-center justify-center text-blue-600">
+                    <i className="ri-exchange-funds-line text-xl"></i>
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-primary transition-colors">Umschuldung</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  Bestehende Kredite zu besseren Konditionen zusammenfassen und Geld sparen.
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-blue-600 transition-colors">Umschuldung</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+                  Bestehende Kredite zusammenfassen und Geld sparen.
                 </p>
-                <div className="text-primary font-medium flex items-center">
+                <div className="text-blue-600 font-medium flex items-center text-sm">
                   <span>Mehr erfahren</span>
-                  <div className="w-5 h-5 ml-1 flex items-center justify-center">
+                  <div className="w-4 h-4 ml-1 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
                     <i className="ri-arrow-right-line"></i>
                   </div>
                 </div>
               </div>
             </Link>
             <Link href="/schufa-neutral" className="group">
-              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600 hover:border-primary hover:shadow-md transition-all duration-300">
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
-                  <div className="w-6 h-6 flex items-center justify-center text-primary group-hover:text-white">
-                    <i className="ri-file-shield-line ri-lg"></i>
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600 hover:border-purple-500/50 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                <div className="w-14 h-14 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-800 dark:to-purple-700 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-7 h-7 flex items-center justify-center text-purple-600">
+                    <i className="ri-file-shield-line text-xl"></i>
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-primary transition-colors">Kredit trotz SCHUFA</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  Spezielle Angebote für Kunden mit negativen SCHUFA-Einträgen oder niedrigem Score.
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-purple-600 transition-colors">SCHUFA-neutral</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+                  Kreditanfrage ohne Einfluss auf Ihren SCHUFA-Score.
                 </p>
-                <div className="text-primary font-medium flex items-center">
+                <div className="text-purple-600 font-medium flex items-center text-sm">
                   <span>Mehr erfahren</span>
-                  <div className="w-5 h-5 ml-1 flex items-center justify-center">
+                  <div className="w-4 h-4 ml-1 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
                     <i className="ri-arrow-right-line"></i>
                   </div>
                 </div>
               </div>
             </Link>
             <Link href="/sofortkredit" className="group">
-              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600 hover:border-primary hover:shadow-md transition-all duration-300">
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
-                  <div className="w-6 h-6 flex items-center justify-center text-primary group-hover:text-white">
-                    <i className="ri-flashlight-line ri-lg"></i>
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600 hover:border-orange-500/50 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                <div className="w-14 h-14 bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-800 dark:to-orange-700 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-7 h-7 flex items-center justify-center text-orange-600">
+                    <i className="ri-flashlight-line text-xl"></i>
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-primary transition-colors">Sofortkredit</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  Schnelle Auszahlung innerhalb von 24 Stunden für dringende Finanzierungsbedarfe.
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-orange-600 transition-colors">Sofortkredit</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+                  Schnelle Auszahlung innerhalb von 24 Stunden.
                 </p>
-                <div className="text-primary font-medium flex items-center">
+                <div className="text-orange-600 font-medium flex items-center text-sm">
                   <span>Mehr erfahren</span>
-                  <div className="w-5 h-5 ml-1 flex items-center justify-center">
+                  <div className="w-4 h-4 ml-1 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
                     <i className="ri-arrow-right-line"></i>
                   </div>
                 </div>
               </div>
             </Link>
             <Link href="/kredit-selbststaendige" className="group">
-              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600 hover:border-primary hover:shadow-md transition-all duration-300">
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
-                  <div className="w-6 h-6 flex items-center justify-center text-primary group-hover:text-white">
-                    <i className="ri-briefcase-4-line ri-lg"></i>
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600 hover:border-indigo-500/50 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                <div className="w-14 h-14 bg-gradient-to-br from-indigo-100 to-indigo-200 dark:from-indigo-800 dark:to-indigo-700 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-7 h-7 flex items-center justify-center text-indigo-600">
+                    <i className="ri-briefcase-4-line text-xl"></i>
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-primary transition-colors">Kredit für Selbstständige</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  Spezielle Finanzierungslösungen für Unternehmer, Freiberufler und Gewerbetreibende.
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-indigo-600 transition-colors">Selbstständige</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+                  Spezielle Finanzierung für Unternehmer und Freiberufler.
                 </p>
-                <div className="text-primary font-medium flex items-center">
+                <div className="text-indigo-600 font-medium flex items-center text-sm">
                   <span>Mehr erfahren</span>
-                  <div className="w-5 h-5 ml-1 flex items-center justify-center">
+                  <div className="w-4 h-4 ml-1 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
                     <i className="ri-arrow-right-line"></i>
                   </div>
                 </div>
               </div>
             </Link>
             <Link href="/autokredit" className="group">
-              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600 hover:border-primary hover:shadow-md transition-all duration-300">
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
-                  <div className="w-6 h-6 flex items-center justify-center text-primary group-hover:text-white">
-                    <i className="ri-car-line ri-lg"></i>
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600 hover:border-red-500/50 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                <div className="w-14 h-14 bg-gradient-to-br from-red-100 to-red-200 dark:from-red-800 dark:to-red-700 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-7 h-7 flex items-center justify-center text-red-600">
+                    <i className="ri-car-line text-xl"></i>
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-primary transition-colors">Autokredit</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  Günstige Finanzierung für Neu- und Gebrauchtwagen mit attraktiven Konditionen.
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-red-600 transition-colors">Autokredit</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+                  Günstige Finanzierung für Neu- und Gebrauchtwagen.
                 </p>
-                <div className="text-primary font-medium flex items-center">
+                <div className="text-red-600 font-medium flex items-center text-sm">
                   <span>Mehr erfahren</span>
-                  <div className="w-5 h-5 ml-1 flex items-center justify-center">
+                  <div className="w-4 h-4 ml-1 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
                     <i className="ri-arrow-right-line"></i>
                   </div>
                 </div>
