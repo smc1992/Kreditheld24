@@ -62,7 +62,7 @@ const RatenkreditePage = () => {
             backgroundImage: "url('https://readdy.ai/api/search-image?query=modern%2520minimalist%2520office%2520interior%2520with%2520financial%2520advisor%2520desk%252C%2520soft%2520natural%2520lighting%252C%2520glass%2520walls%252C%2520subtle%2520green%2520plants%252C%2520sleek%2520computer%2520displays%2520showing%2520financial%2520charts%252C%2520clean%2520and%2520professional%2520atmosphere%252C%2520muted%2520color%2520palette%2520with%2520light%2520greens%2520and%2520whites&width=800&height=600&seq=ratenkredit789&orientation=landscape')"
           }}
         ></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-green-50/80 to-transparent sm:from-green-50/90 sm:via-green-50/70 md:from-green-50/80 md:via-green-50/60"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-green-50/80 to-transparent sm:from-green-50/90 sm:via-green-50/70 md:from-green-50/80 md:via-green-50/60 dark:from-gray-900/95 dark:via-gray-900/80 dark:to-transparent dark:sm:from-gray-900/90 dark:sm:via-gray-900/70 dark:md:from-gray-900/80 dark:md:via-gray-900/60"></div>
         <div className="container mx-auto px-4 py-12 sm:py-16 md:py-20 lg:py-24 relative z-10 flex items-center min-h-[500px] sm:min-h-[600px] lg:min-h-[700px]">
           <div className="max-w-xl lg:max-w-2xl">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 dark:text-gray-100 leading-tight mb-6">
@@ -84,24 +84,34 @@ const RatenkreditePage = () => {
                 </Link>
                 <UnverbindlichAnfragenButton variant="secondary" size="md" className="py-3 sm:py-4 px-6 sm:px-8 text-sm sm:text-base" />
               </div>
-              <div className="mt-12 flex items-center gap-8">
-                <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center">
-                    <div className="w-6 h-6 flex items-center justify-center text-primary">
-                      <i className="ri-shield-check-line"></i>
-                    </div>
+              
+            {/* Mobile Trust Indicators */}
+            <div className="mt-8 sm:mt-12 flex flex-wrap items-center gap-4 sm:gap-6">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/90 dark:bg-gray-700/90 flex items-center justify-center">
+                  <div className="w-4 h-4 sm:w-6 sm:h-6 flex items-center justify-center text-primary">
+                    <i className="ri-shield-check-line"></i>
                   </div>
-                  <span className="text-gray-700 font-medium">100% sicher</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center">
-                    <div className="w-6 h-6 flex items-center justify-center text-primary">
-                      <i className="ri-timer-line"></i>
-                    </div>
-                  </div>
-                  <span className="text-gray-700 font-medium">Schnelle Zusage</span>
-                </div>
+                <span className="text-gray-700 dark:text-gray-300 font-medium text-sm sm:text-base">100% sicher</span>
               </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/90 dark:bg-gray-700/90 flex items-center justify-center">
+                  <div className="w-4 h-4 sm:w-6 sm:h-6 flex items-center justify-center text-primary">
+                    <i className="ri-timer-line"></i>
+                  </div>
+                </div>
+                <span className="text-gray-700 dark:text-gray-300 font-medium text-sm sm:text-base">Schnelle Zusage</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/90 dark:bg-gray-700/90 flex items-center justify-center">
+                  <div className="w-4 h-4 sm:w-6 sm:h-6 flex items-center justify-center text-primary">
+                    <i className="ri-money-euro-circle-line"></i>
+                  </div>
+                </div>
+                <span className="text-gray-700 dark:text-gray-300 font-medium text-sm sm:text-base">Kostenlos</span>
+              </div>
+            </div>
             </div>
         </div>
       </section>
@@ -280,7 +290,7 @@ const RatenkreditePage = () => {
                     <select
                       value={loanPurpose}
                       onChange={(e) => setLoanPurpose(e.target.value)}
-                      className="w-full appearance-none border border-gray-300 rounded py-3 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
+                      className="w-full appearance-none border border-gray-300 dark:border-gray-600 rounded py-3 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 transition-colors duration-300"
                     >
                       <option value="freie_verwendung">Freie Verwendung</option>
                       <option value="auto">Autokauf</option>
@@ -290,7 +300,7 @@ const RatenkreditePage = () => {
                       <option value="elektronik">Elektronik</option>
                       <option value="urlaub">Urlaub</option>
                     </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">
                       <div className="w-5 h-5 flex items-center justify-center">
                         <i className="ri-arrow-down-s-line"></i>
                       </div>
@@ -298,31 +308,31 @@ const RatenkreditePage = () => {
                   </div>
                 </div>
               </div>
-              <div className="bg-gray-50 rounded-lg p-6">
-                <h3 className="text-xl font-semibold mb-4">Ihre Kreditkonditionen</h3>
+              <div className="bg-gray-50 dark:bg-gray-600 rounded-lg p-6 transition-colors duration-300">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Ihre Kreditkonditionen</h3>
                 <div className="mb-6">
                   <div className="flex justify-between mb-2">
-                    <span className="text-gray-600">Monatliche Rate:</span>
-                    <span className="font-semibold text-lg">{loanCalculation.monthlyPayment} €</span>
+                    <span className="text-gray-600 dark:text-gray-300">Monatliche Rate:</span>
+                    <span className="font-semibold text-lg text-gray-900 dark:text-gray-100">{loanCalculation.monthlyPayment} €</span>
                   </div>
                   <div className="flex justify-between mb-2">
-                    <span className="text-gray-600">Effektiver Jahreszins:</span>
-                    <span className="font-semibold">{loanCalculation.interestRate} %</span>
+                    <span className="text-gray-600 dark:text-gray-300">Effektiver Jahreszins:</span>
+                    <span className="font-semibold text-gray-900 dark:text-gray-100">{loanCalculation.interestRate} %</span>
                   </div>
                   <div className="flex justify-between mb-2">
-                    <span className="text-gray-600">Gesamtkosten:</span>
-                    <span className="font-semibold">{loanCalculation.totalCost} €</span>
+                    <span className="text-gray-600 dark:text-gray-300">Gesamtkosten:</span>
+                    <span className="font-semibold text-gray-900 dark:text-gray-100">{loanCalculation.totalCost} €</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Zinsbindung:</span>
-                    <span className="font-semibold">Gesamte Laufzeit</span>
+                    <span className="text-gray-600 dark:text-gray-300">Zinsbindung:</span>
+                    <span className="font-semibold text-gray-900 dark:text-gray-100">Gesamte Laufzeit</span>
                   </div>
                 </div>
                 <div className="mb-6">
-                  <div className="w-full h-2 bg-gray-200 rounded-full">
+                  <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
                     <div className="h-2 bg-primary rounded-full" style={{ width: '90%' }}></div>
                   </div>
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
                     <span>Bonitätsscore: Sehr gut</span>
                     <span>90/100</span>
                   </div>
@@ -333,7 +343,7 @@ const RatenkreditePage = () => {
                 >
                   Jetzt Kreditangebote vergleichen
                 </Link>
-                <p className="text-xs text-gray-500 mt-4 text-center">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">
                   100% kostenlos & SCHUFA-neutral
                 </p>
               </div>
