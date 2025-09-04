@@ -317,57 +317,57 @@ const HomePage = () => {
                 Bei vielen Banken erhalten Sie Ihr Geld bereits innerhalb von 24 Stunden nach Zusage.
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
-                <div className="w-6 h-6 flex items-center justify-center text-primary">
-                  <i className="ri-shield-check-line ri-lg"></i>
+            <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-blue-500/30 transform hover:-translate-y-2">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-8 h-8 flex items-center justify-center text-blue-600">
+                  <i className="ri-shield-check-line text-2xl"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">SCHUFA-neutrale Anfrage</h3>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">SCHUFA-neutrale Anfrage</h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Unsere Vorabanfrage hat keinen Einfluss auf Ihren SCHUFA-Score – garantiert.
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
-                <div className="w-6 h-6 flex items-center justify-center text-primary">
-                  <i className="ri-coins-line ri-lg"></i>
+            <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transform hover:-translate-y-2">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-8 h-8 flex items-center justify-center text-primary">
+                  <i className="ri-coins-line text-2xl"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Keine versteckten Kosten</h3>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Keine versteckten Kosten</h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Unser Service ist für Sie zu 100% kostenlos – wir verdienen an den Banken, nicht an Ihnen.
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
-                <div className="w-6 h-6 flex items-center justify-center text-primary">
-                  <i className="ri-smartphone-line ri-lg"></i>
+            <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transform hover:-translate-y-2">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-8 h-8 flex items-center justify-center text-primary">
+                  <i className="ri-smartphone-line text-2xl"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Digitale Antragsstrecke</h3>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Digitale Antragsstrecke</h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Erledigen Sie den gesamten Kreditantrag online – von der Anfrage bis zur Unterschrift.
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
-                <div className="w-6 h-6 flex items-center justify-center text-primary">
-                  <i className="ri-customer-service-2-line ri-lg"></i>
+            <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-blue-500/30 transform hover:-translate-y-2">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-8 h-8 flex items-center justify-center text-blue-600">
+                  <i className="ri-customer-service-2-line text-2xl"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Persönliche Beratung</h3>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Persönliche Beratung</h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Bei Fragen steht Ihnen unser Expertenteam telefonisch oder per E-Mail zur Verfügung.
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
-                <div className="w-6 h-6 flex items-center justify-center text-primary">
-                  <i className="ri-timer-flash-line ri-lg"></i>
+            <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transform hover:-translate-y-2">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-8 h-8 flex items-center justify-center text-primary">
+                  <i className="ri-timer-flash-line text-2xl"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Schnelle Auszahlung</h3>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Schnelle Auszahlung</h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Bei vielen Banken erhalten Sie Ihr Geld innerhalb von 24 Stunden nach Vertragsabschluss.
               </p>
@@ -683,18 +683,29 @@ const HomePage = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
-        <div className="container mx-auto px-4">
+      <section className="py-16 bg-gradient-to-br from-white via-green-50/20 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-20 right-20 w-28 h-28 border border-primary rounded-full"></div>
+          <div className="absolute bottom-20 left-20 w-20 h-20 border border-blue-500 rounded-full"></div>
+          <div className="absolute top-1/2 left-1/3 w-16 h-16 border border-green-400 rounded-full"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
+            <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-green-200 dark:border-green-700 mb-6">
+              <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+              <span className="text-sm font-medium text-green-700 dark:text-green-400">Kundenbewertungen</span>
+            </div>
             <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Das sagen unsere Kunden</h2>
             <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Tausende zufriedene Kunden vertrauen auf unseren Service – lesen Sie selbst.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg transition-colors duration-300">
-              <div className="flex items-center mb-4">
-                <div className="flex text-yellow-400">
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transform hover:-translate-y-2">
+              <div className="flex items-center mb-6">
+                <div className="flex text-yellow-400 text-lg">
                   <i className="ri-star-fill"></i>
                   <i className="ri-star-fill"></i>
                   <i className="ri-star-fill"></i>
@@ -702,20 +713,22 @@ const HomePage = () => {
                   <i className="ri-star-fill"></i>
                 </div>
               </div>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">
+              <p className="text-gray-600 dark:text-gray-300 mb-6 text-lg leading-relaxed">
                 &quot;Sehr schnelle und unkomplizierte Abwicklung. Innerhalb von 2 Tagen hatte ich mein Geld auf dem Konto. Kann ich nur weiterempfehlen!&quot;
               </p>
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full mr-3"></div>
+                <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-full mr-4 flex items-center justify-center">
+                  <span className="text-primary font-bold text-lg">M</span>
+                </div>
                 <div>
-                  <p className="font-semibold text-gray-900 dark:text-gray-100">Michael S.</p>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100 text-lg">Michael S.</p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">Ratenkredit über 15.000 €</p>
                 </div>
               </div>
             </div>
-            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg transition-colors duration-300">
-              <div className="flex items-center mb-4">
-                <div className="flex text-yellow-400">
+            <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transform hover:-translate-y-2">
+              <div className="flex items-center mb-6">
+                <div className="flex text-yellow-400 text-lg">
                   <i className="ri-star-fill"></i>
                   <i className="ri-star-fill"></i>
                   <i className="ri-star-fill"></i>
@@ -723,20 +736,22 @@ const HomePage = () => {
                   <i className="ri-star-fill"></i>
                 </div>
               </div>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">
+              <p className="text-gray-600 dark:text-gray-300 mb-6 text-lg leading-relaxed">
                 &quot;Die Umschuldung meiner drei Kredite hat mir monatlich über 200 € gespart. Der Service war top und alles lief reibungslos ab.&quot;
               </p>
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full mr-3"></div>
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-full mr-4 flex items-center justify-center">
+                  <span className="text-blue-600 font-bold text-lg">S</span>
+                </div>
                 <div>
-                  <p className="font-semibold text-gray-900 dark:text-gray-100">Sandra M.</p>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100 text-lg">Sandra M.</p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">Umschuldung über 28.000 €</p>
                 </div>
               </div>
             </div>
-            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg transition-colors duration-300">
-              <div className="flex items-center mb-4">
-                <div className="flex text-yellow-400">
+            <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-blue-500/30 transform hover:-translate-y-2">
+              <div className="flex items-center mb-6">
+                <div className="flex text-yellow-400 text-lg">
                   <i className="ri-star-fill"></i>
                   <i className="ri-star-fill"></i>
                   <i className="ri-star-fill"></i>
@@ -744,13 +759,15 @@ const HomePage = () => {
                   <i className="ri-star-fill"></i>
                 </div>
               </div>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">
+              <p className="text-gray-600 dark:text-gray-300 mb-6 text-lg leading-relaxed">
                 &quot;Trotz negativer SCHUFA-Einträge konnte mir geholfen werden. Faire Konditionen und transparente Beratung. Vielen Dank!&quot;
               </p>
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full mr-3"></div>
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-full mr-4 flex items-center justify-center">
+                  <span className="text-blue-600 font-bold text-lg">T</span>
+                </div>
                 <div>
-                  <p className="font-semibold text-gray-900 dark:text-gray-100">Thomas K.</p>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100 text-lg">Thomas K.</p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">Kredit trotz SCHUFA über 8.000 €</p>
                 </div>
               </div>
