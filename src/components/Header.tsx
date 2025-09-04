@@ -129,62 +129,76 @@ export function Header() {
           </Link>
           
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-1 mega-menu-container">
+          <nav className="hidden lg:flex items-center space-x-2 mega-menu-container">
             {/* Mega Menu Items */}
             {Object.entries(megaMenuData).map(([key, menuData]) => (
-              <div key={key} className="relative">
+              <div key={key} className="relative group">
                 <button
-                  className="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-primary font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200"
+                  className={`flex items-center px-5 py-3 font-medium rounded-xl transition-all duration-300 transform hover:scale-105 ${
+                    activeMegaMenu === key 
+                      ? 'text-white bg-primary shadow-lg' 
+                      : 'text-gray-700 dark:text-gray-300 hover:text-primary hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10 dark:hover:bg-gray-800'
+                  }`}
+                  onMouseEnter={() => setActiveMegaMenu(key)}
                   onClick={(e) => {
                     e.stopPropagation()
                     handleMegaMenuToggle(key)
                   }}
                 >
-                  <i className={`${menuData.icon} mr-2`}></i>
+                  <i className={`${menuData.icon} mr-2 text-lg`}></i>
                   {menuData.title}
-                  <i className={`ml-1 text-sm transition-transform duration-200 ${
-                    activeMegaMenu === key ? 'ri-arrow-up-s-line' : 'ri-arrow-down-s-line'
+                  <i className={`ml-2 text-sm transition-transform duration-300 ${
+                    activeMegaMenu === key ? 'ri-arrow-up-s-line rotate-180' : 'ri-arrow-down-s-line'
                   }`}></i>
                 </button>
                 
                 {/* Mega Menu Dropdown */}
                 {activeMegaMenu === key && (
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-screen max-w-4xl bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden z-50">
+                  <div 
+                    className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 w-screen max-w-5xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden z-50 animate-in slide-in-from-top-2 duration-300"
+                    onMouseLeave={() => setActiveMegaMenu(null)}
+                  >
                     <div className="p-8">
                       {/* Header */}
                       <div className="text-center mb-8">
-                        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <i className={`${menuData.icon} text-2xl text-primary`}></i>
+                        <div className="w-20 h-20 bg-gradient-to-br from-primary/10 to-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+                          <i className={`${menuData.icon} text-3xl text-primary`}></i>
                         </div>
                         <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{menuData.title}</h3>
-                        <p className="text-gray-600 dark:text-gray-400">{menuData.description}</p>
+                        <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto">{menuData.description}</p>
                       </div>
                       
                       {/* Sections */}
-                      <div className="grid md:grid-cols-2 gap-8">
+                      <div className="grid md:grid-cols-2 gap-10">
                         {menuData.sections.map((section, sectionIndex) => (
-                          <div key={sectionIndex}>
-                            <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
-                              {section.title}
-                            </h4>
-                            <div className="space-y-3">
+                          <div key={sectionIndex} className="space-y-1">
+                            <div className="flex items-center mb-5">
+                              <div className="w-1 h-6 bg-gradient-to-b from-primary to-primary/60 rounded-full mr-3"></div>
+                              <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                                {section.title}
+                              </h4>
+                            </div>
+                            <div className="space-y-2">
                               {section.items.map((item, itemIndex) => (
                                 <Link
                                   key={itemIndex}
                                   href={item.href}
-                                  className="group flex items-start p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200"
+                                  className="group flex items-start p-4 rounded-xl hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10 dark:hover:bg-gray-700 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-md"
                                   onClick={() => setActiveMegaMenu(null)}
                                 >
-                                  <div className="w-10 h-10 bg-primary/10 group-hover:bg-primary/20 rounded-lg flex items-center justify-center mr-3 flex-shrink-0 transition-colors">
-                                    <i className={`${item.icon} text-primary`}></i>
+                                  <div className="w-12 h-12 bg-gradient-to-br from-primary/10 to-primary/20 group-hover:from-primary/20 group-hover:to-primary/30 rounded-xl flex items-center justify-center mr-4 flex-shrink-0 transition-all duration-300 group-hover:scale-110">
+                                    <i className={`${item.icon} text-primary text-lg`}></i>
                                   </div>
-                                  <div>
-                                    <h5 className="font-medium text-gray-900 dark:text-gray-100 group-hover:text-primary transition-colors">
+                                  <div className="flex-1">
+                                    <h5 className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary transition-colors duration-300 mb-1">
                                       {item.name}
                                     </h5>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                    <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                                       {item.description}
                                     </p>
+                                  </div>
+                                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 ml-2">
+                                    <i className="ri-arrow-right-line text-primary"></i>
                                   </div>
                                 </Link>
                               ))}
@@ -194,15 +208,31 @@ export function Header() {
                       </div>
                       
                       {/* Footer CTA */}
-                      <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
-                        <Link
-                          href={menuData.href}
-                          className="inline-flex items-center px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-600 transition-all duration-200 shadow-md hover:shadow-lg"
-                          onClick={() => setActiveMegaMenu(null)}
-                        >
-                          <span>Alle {menuData.title} anzeigen</span>
-                          <i className="ri-arrow-right-line ml-2"></i>
-                        </Link>
+                      <div className="mt-10 pt-8 border-t border-gray-200 dark:border-gray-700">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                          <div className="text-center sm:text-left">
+                            <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">Noch Fragen?</h4>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Unsere Experten beraten Sie gerne kostenlos</p>
+                          </div>
+                          <div className="flex gap-3">
+                            <Link
+                              href="/kontakt"
+                              className="inline-flex items-center px-4 py-2 border border-primary text-primary font-medium rounded-xl hover:bg-primary hover:text-white transition-all duration-300 transform hover:scale-105"
+                              onClick={() => setActiveMegaMenu(null)}
+                            >
+                              <i className="ri-phone-line mr-2"></i>
+                              Kontakt
+                            </Link>
+                            <Link
+                              href={menuData.href}
+                              className="inline-flex items-center px-6 py-2 bg-gradient-to-r from-primary to-primary-600 text-white font-medium rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
+                              onClick={() => setActiveMegaMenu(null)}
+                            >
+                              <span>Alle {menuData.title} anzeigen</span>
+                              <i className="ri-arrow-right-line ml-2"></i>
+                            </Link>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -215,9 +245,9 @@ export function Header() {
               <Link
                 key={link.name}
                 href={link.href}
-                className="flex items-center px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-primary font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200"
+                className="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:text-primary font-medium rounded-xl hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10 dark:hover:bg-gray-800 transition-all duration-300 transform hover:scale-105"
               >
-                <i className={`${link.icon} mr-2`}></i>
+                <i className={`${link.icon} mr-2 text-lg`}></i>
                 {link.name}
               </Link>
             ))}
@@ -231,19 +261,20 @@ export function Header() {
             
             <Link
               href="/kreditanfrage"
-              className="hidden md:inline-flex items-center px-6 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary-600 transition-all duration-200 shadow-md hover:shadow-lg"
+              className="hidden md:flex items-center px-6 py-3 bg-gradient-to-r from-primary to-primary-600 text-white font-semibold rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
             >
               <i className="ri-calculator-line mr-2"></i>
               Kreditanfrage
             </Link>
             
-            <button 
-               className="lg:hidden p-2 text-gray-700 hover:text-primary hover:bg-gray-50 rounded-lg transition-all duration-200 mobile-menu-container"
-               onClick={(e) => {
-                 e.stopPropagation()
-                 setMobileMenuOpen(!mobileMenuOpen)
-               }}
-             >
+            {/* Mobile Menu Button */}
+            <button
+              className="lg:hidden p-2 text-gray-700 hover:text-primary hover:bg-gray-50 rounded-lg transition-all duration-200 mobile-menu-container"
+              onClick={(e) => {
+                e.stopPropagation()
+                setMobileMenuOpen(!mobileMenuOpen)
+              }}
+            >
               <i className={`text-xl transition-transform duration-200 ${
                 mobileMenuOpen ? 'ri-close-line rotate-90' : 'ri-menu-line'
               }`}></i>
