@@ -75,20 +75,6 @@ const PartnerprogrammPage = () => {
       description: "Immobilienkredite, Anschlussfinanzierungen",
       provision: "0,8 - 1,2%",
       features: ["Bis 2 Mio. € Finanzierung", "400+ Bankpartner", "Persönliche Beratung"]
-    },
-    {
-      icon: "ri-shield-star-line",
-      title: "Versicherungen",
-      description: "Restschuldversicherung, Risikolebensversicherung",
-      provision: "15 - 25%",
-      features: ["Hohe Abschlussquoten", "Wiederkehrende Provisionen", "Cross-Selling Potenzial"]
-    },
-    {
-      icon: "ri-line-chart-line",
-      title: "Geldanlage",
-      description: "Festgeld, Tagesgeld, Investmentfonds",
-      provision: "0,5 - 2,0%",
-      features: ["Passive Einkommensquelle", "Langfristige Partnerschaften", "Bestandsprovisionen"]
     }
   ]
 
@@ -261,7 +247,7 @@ const PartnerprogrammPage = () => {
               Vielfältige Produktpalette mit attraktiven Provisionssätzen für nachhaltigen Erfolg.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {leistungen.map((leistung, index) => (
               <div key={index} className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="w-12 h-12 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center mb-4">
