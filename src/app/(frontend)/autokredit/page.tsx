@@ -397,9 +397,20 @@ const AutokreditPage = () => {
       </section>
 
       {/* Process Section */}
-      <section id="process" className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
-        <div className="container mx-auto px-4">
+      <section id="process" className="py-16 bg-gradient-to-br from-white via-blue-50/20 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-20 left-20 w-32 h-32 border border-blue-500 rounded-full"></div>
+          <div className="absolute bottom-20 right-20 w-24 h-24 border border-primary rounded-full"></div>
+          <div className="absolute top-1/2 right-1/4 w-16 h-16 border border-blue-400 rounded-full"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
+            <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-blue-200 dark:border-blue-700 mb-6">
+              <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
+              <span className="text-sm font-medium text-blue-700 dark:text-blue-400">Autofinanzierung Prozess</span>
+            </div>
             <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">So funktioniert Ihre Autofinanzierung</h2>
             <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               In nur wenigen Schritten zu Ihrem Traumauto – schnell, sicher und transparent.
@@ -447,9 +458,20 @@ const AutokreditPage = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
-        <div className="container mx-auto px-4">
+      <section className="py-16 bg-gradient-to-br from-gray-50 via-green-50/20 to-gray-50 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 transition-colors duration-300 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-20 left-20 w-32 h-32 border border-primary rounded-full"></div>
+          <div className="absolute bottom-20 right-20 w-24 h-24 border border-blue-500 rounded-full"></div>
+          <div className="absolute top-1/2 right-1/4 w-16 h-16 border border-green-400 rounded-full"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
+            <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-green-200 dark:border-green-700 mb-6">
+              <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+              <span className="text-sm font-medium text-green-700 dark:text-green-400">Häufige Fragen</span>
+            </div>
             <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Häufig gestellte Fragen</h2>
             <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Antworten auf die wichtigsten Fragen rund um Autokredite bei Kreditheld24.
@@ -479,8 +501,19 @@ const AutokreditPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-primary dark:bg-green-700 text-white transition-colors duration-300">
-        <div className="container mx-auto px-4 text-center">
+      <section className="py-16 bg-gradient-to-br from-primary via-green-600 to-primary dark:from-green-700 dark:via-green-600 dark:to-green-700 text-white transition-colors duration-300 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 w-24 h-24 border border-green-300 rounded-full"></div>
+          <div className="absolute bottom-10 right-10 w-32 h-32 border border-green-400 rounded-full"></div>
+          <div className="absolute top-1/2 left-1/2 w-16 h-16 border border-green-200 rounded-full"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full border border-white/30 mb-6">
+            <div className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
+            <span className="text-sm font-medium text-white">Jetzt starten</span>
+          </div>
           <h2 className="text-3xl font-bold mb-4">Bereit für Ihren Traumwagen?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Vergleichen Sie jetzt kostenlos die besten Autokredit-Angebote und fahren Sie schon bald Ihr Traumauto.
