@@ -175,21 +175,21 @@ const KontaktPage = () => {
                 </div>
 
               <div className="mt-10">
-                <h3 className="text-xl font-bold mb-4">Öffnungszeiten</h3>
-                <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+                <h4 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">Öffnungszeiten</h4>
+                <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-700 dark:to-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600 overflow-hidden transition-colors duration-300">
                   <table className="w-full">
                     <tbody>
-                      <tr className="border-b border-gray-100">
-                        <td className="py-3 px-4 font-medium">Montag - Freitag</td>
-                        <td className="py-3 px-4 text-right">09:00 - 18:00 Uhr</td>
+                      <tr className="border-b border-gray-100 dark:border-gray-600">
+                        <td className="py-4 px-6 font-medium text-gray-900 dark:text-gray-100">Montag - Freitag</td>
+                        <td className="py-4 px-6 text-right text-gray-700 dark:text-gray-300">09:00 - 18:00 Uhr</td>
                       </tr>
-                      <tr className="border-b border-gray-100">
-                        <td className="py-3 px-4 font-medium">Samstag</td>
-                        <td className="py-3 px-4 text-right">10:00 - 14:00 Uhr</td>
+                      <tr className="border-b border-gray-100 dark:border-gray-600">
+                        <td className="py-4 px-6 font-medium text-gray-900 dark:text-gray-100">Samstag</td>
+                        <td className="py-4 px-6 text-right text-gray-700 dark:text-gray-300">10:00 - 14:00 Uhr</td>
                       </tr>
                       <tr>
-                        <td className="py-3 px-4 font-medium">Sonntag</td>
-                        <td className="py-3 px-4 text-right">Geschlossen</td>
+                        <td className="py-4 px-6 font-medium text-gray-900 dark:text-gray-100">Sonntag</td>
+                        <td className="py-4 px-6 text-right text-red-600 dark:text-red-400">Geschlossen</td>
                       </tr>
                     </tbody>
                   </table>
@@ -197,26 +197,26 @@ const KontaktPage = () => {
               </div>
 
               <div className="mt-10">
-                <h3 className="text-xl font-bold mb-4">Folgen Sie uns</h3>
+                <h4 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">Folgen Sie uns</h4>
                 <div className="flex space-x-4">
-                  <a href="#" className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors">
-                    <div className="w-5 h-5 flex items-center justify-center">
-                      <i className="ri-facebook-fill"></i>
+                  <a href="#" className="group w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-xl flex items-center justify-center text-blue-600 hover:from-blue-600 hover:to-blue-700 hover:text-white transition-all duration-300 transform hover:scale-110">
+                    <div className="w-6 h-6 flex items-center justify-center">
+                      <i className="ri-facebook-fill text-xl"></i>
                     </div>
                   </a>
-                  <a href="#" className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors">
-                    <div className="w-5 h-5 flex items-center justify-center">
-                      <i className="ri-twitter-fill"></i>
+                  <a href="#" className="group w-12 h-12 bg-gradient-to-br from-sky-100 to-sky-200 dark:from-sky-800 dark:to-sky-700 rounded-xl flex items-center justify-center text-sky-600 hover:from-sky-600 hover:to-sky-700 hover:text-white transition-all duration-300 transform hover:scale-110">
+                    <div className="w-6 h-6 flex items-center justify-center">
+                      <i className="ri-twitter-fill text-xl"></i>
                     </div>
                   </a>
-                  <a href="#" className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors">
-                    <div className="w-5 h-5 flex items-center justify-center">
-                      <i className="ri-instagram-fill"></i>
+                  <a href="#" className="group w-12 h-12 bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-800 dark:to-pink-700 rounded-xl flex items-center justify-center text-pink-600 hover:from-pink-600 hover:to-pink-700 hover:text-white transition-all duration-300 transform hover:scale-110">
+                    <div className="w-6 h-6 flex items-center justify-center">
+                      <i className="ri-instagram-fill text-xl"></i>
                     </div>
                   </a>
-                  <a href="#" className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors">
-                    <div className="w-5 h-5 flex items-center justify-center">
-                      <i className="ri-linkedin-fill"></i>
+                  <a href="#" className="group w-12 h-12 bg-gradient-to-br from-indigo-100 to-indigo-200 dark:from-indigo-800 dark:to-indigo-700 rounded-xl flex items-center justify-center text-indigo-600 hover:from-indigo-600 hover:to-indigo-700 hover:text-white transition-all duration-300 transform hover:scale-110">
+                    <div className="w-6 h-6 flex items-center justify-center">
+                      <i className="ri-linkedin-fill text-xl"></i>
                     </div>
                   </a>
                 </div>
