@@ -14,6 +14,7 @@ const ueberUns = [
   { name: 'Unternehmen', href: '/ueber-uns' },
   { name: 'Kontakt', href: '/kontakt' },
   { name: 'Tipps & Ratgeber', href: '/tipps-kreditaufnahme' },
+  { name: 'Partnerprogramm', href: '/partnerprogramm' },
   { name: 'Kreditanfrage', href: '/kreditanfrage' },
 ]
 

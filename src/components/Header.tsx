@@ -37,6 +37,7 @@ const navigation = [
       { name: 'FAQ', href: '/faq' },
       { name: 'Rechtliche Hinweise', href: '/rechtliche-hinweise' },
       { name: 'Tipps & Ratgeber', href: '/tipps-kreditaufnahme' },
+      { name: 'Partnerprogramm', href: '/partnerprogramm' },
     ]
   },
   { name: 'Über uns', href: '/ueber-uns' },

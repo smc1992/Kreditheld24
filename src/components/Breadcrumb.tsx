@@ -36,7 +36,8 @@ const pageNames: Record<string, string> = {
   'immobilienkredit': 'Immobilienkredit',
   'anschlussfinanzierung': 'Anschlussfinanzierung',
   'modernierungsdarlehen': 'Modernierungsdarlehen',
-  'forwarddarlehen': 'Forward-Darlehen'
+  'forwarddarlehen': 'Forward-Darlehen',
+  'partnerprogramm': 'Partnerprogramm'
 }
 
 export default function Breadcrumb({ items, className = '' }: BreadcrumbProps) {
