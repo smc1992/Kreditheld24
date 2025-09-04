@@ -254,55 +254,66 @@ const UmschuldungPage = () => {
         </section>
 
         {/* Advantages */}
-        <section id="advantages" className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
-          <div className="container mx-auto px-4">
+        <section id="advantages" className="py-16 bg-gradient-to-br from-white via-green-50/20 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300 relative overflow-hidden">
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute top-20 left-20 w-32 h-32 border border-primary rounded-full"></div>
+            <div className="absolute bottom-20 right-20 w-24 h-24 border border-blue-500 rounded-full"></div>
+            <div className="absolute top-1/2 right-1/4 w-16 h-16 border border-green-400 rounded-full"></div>
+          </div>
+          
+          <div className="container mx-auto px-4 relative z-10">
             <div className="text-center mb-12">
+              <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-green-200 dark:border-green-700 mb-6">
+                <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                <span className="text-sm font-medium text-green-700 dark:text-green-400">Umschuldung Vorteile</span>
+              </div>
               <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Vorteile der Umschuldung</h2>
               <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
                 Eine Umschuldung bietet zahlreiche finanzielle Vorteile und verschafft Ihnen mehr finanziellen Spielraum.
               </p>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 dark:border-gray-700">
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
-                  <div className="w-6 h-6 flex items-center justify-center text-primary">
-                    <i className="ri-money-euro-box-line ri-lg"></i>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transform hover:-translate-y-2">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-8 h-8 flex items-center justify-center text-primary">
+                    <i className="ri-money-euro-box-line text-2xl"></i>
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Niedrigere monatliche Rate</h3>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Niedrigere monatliche Rate</h3>
                 <p className="text-gray-600 dark:text-gray-300">
                   Reduzieren Sie Ihre monatliche Belastung und gewinnen Sie finanziellen Spielraum für andere wichtige Ausgaben.
                 </p>
               </div>
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 dark:border-gray-700">
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
-                  <div className="w-6 h-6 flex items-center justify-center text-primary">
-                    <i className="ri-file-list-3-line ri-lg"></i>
+              <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-blue-500/30 transform hover:-translate-y-2">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-8 h-8 flex items-center justify-center text-blue-600">
+                    <i className="ri-file-list-3-line text-2xl"></i>
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Bessere Übersicht</h3>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Bessere Übersicht</h3>
                 <p className="text-gray-600 dark:text-gray-300">
                   Statt mehrerer Kredite bei verschiedenen Banken haben Sie nur noch einen Kredit mit einer Rate zu verwalten.
                 </p>
               </div>
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 dark:border-gray-700">
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
-                  <div className="w-6 h-6 flex items-center justify-center text-primary">
-                    <i className="ri-percent-line ri-lg"></i>
+              <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transform hover:-translate-y-2">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-8 h-8 flex items-center justify-center text-primary">
+                    <i className="ri-percent-line text-2xl"></i>
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Günstigerer Zinssatz</h3>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Günstigerer Zinssatz</h3>
                 <p className="text-gray-600 dark:text-gray-300">
                   Profitieren Sie von aktuell niedrigeren Zinsen und sparen Sie über die gesamte Laufzeit erhebliche Summen.
                 </p>
               </div>
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 dark:border-gray-700">
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
-                  <div className="w-6 h-6 flex items-center justify-center text-primary">
-                    <i className="ri-calendar-line ri-lg"></i>
+              <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-blue-500/30 transform hover:-translate-y-2">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-8 h-8 flex items-center justify-center text-blue-600">
+                    <i className="ri-calendar-line text-2xl"></i>
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Flexible Laufzeiten</h3>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Flexible Laufzeiten</h3>
                 <p className="text-gray-600 dark:text-gray-300">
                   Passen Sie die Laufzeit an Ihre finanzielle Situation an – kürzer für schnellere Schuldenfreiheit oder länger für niedrigere Raten.
                 </p>
@@ -396,9 +407,20 @@ const UmschuldungPage = () => {
         </section>
 
         {/* Calculator */}
-        <section id="calculator" className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
-          <div className="container mx-auto px-4">
+        <section id="calculator" className="py-16 bg-gradient-to-br from-gray-50 via-green-50/20 to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300 relative overflow-hidden">
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute top-10 right-10 w-24 h-24 border border-primary rounded-full"></div>
+            <div className="absolute bottom-10 left-10 w-32 h-32 border border-blue-500 rounded-full"></div>
+            <div className="absolute top-1/2 left-1/2 w-16 h-16 border border-green-400 rounded-full"></div>
+          </div>
+          
+          <div className="container mx-auto px-4 relative z-10">
             <div className="text-center mb-12">
+              <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-green-200 dark:border-green-700 mb-6">
+                <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                <span className="text-sm font-medium text-green-700 dark:text-green-400">Kostenloser Rechner</span>
+              </div>
               <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Umschuldungsrechner</h2>
               <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
                 Berechnen Sie Ihr individuelles Sparpotenzial und finden Sie heraus, wie viel Sie durch eine Umschuldung sparen können.
