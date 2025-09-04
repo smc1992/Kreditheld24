@@ -121,77 +121,88 @@ const AutokreditPage = () => {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
-        <div className="container mx-auto px-4">
+      <section className="py-16 bg-gradient-to-br from-white via-green-50/20 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-20 left-20 w-32 h-32 border border-primary rounded-full"></div>
+          <div className="absolute bottom-20 right-20 w-24 h-24 border border-blue-500 rounded-full"></div>
+          <div className="absolute top-1/2 right-1/4 w-16 h-16 border border-green-400 rounded-full"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
+            <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-green-200 dark:border-green-700 mb-6">
+              <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+              <span className="text-sm font-medium text-green-700 dark:text-green-400">Autokredit Vorteile</span>
+            </div>
             <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Vorteile unserer Autokredite</h2>
             <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Profitieren Sie von günstigen Zinsen und flexiblen Konditionen für Ihre Fahrzeugfinanzierung.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
-                <div className="w-6 h-6 flex items-center justify-center text-primary">
-                  <i className="ri-percent-line ri-lg"></i>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transform hover:-translate-y-2">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-8 h-8 flex items-center justify-center text-primary">
+                  <i className="ri-percent-line text-2xl"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Günstige Zinsen</h3>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Günstige Zinsen</h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Profitieren Sie von attraktiven Zinssätzen ab 2,99% effektiv p.a. für Ihre Fahrzeugfinanzierung.
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
-                <div className="w-6 h-6 flex items-center justify-center text-primary">
-                  <i className="ri-car-line ri-lg"></i>
+            <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-blue-500/30 transform hover:-translate-y-2">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-8 h-8 flex items-center justify-center text-blue-600">
+                  <i className="ri-car-line text-2xl"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Neu- & Gebrauchtwagen</h3>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Neu- & Gebrauchtwagen</h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Finanzieren Sie sowohl Neuwagen als auch Gebrauchtwagen bis zu einem Alter von 8 Jahren.
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
-                <div className="w-6 h-6 flex items-center justify-center text-primary">
-                  <i className="ri-money-euro-box-line ri-lg"></i>
+            <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transform hover:-translate-y-2">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-8 h-8 flex items-center justify-center text-primary">
+                  <i className="ri-money-euro-box-line text-2xl"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Flexible Anzahlung</h3>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Flexible Anzahlung</h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Bestimmen Sie selbst die Höhe Ihrer Anzahlung und reduzieren Sie so Ihre monatliche Rate.
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
-                <div className="w-6 h-6 flex items-center justify-center text-primary">
-                  <i className="ri-calendar-check-line ri-lg"></i>
+            <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-blue-500/30 transform hover:-translate-y-2">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-8 h-8 flex items-center justify-center text-blue-600">
+                  <i className="ri-calendar-check-line text-2xl"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Laufzeiten bis 96 Monate</h3>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Laufzeiten bis 96 Monate</h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Wählen Sie Laufzeiten zwischen 12 und 96 Monaten für niedrige monatliche Raten.
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
-                <div className="w-6 h-6 flex items-center justify-center text-primary">
-                  <i className="ri-shield-check-line ri-lg"></i>
+            <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transform hover:-translate-y-2">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-8 h-8 flex items-center justify-center text-primary">
+                  <i className="ri-shield-check-line text-2xl"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Sofortiges Eigentum</h3>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Sofortiges Eigentum</h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Sie werden sofort Eigentümer des Fahrzeugs und können es frei nutzen und versichern.
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
-                <div className="w-6 h-6 flex items-center justify-center text-primary">
-                  <i className="ri-timer-flash-line ri-lg"></i>
+            <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transform hover:-translate-y-2">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-8 h-8 flex items-center justify-center text-primary">
+                  <i className="ri-timer-flash-line text-2xl"></i>
                 </div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Schnelle Auszahlung</h3>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Schnelle Auszahlung</h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Nach Zusage erhalten Sie das Geld innerhalb von 24-48 Stunden für Ihren Autokauf.
               </p>
