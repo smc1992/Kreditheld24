@@ -145,9 +145,21 @@ export default function ZinssaetzePage() {
     <div className="min-h-screen bg-gray-50">
       <main className="pt-20 pb-16">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-green-600 to-green-700 text-white py-16">
-          <div className="container mx-auto px-4">
+        <section className="bg-gradient-to-br from-green-600 via-green-700 to-green-800 dark:from-green-700 dark:via-green-800 dark:to-green-900 text-white py-16 transition-colors duration-300 relative overflow-hidden">
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-10 left-10 w-24 h-24 border border-green-300 rounded-full"></div>
+            <div className="absolute bottom-10 right-10 w-32 h-32 border border-green-400 rounded-full"></div>
+            <div className="absolute top-1/2 left-1/2 w-16 h-16 border border-green-200 rounded-full"></div>
+            <div className="absolute top-20 right-20 w-20 h-20 border border-green-300 rounded-full"></div>
+          </div>
+          
+          <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
+              <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full border border-white/30 mb-6">
+                <div className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
+                <span className="text-sm font-medium text-white">Aktuelle Zinssätze</span>
+              </div>
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
                 Aktuelle Zinssätze
               </h1>

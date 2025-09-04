@@ -166,40 +166,41 @@ const KreditartenPage = () => {
                       </div>
                       <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{kredit.title}</h3>
                     </div>
-                  <p className="text-gray-600 mb-4">{kredit.description}</p>
-                  <ul className="space-y-2 mb-6">
-                    {kredit.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-center text-sm">
-                        <div className="w-4 h-4 flex items-center justify-center text-primary mr-2">
-                          <i className="ri-check-line"></i>
-                        </div>
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="space-y-2 mb-6">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Zinssatz:</span>
-                      <span className="font-semibold text-primary">{kredit.zinssatz}</span>
+                    <p className="text-gray-600 dark:text-gray-300 mb-4">{kredit.description}</p>
+                    <ul className="space-y-2 mb-6">
+                      {kredit.features.map((feature, featureIndex) => (
+                        <li key={featureIndex} className="flex items-center text-sm">
+                          <div className={`w-4 h-4 flex items-center justify-center ${isGreenCard ? 'text-primary' : 'text-blue-600'} mr-2`}>
+                            <i className="ri-check-line"></i>
+                          </div>
+                          <span className="text-gray-700 dark:text-gray-300">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="space-y-2 mb-6">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600 dark:text-gray-400">Zinssatz:</span>
+                        <span className={`font-semibold ${isGreenCard ? 'text-primary' : 'text-blue-600'}`}>{kredit.zinssatz}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600 dark:text-gray-400">Laufzeit:</span>
+                        <span className="font-medium text-gray-900 dark:text-gray-100">{kredit.laufzeit}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600 dark:text-gray-400">Kreditsumme:</span>
+                        <span className="font-medium text-gray-900 dark:text-gray-100">{kredit.summe}</span>
+                      </div>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Laufzeit:</span>
-                      <span className="font-medium">{kredit.laufzeit}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Kreditsumme:</span>
-                      <span className="font-medium">{kredit.summe}</span>
-                    </div>
+                    <Link 
+                      href={kredit.link}
+                      className={`block w-full ${isGreenCard ? 'bg-primary hover:bg-green-500' : 'bg-blue-600 hover:bg-blue-700'} text-white font-medium py-3 px-6 rounded-button text-center transition-all`}
+                    >
+                      Mehr erfahren
+                    </Link>
                   </div>
-                  <Link 
-                    href={kredit.link}
-                    className="block w-full bg-primary hover:bg-green-500 text-white font-medium py-3 px-6 rounded-button text-center transition-all"
-                  >
-                    Mehr erfahren
-                  </Link>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
