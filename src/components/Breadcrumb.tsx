@@ -32,7 +32,11 @@ const pageNames: Record<string, string> = {
   'zinssaetze': 'Zinssätze',
   'rechtliche-hinweise': 'Rechtliche Hinweise',
   'tipps-kreditaufnahme': 'Tipps für Kreditaufnahme',
-  'baufinanzierung': 'Baufinanzierung'
+  'baufinanzierung': 'Baufinanzierung',
+  'immobilienkredit': 'Immobilienkredit',
+  'anschlussfinanzierung': 'Anschlussfinanzierung',
+  'modernierungsdarlehen': 'Modernierungsdarlehen',
+  'forwarddarlehen': 'Forward-Darlehen'
 }
 
 export default function Breadcrumb({ items, className = '' }: BreadcrumbProps) {

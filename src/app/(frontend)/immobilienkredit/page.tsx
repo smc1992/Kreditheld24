@@ -1,0 +1,492 @@
+'use client'
+
+import React, { useState } from 'react'
+import Link from 'next/link'
+import UnverbindlichAnfragenButton from '@/components/UnverbindlichAnfragenButton'
+
+const ImmobilienkreditPage = () => {
+  const [kaufpreis, setKaufpreis] = useState(400000)
+  const [eigenkapital, setEigenkapital] = useState(80000)
+  const [laufzeit, setLaufzeit] = useState(30)
+  const [tilgung, setTilgung] = useState(2)
+
+  // Berechnung des Immobilienkredits
+  const calculateImmobilienkredit = () => {
+    const darlehenssumme = kaufpreis - eigenkapital
+    const zinssatz = 0.034 // 3,4% Beispielzins für Immobilienkredit
+    const tilgungsrate = tilgung / 100
+    const gesamtrate = (zinssatz + tilgungsrate) / 12
+    const monatlicheRate = darlehenssumme * gesamtrate
+    const restschuld = darlehenssumme * Math.pow(1 + zinssatz/12, laufzeit*12) - monatlicheRate * ((Math.pow(1 + zinssatz/12, laufzeit*12) - 1) / (zinssatz/12))
+    
+    return {
+      darlehenssumme: darlehenssumme.toFixed(0),
+      monatlicheRate: monatlicheRate.toFixed(2),
+      zinssatz: (zinssatz * 100).toFixed(2),
+      restschuld: Math.max(0, restschuld).toFixed(0)
+    }
+  }
+
+  const berechnung = calculateImmobilienkredit()
+
+  const vorteile = [
+    {
+      icon: "ri-home-heart-line",
+      title: "Traumimmobilie finanzieren",
+      description: "Verwirklichen Sie Ihren Traum vom Eigenheim mit unserem maßgeschneiderten Immobilienkredit."
+    },
+    {
+      icon: "ri-percent-line",
+      title: "Niedrige Zinsen",
+      description: "Profitieren Sie von attraktiven Zinssätzen und günstigen Konditionen für Ihre Immobilienfinanzierung."
+    },
+    {
+      icon: "ri-time-line",
+      title: "Lange Laufzeiten",
+      description: "Flexible Laufzeiten bis zu 40 Jahren für niedrige monatliche Raten und optimale Planbarkeit."
+    },
+    {
+      icon: "ri-shield-star-line",
+      title: "Sichere Investition",
+      description: "Immobilien als wertstabile Kapitalanlage und Schutz vor Inflation für Ihre Zukunft."
+    },
+    {
+      icon: "ri-calculator-line",
+      title: "Flexible Tilgung",
+      description: "Wählen Sie Ihre Tilgungsrate und nutzen Sie Sondertilgungen für eine schnellere Entschuldung."
+    },
+    {
+      icon: "ri-customer-service-2-line",
+      title: "Expertenberatung",
+      description: "Persönliche Beratung durch unsere Immobilienfinanzierungs-Experten von der ersten Idee bis zur Schlüsselübergabe."
+    }
+  ]
+
+  const immobilienarten = [
+    {
+      icon: "ri-home-4-line",
+      title: "Eigenheim",
+      description: "Einfamilienhaus, Doppelhaushälfte oder Reihenhaus für die ganze Familie.",
+      features: ["Garten und Privatsphäre", "Individuelle Gestaltung", "Langfristige Wertsteigerung"]
+    },
+    {
+      icon: "ri-building-line",
+      title: "Eigentumswohnung",
+      description: "Wohnung in Mehrfamilienhaus oder Wohnanlage als Kapitalanlage oder Eigennutzung.",
+      features: ["Zentrale Lage", "Geringere Nebenkosten", "Gute Verkehrsanbindung"]
+    },
+    {
+      icon: "ri-hammer-line",
+      title: "Neubau",
+      description: "Finanzierung für den Bau Ihrer Traumimmobilie nach individuellen Wünschen.",
+      features: ["Moderne Ausstattung", "Energieeffizient", "Keine Renovierungskosten"]
+    },
+    {
+      icon: "ri-ancient-gate-line",
+      title: "Bestandsimmobilie",
+      description: "Kauf einer bereits bestehenden Immobilie mit Charme und Geschichte.",
+      features: ["Sofort bezugsfertig", "Gewachsene Nachbarschaft", "Günstiger Kaufpreis"]
+    }
+  ]
+
+  const prozessSchritte = [
+    {
+      schritt: "1",
+      title: "Beratungstermin",
+      description: "Kostenlose Erstberatung zu Ihren Finanzierungsmöglichkeiten.",
+      icon: "ri-calendar-line"
+    },
+    {
+      schritt: "2",
+      title: "Finanzierungsplan",
+      description: "Erstellung eines individuellen Finanzierungskonzepts.",
+      icon: "ri-file-chart-line"
+    },
+    {
+      schritt: "3",
+      title: "Objektbewertung",
+      description: "Professionelle Bewertung Ihrer Wunschimmobilie.",
+      icon: "ri-search-eye-line"
+    },
+    {
+      schritt: "4",
+      title: "Kreditantrag",
+      description: "Antragstellung bei der Bank mit den besten Konditionen.",
+      icon: "ri-file-text-line"
+    }
+  ]
+
+  const faqData = [
+    {
+      question: "Wie viel Eigenkapital benötige ich für einen Immobilienkredit?",
+      answer: "Empfohlen werden mindestens 20% des Kaufpreises plus Nebenkosten (ca. 10-15%). Eine Vollfinanzierung ist möglich, führt aber zu höheren Zinsen und strengeren Bonitätsprüfungen."
+    },
+    {
+      question: "Welche Nebenkosten fallen beim Immobilienkauf an?",
+      answer: "Nebenkosten betragen etwa 10-15% des Kaufpreises: Grunderwerbsteuer (3,5-6,5%), Notar- und Grundbuchkosten (ca. 2%), Maklercourtage (0-7,14%) und ggf. Gutachterkosten."
+    },
+    {
+      question: "Wie lange kann die Laufzeit eines Immobilienkredits sein?",
+      answer: "Immobilienkredite haben typischerweise Laufzeiten von 15-40 Jahren. Längere Laufzeiten bedeuten niedrigere monatliche Raten, aber höhere Gesamtkosten durch mehr Zinszahlungen."
+    },
+    {
+      question: "Was ist der Unterschied zwischen Sollzins und Effektivzins?",
+      answer: "Der Sollzins ist der reine Kreditzins. Der Effektivzins beinhaltet zusätzlich alle Nebenkosten und ist daher höher. Er ermöglicht den Vergleich verschiedener Kreditangebote."
+    },
+    {
+      question: "Kann ich meinen Immobilienkredit vorzeitig ablösen?",
+      answer: "Ja, aber meist fällt eine Vorfälligkeitsentschädigung an. Nach 10 Jahren Zinsbindung haben Sie ein gesetzliches Sonderkündigungsrecht mit 6 Monaten Kündigungsfrist."
+    }
+  ]
+
+  const [openFaq, setOpenFaq] = useState<number | null>(null)
+
+  const toggleFaq = (index: number) => {
+    setOpenFaq(openFaq === index ? null : index)
+  }
+
+  return (
+    <div className="font-sans text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-900 transition-colors duration-300">
+
+      {/* Breadcrumb */}
+      <div className="bg-white dark:bg-gray-900 transition-colors duration-300">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-4">
+            <Link href="/" className="hover:text-primary">Startseite</Link>
+            <div className="w-4 h-4 flex items-center justify-center mx-1">
+              <i className="ri-arrow-right-s-line"></i>
+            </div>
+            <Link href="/baufinanzierung" className="hover:text-primary">Baufinanzierung</Link>
+            <div className="w-4 h-4 flex items-center justify-center mx-1">
+              <i className="ri-arrow-right-s-line"></i>
+            </div>
+            <span>Immobilienkredit</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Hero Section */}
+      <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 dark:from-gray-900 dark:to-gray-800 overflow-hidden min-h-[500px] sm:min-h-[600px] lg:min-h-[700px] transition-colors duration-300">
+        <div 
+          className="absolute inset-0 bg-right bg-no-repeat bg-contain opacity-20 sm:opacity-40 md:opacity-60 lg:opacity-90" 
+          style={{
+            backgroundImage: "url('https://readdy.ai/api/search-image?query=beautiful%20modern%20family%20house%20with%20garden%2C%20contemporary%20residential%20architecture%2C%20bright%20daylight%2C%20professional%20real%20estate%20photography%2C%20dream%20home%20exterior&width=800&height=600&seq=immobilienkredit_hero&orientation=landscape')"
+          }}
+        ></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-green-50/80 to-transparent sm:from-green-50/90 sm:via-green-50/70 md:from-green-50/80 md:via-green-50/60 dark:from-gray-900/95 dark:via-gray-900/80 dark:to-transparent dark:sm:from-gray-900/90 dark:sm:via-gray-900/70 dark:md:from-gray-900/80 dark:md:via-gray-900/60"></div>
+        <div className="container mx-auto px-4 py-12 sm:py-16 md:py-20 lg:py-24 relative z-10 flex items-center min-h-[500px] sm:min-h-[600px] lg:min-h-[700px]">
+          <div className="max-w-xl lg:max-w-2xl">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 dark:text-gray-100 mb-4">
+                Immobilienkredit für Ihr Traumhaus
+              </h1>
+              <p className="text-lg text-gray-700 dark:text-gray-300 mb-8">
+                Günstige Zinsen, flexible Laufzeiten und persönliche Beratung für den Kauf Ihrer Traumimmobilie. Jetzt Finanzierung berechnen!
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <Link 
+                  href="#rechner" 
+                  className="bg-primary hover:bg-green-500 text-white font-medium py-3 sm:py-4 px-6 sm:px-8 rounded-button shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base group"
+                >
+                  <span>Immobilienkredit berechnen</span>
+                  <div className="w-4 h-4 sm:w-5 sm:h-5 ml-2 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
+                    <i className="ri-arrow-right-line"></i>
+                  </div>
+                </Link>
+                <UnverbindlichAnfragenButton variant="secondary" size="md" className="py-3 sm:py-4 px-6 sm:px-8 text-sm sm:text-base" />
+              </div>
+            </div>
+        </div>
+      </section>
+
+      {/* Vorteile */}
+      <section className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Vorteile unseres Immobilienkredits</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              Profitieren Sie von unserer Expertise und finden Sie die optimale Finanzierung für Ihre Immobilie.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {vorteile.map((vorteil, index) => (
+              <div key={index} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all duration-300">
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
+                  <div className="w-6 h-6 flex items-center justify-center text-primary">
+                    <i className={vorteil.icon}></i>
+                  </div>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">{vorteil.title}</h3>
+                <p className="text-gray-600 dark:text-gray-300">{vorteil.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Immobilienarten */}
+      <section className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Finanzierung für jede Immobilie</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              Ob Eigenheim, Eigentumswohnung oder Kapitalanlage - wir finden die passende Finanzierung.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {immobilienarten.map((art, index) => (
+              <div key={index} className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
+                  <div className="w-6 h-6 flex items-center justify-center text-primary">
+                    <i className={art.icon}></i>
+                  </div>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">{art.title}</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">{art.description}</p>
+                <ul className="space-y-1">
+                  {art.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                      <div className="w-4 h-4 flex items-center justify-center text-primary mr-2">
+                        <i className="ri-check-line"></i>
+                      </div>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Kreditrechner */}
+      <section id="rechner" className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Immobilienkredit-Rechner</h2>
+              <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                Berechnen Sie Ihre monatliche Rate und erhalten Sie einen ersten Überblick über Ihre Immobilienfinanzierung.
+              </p>
+            </div>
+            <div className="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 md:p-8 transition-colors duration-300">
+              <div className="grid md:grid-cols-2 gap-8">
+                <div>
+                  <div className="mb-6">
+                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Kaufpreis der Immobilie</label>
+                    <div className="relative">
+                      <input 
+                        type="number" 
+                        value={kaufpreis}
+                        onChange={(e) => setKaufpreis(Number(e.target.value))}
+                        className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300" 
+                        min="100000" 
+                        max="3000000"
+                      />
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">€</div>
+                    </div>
+                    <input 
+                      type="range" 
+                      value={kaufpreis}
+                      onChange={(e) => setKaufpreis(Number(e.target.value))}
+                      min="100000" 
+                      max="3000000" 
+                      step="10000" 
+                      className="w-full mt-2 accent-primary"
+                    />
+                    <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      <span>100.000 €</span>
+                      <span>3.000.000 €</span>
+                    </div>
+                  </div>
+                  <div className="mb-6">
+                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Eigenkapital</label>
+                    <div className="relative">
+                      <input 
+                        type="number" 
+                        value={eigenkapital}
+                        onChange={(e) => setEigenkapital(Number(e.target.value))}
+                        className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300" 
+                        min="0" 
+                        max={kaufpreis}
+                      />
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">€</div>
+                    </div>
+                    <input 
+                      type="range" 
+                      value={eigenkapital}
+                      onChange={(e) => setEigenkapital(Number(e.target.value))}
+                      min="0" 
+                      max={kaufpreis} 
+                      step="5000" 
+                      className="w-full mt-2 accent-primary"
+                    />
+                    <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      <span>0 €</span>
+                      <span>{kaufpreis.toLocaleString()} €</span>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg transition-colors duration-300">
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Ihre Finanzierung</h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600 dark:text-gray-300">Darlehenssumme:</span>
+                        <span className="font-semibold text-gray-900 dark:text-gray-100">{Number(berechnung.darlehenssumme).toLocaleString()} €</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600 dark:text-gray-300">Monatliche Rate:</span>
+                        <span className="font-semibold text-primary text-lg">{Number(berechnung.monatlicheRate).toLocaleString()} €</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600 dark:text-gray-300">Zinssatz (Beispiel):</span>
+                        <span className="font-semibold text-gray-900 dark:text-gray-100">{berechnung.zinssatz} %</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600 dark:text-gray-300">Tilgung:</span>
+                        <span className="font-semibold text-gray-900 dark:text-gray-100">{tilgung} %</span>
+                      </div>
+                      <div className="flex justify-between border-t pt-3">
+                        <span className="text-gray-600 dark:text-gray-300">Eigenkapitalanteil:</span>
+                        <span className="font-bold text-primary">{((eigenkapital / kaufpreis) * 100).toFixed(1)} %</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-6">
+                    <Link
+                      href="/kontakt"
+                      className="block w-full bg-primary hover:bg-green-500 text-white font-medium py-3 px-6 rounded-button text-center transition-all"
+                    >
+                      Kostenlose Beratung anfordern
+                    </Link>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">
+                      100% kostenlos & unverbindlich
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Prozess */}
+      <section className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">So läuft Ihr Immobilienkredit ab</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              In vier einfachen Schritten zu Ihrer Immobilienfinanzierung.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {prozessSchritte.map((schritt, index) => (
+              <div key={index} className="text-center">
+                <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-white font-bold text-xl">{schritt.schritt}</span>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">{schritt.title}</h3>
+                <p className="text-gray-600 dark:text-gray-300">{schritt.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Häufig gestellte Fragen</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              Antworten auf die wichtigsten Fragen rund um den Immobilienkredit.
+            </p>
+          </div>
+          <div className="max-w-3xl mx-auto">
+            <div className="space-y-4">
+              {faqData.map((faq, index) => (
+                <div key={index} className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                  <button 
+                    onClick={() => toggleFaq(index)}
+                    className="w-full flex items-center justify-between p-5 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                  >
+                    <span className="font-medium text-left text-gray-900 dark:text-gray-100">{faq.question}</span>
+                    <div className="w-5 h-5 flex items-center justify-center text-primary">
+                      <i className={openFaq === index ? "ri-subtract-line" : "ri-add-line"}></i>
+                    </div>
+                  </button>
+                  {openFaq === index && (
+                    <div className="px-5 pb-5 bg-white dark:bg-gray-700">
+                      <p className="text-gray-600 dark:text-gray-300">{faq.answer}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-16 bg-green-50 dark:bg-green-900/20 transition-colors duration-300">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Bereit für Ihre Traumimmobilie?</h2>
+            <p className="text-gray-600 dark:text-gray-300 text-lg mb-8">
+              Lassen Sie sich kostenlos beraten und finden Sie den optimalen Immobilienkredit für Ihr Vorhaben.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link 
+                href="#rechner" 
+                className="bg-primary hover:bg-green-500 text-white font-medium py-3 px-8 rounded-button transition-all flex items-center justify-center"
+              >
+                <span>Kredit berechnen</span>
+                <div className="w-5 h-5 ml-2 flex items-center justify-center">
+                  <i className="ri-arrow-right-line"></i>
+                </div>
+              </Link>
+              <Link 
+                href="/kontakt" 
+                className="border border-gray-300 dark:border-gray-600 hover:border-primary text-gray-700 dark:text-gray-300 hover:text-primary font-medium py-3 px-8 rounded-button transition-all flex items-center justify-center"
+              >
+                <div className="w-5 h-5 mr-2 flex items-center justify-center">
+                  <i className="ri-customer-service-2-line"></i>
+                </div>
+                <span>Beratung anfordern</span>
+              </Link>
+            </div>
+            <div className="mt-8 flex flex-wrap justify-center gap-6">
+              <div className="flex items-center">
+                <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
+                  <i className="ri-check-line"></i>
+                </div>
+                <span className="text-gray-600 dark:text-gray-300">Günstige Zinsen</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
+                  <i className="ri-check-line"></i>
+                </div>
+                <span className="text-gray-600 dark:text-gray-300">Flexible Laufzeiten</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
+                  <i className="ri-check-line"></i>
+                </div>
+                <span className="text-gray-600 dark:text-gray-300">Persönliche Beratung</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
+                  <i className="ri-check-line"></i>
+                </div>
+                <span className="text-gray-600 dark:text-gray-300">Kostenlos & unverbindlich</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  )
+}
+
+export default ImmobilienkreditPage
