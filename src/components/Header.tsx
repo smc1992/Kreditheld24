@@ -86,6 +86,7 @@ const quickLinks = [
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null)
+  const [activeMobileSubmenu, setActiveMobileSubmenu] = useState<string | null>(null)
 
   // Close menus when clicking outside
   useEffect(() => {
@@ -112,6 +113,10 @@ export function Header() {
 
   const handleMegaMenuToggle = (menuKey: string) => {
     setActiveMegaMenu(activeMegaMenu === menuKey ? null : menuKey)
+  }
+
+  const handleMobileSubmenuToggle = (menuKey: string) => {
+    setActiveMobileSubmenu(activeMobileSubmenu === menuKey ? null : menuKey)
   }
 
   return (
@@ -256,43 +261,62 @@ export function Header() {
             {/* Mobile Mega Menu Items */}
             {Object.entries(megaMenuData).map(([key, menuData]) => (
               <div key={key} className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-                <div className="bg-gray-50 dark:bg-gray-800 p-4">
-                  <div className="flex items-center mb-3">
-                    <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
-                      <i className={`${menuData.icon} text-primary`}></i>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900 dark:text-gray-100">{menuData.title}</h3>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">{menuData.description}</p>
-                    </div>
-                  </div>
-                  
-                  {/* Mobile Menu Sections */}
-                  {menuData.sections.map((section, sectionIndex) => (
-                    <div key={sectionIndex} className="mb-4 last:mb-0">
-                      <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 border-b border-gray-200 dark:border-gray-600 pb-1">
-                        {section.title}
-                      </h4>
-                      <div className="space-y-1">
-                        {section.items.map((item, itemIndex) => (
-                          <Link
-                            key={itemIndex}
-                            href={item.href}
-                            className="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200"
-                            onClick={() => setMobileMenuOpen(false)}
-                          >
-                            <div className="w-6 h-6 bg-primary/10 rounded flex items-center justify-center mr-3 flex-shrink-0">
-                              <i className={`${item.icon} text-primary text-sm`}></i>
-                            </div>
-                            <div>
-                              <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">{item.name}</div>
-                              <div className="text-xs text-gray-600 dark:text-gray-400">{item.description}</div>
-                            </div>
-                          </Link>
-                        ))}
+                {/* Mobile Menu Header - Clickable */}
+                <button
+                  className="w-full bg-gray-50 dark:bg-gray-800 p-4 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                  onClick={() => handleMobileSubmenuToggle(key)}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
+                        <i className={`${menuData.icon} text-primary`}></i>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900 dark:text-gray-100">{menuData.title}</h3>
+                        <p className="text-xs text-gray-600 dark:text-gray-400">{menuData.description}</p>
                       </div>
                     </div>
-                  ))}
+                    <i className={`text-gray-500 transition-transform duration-200 ${
+                      activeMobileSubmenu === key ? 'ri-arrow-up-s-line' : 'ri-arrow-down-s-line'
+                    }`}></i>
+                  </div>
+                </button>
+                
+                {/* Mobile Menu Content - Collapsible */}
+                <div className={`transition-all duration-300 overflow-hidden ${
+                  activeMobileSubmenu === key ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                }`}>
+                  <div className="p-4 pt-0">
+                    {/* Mobile Menu Sections */}
+                    {menuData.sections.map((section, sectionIndex) => (
+                      <div key={sectionIndex} className="mb-4 last:mb-0">
+                        <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 border-b border-gray-200 dark:border-gray-600 pb-1">
+                          {section.title}
+                        </h4>
+                        <div className="space-y-1">
+                          {section.items.map((item, itemIndex) => (
+                            <Link
+                              key={itemIndex}
+                              href={item.href}
+                              className="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200"
+                              onClick={() => {
+                                setMobileMenuOpen(false)
+                                setActiveMobileSubmenu(null)
+                              }}
+                            >
+                              <div className="w-6 h-6 bg-primary/10 rounded flex items-center justify-center mr-3 flex-shrink-0">
+                                <i className={`${item.icon} text-primary text-sm`}></i>
+                              </div>
+                              <div className="flex-1">
+                                <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">{item.name}</div>
+                                <div className="text-xs text-gray-600 dark:text-gray-400">{item.description}</div>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             ))}
