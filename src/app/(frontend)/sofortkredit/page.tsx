@@ -116,12 +116,12 @@ const SofortkreditPage = () => {
   }
 
   return (
-    <div className="font-sans text-gray-800 bg-white">
+    <div className="font-sans text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-900 transition-colors duration-300">
 
       {/* Breadcrumb */}
-      <div className="bg-white">
+      <div className="bg-white dark:bg-gray-900 transition-colors duration-300">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center text-sm text-gray-500 mb-4">
+          <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-4">
             <Link href="/" className="hover:text-primary">Startseite</Link>
             <div className="w-4 h-4 flex items-center justify-center mx-1">
               <i className="ri-arrow-right-s-line"></i>
@@ -136,20 +136,20 @@ const SofortkreditPage = () => {
       </div>
 
       {/* Hero Section */}
-      <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 overflow-hidden min-h-[500px] sm:min-h-[600px] lg:min-h-[700px]">
+      <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 dark:from-gray-900 dark:to-gray-800 overflow-hidden min-h-[500px] sm:min-h-[600px] lg:min-h-[700px] transition-colors duration-300">
         <div 
           className="absolute inset-0 bg-right bg-no-repeat bg-contain opacity-20 sm:opacity-40 md:opacity-60 lg:opacity-90" 
           style={{
             backgroundImage: "url('https://readdy.ai/api/search-image?query=modern%20minimalist%20financial%20office%20environment%20with%20soft%20natural%20lighting%2C%20clean%20workspace%20with%20digital%20displays%20showing%20financial%20data%2C%20contemporary%20professional%20setting%20with%20green%20accent%20colors%2C%20abstract%20geometric%20patterns%20in%20background%2C%20no%20people%20visible%2C%20professional%20and%20trustworthy%20atmosphere&width=800&height=600&seq=sofortkredit_hero&orientation=landscape')"
           }}
         ></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-green-50/80 to-transparent sm:from-green-50/90 sm:via-green-50/70 md:from-green-50/80 md:via-green-50/60"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-green-50/80 to-transparent sm:from-green-50/90 sm:via-green-50/70 md:from-green-50/80 md:via-green-50/60 dark:from-gray-900/95 dark:via-gray-900/80 dark:to-transparent dark:sm:from-gray-900/90 dark:sm:via-gray-900/70 dark:md:from-gray-900/80 dark:md:via-gray-900/60"></div>
         <div className="container mx-auto px-4 py-12 sm:py-16 md:py-20 lg:py-24 relative z-10 flex items-center min-h-[500px] sm:min-h-[600px] lg:min-h-[700px]">
           <div className="max-w-xl lg:max-w-2xl">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 dark:text-gray-100 mb-4">
                 Sofortkredit mit Auszahlung in 24 Stunden
               </h1>
-              <p className="text-lg text-gray-700 mb-8">
+              <p className="text-lg text-gray-700 dark:text-gray-300 mb-8">
                 Schnelle und unkomplizierte Finanzierung für dringende Vorhaben. 100% online, minimaler Aufwand, maximale Flexibilität.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
@@ -169,24 +169,24 @@ const SofortkreditPage = () => {
       </section>
 
       {/* Vorteile */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Ihre Vorteile beim Sofortkredit</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Ihre Vorteile beim Sofortkredit</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Profitieren Sie von unserer schnellen und unkomplizierten Online-Kreditabwicklung.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {vorteile.map((vorteil, index) => (
-              <div key={index} className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+              <div key={index} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all duration-300">
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
                   <div className="w-6 h-6 flex items-center justify-center text-primary">
                     <i className={vorteil.icon}></i>
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold mb-3">{vorteil.title}</h3>
-                <p className="text-gray-600">{vorteil.description}</p>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">{vorteil.title}</h3>
+                <p className="text-gray-600 dark:text-gray-300">{vorteil.description}</p>
               </div>
             ))}
           </div>
@@ -194,30 +194,30 @@ const SofortkreditPage = () => {
       </section>
 
       {/* Kreditrechner */}
-      <section id="calculator" className="py-16 bg-gray-50">
+      <section id="calculator" className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Sofortkredit-Rechner</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Sofortkredit-Rechner</h2>
+              <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
                 Berechnen Sie Ihre individuellen Kreditkonditionen und erhalten Sie sofort eine Entscheidung.
               </p>
             </div>
-            <div className="bg-white rounded-lg shadow-md p-6 md:p-8">
+            <div className="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 md:p-8 transition-colors duration-300">
               <div className="grid md:grid-cols-2 gap-8">
                 <div>
                   <div className="mb-6">
-                    <label className="block text-gray-700 font-medium mb-2">Kreditsumme</label>
+                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Kreditsumme</label>
                     <div className="relative">
                       <input 
                         type="number" 
                         value={loanAmount}
                         onChange={(e) => setLoanAmount(Number(e.target.value))}
-                        className="w-full border border-gray-300 rounded py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
+                        className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300" 
                         min="1000" 
                         max="50000"
                       />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">€</div>
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">€</div>
                     </div>
                     <input 
                       type="range" 
@@ -228,13 +228,13 @@ const SofortkreditPage = () => {
                       step="500" 
                       className="w-full mt-2 accent-primary"
                     />
-                    <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
                       <span>1.000 €</span>
                       <span>50.000 €</span>
                     </div>
                   </div>
                   <div className="mb-6">
-                    <label className="block text-gray-700 font-medium mb-2">Laufzeit</label>
+                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Laufzeit</label>
                     <div className="relative">
                       <div className="flex">
                         <button 
