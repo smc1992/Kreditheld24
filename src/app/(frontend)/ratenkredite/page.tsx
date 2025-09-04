@@ -343,11 +343,11 @@ const RatenkreditePage = () => {
       </section>
 
       {/* Process Section */}
-      <section id="process" className="py-16 bg-white">
+      <section id="process" className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">So einfach geht&apos;s</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">So einfach geht&apos;s</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               In nur wenigen Schritten zu Ihrem Ratenkredit – schnell, sicher und transparent.
             </p>
           </div>
@@ -356,8 +356,8 @@ const RatenkreditePage = () => {
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-white font-bold text-xl">1</span>
               </div>
-              <h3 className="text-lg font-semibold mb-2">Kreditwunsch eingeben</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Kreditwunsch eingeben</h3>
+              <p className="text-gray-600 dark:text-gray-300">
                 Geben Sie Ihre gewünschte Kreditsumme und Laufzeit in unseren Rechner ein.
               </p>
             </div>
@@ -365,8 +365,8 @@ const RatenkreditePage = () => {
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-white font-bold text-xl">2</span>
               </div>
-              <h3 className="text-lg font-semibold mb-2">Angebote vergleichen</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Angebote vergleichen</h3>
+              <p className="text-gray-600 dark:text-gray-300">
                 Vergleichen Sie die besten Angebote von über 20 Banken und wählen Sie das passende aus.
               </p>
             </div>
@@ -374,8 +374,8 @@ const RatenkreditePage = () => {
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-white font-bold text-xl">3</span>
               </div>
-              <h3 className="text-lg font-semibold mb-2">Antrag stellen</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Antrag stellen</h3>
+              <p className="text-gray-600 dark:text-gray-300">
                 Füllen Sie den Kreditantrag online aus und legitimieren Sie sich per VideoIdent.
               </p>
             </div>
@@ -383,8 +383,8 @@ const RatenkreditePage = () => {
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-white font-bold text-xl">4</span>
               </div>
-              <h3 className="text-lg font-semibold mb-2">Geld erhalten</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Geld erhalten</h3>
+              <p className="text-gray-600 dark:text-gray-300">
                 Nach erfolgreicher Prüfung erhalten Sie das Geld innerhalb von 24 Stunden.
               </p>
             </div>
@@ -393,11 +393,11 @@ const RatenkreditePage = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Häufig gestellte Fragen</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Häufig gestellte Fragen</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Antworten auf die wichtigsten Fragen rund um Ratenkredite bei Kreditheld24.
             </p>
           </div>
@@ -406,16 +406,16 @@ const RatenkreditePage = () => {
               <div key={index} className="mb-4">
                 <button
                   onClick={() => toggleFaq(index)}
-                  className="w-full bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow text-left flex justify-between items-center"
+                  className="w-full bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 text-left flex justify-between items-center"
                 >
-                  <span className="font-semibold text-gray-800">{faq.question}</span>
+                  <span className="font-semibold text-gray-800 dark:text-gray-100">{faq.question}</span>
                   <div className="w-6 h-6 flex items-center justify-center text-primary">
                     <i className={`ri-${openFaq === index ? 'subtract' : 'add'}-line`}></i>
                   </div>
                 </button>
                 {openFaq === index && (
-                  <div className="bg-white px-6 pb-6 rounded-b-lg shadow-sm">
-                    <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+                  <div className="bg-white dark:bg-gray-700 px-6 pb-6 rounded-b-lg shadow-sm transition-colors duration-300">
+                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{faq.answer}</p>
                   </div>
                 )}
               </div>
@@ -425,7 +425,7 @@ const RatenkreditePage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-primary text-white">
+      <section className="py-16 bg-primary dark:bg-green-700 text-white transition-colors duration-300">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">Bereit für Ihren Ratenkredit?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
