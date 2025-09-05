@@ -48,7 +48,7 @@ const HomePage = () => {
         
         <div className="container mx-auto px-4 py-12 md:py-24 relative z-10">
           <div className="max-w-xl md:max-w-2xl mx-auto md:mx-0">
-            <div className="mb-6">
+            <div className="mb-6 flex justify-center md:justify-start">
               <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-green-200 dark:border-green-700 mb-6">
                 <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
                 <span className="text-sm font-medium text-green-700 dark:text-green-400">Ihr zuverlässiger Kreditvergleich</span>
