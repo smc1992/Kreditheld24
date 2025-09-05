@@ -41,31 +41,31 @@ export default function ImpressumPage() {
                       <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Verantwortlich für den Inhalt:</h3>
                       <p className="text-gray-700 dark:text-gray-300">
                         Viktor Stephan<br />
-                        Brockmannstraße [Hausnummer]<br />
-                        [PLZ] [Ort]<br />
+                        Brockmannstr. 204<br />
+                        48163 Münster<br />
                         Deutschland
                       </p>
                     </div>
 
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Kontakt:</h3>
-                      <p className="text-gray-700">
-                        Telefon: [Telefonnummer]<br />
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Kontakt:</h3>
+                      <p className="text-gray-700 dark:text-gray-300">
+                        Telefon: 0251 149 142 77<br />
                         E-Mail: <a href="mailto:info@kreditheld24.de" className="text-primary hover:underline">info@kreditheld24.de</a>
                       </p>
                     </div>
 
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Umsatzsteuer-Identifikationsnummer:</h3>
-                      <p className="text-gray-700">
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Umsatzsteuer-Identifikationsnummer:</h3>
+                      <p className="text-gray-700 dark:text-gray-300">
                         [USt-IdNr. falls vorhanden]<br />
-                        <span className="text-sm text-gray-600">Gemäß § 27a Umsatzsteuergesetz</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Gemäß § 27a Umsatzsteuergesetz</span>
                       </p>
                     </div>
 
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Wirtschafts-Identifikationsnummer:</h3>
-                      <p className="text-gray-700">
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Wirtschafts-Identifikationsnummer:</h3>
+                      <p className="text-gray-700 dark:text-gray-300">
                         [Wirtschafts-ID falls vorhanden]
                       </p>
                     </div>
@@ -74,20 +74,20 @@ export default function ImpressumPage() {
 
                 {/* Berufsrechtliche Angaben */}
                 <div className="mb-12">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Berufsrechtliche Angaben</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Berufsrechtliche Angaben</h2>
                   <div className="space-y-4">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Tätigkeit:</h3>
-                      <p className="text-gray-700">
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Tätigkeit:</h3>
+                      <p className="text-gray-700 dark:text-gray-300">
                         Kreditvermittlung und Finanzberatung
                       </p>
                     </div>
                     
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Zuständige Aufsichtsbehörde:</h3>
-                      <p className="text-gray-700">
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Zuständige Aufsichtsbehörde:</h3>
+                      <p className="text-gray-700 dark:text-gray-300">
                         [Zuständige Behörde je nach Standort]<br />
-                        <span className="text-sm text-gray-600">Für Kreditvermittlung nach § 34c GewO</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Für Kreditvermittlung nach § 34c GewO</span>
                       </p>
                     </div>
                   </div>
@@ -95,32 +95,32 @@ export default function ImpressumPage() {
 
                 {/* Redaktionell Verantwortlicher */}
                 <div className="mb-12">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Redaktionell Verantwortlicher</h2>
-                  <p className="text-gray-700">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Redaktionell Verantwortlicher</h2>
+                  <p className="text-gray-700 dark:text-gray-300">
                     Viktor Stephan<br />
-                    Brockmannstraße [Hausnummer]<br />
-                    [PLZ] [Ort]<br />
+                    Brockmannstr. 204<br />
+                    48163 Münster<br />
                     Deutschland
                   </p>
                 </div>
 
                 {/* EU-Streitschlichtung */}
                 <div className="mb-12">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">EU-Streitschlichtung</h2>
-                  <p className="text-gray-700 mb-4">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">EU-Streitschlichtung</h2>
+                  <p className="text-gray-700 dark:text-gray-300 mb-4">
                     Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: 
                     <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline ml-1">
                       https://ec.europa.eu/consumers/odr/
                     </a>
                   </p>
-                  <p className="text-gray-700">
+                  <p className="text-gray-700 dark:text-gray-300">
                     Unsere E-Mail-Adresse finden Sie oben im Impressum.
                   </p>
                 </div>
 
                 {/* Verbraucherstreitbeilegung */}
                 <div className="mb-12">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Verbraucherstreitbeilegung/Universalschlichtungsstelle</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Verbraucherstreitbeilegung/Universalschlichtungsstelle</h2>
                   <p className="text-gray-700">
                     Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer 
                     Verbraucherschlichtungsstelle teilzunehmen.
@@ -129,8 +129,8 @@ export default function ImpressumPage() {
 
                 {/* Haftung für Inhalte */}
                 <div className="mb-12">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Haftung für Inhalte</h2>
-                  <p className="text-gray-700 mb-4">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Haftung für Inhalte</h2>
+                  <p className="text-gray-700 dark:text-gray-300 mb-4">
                     Als Diensteanbieter sind wir gemäß § 7 Abs.1 DDG für eigene Inhalte auf diesen Seiten nach den 
                     allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 DDG sind wir als Diensteanbieter jedoch nicht 
                     unter der Verpflichtung, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach 
@@ -146,7 +146,7 @@ export default function ImpressumPage() {
 
                 {/* Haftung für Links */}
                 <div className="mb-12">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Haftung für Links</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Haftung für Links</h2>
                   <p className="text-gray-700 mb-4">
                     Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. 
                     Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten 
@@ -162,7 +162,7 @@ export default function ImpressumPage() {
 
                 {/* Urheberrecht */}
                 <div className="mb-12">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Urheberrecht</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Urheberrecht</h2>
                   <p className="text-gray-700 mb-4">
                     Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen 
                     Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der 
@@ -178,19 +178,19 @@ export default function ImpressumPage() {
                 </div>
 
                 {/* Rechtliche Hinweise */}
-                <div className="bg-gray-50 p-6 rounded-lg">
-                  <h2 className="text-xl font-bold text-gray-900 mb-4">Rechtliche Hinweise</h2>
-                  <p className="text-sm text-gray-600 mb-2">
+                <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg transition-colors duration-300">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Rechtliche Hinweise</h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
                     <strong>Hinweis:</strong> Dieses Impressum wurde erstellt gemäß den Anforderungen des 
                     Digitale-Dienste-Gesetzes (DDG), welches am 14. Mai 2024 das Telemediengesetz (TMG) abgelöst hat.
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     Stand: Januar 2025
                   </p>
                 </div>
 
                 {/* Navigation Links */}
-                <div className="mt-12 pt-8 border-t border-gray-200">
+                <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-600">
                   <div className="flex flex-wrap gap-4 justify-center">
                     <Link href="/" className="text-primary hover:underline">
                       Zur Startseite
