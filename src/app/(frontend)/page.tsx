@@ -786,48 +786,48 @@ const HomePage = () => {
                 <span className="text-sm font-medium text-green-700 dark:text-green-400">Erfolgsgeschichte</span>
               </div>
               <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-                Vom Traum zur <span className="bg-gradient-to-r from-primary to-green-600 bg-clip-text text-transparent">Realität</span>
-              </h2>
-              <p className="text-lg text-gray-700 dark:text-gray-300 mb-8">
-                Über 50.000 zufriedene Kunden haben bereits ihren Traumkredit über Kreditheld24 gefunden. Von der ersten Anfrage bis zur Auszahlung - wir begleiten Sie auf Ihrem Weg zum finanziellen Erfolg.
-              </p>
-              <div className="grid sm:grid-cols-2 gap-6 mb-8">
+                 Ihr Weg zum <span className="bg-gradient-to-r from-primary to-green-600 bg-clip-text text-transparent">Traumkredit</span>
+               </h2>
+               <p className="text-lg text-gray-700 dark:text-gray-300 mb-8">
+                 Als innovativer Kreditvermittler verbinden wir modernste Technologie mit persönlicher Beratung. Unser Ziel: Ihnen den besten Kredit zu den fairsten Konditionen zu vermitteln.
+               </p>
+               <div className="grid sm:grid-cols-2 gap-6 mb-8">
+                 <div className="flex items-center">
+                   <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mr-4">
+                     <i className="ri-check-line text-green-600 text-xl"></i>
+                   </div>
+                   <div>
+                     <div className="font-semibold text-gray-900 dark:text-gray-100">100%</div>
+                     <div className="text-sm text-gray-600 dark:text-gray-400">Kostenlos & unverbindlich</div>
+                   </div>
+                 </div>
                 <div className="flex items-center">
-                  <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mr-4">
-                    <i className="ri-check-line text-green-600 text-xl"></i>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900 dark:text-gray-100">50.000+</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">Zufriedene Kunden</div>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center mr-4">
-                    <i className="ri-time-line text-blue-600 text-xl"></i>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900 dark:text-gray-100">24h</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">Schnelle Bearbeitung</div>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mr-4">
-                    <i className="ri-shield-check-line text-green-600 text-xl"></i>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900 dark:text-gray-100">100%</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">SCHUFA-neutral</div>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center mr-4">
-                    <i className="ri-bank-line text-blue-600 text-xl"></i>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900 dark:text-gray-100">20+</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">Bankpartner</div>
-                  </div>
-                </div>
+                   <div className="w-12 h-12 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center mr-4">
+                     <i className="ri-time-line text-blue-600 text-xl"></i>
+                   </div>
+                   <div>
+                     <div className="font-semibold text-gray-900 dark:text-gray-100">2 Min</div>
+                     <div className="text-sm text-gray-600 dark:text-gray-400">Schnelle Anfrage</div>
+                   </div>
+                 </div>
+                 <div className="flex items-center">
+                   <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mr-4">
+                     <i className="ri-shield-check-line text-green-600 text-xl"></i>
+                   </div>
+                   <div>
+                     <div className="font-semibold text-gray-900 dark:text-gray-100">100%</div>
+                     <div className="text-sm text-gray-600 dark:text-gray-400">SCHUFA-neutral</div>
+                   </div>
+                 </div>
+                 <div className="flex items-center">
+                   <div className="w-12 h-12 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center mr-4">
+                     <i className="ri-star-line text-blue-600 text-xl"></i>
+                   </div>
+                   <div>
+                     <div className="font-semibold text-gray-900 dark:text-gray-100">Top</div>
+                     <div className="text-sm text-gray-600 dark:text-gray-400">Konditionen</div>
+                   </div>
+                 </div>
               </div>
               <Link
                 href="#calculator"
