@@ -56,7 +56,7 @@ const AutokreditPage = () => {
   ]
 
   return (
-    <div className="font-sans text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-900 transition-colors duration-300">
+    <div className="font-sans text-gray-800 bg-white dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
       {/* Hero Section */}
       <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 dark:from-gray-900 dark:to-gray-800 overflow-hidden min-h-[500px] sm:min-h-[600px] lg:min-h-[700px] transition-colors duration-300">
         <div 

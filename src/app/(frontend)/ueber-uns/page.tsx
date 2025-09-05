@@ -71,7 +71,7 @@ const UeberUnsPage = () => {
   ]
 
   return (
-    <div className="font-sans text-gray-800 bg-white">
+    <div className="font-sans text-gray-800 bg-white dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
 
       {/* Hero Section */}
       <section className="relative w-full bg-gradient-to-br from-green-600 via-green-700 to-green-800 dark:from-green-700 dark:via-green-800 dark:to-green-900 text-white transition-colors duration-300 overflow-hidden">

@@ -10,10 +10,10 @@ export const metadata: Metadata = {
 
 export default function DatenschutzPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300">
       <main className="pt-20 pb-16">
         {/* Header Section */}
-        <section className="bg-gradient-to-br from-green-600 to-green-700 text-white py-16">
+        <section className="bg-gradient-to-br from-green-600 to-green-700 dark:from-green-700 dark:to-green-800 text-white py-16 transition-colors duration-300">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
@@ -30,11 +30,11 @@ export default function DatenschutzPage() {
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
-              <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 transition-colors duration-300">
                 
                 {/* Inhaltsverzeichnis */}
-                <div className="mb-12 bg-gray-50 p-6 rounded-lg">
-                  <h2 className="text-xl font-bold text-gray-900 mb-4">Inhaltsverzeichnis</h2>
+                <div className="mb-12 bg-gray-50 dark:bg-gray-700 p-6 rounded-lg transition-colors duration-300">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Inhaltsverzeichnis</h2>
                   <ul className="space-y-2 text-sm">
                     <li><a href="#verantwortlicher" className="text-primary hover:underline">1. Verantwortlicher</a></li>
                     <li><a href="#datenverarbeitung" className="text-primary hover:underline">2. Allgemeine Hinweise zur Datenverarbeitung</a></li>

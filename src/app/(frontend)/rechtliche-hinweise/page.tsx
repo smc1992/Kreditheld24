@@ -10,10 +10,10 @@ export const metadata: Metadata = {
 
 export default function RechtlicheHinweisePage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300">
       <main className="pt-20 pb-16">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-green-600 to-green-700 text-white py-16">
+        <section className="bg-gradient-to-br from-green-600 to-green-700 dark:from-green-700 dark:to-green-800 text-white py-16 transition-colors duration-300">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
@@ -35,19 +35,19 @@ export default function RechtlicheHinweisePage() {
             <div className="max-w-4xl mx-auto space-y-12">
               
               {/* Widerrufsrecht */}
-              <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 transition-colors duration-300">
                 <div className="flex items-center mb-6">
-                  <div className="bg-red-100 p-3 rounded-full mr-4">
+                  <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded-full mr-4">
                     <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 15.5c-.77.833.192 2.5 1.732 2.5z" />
                     </svg>
                   </div>
-                  <h2 className="text-3xl font-bold text-gray-900">Widerrufsrecht</h2>
+                  <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Widerrufsrecht</h2>
                 </div>
                 
                 <div className="space-y-6">
-                  <div className="bg-red-50 border-l-4 border-red-400 p-6">
-                    <h3 className="text-xl font-semibold text-red-800 mb-3">Wichtiger Hinweis zum Widerrufsrecht</h3>
+                  <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-400 dark:border-red-500 p-6">
+                    <h3 className="text-xl font-semibold text-red-800 dark:text-red-300 mb-3">Wichtiger Hinweis zum Widerrufsrecht</h3>
                     <p className="text-red-700 font-medium">
                       Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen.
                     </p>

@@ -98,7 +98,7 @@ const KontaktPage = () => {
   ]
 
   return (
-    <div className="font-sans text-gray-800 bg-white">
+    <div className="font-sans text-gray-800 bg-white dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
 
 
 
