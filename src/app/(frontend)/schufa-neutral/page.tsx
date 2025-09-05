@@ -77,7 +77,7 @@ const SchufaNeutralPage = () => {
         <div 
           className="absolute inset-0 bg-right bg-no-repeat bg-contain opacity-20 sm:opacity-40 md:opacity-60 lg:opacity-90" 
           style={{
-            backgroundImage: "url('https://readdy.ai/api/search-image?query=professional%20modern%20office%20environment%20with%20financial%20documents%20and%20calculator%20on%20desk%2C%20soft%20natural%20lighting%2C%20minimalist%20design%20with%20green%20accents%2C%20blurred%20background%20showing%20financial%20success%20and%20stability&width=800&height=600&seq=hero1&orientation=landscape')"
+            backgroundImage: "url('/images/schufa-neutral-hero.webp')"
           }}
         ></div>
         <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-green-50/80 to-transparent sm:from-green-50/90 sm:via-green-50/70 md:from-green-50/80 md:via-green-50/60 dark:from-gray-900/95 dark:via-gray-900/80 dark:to-transparent dark:sm:from-gray-900/90 dark:sm:via-gray-900/70 dark:md:from-gray-900/80 dark:md:via-gray-900/60"></div>
