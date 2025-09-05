@@ -327,7 +327,7 @@ const KreditSelbststaendigePage = () => {
                       <select 
                         value={businessYears}
                         onChange={(e) => setBusinessYears(e.target.value)}
-                        className="w-full appearance-none border border-gray-300 rounded py-3 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
+                        className="w-full appearance-none border border-gray-300 dark:border-gray-600 rounded py-3 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100"
                       >
                         <option value="1">Weniger als 1 Jahr</option>
                         <option value="1-3">1-3 Jahre</option>
@@ -347,7 +347,7 @@ const KreditSelbststaendigePage = () => {
                       <select 
                         value={loanPurpose}
                         onChange={(e) => setLoanPurpose(e.target.value)}
-                        className="w-full appearance-none border border-gray-300 rounded py-3 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
+                        className="w-full appearance-none border border-gray-300 dark:border-gray-600 rounded py-3 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100"
                       >
                         <option value="betriebsmittel">Betriebsmittel</option>
                         <option value="investition">Investition</option>
