@@ -321,8 +321,9 @@ export function Header() {
                 
                 {/* Mobile Menu Content - Collapsible */}
                 <div className={`transition-all duration-300 overflow-hidden ${
-                  activeMobileSubmenu === key ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                  activeMobileSubmenu === key ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
                 }`}>
+                  <div className="max-h-80 overflow-y-auto">
                   <div className="p-4 pt-0">
                     {/* Mobile Menu Sections */}
                     {menuData.sections.map((section, sectionIndex) => (
@@ -353,6 +354,7 @@ export function Header() {
                         </div>
                       </div>
                     ))}
+                  </div>
                   </div>
                 </div>
               </div>
