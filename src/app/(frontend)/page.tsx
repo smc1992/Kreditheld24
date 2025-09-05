@@ -39,7 +39,7 @@ const HomePage = () => {
         <div 
           className="absolute inset-0 bg-right bg-no-repeat bg-cover md:bg-contain opacity-20 md:opacity-100"
           style={{
-            backgroundImage: "url('https://readdy.ai/api/search-image?query=professional%20financial%20advisor%20or%20banker%20working%20with%20digital%20tablet%20in%20modern%20minimalist%20office%2C%20soft%20lighting%20with%20green%20accents%2C%20clean%20and%20simple%20composition%2C%20blurred%20background%20with%20financial%20charts%2C%20elegant%20and%20professional%20atmosphere&width=800&height=600&seq=hero123&orientation=landscape')"
+            backgroundImage: "url('/images/hero-financial-advisor.webp')"
           }}
         ></div>
         
