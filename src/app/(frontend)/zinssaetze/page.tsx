@@ -142,7 +142,7 @@ export default function ZinssaetzePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300">
       <main className="pt-20 pb-16">
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-green-600 via-green-700 to-green-800 dark:from-green-700 dark:via-green-800 dark:to-green-900 text-white py-16 transition-colors duration-300 relative overflow-hidden">
@@ -250,35 +250,35 @@ export default function ZinssaetzePage() {
                         <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">Kreditart</th>
                         <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900 dark:text-gray-100">Repräsentativer Zinssatz</th>
                         <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900 dark:text-gray-100">Zinsspanne</th>
-                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Laufzeit</th>
-                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Kreditsumme</th>
-                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Aktion</th>
+                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900 dark:text-gray-100">Laufzeit</th>
+                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900 dark:text-gray-100">Kreditsumme</th>
+                        <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900 dark:text-gray-100">Aktion</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200">
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
                       {rates.map((rate, index) => (
-                        <tr key={index} className="hover:bg-gray-50 transition-colors">
+                        <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                           <td className="px-6 py-4">
-                            <div className="font-medium text-gray-900">{rate.kreditart}</div>
+                            <div className="font-medium text-gray-900 dark:text-gray-100">{rate.kreditart}</div>
                           </td>
                           <td className="px-6 py-4 text-center">
                             <div className="text-2xl font-bold text-primary">
                               {formatPercent(rate.repZins)}
                             </div>
-                            <div className="text-xs text-gray-500">eff. Jahreszins</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">eff. Jahreszins</div>
                           </td>
                           <td className="px-6 py-4 text-center">
-                            <div className="text-sm text-gray-900">
+                            <div className="text-sm text-gray-900 dark:text-gray-100">
                               {formatPercent(rate.minZins)} - {formatPercent(rate.maxZins)}
                             </div>
                           </td>
                           <td className="px-6 py-4 text-center">
-                            <div className="text-sm text-gray-900">
+                            <div className="text-sm text-gray-900 dark:text-gray-100">
                               {rate.laufzeitMin} - {rate.laufzeitMax} Monate
                             </div>
                           </td>
                           <td className="px-6 py-4 text-center">
-                            <div className="text-sm text-gray-900">
+                            <div className="text-sm text-gray-900 dark:text-gray-100">
                               {formatCurrency(rate.minSumme)} - {formatCurrency(rate.maxSumme)}
                             </div>
                           </td>
@@ -298,9 +298,9 @@ export default function ZinssaetzePage() {
               </div>
 
               {/* Hinweise */}
-              <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-blue-900 mb-4">Wichtige Hinweise zu den Zinssätzen</h3>
-                <div className="space-y-3 text-sm text-blue-800">
+              <div className="mt-8 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6 transition-colors duration-300">
+                <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-4">Wichtige Hinweise zu den Zinssätzen</h3>
+                <div className="space-y-3 text-sm text-blue-800 dark:text-blue-300">
                   <p>
                     <strong>Repräsentativer Zinssatz:</strong> Der Zinssatz, den mindestens 2/3 aller Kunden bei diesem Kreditprodukt erhalten.
                   </p>
@@ -320,13 +320,13 @@ export default function ZinssaetzePage() {
         </section>
 
         {/* CTA Section */}
-        <section className="bg-gray-100 py-16">
+        <section className="bg-gray-100 dark:bg-gray-800 py-16 transition-colors duration-300">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
                 Finden Sie Ihren persönlichen Zinssatz
               </h2>
-              <p className="text-lg text-gray-600 mb-8">
+              <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
                 Stellen Sie eine unverbindliche Anfrage und erhalten Sie ein individuelles Angebot mit Ihrem persönlichen Zinssatz.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -338,7 +338,7 @@ export default function ZinssaetzePage() {
                 </Link>
                 <Link
                   href="/kontakt"
-                  className="bg-white hover:bg-gray-50 text-primary border-2 border-primary font-medium py-3 px-8 rounded-button shadow-md hover:shadow-lg transition-all"
+                  className="bg-white hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 text-primary dark:text-green-400 border-2 border-primary dark:border-green-400 font-medium py-3 px-8 rounded-button shadow-md hover:shadow-lg transition-all"
                 >
                   Persönliche Beratung
                 </Link>
