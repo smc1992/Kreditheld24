@@ -56,17 +56,9 @@ export default function ImpressumPage() {
                     </div>
 
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Umsatzsteuer-Identifikationsnummer:</h3>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Steuernummer:</h3>
                       <p className="text-gray-700 dark:text-gray-300">
-                        [USt-IdNr. falls vorhanden]<br />
-                        <span className="text-sm text-gray-600 dark:text-gray-400">Gemäß § 27a Umsatzsteuergesetz</span>
-                      </p>
-                    </div>
-
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Wirtschafts-Identifikationsnummer:</h3>
-                      <p className="text-gray-700 dark:text-gray-300">
-                        [Wirtschafts-ID falls vorhanden]
+                        St.Nr. 33652010811
                       </p>
                     </div>
                   </div>
@@ -84,10 +76,23 @@ export default function ImpressumPage() {
                     </div>
                     
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Zuständige Aufsichtsbehörde:</h3>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Gewerbeerlaubnis:</h3>
                       <p className="text-gray-700 dark:text-gray-300">
-                        [Zuständige Behörde je nach Standort]<br />
-                        <span className="text-sm text-gray-600 dark:text-gray-400">Für Kreditvermittlung nach § 34c GewO</span>
+                        Gewerbeerlaubnis nach § 34c GewO. Diese Erlaubnis wurde erteilt durch das Ordnungsamt der Stadt Münster.<br /><br />
+                        <strong>Zuständige Aufsichtsbehörde gem. § 34c GewO:</strong><br />
+                        Ordnungsamt Münster<br />
+                        Klemensstr. 10<br />
+                        48143 Münster<br />
+                        Tel: 0251 / 492-0
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Immobiliardarlehensvermittlung:</h3>
+                      <p className="text-gray-700 dark:text-gray-300">
+                        Gewerbeerlaubnis als Immobiliardarlehensvermittler gem. §34i<br />
+                        Registrierungsnummer: D-W-156-7TXP-35<br />
+                        Aufsichtsbehörde: IHK Nord Westfalen
                       </p>
                     </div>
                   </div>
