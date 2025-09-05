@@ -776,6 +776,86 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* Success Story Section */}
+      <section className="py-16 bg-gradient-to-br from-green-50 via-blue-50/30 to-green-50 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 transition-colors duration-300 relative overflow-hidden">
+        <div className="container mx-auto px-4">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="order-2 lg:order-1">
+              <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-green-200 dark:border-green-700 mb-6">
+                <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                <span className="text-sm font-medium text-green-700 dark:text-green-400">Erfolgsgeschichte</span>
+              </div>
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+                Vom Traum zur <span className="bg-gradient-to-r from-primary to-green-600 bg-clip-text text-transparent">Realität</span>
+              </h2>
+              <p className="text-lg text-gray-700 dark:text-gray-300 mb-8">
+                Über 50.000 zufriedene Kunden haben bereits ihren Traumkredit über Kreditheld24 gefunden. Von der ersten Anfrage bis zur Auszahlung - wir begleiten Sie auf Ihrem Weg zum finanziellen Erfolg.
+              </p>
+              <div className="grid sm:grid-cols-2 gap-6 mb-8">
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mr-4">
+                    <i className="ri-check-line text-green-600 text-xl"></i>
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900 dark:text-gray-100">50.000+</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Zufriedene Kunden</div>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center mr-4">
+                    <i className="ri-time-line text-blue-600 text-xl"></i>
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900 dark:text-gray-100">24h</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Schnelle Bearbeitung</div>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mr-4">
+                    <i className="ri-shield-check-line text-green-600 text-xl"></i>
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900 dark:text-gray-100">100%</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">SCHUFA-neutral</div>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center mr-4">
+                    <i className="ri-bank-line text-blue-600 text-xl"></i>
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900 dark:text-gray-100">20+</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Bankpartner</div>
+                  </div>
+                </div>
+              </div>
+              <Link
+                href="#calculator"
+                className="group bg-gradient-to-r from-primary to-green-600 hover:from-green-600 hover:to-primary text-white font-medium py-4 px-8 rounded-button shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center transform hover:scale-105"
+              >
+                <span>Jetzt Ihren Kredit finden</span>
+                <div className="w-5 h-5 ml-2 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
+                  <i className="ri-arrow-right-line"></i>
+                </div>
+              </Link>
+            </div>
+            <div className="order-1 lg:order-2 relative">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                <img
+                  src="/images/happy-family-home.webp"
+                  alt="Glückliche Familie vor ihrem neuen Zuhause"
+                  className="w-full h-auto object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+              </div>
+              {/* Floating Elements */}
+              <div className="absolute -top-4 -right-4 w-24 h-24 bg-green-500/10 rounded-full blur-xl animate-pulse"></div>
+              <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl animate-pulse delay-1000"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Final CTA */}
       <section className="py-16 bg-gradient-to-r from-primary to-green-600 dark:from-green-700 dark:to-green-600 text-white transition-colors duration-300 relative overflow-hidden">
         {/* Background Elements */}
