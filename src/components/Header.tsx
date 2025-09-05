@@ -159,7 +159,7 @@ export function Header() {
                       key === 'kreditarten' || key === Object.keys(megaMenuData)[0] 
                         ? 'left-0' 
                         : key === 'service'
-                        ? 'right-0 transform -translate-x-1/4'
+                        ? 'left-1/2 transform -translate-x-1/2'
                         : 'left-1/2 transform -translate-x-1/2'
                     }`}
                     onMouseLeave={() => setActiveMegaMenu(null)}
