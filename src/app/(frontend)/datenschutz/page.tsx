@@ -52,17 +52,17 @@ export default function DatenschutzPage() {
 
                 {/* 1. Verantwortlicher */}
                 <div id="verantwortlicher" className="mb-12">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">1. Verantwortlicher</h2>
-                  <p className="text-gray-700 mb-4">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">1. Verantwortlicher</h2>
+                  <p className="text-gray-700 dark:text-gray-300 mb-4">
                     Verantwortlicher für die Datenverarbeitung auf dieser Website ist:
                   </p>
-                  <div className="bg-gray-50 p-4 rounded">
-                    <p className="text-gray-700">
+                  <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded transition-colors duration-300">
+                    <p className="text-gray-700 dark:text-gray-300">
                       Viktor Stephan<br />
-                      Brockmannstraße [Hausnummer]<br />
-                      [PLZ] [Ort]<br />
+                      Brockmannstr. 204<br />
+                      48163 Münster<br />
                       Deutschland<br /><br />
-                      Telefon: [Telefonnummer]<br />
+                      Telefon: 0251 149 142 77<br />
                       E-Mail: <a href="mailto:info@kreditheld24.de" className="text-primary hover:underline">info@kreditheld24.de</a>
                     </p>
                   </div>
@@ -70,11 +70,11 @@ export default function DatenschutzPage() {
 
                 {/* 2. Allgemeine Hinweise zur Datenverarbeitung */}
                 <div id="datenverarbeitung" className="mb-12">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">2. Allgemeine Hinweise zur Datenverarbeitung</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">2. Allgemeine Hinweise zur Datenverarbeitung</h2>
                   <div className="space-y-4">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Umfang der Verarbeitung personenbezogener Daten</h3>
-                      <p className="text-gray-700">
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Umfang der Verarbeitung personenbezogener Daten</h3>
+                      <p className="text-gray-700 dark:text-gray-300">
                         Wir verarbeiten personenbezogene Daten unserer Nutzer grundsätzlich nur, soweit dies zur Bereitstellung 
                         einer funktionsfähigen Website sowie unserer Inhalte und Leistungen erforderlich ist. Die Verarbeitung 
                         personenbezogener Daten unserer Nutzer erfolgt regelmäßig nur nach Einwilligung des Nutzers.
@@ -82,11 +82,11 @@ export default function DatenschutzPage() {
                     </div>
                     
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Zweck der Datenverarbeitung</h3>
-                      <p className="text-gray-700">
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Zweck der Datenverarbeitung</h3>
+                      <p className="text-gray-700 dark:text-gray-300">
                         Die Verarbeitung personenbezogener Daten erfolgt zu folgenden Zwecken:
                       </p>
-                      <ul className="list-disc list-inside text-gray-700 mt-2 space-y-1">
+                      <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 mt-2 space-y-1">
                         <li>Bereitstellung und Betrieb der Website</li>
                         <li>Bearbeitung von Kreditanfragen und Vermittlung</li>
                         <li>Kommunikation mit Interessenten und Kunden</li>
@@ -99,11 +99,11 @@ export default function DatenschutzPage() {
 
                 {/* 3. Rechtsgrundlagen */}
                 <div id="rechtsgrundlagen" className="mb-12">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">3. Rechtsgrundlagen der Verarbeitung</h2>
-                  <p className="text-gray-700 mb-4">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">3. Rechtsgrundlagen der Verarbeitung</h2>
+                  <p className="text-gray-700 dark:text-gray-300 mb-4">
                     Die Verarbeitung personenbezogener Daten erfolgt auf Grundlage der folgenden Rechtsgrundlagen der DSGVO:
                   </p>
-                  <ul className="space-y-3 text-gray-700">
+                  <ul className="space-y-3 text-gray-700 dark:text-gray-300">
                     <li><strong>Art. 6 Abs. 1 lit. a DSGVO:</strong> Einwilligung der betroffenen Person</li>
                     <li><strong>Art. 6 Abs. 1 lit. b DSGVO:</strong> Verarbeitung zur Erfüllung eines Vertrags oder zur Durchführung vorvertraglicher Maßnahmen</li>
                     <li><strong>Art. 6 Abs. 1 lit. c DSGVO:</strong> Verarbeitung zur Erfüllung einer rechtlichen Verpflichtung</li>
@@ -113,16 +113,16 @@ export default function DatenschutzPage() {
 
                 {/* 4. Datenverarbeitung auf unserer Website */}
                 <div id="website" className="mb-12">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">4. Datenverarbeitung auf unserer Website</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">4. Datenverarbeitung auf unserer Website</h2>
                   
                   <div className="space-y-6">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Logfiles</h3>
-                      <p className="text-gray-700 mb-2">
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Logfiles</h3>
+                      <p className="text-gray-700 dark:text-gray-300 mb-2">
                         Bei jedem Aufruf unserer Website erfasst unser System automatisiert Daten und Informationen vom 
                         Computersystem des aufrufenden Rechners. Folgende Daten werden hierbei erhoben:
                       </p>
-                      <ul className="list-disc list-inside text-gray-700 space-y-1">
+                      <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
                         <li>IP-Adresse des Nutzers</li>
                         <li>Datum und Uhrzeit des Zugriffs</li>
                         <li>Aufgerufene Seiten und Dateien</li>
@@ -131,14 +131,14 @@ export default function DatenschutzPage() {
                         <li>Betriebssystem des Nutzers</li>
                         <li>Referrer URL</li>
                       </ul>
-                      <p className="text-gray-700 mt-2">
+                      <p className="text-gray-700 dark:text-gray-300 mt-2">
                         <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Systemsicherheit)
                       </p>
                     </div>
 
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">SSL-Verschlüsselung</h3>
-                      <p className="text-gray-700">
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">SSL-Verschlüsselung</h3>
+                      <p className="text-gray-700 dark:text-gray-300">
                         Diese Seite nutzt aus Sicherheitsgründen und zum Schutz der Übertragung vertraulicher Inhalte eine 
                         SSL-Verschlüsselung. Eine verschlüsselte Verbindung erkennen Sie daran, dass die Adresszeile des 
                         Browsers von &quot;http://&quot; auf &quot;https://&quot; wechselt und an dem Schloss-Symbol in Ihrer Browserzeile.
@@ -149,17 +149,17 @@ export default function DatenschutzPage() {
 
                 {/* 5. Kontaktformular und E-Mail-Kontakt */}
                 <div id="kontaktformular" className="mb-12">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">5. Kontaktformular und E-Mail-Kontakt</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">5. Kontaktformular und E-Mail-Kontakt</h2>
                   <div className="space-y-4">
-                    <p className="text-gray-700">
+                    <p className="text-gray-700 dark:text-gray-300">
                       Bei der Kontaktaufnahme mit uns (z.B. per Kontaktformular oder E-Mail) werden die von Ihnen 
                       mitgeteilten Daten von uns gespeichert, um Ihre Fragen zu bearbeiten und mögliche Anschlussfragen 
                       zu beantworten.
                     </p>
                     
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Verarbeitete Daten:</h3>
-                      <ul className="list-disc list-inside text-gray-700 space-y-1">
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Verarbeitete Daten:</h3>
+                      <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
                         <li>Name und Vorname</li>
                         <li>E-Mail-Adresse</li>
                         <li>Telefonnummer (optional)</li>
@@ -176,7 +176,7 @@ export default function DatenschutzPage() {
 
                 {/* 6. Kreditanfrage und Vermittlung */}
                 <div id="kreditanfrage" className="mb-12">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">6. Kreditanfrage und Vermittlung</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">6. Kreditanfrage und Vermittlung</h2>
                   <div className="space-y-4">
                     <p className="text-gray-700">
                       Für die Bearbeitung Ihrer Kreditanfrage und die Vermittlung geeigneter Kreditangebote verarbeiten 
@@ -185,7 +185,7 @@ export default function DatenschutzPage() {
                     
                     <div>
                       <h3 className="text-lg font-semibold text-gray-800 mb-2">Verarbeitete Daten:</h3>
-                      <ul className="list-disc list-inside text-gray-700 space-y-1">
+                      <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
                         <li>Persönliche Daten (Name, Adresse, Geburtsdatum)</li>
                         <li>Kontaktdaten (E-Mail, Telefon)</li>
                         <li>Einkommensdaten und Beschäftigungsverhältnis</li>
@@ -196,8 +196,8 @@ export default function DatenschutzPage() {
                     </div>
                     
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Weitergabe an Kreditinstitute:</h3>
-                      <p className="text-gray-700">
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Weitergabe an Kreditinstitute:</h3>
+                      <p className="text-gray-700 dark:text-gray-300">
                         Ihre Daten werden zur Prüfung und Bearbeitung Ihrer Kreditanfrage an geeignete Kreditinstitute 
                         und Finanzdienstleister weitergegeben. Diese Weitergabe erfolgt nur mit Ihrer ausdrücklichen 
                         Einwilligung.
@@ -212,10 +212,10 @@ export default function DatenschutzPage() {
 
                 {/* 7. Cookies und Tracking */}
                 <div id="cookies" className="mb-12">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">7. Cookies und Tracking</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">7. Cookies und Tracking</h2>
                   <div className="space-y-4">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Was sind Cookies?</h3>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Was sind Cookies?</h3>
                       <p className="text-gray-700">
                         Cookies sind kleine Textdateien, die beim Besuch einer Website auf Ihrem Computer gespeichert werden. 
                         Sie ermöglichen es, Sie bei einem erneuten Besuch wiederzuerkennen.
@@ -223,7 +223,7 @@ export default function DatenschutzPage() {
                     </div>
                     
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Verwendete Cookies:</h3>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Verwendete Cookies:</h3>
                       <ul className="list-disc list-inside text-gray-700 space-y-1">
                         <li><strong>Technisch notwendige Cookies:</strong> Für die Grundfunktionen der Website</li>
                         <li><strong>Funktionale Cookies:</strong> Für erweiterte Funktionen und Benutzerfreundlichkeit</li>
@@ -240,21 +240,21 @@ export default function DatenschutzPage() {
 
                 {/* 8. Rechte der betroffenen Person */}
                 <div id="betroffenenrechte" className="mb-12">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">8. Rechte der betroffenen Person</h2>
-                  <p className="text-gray-700 mb-4">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">8. Rechte der betroffenen Person</h2>
+                  <p className="text-gray-700 dark:text-gray-300 mb-4">
                     Sie haben folgende Rechte bezüglich Ihrer personenbezogenen Daten:
                   </p>
                   
                   <div className="space-y-4">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Recht auf Auskunft (Art. 15 DSGVO)</h3>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Recht auf Auskunft (Art. 15 DSGVO)</h3>
                       <p className="text-gray-700">
                         Sie haben das Recht, Auskunft über die von uns verarbeiteten personenbezogenen Daten zu verlangen.
                       </p>
                     </div>
                     
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Recht auf Berichtigung (Art. 16 DSGVO)</h3>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Recht auf Berichtigung (Art. 16 DSGVO)</h3>
                       <p className="text-gray-700">
                         Sie haben das Recht, die Berichtigung unrichtiger oder die Vervollständigung unvollständiger 
                         personenbezogener Daten zu verlangen.
@@ -262,7 +262,7 @@ export default function DatenschutzPage() {
                     </div>
                     
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Recht auf Löschung (Art. 17 DSGVO)</h3>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Recht auf Löschung (Art. 17 DSGVO)</h3>
                       <p className="text-gray-700">
                         Sie haben das Recht, die Löschung Ihrer personenbezogenen Daten zu verlangen, sofern keine 
                         gesetzlichen Aufbewahrungspflichten entgegenstehen.
@@ -270,14 +270,14 @@ export default function DatenschutzPage() {
                     </div>
                     
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Recht auf Einschränkung (Art. 18 DSGVO)</h3>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Recht auf Einschränkung (Art. 18 DSGVO)</h3>
                       <p className="text-gray-700">
                         Sie haben das Recht, die Einschränkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen.
                       </p>
                     </div>
                     
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Recht auf Datenübertragbarkeit (Art. 20 DSGVO)</h3>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Recht auf Datenübertragbarkeit (Art. 20 DSGVO)</h3>
                       <p className="text-gray-700">
                         Sie haben das Recht, die Sie betreffenden personenbezogenen Daten in einem strukturierten, 
                         gängigen und maschinenlesbaren Format zu erhalten.
@@ -285,7 +285,7 @@ export default function DatenschutzPage() {
                     </div>
                     
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Widerspruchsrecht (Art. 21 DSGVO)</h3>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Widerspruchsrecht (Art. 21 DSGVO)</h3>
                       <p className="text-gray-700">
                         Sie haben das Recht, aus Gründen, die sich aus Ihrer besonderen Situation ergeben, jederzeit 
                         gegen die Verarbeitung Sie betreffender personenbezogener Daten Widerspruch einzulegen.
@@ -293,7 +293,7 @@ export default function DatenschutzPage() {
                     </div>
                     
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Recht auf Widerruf der Einwilligung</h3>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Recht auf Widerruf der Einwilligung</h3>
                       <p className="text-gray-700">
                         Sie haben das Recht, eine erteilte Einwilligung zur Verarbeitung personenbezogener Daten 
                         jederzeit zu widerrufen. Der Widerruf berührt nicht die Rechtmäßigkeit der bis zum Widerruf 
@@ -302,7 +302,7 @@ export default function DatenschutzPage() {
                     </div>
                     
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Beschwerderecht</h3>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Beschwerderecht</h3>
                       <p className="text-gray-700">
                         Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde über die Verarbeitung Ihrer 
                         personenbezogenen Daten durch uns zu beschweren.
@@ -313,7 +313,7 @@ export default function DatenschutzPage() {
 
                 {/* 9. Speicherdauer */}
                 <div id="speicherdauer" className="mb-12">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">9. Speicherdauer</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">9. Speicherdauer</h2>
                   <div className="space-y-4">
                     <p className="text-gray-700">
                       Wir speichern personenbezogene Daten nur so lange, wie es für die Erfüllung der Zwecke, 
@@ -321,7 +321,7 @@ export default function DatenschutzPage() {
                     </p>
                     
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Konkrete Speicherfristen:</h3>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Konkrete Speicherfristen:</h3>
                       <ul className="list-disc list-inside text-gray-700 space-y-1">
                         <li><strong>Kontaktanfragen:</strong> 3 Jahre nach Abschluss der Korrespondenz</li>
                         <li><strong>Kreditanfragen:</strong> 10 Jahre gemäß handelsrechtlichen Aufbewahrungspflichten</li>
@@ -334,7 +334,7 @@ export default function DatenschutzPage() {
 
                 {/* 10. Datensicherheit */}
                 <div id="datensicherheit" className="mb-12">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">10. Datensicherheit</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">10. Datensicherheit</h2>
                   <p className="text-gray-700 mb-4">
                     Wir verwenden geeignete technische und organisatorische Sicherheitsmaßnahmen, um Ihre Daten 
                     gegen zufällige oder vorsätzliche Manipulationen, teilweisen oder vollständigen Verlust, 
@@ -342,7 +342,7 @@ export default function DatenschutzPage() {
                   </p>
                   
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2">Sicherheitsmaßnahmen:</h3>
+                    <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Sicherheitsmaßnahmen:</h3>
                     <ul className="list-disc list-inside text-gray-700 space-y-1">
                       <li>SSL/TLS-Verschlüsselung für die Datenübertragung</li>
                       <li>Regelmäßige Sicherheitsupdates</li>
@@ -355,7 +355,7 @@ export default function DatenschutzPage() {
 
                 {/* 11. Änderungen der Datenschutzerklärung */}
                 <div id="aenderungen" className="mb-12">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">11. Änderungen der Datenschutzerklärung</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">11. Änderungen der Datenschutzerklärung</h2>
                   <p className="text-gray-700">
                     Wir behalten uns vor, diese Datenschutzerklärung anzupassen, damit sie stets den aktuellen 
                     rechtlichen Anforderungen entspricht oder um Änderungen unserer Leistungen in der 
@@ -364,21 +364,21 @@ export default function DatenschutzPage() {
                 </div>
 
                 {/* Kontakt Datenschutz */}
-                <div className="bg-green-50 p-6 rounded-lg mb-8">
-                  <h2 className="text-xl font-bold text-gray-900 mb-4">Fragen zum Datenschutz?</h2>
-                  <p className="text-gray-700 mb-2">
+                <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg mb-8 transition-colors duration-300">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Fragen zum Datenschutz?</h2>
+                  <p className="text-gray-700 dark:text-gray-300 mb-2">
                     Wenn Sie Fragen zu dieser Datenschutzerklärung haben oder Ihre Rechte als betroffene Person 
                     ausüben möchten, wenden Sie sich gerne an uns:
                   </p>
                   <p className="text-gray-700">
                     E-Mail: <a href="mailto:datenschutz@kreditheld24.de" className="text-primary hover:underline">datenschutz@kreditheld24.de</a><br />
-                    Telefon: [Telefonnummer]
+                    Telefon: 0251 149 142 77
                   </p>
                 </div>
 
                 {/* Stand */}
-                <div className="bg-gray-50 p-6 rounded-lg">
-                  <p className="text-sm text-gray-600">
+                <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg transition-colors duration-300">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     <strong>Stand dieser Datenschutzerklärung:</strong> Januar 2025<br />
                     Diese Datenschutzerklärung wurde erstellt unter Berücksichtigung der aktuellen Anforderungen 
                     der Datenschutz-Grundverordnung (DSGVO).
@@ -386,7 +386,7 @@ export default function DatenschutzPage() {
                 </div>
 
                 {/* Navigation Links */}
-                <div className="mt-12 pt-8 border-t border-gray-200">
+                <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-600">
                   <div className="flex flex-wrap gap-4 justify-center">
                     <Link href="/" className="text-primary hover:underline">
                       Zur Startseite
