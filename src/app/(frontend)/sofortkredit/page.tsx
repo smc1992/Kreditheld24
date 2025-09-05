@@ -125,7 +125,7 @@ const SofortkreditPage = () => {
         <div 
           className="absolute inset-0 bg-right bg-no-repeat bg-contain opacity-20 sm:opacity-40 md:opacity-60 lg:opacity-90" 
           style={{
-            backgroundImage: "url('https://readdy.ai/api/search-image?query=modern%20minimalist%20financial%20office%20environment%20with%20soft%20natural%20lighting%2C%20clean%20workspace%20with%20digital%20displays%20showing%20financial%20data%2C%20contemporary%20professional%20setting%20with%20green%20accent%20colors%2C%20abstract%20geometric%20patterns%20in%20background%2C%20no%20people%20visible%2C%20professional%20and%20trustworthy%20atmosphere&width=800&height=600&seq=sofortkredit_hero&orientation=landscape')"
+            backgroundImage: "url('/images/financial-office-digital.webp')"
           }}
         ></div>
         <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-green-50/80 to-transparent sm:from-green-50/90 sm:via-green-50/70 md:from-green-50/80 md:via-green-50/60 dark:from-gray-900/95 dark:via-gray-900/80 dark:to-transparent dark:sm:from-gray-900/90 dark:sm:via-gray-900/70 dark:md:from-gray-900/80 dark:md:via-gray-900/60"></div>

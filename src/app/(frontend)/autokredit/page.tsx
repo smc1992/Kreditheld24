@@ -62,7 +62,7 @@ const AutokreditPage = () => {
         <div 
           className="absolute inset-0 bg-right bg-no-repeat bg-contain opacity-20 sm:opacity-40 md:opacity-60 lg:opacity-90"
           style={{
-            backgroundImage: "url('https://readdy.ai/api/search-image?query=modern%2520luxury%2520car%2520with%2520soft%2520lighting%2520in%2520a%2520minimalist%2520showroom%2520with%2520light%2520green%2520background%252C%2520professional%2520product%2520photography%252C%2520clean%2520composition%252C%2520no%2520people%252C%2520high-end%2520automotive%2520photography%252C%2520elegant%2520atmosphere%252C%2520subtle%2520reflections%2520on%2520polished%2520floor&width=800&height=600&seq=autokredit123&orientation=landscape')"
+            backgroundImage: "url('/images/luxury-car-showroom.webp')"
           }}
         ></div>
         <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-green-50/80 to-transparent sm:from-green-50/90 sm:via-green-50/70 md:from-green-50/80 md:via-green-50/60 dark:from-gray-900/95 dark:via-gray-900/80 dark:to-transparent dark:sm:from-gray-900/90 dark:sm:via-gray-900/70 dark:md:from-gray-900/80 dark:md:via-gray-900/60"></div>

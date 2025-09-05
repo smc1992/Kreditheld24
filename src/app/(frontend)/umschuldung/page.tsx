@@ -225,7 +225,7 @@ const UmschuldungPage = () => {
           <div 
             className="absolute inset-0 bg-right bg-no-repeat bg-contain opacity-20 sm:opacity-40 md:opacity-60 lg:opacity-90"
             style={{
-              backgroundImage: "url('https://readdy.ai/api/search-image?query=professional%2520financial%2520advisor%2520discussing%2520debt%2520consolidation%2520with%2520client%252C%2520showing%2520charts%2520on%2520tablet%252C%2520modern%2520office%2520setting%252C%2520bright%2520and%2520airy%2520space%252C%2520green%2520plants%2520in%2520background%252C%2520soft%2520natural%2520lighting%252C%2520documents%2520with%2520graphs%2520showing%2520savings%252C%2520left%2520side%2520with%2520clean%2520white%2520space%2520for%2520text&width=800&height=600&seq=umschuldung123&orientation=landscape')"
+              backgroundImage: "url('/images/debt-consolidation-advisor.webp')"
             }}
           ></div>
           <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-green-50/80 to-transparent sm:from-green-50/90 sm:via-green-50/70 md:from-green-50/80 md:via-green-50/60 dark:from-gray-900/95 dark:via-gray-900/80 dark:to-transparent dark:sm:from-gray-900/90 dark:sm:via-gray-900/70 dark:md:from-gray-900/80 dark:md:via-gray-900/60"></div>

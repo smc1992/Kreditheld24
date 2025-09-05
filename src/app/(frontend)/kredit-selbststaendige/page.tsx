@@ -182,7 +182,7 @@ const KreditSelbststaendigePage = () => {
           <div 
             className="absolute inset-0 bg-right bg-no-repeat bg-cover md:bg-contain opacity-20 md:opacity-100"
             style={{
-              backgroundImage: "url('https://readdy.ai/api/search-image?query=professional%20business%20owner%20or%20entrepreneur%20working%20with%20financial%20documents%20in%20modern%20office%2C%20soft%20lighting%20with%20green%20accents%2C%20clean%20and%20simple%20composition%2C%20blurred%20background%20with%20business%20charts%2C%20elegant%20and%20professional%20atmosphere&width=800&height=600&seq=selbststaendig456&orientation=landscape')"
+              backgroundImage: "url('/images/business-owner-office.webp')"
             }}
           ></div>
           
