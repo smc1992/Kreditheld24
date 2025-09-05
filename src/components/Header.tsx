@@ -158,8 +158,8 @@ export function Header() {
                     className={`absolute top-full mt-3 w-screen max-w-5xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden z-50 animate-in slide-in-from-top-2 duration-300 ${
                       key === 'kreditarten' || key === Object.keys(megaMenuData)[0] 
                         ? 'left-0' 
-                        : key === Object.keys(megaMenuData)[Object.keys(megaMenuData).length - 1]
-                        ? 'right-0'
+                        : key === 'service'
+                        ? 'right-0 transform -translate-x-1/4'
                         : 'left-1/2 transform -translate-x-1/2'
                     }`}
                     onMouseLeave={() => setActiveMegaMenu(null)}
