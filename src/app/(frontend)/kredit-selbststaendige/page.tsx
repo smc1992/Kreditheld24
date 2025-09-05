@@ -171,33 +171,72 @@ const KreditSelbststaendigePage = () => {
       <div className="font-sans text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-900 transition-colors duration-300">
 
         {/* Hero Section */}
-        <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 dark:from-gray-900 dark:to-gray-800 overflow-hidden min-h-[500px] sm:min-h-[600px] lg:min-h-[700px] transition-colors duration-300">
+        <section className="relative w-full bg-gradient-to-br from-green-50 via-blue-50 to-green-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 overflow-hidden transition-colors duration-300">
+          {/* Animated Background Elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute top-20 left-10 w-32 h-32 bg-primary/10 rounded-full blur-xl animate-pulse"></div>
+            <div className="absolute bottom-20 right-10 w-48 h-48 bg-blue-500/10 rounded-full blur-2xl animate-pulse delay-1000"></div>
+            <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-green-400/10 rounded-full blur-lg animate-pulse delay-500"></div>
+          </div>
+          
           <div 
-            className="absolute inset-0 bg-right bg-no-repeat bg-contain opacity-20 sm:opacity-40 md:opacity-60 lg:opacity-90" 
+            className="absolute inset-0 bg-right bg-no-repeat bg-cover md:bg-contain opacity-20 md:opacity-100"
             style={{
-              backgroundImage: "url('https://readdy.ai/api/search-image?query=professional%2520business%2520person%2520working%2520on%2520laptop%2520in%2520modern%2520office%252C%2520business%2520documents%2520and%2520calculator%2520nearby%252C%2520soft%2520natural%2520lighting%252C%2520green%2520plants%2520in%2520background%252C%2520business%2520finance%2520concept%252C%2520entrepreneurship%2520theme%252C%2520clean%2520minimal%2520workspace%252C%2520with%2520plenty%2520of%2520empty%2520space%2520on%2520the%2520left%2520side%2520for%2520text&width=800&height=600&seq=self123&orientation=landscape')"
+              backgroundImage: "url('https://readdy.ai/api/search-image?query=professional%20business%20owner%20or%20entrepreneur%20working%20with%20financial%20documents%20in%20modern%20office%2C%20soft%20lighting%20with%20green%20accents%2C%20clean%20and%20simple%20composition%2C%20blurred%20background%20with%20business%20charts%2C%20elegant%20and%20professional%20atmosphere&width=800&height=600&seq=selbststaendig456&orientation=landscape')"
             }}
           ></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-green-50/80 to-transparent sm:from-green-50/90 sm:via-green-50/70 md:from-green-50/80 md:via-green-50/60 dark:from-gray-900/95 dark:via-gray-900/80 dark:to-transparent dark:sm:from-gray-900/90 dark:sm:via-gray-900/70 dark:md:from-gray-900/80 dark:md:via-gray-900/60"></div>
-          <div className="container mx-auto px-4 py-12 sm:py-16 md:py-20 lg:py-24 relative z-10 flex items-center min-h-[500px] sm:min-h-[600px] lg:min-h-[700px]">
-            <div className="max-w-xl lg:max-w-2xl">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 dark:text-gray-100 mb-4">
-                Kredite für Selbstständige – maßgeschneiderte Finanzlösungen
+          
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-green-50/95 via-blue-50/80 to-transparent dark:from-gray-900/95 dark:via-gray-800/80 dark:to-transparent"></div>
+          <div className="container mx-auto px-4 py-12 md:py-24 relative z-10">
+            <div className="max-w-xl md:max-w-2xl mx-auto md:mx-0">
+              <div className="mb-6">
+                <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-green-200 dark:border-green-700 mb-6">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                  <span className="text-sm font-medium text-green-700 dark:text-green-400">Speziell für Selbstständige</span>
+                </div>
+              </div>
+              
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 dark:text-gray-100 mb-4 text-center md:text-left leading-tight">
+                Kredite für <span className="bg-gradient-to-r from-primary to-green-600 bg-clip-text text-transparent">Selbstständige</span> – maßgeschneiderte Finanzlösungen
               </h1>
-              <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-8">
+              <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-8 text-center md:text-left">
                 Speziell entwickelte Kreditangebote für Unternehmer, Freiberufler und Gewerbetreibende mit flexiblen Konditionen.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Link 
-                  href="#calculator" 
-                  className="bg-primary hover:bg-green-500 text-white font-medium py-3 sm:py-4 px-6 sm:px-8 rounded-button shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base group"
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                <Link
+                  href="#calculator"
+                  className="group bg-gradient-to-r from-primary to-green-600 hover:from-green-600 hover:to-primary text-white font-medium py-4 px-8 rounded-button whitespace-nowrap shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center transform hover:scale-105"
                 >
                   <span>Jetzt Kredit berechnen</span>
-                  <div className="w-4 h-4 sm:w-5 sm:h-5 ml-2 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
+                  <div className="w-5 h-5 ml-2 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
                     <i className="ri-arrow-right-line"></i>
                   </div>
                 </Link>
-                <UnverbindlichAnfragenButton variant="secondary" size="md" className="py-3 sm:py-4 px-6 sm:px-8 text-sm sm:text-base" />
+                <UnverbindlichAnfragenButton variant="secondary" size="md" className="backdrop-blur-sm" />
+              </div>
+              
+              {/* Trust Indicators */}
+              <div className="flex flex-wrap items-center gap-6 mt-8 justify-center md:justify-start">
+                <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                  <div className="w-5 h-5 text-green-500 mr-2">
+                    <i className="ri-shield-check-line"></i>
+                  </div>
+                  <span>100% kostenlos</span>
+                </div>
+                <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                  <div className="w-5 h-5 text-green-500 mr-2">
+                    <i className="ri-time-line"></i>
+                  </div>
+                  <span>In 2 Minuten</span>
+                </div>
+                <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                  <div className="w-5 h-5 text-green-500 mr-2">
+                    <i className="ri-user-heart-line"></i>
+                  </div>
+                  <span>SCHUFA-neutral</span>
+                </div>
               </div>
             </div>
           </div>
