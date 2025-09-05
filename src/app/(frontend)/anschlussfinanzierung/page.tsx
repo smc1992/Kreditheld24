@@ -156,7 +156,7 @@ const AnschlussfinanzierungPage = () => {
         <div 
           className="absolute inset-0 bg-right bg-no-repeat bg-cover md:bg-contain opacity-20 md:opacity-100"
           style={{
-            backgroundImage: "url('/images/anschlussfinanzierung-hero.webp')"
+            backgroundImage: "url('/images/anschlussfinanzierung-hero-new.webp')"
           }}
         ></div>
         
