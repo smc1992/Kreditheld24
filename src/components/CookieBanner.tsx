@@ -130,7 +130,7 @@ const CookieBanner: React.FC = () => {
                   <div className="text-sm text-blue-800 dark:text-blue-300">
                     <p className="font-medium mb-1">Wichtige Information:</p>
                     <p>
-                      Durch Klicken auf "Alle akzeptieren" stimmen Sie der Speicherung von Cookies auf Ihrem Gerät zu, 
+                      Durch Klicken auf &quot;Alle akzeptieren&quot; stimmen Sie der Speicherung von Cookies auf Ihrem Gerät zu, 
                       um die Navigation auf der Website zu verbessern und unsere Marketingbemühungen zu unterstützen. 
                       Sie können Ihre Einstellungen jederzeit in unseren Cookie-Einstellungen ändern.
                     </p>
