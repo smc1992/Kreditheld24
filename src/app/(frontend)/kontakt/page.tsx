@@ -228,19 +228,19 @@ const KontaktPage = () => {
               <form onSubmit={handleFormSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-gray-700 font-medium mb-2">Anrede*</label>
+                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Anrede*</label>
                     <div className="relative">
                       <select 
                         name="salutation" 
                         value={formData.salutation}
                         onChange={handleInputChange}
-                        className="w-full appearance-none border border-gray-300 rounded py-3 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
+                        className="w-full appearance-none border border-gray-300 dark:border-gray-600 rounded py-3 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100"
                       >
                         <option value="herr">Herr</option>
                         <option value="frau">Frau</option>
                         <option value="divers">Divers</option>
                       </select>
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">
                         <div className="w-5 h-5 flex items-center justify-center">
                           <i className="ri-arrow-down-s-line"></i>
                         </div>
@@ -249,57 +249,57 @@ const KontaktPage = () => {
                   </div>
                   <div></div>
                   <div>
-                    <label className="block text-gray-700 font-medium mb-2">Vorname*</label>
+                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Vorname*</label>
                     <input 
                       type="text" 
                       name="firstname" 
                       value={formData.firstname}
                       onChange={handleInputChange}
-                      className="w-full border border-gray-300 rounded py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
+                      className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 font-medium mb-2">Nachname*</label>
+                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Nachname*</label>
                     <input 
                       type="text" 
                       name="lastname" 
                       value={formData.lastname}
                       onChange={handleInputChange}
-                      className="w-full border border-gray-300 rounded py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
+                      className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 font-medium mb-2">E-Mail*</label>
+                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">E-Mail*</label>
                     <input 
                       type="email" 
                       name="email" 
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="w-full border border-gray-300 rounded py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
+                      className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 font-medium mb-2">Telefon</label>
+                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Telefon</label>
                     <input 
                       type="tel" 
                       name="phone" 
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full border border-gray-300 rounded py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-gray-700 font-medium mb-2">Betreff*</label>
+                  <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Betreff*</label>
                   <div className="relative">
                     <select 
                       name="subject" 
                       value={formData.subject}
                       onChange={handleInputChange}
-                      className="w-full appearance-none border border-gray-300 rounded py-3 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
+                      className="w-full appearance-none border border-gray-300 dark:border-gray-600 rounded py-3 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100"
                     >
                       <option value="allgemeine-anfrage">Allgemeine Anfrage</option>
                       <option value="kreditanfrage">Kreditanfrage</option>
@@ -307,7 +307,7 @@ const KontaktPage = () => {
                       <option value="beschwerde">Beschwerde</option>
                       <option value="sonstiges">Sonstiges</option>
                     </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">
                       <div className="w-5 h-5 flex items-center justify-center">
                         <i className="ri-arrow-down-s-line"></i>
                       </div>
@@ -315,13 +315,13 @@ const KontaktPage = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-gray-700 font-medium mb-2">Ihre Nachricht*</label>
+                  <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Ihre Nachricht*</label>
                   <textarea 
                     name="message" 
                     rows={5} 
                     value={formData.message}
                     onChange={handleInputChange}
-                    className="w-full border border-gray-300 rounded py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
                     required
                   ></textarea>
                 </div>
@@ -335,7 +335,7 @@ const KontaktPage = () => {
                       className="mt-1 mr-3" 
                       required
                     />
-                    <span className="text-gray-700 text-sm">
+                    <span className="text-gray-700 dark:text-gray-300 text-sm">
                       Ich habe die <Link href="/datenschutz" className="text-primary hover:underline">Datenschutzerklärung</Link> gelesen und stimme der Verarbeitung meiner Daten zu.*
                     </span>
                   </label>
@@ -349,7 +349,7 @@ const KontaktPage = () => {
                     <i className="ri-send-plane-line"></i>
                   </div>
                 </button>
-                <p className="text-sm text-gray-500">* Pflichtfelder</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">* Pflichtfelder</p>
               </form>
             </div>
           </div>
@@ -357,23 +357,23 @@ const KontaktPage = () => {
       </section>
 
       {/* Map Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-2xl font-bold mb-4">So finden Sie uns</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">So finden Sie uns</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Kontaktieren Sie uns gerne per E-Mail oder über unser Kontaktformular. Wir freuen uns auf Ihre Nachricht!
             </p>
           </div>
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="bg-white dark:bg-gray-700 rounded-lg shadow-md overflow-hidden transition-colors duration-300">
             <div className="h-96 relative">
-              <div className="bg-gray-100 rounded-lg p-8 text-center h-full flex flex-col justify-center">
+              <div className="bg-gray-100 dark:bg-gray-600 rounded-lg p-8 text-center h-full flex flex-col justify-center transition-colors duration-300">
                 <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                   <i className="ri-map-pin-line text-white text-2xl"></i>
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Geschäftsadresse</h3>
-                <p className="text-gray-600">Brockmannstr. 204<br />48163 Münster</p>
-                <p className="text-sm text-gray-500 mt-4">
+                <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">Geschäftsadresse</h3>
+                <p className="text-gray-600 dark:text-gray-300">Brockmannstr. 204<br />48163 Münster</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
                   Kontaktieren Sie uns gerne per E-Mail oder Telefon für alle Ihre Fragen.
                 </p>
               </div>
@@ -383,19 +383,19 @@ const KontaktPage = () => {
       </section>
 
       {/* Alternative Contact Options */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto bg-green-50 rounded-lg p-8">
-            <h2 className="text-2xl font-bold mb-6 text-center">Weitere Kontaktmöglichkeiten</h2>
+          <div className="max-w-4xl mx-auto bg-green-50 dark:bg-green-900/20 rounded-lg p-8 transition-colors duration-300">
+            <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-gray-100">Weitere Kontaktmöglichkeiten</h2>
             <div className="grid md:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow-sm text-center">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm text-center transition-colors duration-300">
+                <div className="w-16 h-16 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mx-auto mb-4">
                   <div className="w-8 h-8 flex items-center justify-center text-primary">
                     <i className="ri-whatsapp-line ri-xl"></i>
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold mb-2">WhatsApp</h3>
-                <p className="text-gray-600 mb-4">Schreiben Sie uns direkt eine Nachricht über WhatsApp.</p>
+                <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">WhatsApp</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4">Schreiben Sie uns direkt eine Nachricht über WhatsApp.</p>
                 <a href="https://wa.me/491795104859" className="text-primary font-medium hover:underline flex items-center justify-center">
                   <span>Jetzt chatten</span>
                   <div className="w-5 h-5 ml-1 flex items-center justify-center">
