@@ -168,7 +168,7 @@ export default function DatenschutzPage() {
                       </ul>
                     </div>
                     
-                    <p className="text-gray-700">
+                    <p className="text-gray-700 dark:text-gray-300">
                       <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Bearbeitung von Anfragen)
                     </p>
                   </div>
@@ -178,13 +178,13 @@ export default function DatenschutzPage() {
                 <div id="kreditanfrage" className="mb-12">
                   <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">6. Kreditanfrage und Vermittlung</h2>
                   <div className="space-y-4">
-                    <p className="text-gray-700">
+                    <p className="text-gray-700 dark:text-gray-300">
                       Für die Bearbeitung Ihrer Kreditanfrage und die Vermittlung geeigneter Kreditangebote verarbeiten 
                       wir umfangreiche personenbezogene Daten.
                     </p>
                     
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">Verarbeitete Daten:</h3>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Verarbeitete Daten:</h3>
                       <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
                         <li>Persönliche Daten (Name, Adresse, Geburtsdatum)</li>
                         <li>Kontaktdaten (E-Mail, Telefon)</li>
@@ -204,7 +204,7 @@ export default function DatenschutzPage() {
                       </p>
                     </div>
                     
-                    <p className="text-gray-700">
+                    <p className="text-gray-700 dark:text-gray-300">
                       <strong>Rechtsgrundlage:</strong> Art. 6 Abs. 1 lit. a DSGVO (Einwilligung) und Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung)
                     </p>
                   </div>

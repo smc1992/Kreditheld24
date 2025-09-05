@@ -10,6 +10,7 @@ import { ThemeProvider } from '@/providers/ThemeProvider'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import Breadcrumb from '@/components/Breadcrumb'
+import CookieBanner from '@/components/CookieBanner'
 
 import './globals.css'
 
@@ -42,6 +43,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <Breadcrumb />
               <main className="flex-1">{children}</main>
               <Footer />
+              <CookieBanner />
             </div>
           </Providers>
         </ThemeProvider>
