@@ -249,7 +249,7 @@ const SofortkreditPage = () => {
                       <div className="flex">
                         <button 
                           onClick={() => setLoanTerm(Math.max(6, loanTerm - 6))}
-                          className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-l border border-gray-300"
+                          className="bg-gray-100 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 font-bold py-3 px-4 rounded-l border border-gray-300 dark:border-gray-600"
                         >
                           <div className="w-4 h-4 flex items-center justify-center">
                             <i className="ri-subtract-line"></i>
@@ -259,20 +259,20 @@ const SofortkreditPage = () => {
                           type="number" 
                           value={loanTerm}
                           onChange={(e) => setLoanTerm(Number(e.target.value))}
-                          className="w-full border-y border-gray-300 py-3 px-4 text-center focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
+                          className="w-full border-y border-gray-300 dark:border-gray-600 py-3 px-4 text-center bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" 
                           min="6" 
                           max="84"
                         />
                         <button 
                           onClick={() => setLoanTerm(Math.min(84, loanTerm + 6))}
-                          className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-r border border-gray-300"
+                          className="bg-gray-100 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 font-bold py-3 px-4 rounded-r border border-gray-300 dark:border-gray-600"
                         >
                           <div className="w-4 h-4 flex items-center justify-center">
                             <i className="ri-add-line"></i>
                           </div>
                         </button>
                       </div>
-                      <div className="absolute inset-y-0 right-12 flex items-center pr-3 pointer-events-none text-gray-500">Monate</div>
+                      <div className="absolute inset-y-0 right-12 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">Monate</div>
                     </div>
                     <input 
                       type="range" 
@@ -283,25 +283,25 @@ const SofortkreditPage = () => {
                       step="6" 
                       className="w-full mt-2 accent-primary"
                     />
-                    <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
                       <span>6 Monate</span>
                       <span>84 Monate</span>
                     </div>
                   </div>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-xl font-semibold mb-4">Ihre Sofortkredit-Konditionen</h3>
+                <div className="bg-gray-50 dark:bg-gray-600 rounded-lg p-6 transition-colors duration-300">
+                  <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Ihre Sofortkredit-Konditionen</h3>
                   <div className="space-y-3">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Monatliche Rate:</span>
-                      <span className="font-semibold text-lg">{loanCalculation.monthlyPayment} €</span>
+                      <span className="text-gray-600 dark:text-gray-300">Monatliche Rate:</span>
+                      <span className="font-semibold text-lg text-gray-900 dark:text-gray-100">{loanCalculation.monthlyPayment} €</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Effektiver Jahreszins:</span>
-                      <span className="font-semibold">{loanCalculation.interestRate} %</span>
+                      <span className="text-gray-600 dark:text-gray-300">Effektiver Jahreszins:</span>
+                      <span className="font-semibold text-gray-900 dark:text-gray-100">{loanCalculation.interestRate} %</span>
                     </div>
                     <div className="flex justify-between border-t pt-3">
-                      <span className="text-gray-600">Gesamtkosten:</span>
+                      <span className="text-gray-600 dark:text-gray-300">Gesamtkosten:</span>
                       <span className="font-bold text-primary text-lg">{loanCalculation.totalCost} €</span>
                     </div>
                   </div>
@@ -312,7 +312,7 @@ const SofortkreditPage = () => {
                     >
                       Jetzt Sofortkredit beantragen
                     </Link>
-                    <p className="text-xs text-gray-500 mt-4 text-center">Sofortige Zusage • 24h Auszahlung</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">Sofortige Zusage • 24h Auszahlung</p>
                   </div>
                 </div>
               </div>
@@ -322,11 +322,11 @@ const SofortkreditPage = () => {
       </section>
 
       {/* Prozess */}
-      <section id="prozess" className="py-16 bg-white">
+      <section id="prozess" className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">So einfach geht&apos;s</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-gray-100">So einfach geht&apos;s</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               In nur 4 einfachen Schritten zu Ihrem Sofortkredit - schnell, sicher und unkompliziert.
             </p>
           </div>
@@ -343,8 +343,8 @@ const SofortkreditPage = () => {
                     {schritt.schritt}
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold mb-2">{schritt.title}</h3>
-                <p className="text-gray-600 text-sm">{schritt.description}</p>
+                <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">{schritt.title}</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-sm">{schritt.description}</p>
               </div>
             ))}
           </div>
@@ -352,21 +352,21 @@ const SofortkreditPage = () => {
       </section>
 
       {/* FAQ */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Häufig gestellte Fragen</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-gray-100">Häufig gestellte Fragen</h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Antworten auf die wichtigsten Fragen rund um Ihren Sofortkredit.
             </p>
           </div>
           <div className="max-w-3xl mx-auto">
             <div className="space-y-4">
               {faqData.map((faq, index) => (
-                <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+                <div key={index} className="bg-white dark:bg-gray-700 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600 overflow-hidden transition-colors duration-300">
                   <button 
                     onClick={() => toggleFaq(index)}
-                    className="w-full text-left px-6 py-4 font-medium flex justify-between items-center"
+                    className="w-full text-left px-6 py-4 font-medium flex justify-between items-center text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-300"
                   >
                     <span>{faq.question}</span>
                     <div className={`w-5 h-5 flex items-center justify-center text-primary transform transition-transform ${openFaq === index ? 'rotate-180' : ''}`}>
@@ -374,8 +374,8 @@ const SofortkreditPage = () => {
                     </div>
                   </button>
                   {openFaq === index && (
-                    <div className="px-6 py-4 border-t border-gray-100">
-                      <p className="text-gray-600">{faq.answer}</p>
+                    <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-600">
+                      <p className="text-gray-600 dark:text-gray-300">{faq.answer}</p>
                     </div>
                   )}
                 </div>
@@ -386,11 +386,11 @@ const SofortkreditPage = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-green-50">
+      <section className="py-16 bg-green-50 dark:bg-gray-800 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-4">Bereit für Ihren Sofortkredit?</h2>
-            <p className="text-gray-600 text-lg mb-8">
+            <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-gray-100">Bereit für Ihren Sofortkredit?</h2>
+            <p className="text-gray-600 dark:text-gray-300 text-lg mb-8">
               Starten Sie jetzt Ihre Anfrage und erhalten Sie innerhalb weniger Minuten eine Entscheidung.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
