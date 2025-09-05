@@ -159,7 +159,7 @@ const ImmobilienkreditPage = () => {
         <div 
           className="absolute inset-0 bg-right bg-no-repeat bg-cover md:bg-contain opacity-20 md:opacity-100"
           style={{
-            backgroundImage: "url('/images/real-estate-office.webp')"
+            backgroundImage: "url('/images/real-estate-new.webp')"
           }}
         ></div>
         

@@ -182,7 +182,7 @@ const KreditSelbststaendigePage = () => {
           <div 
             className="absolute inset-0 bg-right bg-no-repeat bg-cover md:bg-contain opacity-20 md:opacity-100"
             style={{
-              backgroundImage: "url('/images/business-owner-office.webp')"
+              backgroundImage: "url('/images/business-owner-new.webp')"
             }}
           ></div>
           
