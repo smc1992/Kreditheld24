@@ -64,13 +64,13 @@ const PartnerprogrammPage = () => {
   return (
     <div className="font-sans text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-900 transition-colors duration-300">
       {/* Hero Section */}
-      <section className="relative w-full bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 dark:from-blue-700 dark:via-blue-800 dark:to-blue-900 text-white transition-colors duration-300 overflow-hidden">
+      <section className="relative w-full bg-gradient-to-br from-kreditheld-green-600 via-kreditheld-green-700 to-kreditheld-green-800 dark:from-kreditheld-green-700 dark:via-kreditheld-green-800 dark:to-kreditheld-green-900 text-white transition-colors duration-300 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 w-24 h-24 border border-blue-300 rounded-full"></div>
-          <div className="absolute bottom-10 right-10 w-32 h-32 border border-blue-400 rounded-full"></div>
-          <div className="absolute top-1/2 left-1/2 w-16 h-16 border border-blue-200 rounded-full"></div>
-          <div className="absolute top-20 right-20 w-20 h-20 border border-blue-300 rounded-full"></div>
+          <div className="absolute top-10 left-10 w-24 h-24 border border-kreditheld-green-300 rounded-full"></div>
+          <div className="absolute bottom-10 right-10 w-32 h-32 border border-kreditheld-green-400 rounded-full"></div>
+          <div className="absolute top-1/2 left-1/2 w-16 h-16 border border-kreditheld-green-200 rounded-full"></div>
+          <div className="absolute top-20 right-20 w-20 h-20 border border-kreditheld-green-300 rounded-full"></div>
         </div>
         
         <div className="container mx-auto px-4 py-16 md:py-24 relative z-10">
@@ -82,13 +82,13 @@ const PartnerprogrammPage = () => {
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
               Partnerprogramm für Finanz- & Versicherungsmakler
             </h1>
-            <p className="text-lg md:text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl text-kreditheld-green-100 mb-8 max-w-3xl mx-auto">
               Erweitern Sie Ihr Portfolio und steigern Sie Ihre Einnahmen! Werden Sie Partner von Kreditheld24 und profitieren Sie von attraktiven Provisionen.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
                 href="#kontakt" 
-                className="bg-white hover:bg-gray-100 text-blue-700 font-medium py-3 px-8 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center group"
+                className="bg-white hover:bg-gray-100 text-kreditheld-green-700 font-medium py-3 px-8 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center group"
               >
                 <span>Erstgespräch vereinbaren</span>
                 <div className="w-5 h-5 ml-2 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
@@ -110,19 +110,19 @@ const PartnerprogrammPage = () => {
       </section>
 
       {/* Vorteile */}
-      <section className="py-16 bg-gradient-to-br from-gray-50 via-blue-50/10 to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300 relative overflow-hidden">
+      <section className="py-16 bg-gradient-to-br from-gray-50 via-kreditheld-green-50/10 to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300 relative overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-20 left-20 w-32 h-32 border border-blue-500 rounded-full"></div>
-          <div className="absolute bottom-20 right-20 w-24 h-24 border border-green-500 rounded-full"></div>
-          <div className="absolute top-1/2 right-1/4 w-16 h-16 border border-blue-400 rounded-full"></div>
+          <div className="absolute top-20 left-20 w-32 h-32 border border-kreditheld-green-500 rounded-full"></div>
+          <div className="absolute bottom-20 right-20 w-24 h-24 border border-kreditheld-green-500 rounded-full"></div>
+          <div className="absolute top-1/2 right-1/4 w-16 h-16 border border-kreditheld-green-400 rounded-full"></div>
         </div>
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
-            <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-blue-200 dark:border-blue-700 mb-6">
-              <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
-              <span className="text-sm font-medium text-blue-700 dark:text-blue-400">Partner-Vorteile</span>
+            <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-kreditheld-green-200 dark:border-kreditheld-green-700 mb-6">
+              <div className="w-2 h-2 bg-kreditheld-green-500 rounded-full mr-2 animate-pulse"></div>
+              <span className="text-sm font-medium text-kreditheld-green-700 dark:text-kreditheld-green-400">Partner-Vorteile</span>
             </div>
             <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Ihre Vorteile als Kreditheld24-Partner</h2>
             <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
@@ -133,8 +133,8 @@ const PartnerprogrammPage = () => {
             {vorteile.map((vorteil, index) => {
               const isGreenCard = index % 2 === 1; // Alternating pattern
               return (
-                <div key={index} className={`group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 ${isGreenCard ? 'hover:border-green-500/30' : 'hover:border-blue-500/30'} transform hover:-translate-y-2 p-6`}>
-                  <div className={`w-16 h-16 ${isGreenCard ? 'bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 text-green-600' : 'bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 text-blue-600'} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                <div key={index} className={`group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 ${isGreenCard ? 'hover:border-kreditheld-green-500/30' : 'hover:border-kreditheld-green-500/30'} transform hover:-translate-y-2 p-6`}>
+                  <div className={`w-16 h-16 ${isGreenCard ? 'bg-gradient-to-br from-kreditheld-green-100 to-kreditheld-green-200 dark:from-kreditheld-green-800 dark:to-kreditheld-green-700 text-kreditheld-green-600' : 'bg-gradient-to-br from-kreditheld-green-100 to-kreditheld-green-200 dark:from-kreditheld-green-800 dark:to-kreditheld-green-700 text-kreditheld-green-600'} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
                     <i className={`${vorteil.icon} text-2xl`}></i>
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">{vorteil.title}</h3>
@@ -147,20 +147,20 @@ const PartnerprogrammPage = () => {
       </section>
 
       {/* Provisions-Rechner */}
-      <section id="rechner" className="py-16 bg-gradient-to-br from-white via-green-50/10 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300 relative overflow-hidden">
+      <section id="rechner" className="py-16 bg-gradient-to-br from-white via-kreditheld-green-50/10 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300 relative overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-20 left-20 w-32 h-32 border border-green-500 rounded-full"></div>
-          <div className="absolute bottom-20 right-20 w-24 h-24 border border-blue-500 rounded-full"></div>
-          <div className="absolute top-1/2 right-1/4 w-16 h-16 border border-green-400 rounded-full"></div>
+          <div className="absolute top-20 left-20 w-32 h-32 border border-kreditheld-green-500 rounded-full"></div>
+          <div className="absolute bottom-20 right-20 w-24 h-24 border border-kreditheld-green-500 rounded-full"></div>
+          <div className="absolute top-1/2 right-1/4 w-16 h-16 border border-kreditheld-green-400 rounded-full"></div>
         </div>
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-green-200 dark:border-green-700 mb-6">
-                <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-                <span className="text-sm font-medium text-green-700 dark:text-green-400">Provisions-Rechner</span>
+              <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-kreditheld-green-200 dark:border-kreditheld-green-700 mb-6">
+                <div className="w-2 h-2 bg-kreditheld-green-500 rounded-full mr-2 animate-pulse"></div>
+                <span className="text-sm font-medium text-kreditheld-green-700 dark:text-kreditheld-green-400">Provisions-Rechner</span>
               </div>
               <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Berechnen Sie Ihr Einkommenspotenzial</h2>
               <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
@@ -206,7 +206,7 @@ const PartnerprogrammPage = () => {
                   </div>
                 </div>
                 <div>
-                  <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-6 rounded-xl transition-colors duration-300">
+                  <div className="bg-gradient-to-br from-kreditheld-green-50 to-kreditheld-green-100 dark:from-kreditheld-green-900/20 dark:to-kreditheld-green-800/20 p-6 rounded-xl transition-colors duration-300">
                     <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Ihr Einkommenspotenzial</h3>
                     <div className="space-y-3">
                       <div className="flex justify-between">
@@ -227,14 +227,14 @@ const PartnerprogrammPage = () => {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600 dark:text-gray-300">Jährlich:</span>
-                        <span className="font-bold text-green-600 text-xl">{Number(berechnung.jahresProvision).toLocaleString()} €</span>
+                        <span className="font-bold text-kreditheld-green-600 text-xl">{Number(berechnung.jahresProvision).toLocaleString()} €</span>
                       </div>
                     </div>
                   </div>
                   <div className="mt-6">
                     <Link
                       href="#kontakt"
-                      className="block w-full bg-primary hover:bg-green-500 text-white font-medium py-3 px-6 rounded-xl text-center transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
+                      className="block w-full bg-primary hover:bg-kreditheld-green-500 text-white font-medium py-3 px-6 rounded-xl text-center transition-all shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
                     >
                       Jetzt Partner werden
                     </Link>
@@ -250,12 +250,12 @@ const PartnerprogrammPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 dark:from-blue-700 dark:via-blue-800 dark:to-blue-900 text-white transition-colors duration-300 relative overflow-hidden">
+      <section className="py-16 bg-gradient-to-br from-kreditheld-green-600 via-kreditheld-green-700 to-kreditheld-green-800 dark:from-kreditheld-green-700 dark:via-kreditheld-green-800 dark:to-kreditheld-green-900 text-white transition-colors duration-300 relative overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 w-24 h-24 border border-blue-300 rounded-full"></div>
-          <div className="absolute bottom-10 right-10 w-32 h-32 border border-blue-400 rounded-full"></div>
-          <div className="absolute top-1/2 left-1/2 w-16 h-16 border border-blue-200 rounded-full"></div>
+          <div className="absolute top-10 left-10 w-24 h-24 border border-kreditheld-green-300 rounded-full"></div>
+          <div className="absolute bottom-10 right-10 w-32 h-32 border border-kreditheld-green-400 rounded-full"></div>
+          <div className="absolute top-1/2 left-1/2 w-16 h-16 border border-kreditheld-green-200 rounded-full"></div>
         </div>
         
         <div className="container mx-auto px-4 relative z-10">
@@ -267,13 +267,13 @@ const PartnerprogrammPage = () => {
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
               Bereit für eine erfolgreiche Partnerschaft?
             </h2>
-            <p className="text-lg md:text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-kreditheld-green-100 mb-8 max-w-2xl mx-auto">
               Starten Sie noch heute und profitieren Sie von unserem bewährten Partnerprogramm.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
                 href="#kontakt" 
-                className="bg-white hover:bg-gray-100 text-blue-700 font-medium py-3 px-8 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center group"
+                className="bg-white hover:bg-gray-100 text-kreditheld-green-700 font-medium py-3 px-8 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center group"
               >
                 <span>Kostenlose Beratung</span>
                 <div className="w-5 h-5 ml-2 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
