@@ -129,7 +129,7 @@ export function Header() {
             <img 
               src="/images/Kreditheld24 Logo.png" 
               alt="Kreditheld24 Logo" 
-              className="h-16 w-auto"
+              className="h-48 w-auto"
             />
           </Link>
           
