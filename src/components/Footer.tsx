@@ -29,9 +29,13 @@ export function Footer() {
       <div className="container mx-auto px-4 pt-16 pb-8">
         <div className="grid md:grid-cols-4 gap-8 mb-12">
           <div className="md:col-span-1">
-            <h3 className="text-2xl font-['Pacifico'] text-primary mb-4">
-              Kreditheld24
-            </h3>
+            <div className="mb-4">
+              <img 
+                src="/images/Kreditheld24 Logo.png" 
+                alt="Kreditheld24 Logo" 
+                className="h-12 w-auto"
+              />
+            </div>
             <p className="text-gray-300 mb-6 leading-relaxed">
               Ihr unabhängiger Kreditvergleich für maßgeschneiderte
               Finanzierungslösungen zu Top-Konditionen.

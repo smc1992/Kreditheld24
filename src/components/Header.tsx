@@ -125,8 +125,12 @@ export function Header() {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="text-2xl font-['Pacifico'] text-primary hover:text-primary-600 transition-colors">
-            Kreditheld24
+          <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
+            <img 
+              src="/images/Kreditheld24 Logo.png" 
+              alt="Kreditheld24 Logo" 
+              className="h-10 w-auto"
+            />
           </Link>
           
           {/* Desktop Navigation */}
