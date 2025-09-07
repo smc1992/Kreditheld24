@@ -31,7 +31,7 @@ export function Footer() {
           <div className="md:col-span-1">
             <div className="mb-4">
               <img 
-                src="/images/Kreditheld24 Logo .png" 
+                src="/images/Kreditheld24 Logo weiß.png" 
                 alt="Kreditheld24 Logo" 
                 className="h-20 w-auto"
               />
