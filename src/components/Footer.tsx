@@ -61,7 +61,7 @@ export function Footer() {
           </div>
           
           <div>
-            <h4 className="font-semibold text-lg mb-6 text-white">Kreditarten</h4>
+            <h4 className="font-semibold text-lg mb-6 text-white">Ratenkredite</h4>
             <ul className="space-y-3">
               {kreditarten.map((item) => (
                 <li key={item.name}>

@@ -139,8 +139,8 @@ const searchData: SearchResult[] = [
   },
   {
     id: 'kreditarten',
-    title: 'Kreditarten Übersicht',
-    description: 'Alle verfügbaren Kreditarten im Überblick',
+    title: 'Ratenkredite Übersicht',
+    description: 'Alle verfügbaren Ratenkredite im Überblick',
     url: '/kreditarten',
     category: 'info',
     keywords: ['kreditarten', 'übersicht', 'vergleich', 'arten', 'typen']

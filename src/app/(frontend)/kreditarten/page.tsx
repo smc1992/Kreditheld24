@@ -112,13 +112,13 @@ const KreditartenPage = () => {
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full border border-white/30 mb-6">
               <div className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
-              <span className="text-sm font-medium text-white">Kreditarten</span>
+              <span className="text-sm font-medium text-white">Ratenkredite</span>
             </div>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
-              Unsere Kreditarten im Überblick
+              Unsere Ratenkredite im Überblick
             </h1>
             <p className="text-lg md:text-xl text-green-100 mb-8 max-w-3xl mx-auto">
-              Entdecken Sie die verschiedenen Kreditarten und finden Sie die passende Finanzierungslösung für Ihre individuellen Bedürfnisse.
+              Entdecken Sie die verschiedenen Ratenkredite und finden Sie die passende Finanzierungslösung für Ihre individuellen Bedürfnisse.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link 
@@ -151,7 +151,7 @@ const KreditartenPage = () => {
               <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
               <span className="text-sm font-medium text-green-700 dark:text-green-400">Produktübersicht</span>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Kreditarten für jeden Bedarf</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Ratenkredite für jeden Bedarf</h2>
             <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Wir bieten maßgeschneiderte Finanzierungslösungen für unterschiedliche Lebenssituationen – von der klassischen Anschaffung bis zur Umschuldung.
             </p>
@@ -323,7 +323,7 @@ const KreditartenPage = () => {
               </div>
             </div>
             <div>
-              <h4 className="font-medium text-lg mb-4">Kreditarten</h4>
+              <h4 className="font-medium text-lg mb-4">Ratenkredite</h4>
               <ul className="space-y-2">
                 <li><Link href="/ratenkredite" className="text-gray-300 hover:text-primary">Ratenkredit</Link></li>
                 <li><Link href="/umschuldung" className="text-gray-300 hover:text-primary">Umschuldung</Link></li>

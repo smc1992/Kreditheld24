@@ -22,7 +22,7 @@ const pageNames: Record<string, string> = {
   'sofortkredit': 'Sofortkredit',
   'kredit-selbststaendige': 'Kredit für Selbstständige',
   'schufa-neutral': 'SCHUFA-neutral',
-  'kreditarten': 'Kreditarten',
+  'kreditarten': 'Ratenkredite',
   'kreditanfrage': 'Kreditanfrage',
   'kontakt': 'Kontakt',
   'ueber-uns': 'Über uns',

@@ -6,7 +6,7 @@ import { ThemeToggle } from '@/providers/ThemeProvider'
 
 const megaMenuData = {
   kreditarten: {
-    title: 'Kreditarten',
+    title: 'Ratenkredite',
     description: 'Finden Sie den passenden Kredit für Ihre Bedürfnisse',
     icon: 'ri-bank-card-line',
     href: '/kreditarten',
