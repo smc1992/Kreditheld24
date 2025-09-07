@@ -33,7 +33,7 @@ export function Footer() {
               <img 
                 src="/images/Kreditheld24 Logo weiß.png" 
                 alt="Kreditheld24 Logo" 
-                className="h-20 w-auto"
+                className="h-32 w-auto"
               />
             </div>
             <p className="text-gray-300 mb-6 leading-relaxed">
