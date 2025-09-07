@@ -48,17 +48,7 @@ export function Footer() {
               </Link>
               <Link href="#" className="group">
                 <div className="w-10 h-10 bg-gray-700 hover:bg-primary rounded-lg flex items-center justify-center transition-all duration-200 group-hover:scale-110">
-                  <i className="ri-twitter-fill text-lg text-gray-300 group-hover:text-white"></i>
-                </div>
-              </Link>
-              <Link href="#" className="group">
-                <div className="w-10 h-10 bg-gray-700 hover:bg-primary rounded-lg flex items-center justify-center transition-all duration-200 group-hover:scale-110">
                   <i className="ri-instagram-fill text-lg text-gray-300 group-hover:text-white"></i>
-                </div>
-              </Link>
-              <Link href="#" className="group">
-                <div className="w-10 h-10 bg-gray-700 hover:bg-primary rounded-lg flex items-center justify-center transition-all duration-200 group-hover:scale-110">
-                  <i className="ri-linkedin-fill text-lg text-gray-300 group-hover:text-white"></i>
                 </div>
               </Link>
             </div>
