@@ -61,6 +61,7 @@ const megaMenuData = {
       {
         title: 'Informationen',
         items: [
+          { name: 'Kreditrechner', href: '/kreditrechner', icon: 'ri-calculator-line', description: 'Interaktiver Kreditrechner' },
           { name: 'Aktuelle Zinssätze', href: '/zinssaetze', icon: 'ri-line-chart-line', description: 'Tagesaktuelle Konditionen' },
           { name: 'Kreditglossar', href: '/glossar', icon: 'ri-book-open-line', description: 'Fachbegriffe einfach erklärt' },
           { name: 'FAQ', href: '/faq', icon: 'ri-question-answer-line', description: 'Häufig gestellte Fragen' },

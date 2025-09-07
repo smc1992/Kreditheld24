@@ -24,6 +24,7 @@ const pageNames: Record<string, string> = {
   'schufa-neutral': 'SCHUFA-neutral',
   'kreditarten': 'Ratenkredite',
   'kreditanfrage': 'Kreditanfrage',
+  'kreditrechner': 'Kreditrechner',
   'kontakt': 'Kontakt',
   'ueber-uns': 'Über uns',
   'impressum': 'Impressum',
