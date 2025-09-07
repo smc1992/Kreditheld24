@@ -95,7 +95,7 @@ const UeberUnsPage = () => {
             <p className="text-base sm:text-lg md:text-xl text-green-100 mb-8 max-w-3xl mx-auto">
               Als innovatives Online-Portal unterstützen wir Menschen dabei, ihre finanziellen Ziele zu erreichen. Mit Expertise, Transparenz und persönlicher Beratung stehen wir Ihnen zur Seite.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
                 href="/kontakt" 
                 className="inline-flex items-center justify-center bg-primary hover:bg-green-500 text-white font-medium py-3 px-6 rounded-button whitespace-nowrap shadow-lg transition-all backdrop-blur-sm"
