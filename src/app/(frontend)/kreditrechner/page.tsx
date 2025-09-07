@@ -118,16 +118,11 @@ export default function KreditrechnerPage() {
       <Script 
         src="https://europace.nc.econ-application.de/frontend/europace/assets/js/econ.js" 
         strategy="afterInteractive"
-      />
-      <Script 
-        id="econ-init"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            if (typeof econ !== 'undefined') {
-              econ.initEcon('econ', 'https://europace.nc.econ-application.de/econ/process/LKJ98/kreditlead?epid_uv=XPS71', [], 0);
-            }
-          `
+        onLoad={() => {
+          // Initialize Econ after script is loaded
+          if (typeof window !== 'undefined' && (window as any).econ) {
+            (window as any).econ.initEcon('econ', 'https://europace.nc.econ-application.de/econ/process/LKJ98/kreditlead?epid_uv=XPS71', [], 0);
+          }
         }}
       />
     </div>
