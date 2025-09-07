@@ -106,7 +106,7 @@ const KontaktPage = () => {
       <section className="py-16 bg-gradient-to-br from-green-600 via-green-700 to-green-800 dark:from-green-700 dark:via-green-800 dark:to-green-900 text-white transition-colors duration-300 relative overflow-hidden">
         {/* Background Image */}
         <div 
-          className="absolute inset-0 bg-right bg-no-repeat bg-contain opacity-20 sm:opacity-40 md:opacity-60 lg:opacity-90" 
+          className="absolute inset-0 bg-center bg-no-repeat bg-cover opacity-30" 
           style={{
             backgroundImage: "url('/images/kontakt-hero.webp')"
           }}

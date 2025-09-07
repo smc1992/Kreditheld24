@@ -124,7 +124,7 @@ const BaufinanzierungPage = () => {
       {/* Hero Section */}
       <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 dark:from-gray-900 dark:to-gray-800 overflow-hidden min-h-[500px] sm:min-h-[600px] lg:min-h-[700px] transition-colors duration-300">
         <div 
-          className="absolute inset-0 bg-right bg-no-repeat bg-contain opacity-20 sm:opacity-40 md:opacity-60 lg:opacity-90" 
+          className="absolute inset-0 bg-center bg-no-repeat bg-cover opacity-30" 
           style={{
             backgroundImage: "url('/images/baufinanzierung-hero.webp')"
           }}

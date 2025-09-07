@@ -67,7 +67,7 @@ const PartnerprogrammPage = () => {
       <section className="relative w-full bg-gradient-to-br from-kreditheld-green-600 via-kreditheld-green-700 to-kreditheld-green-800 dark:from-kreditheld-green-700 dark:via-kreditheld-green-800 dark:to-kreditheld-green-900 text-white transition-colors duration-300 overflow-hidden">
         {/* Background Image */}
         <div 
-          className="absolute inset-0 bg-right bg-no-repeat bg-contain opacity-20 sm:opacity-40 md:opacity-60 lg:opacity-90" 
+          className="absolute inset-0 bg-center bg-no-repeat bg-cover opacity-30" 
           style={{
             backgroundImage: "url('/images/partnerprogramm-hero.webp')"
           }}
