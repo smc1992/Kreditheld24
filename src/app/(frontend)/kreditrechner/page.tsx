@@ -9,6 +9,18 @@ export default function KreditrechnerPage() {
   const [widgetError, setWidgetError] = useState(false)
   const [isInitialized, setIsInitialized] = useState(false)
 
+  // Timeout fallback to hide loading spinner after 10 seconds
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (!widgetLoaded && !widgetError) {
+        console.log('Widget loading timeout, hiding spinner');
+        setWidgetLoaded(true);
+      }
+    }, 10000);
+
+    return () => clearTimeout(timeout);
+  }, [widgetLoaded, widgetError]);
+
   return (
     <>
       <Head>
