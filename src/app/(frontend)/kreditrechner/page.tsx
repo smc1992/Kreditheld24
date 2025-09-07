@@ -65,7 +65,7 @@ export default function KreditrechnerPage() {
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
                 <div className="p-6">
                   <div id="econ" className="min-h-[600px] w-full">
-                    {!widgetLoaded && !widgetError && (
+                    {!widgetLoaded && !widgetError && !isInitialized && (
                       <div className="flex items-center justify-center h-[600px]">
                         <div className="text-center">
                           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
