@@ -154,7 +154,7 @@ const ForwarddarlehenPage = () => {
         </div>
         
         <div 
-          className="absolute inset-0 bg-right bg-no-repeat bg-cover md:bg-contain opacity-20 md:opacity-100"
+          className="absolute inset-0 bg-center bg-no-repeat bg-cover opacity-30"
           style={{
             backgroundImage: "url('/images/forwarddarlehen-hero-new.webp')"
           }}
