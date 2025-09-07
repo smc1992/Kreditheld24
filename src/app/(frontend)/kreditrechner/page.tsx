@@ -1,16 +1,18 @@
-import React from 'react'
-import { Metadata } from 'next'
-import Script from 'next/script'
+'use client'
 
-export const metadata: Metadata = {
-  title: 'Kreditrechner - Kreditheld24',
-  description: 'Berechnen Sie Ihren Kredit mit unserem interaktiven Kreditrechner. Vergleichen Sie Zinssätze und finden Sie die beste Finanzierung.',
-  keywords: 'Kreditrechner, Kredit berechnen, Zinssätze vergleichen, Kreditheld24, Finanzierung'
-}
+import React, { useEffect } from 'react'
+import Head from 'next/head'
+import Script from 'next/script'
 
 export default function KreditrechnerPage() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300">
+    <>
+      <Head>
+        <title>Kreditrechner - Kreditheld24</title>
+        <meta name="description" content="Berechnen Sie Ihren Kredit mit unserem interaktiven Kreditrechner. Vergleichen Sie Zinssätze und finden Sie die beste Finanzierung." />
+        <meta name="keywords" content="Kreditrechner, Kredit berechnen, Zinssätze vergleichen, Kreditheld24, Finanzierung" />
+      </Head>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300">
       <main className="pt-20 pb-16">
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-green-600 via-green-700 to-green-800 dark:from-green-700 dark:via-green-800 dark:to-green-900 text-white py-16 transition-colors duration-300 relative overflow-hidden">
@@ -125,6 +127,7 @@ export default function KreditrechnerPage() {
           }
         }}
       />
-    </div>
+      </div>
+    </>
   )
 }
