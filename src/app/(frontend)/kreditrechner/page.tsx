@@ -1,10 +1,13 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Script from 'next/script'
 
 export default function KreditrechnerPage() {
+  const [widgetLoaded, setWidgetLoaded] = useState(false)
+  const [widgetError, setWidgetError] = useState(false)
+
   return (
     <>
       <Head>
@@ -60,7 +63,41 @@ export default function KreditrechnerPage() {
               {/* Econ Widget Container */}
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
                 <div className="p-6">
-                  <div id="econ" className="min-h-[600px] w-full"></div>
+                  <div id="econ" className="min-h-[600px] w-full">
+                    {!widgetLoaded && !widgetError && (
+                      <div className="flex items-center justify-center h-[600px]">
+                        <div className="text-center">
+                          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
+                          <p className="text-gray-600 dark:text-gray-300">Kreditrechner wird geladen...</p>
+                        </div>
+                      </div>
+                    )}
+                    {widgetError && (
+                      <div className="flex items-center justify-center h-[600px]">
+                        <div className="text-center max-w-md">
+                          <div className="w-16 h-16 bg-red-100 dark:bg-red-800/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                            </svg>
+                          </div>
+                          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Kreditrechner temporär nicht verfügbar</h3>
+                          <p className="text-gray-600 dark:text-gray-300 mb-4">Der externe Kreditrechner ist momentan nicht erreichbar. Bitte versuchen Sie es später erneut oder kontaktieren Sie uns direkt.</p>
+                          <div className="space-y-2">
+                            <a href="/kontakt" className="inline-block bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                              Jetzt Kontakt aufnehmen
+                            </a>
+                            <br />
+                            <button 
+                              onClick={() => window.location.reload()} 
+                              className="inline-block bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                            >
+                              Seite neu laden
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -122,9 +159,19 @@ export default function KreditrechnerPage() {
         strategy="afterInteractive"
         onLoad={() => {
           // Initialize Econ after script is loaded
-          if (typeof window !== 'undefined' && (window as any).econ) {
-            (window as any).econ.initEcon('econ', 'https://europace.nc.econ-application.de/econ/process/LKJ98/kreditlead?epid_uv=XPS71', [], 0);
+          try {
+            if (typeof window !== 'undefined' && (window as any).econ) {
+              (window as any).econ.initEcon('econ', 'https://europace.nc.econ-application.de/econ/process/LKJ98/kreditlead?epid_uv=XPS71', [], 0);
+              setWidgetLoaded(true);
+            }
+          } catch (error) {
+            console.error('Econ widget initialization failed:', error);
+            setWidgetError(true);
           }
+        }}
+        onError={() => {
+          console.error('Econ script failed to load');
+          setWidgetError(true);
         }}
       />
       </div>
