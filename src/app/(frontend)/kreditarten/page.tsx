@@ -93,6 +93,13 @@ const KreditartenPage = () => {
 
       {/* Hero Section */}
       <section className="relative w-full bg-gradient-to-br from-green-600 via-green-700 to-green-800 dark:from-green-700 dark:via-green-800 dark:to-green-900 text-white transition-colors duration-300 overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-right bg-no-repeat bg-contain opacity-20 sm:opacity-40 md:opacity-60 lg:opacity-90" 
+          style={{
+            backgroundImage: "url('/images/kreditarten-hero.webp')"
+          }}
+        ></div>
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-24 h-24 border border-green-300 rounded-full"></div>
