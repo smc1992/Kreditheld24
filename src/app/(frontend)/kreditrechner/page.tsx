@@ -7,6 +7,7 @@ import Script from 'next/script'
 export default function KreditrechnerPage() {
   const [widgetLoaded, setWidgetLoaded] = useState(false)
   const [widgetError, setWidgetError] = useState(false)
+  const [isInitialized, setIsInitialized] = useState(false)
 
   return (
     <>
@@ -158,11 +159,27 @@ export default function KreditrechnerPage() {
         src="https://europace.nc.econ-application.de/frontend/europace/assets/js/econ.js" 
         strategy="afterInteractive"
         onLoad={() => {
+          // Prevent double initialization
+          if (isInitialized) {
+            console.log('Econ widget already initialized, skipping...');
+            return;
+          }
+          
           // Initialize Econ after script is loaded
           try {
             if (typeof window !== 'undefined' && (window as any).econ) {
+              // Clear any existing widget content
+              const econContainer = document.getElementById('econ');
+              if (econContainer) {
+                // Remove any existing iframes or content
+                const existingIframes = econContainer.querySelectorAll('iframe');
+                existingIframes.forEach(iframe => iframe.remove());
+              }
+              
               (window as any).econ.initEcon('econ', 'https://europace.nc.econ-application.de/econ/process/LKJ98/kreditlead?epid_uv=XPS71', [], 0);
               setWidgetLoaded(true);
+              setIsInitialized(true);
+              console.log('Econ widget initialized successfully');
             }
           } catch (error) {
             console.error('Econ widget initialization failed:', error);
