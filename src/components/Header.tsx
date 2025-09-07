@@ -127,7 +127,7 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center hover:opacity-80 transition-opacity h-full">
             <img 
-              src="/images/Kreditheld24 Logo.png" 
+              src="/images/Kreditheld24 Logo .png" 
               alt="Kreditheld24 Logo" 
               className="h-full w-auto object-contain"
             />
