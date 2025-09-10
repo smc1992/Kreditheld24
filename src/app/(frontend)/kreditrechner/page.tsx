@@ -8,18 +8,91 @@ export default function KreditrechnerPage() {
   const [widgetLoaded, setWidgetLoaded] = useState(false)
   const [widgetError, setWidgetError] = useState(false)
   const [isInitialized, setIsInitialized] = useState(false)
+  const [retryCount, setRetryCount] = useState(0)
+  const [scriptLoaded, setScriptLoaded] = useState(false)
 
-  // Timeout fallback to hide loading spinner after 10 seconds
+  // Retry mechanism for failed script loads
+  const retryScriptLoad = () => {
+    if (retryCount < 3) {
+      console.log(`Retrying script load, attempt ${retryCount + 1}`);
+      setRetryCount(prev => prev + 1);
+      setWidgetError(false);
+      setScriptLoaded(false);
+      
+      // Force reload the script
+      const existingScript = document.querySelector('script[src*="econ.js"]');
+      if (existingScript) {
+        existingScript.remove();
+      }
+      
+      // Add script again
+      const script = document.createElement('script');
+      script.src = 'https://europace.nc.econ-application.de/frontend/europace/assets/js/econ.js';
+      script.onload = () => handleScriptLoad();
+      script.onerror = () => handleScriptError();
+      document.head.appendChild(script);
+    } else {
+      console.error('Max retry attempts reached');
+      setWidgetError(true);
+    }
+  };
+
+  const handleScriptLoad = () => {
+    setScriptLoaded(true);
+    console.log('Econ script loaded successfully');
+    
+    // Initialize with delay to ensure script is fully ready
+    setTimeout(() => {
+      if (!isInitialized && typeof window !== 'undefined' && (window as any).econ) {
+        try {
+          const econContainer = document.getElementById('econ');
+          if (econContainer) {
+            const existingIframes = econContainer.querySelectorAll('iframe');
+            existingIframes.forEach(iframe => iframe.remove());
+          }
+          
+          (window as any).econ.initEcon('econ', 'https://europace.nc.econ-application.de/econ/process/LKJ98/kreditlead?epid_uv=XPS71', [], 0);
+          setWidgetLoaded(true);
+          setIsInitialized(true);
+          console.log('Econ widget initialized successfully');
+        } catch (error) {
+          console.error('Econ widget initialization failed:', error);
+          setWidgetError(true);
+        }
+      }
+    }, 500);
+  };
+
+  const handleScriptError = () => {
+    console.error('Failed to load Econ script');
+    setTimeout(() => retryScriptLoad(), 2000); // Retry after 2 seconds
+  };
+
+  // Timeout fallback to hide loading spinner after 15 seconds
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (!widgetLoaded && !widgetError) {
-        console.log('Widget loading timeout, hiding spinner');
-        setWidgetLoaded(true);
+        console.log('Widget loading timeout, showing error state');
+        setWidgetError(true);
       }
-    }, 10000);
+    }, 15000);
 
     return () => clearTimeout(timeout);
   }, [widgetLoaded, widgetError]);
+
+  // Check if script is available periodically
+  useEffect(() => {
+    if (!scriptLoaded && !isInitialized) {
+      const checkScript = setInterval(() => {
+        if (typeof window !== 'undefined' && (window as any).econ && !isInitialized) {
+          clearInterval(checkScript);
+          handleScriptLoad();
+        }
+      }, 1000);
+
+      return () => clearInterval(checkScript);
+    }
+  }, [scriptLoaded, isInitialized]);
 
   return (
     <>
@@ -96,17 +169,24 @@ export default function KreditrechnerPage() {
                           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Kreditrechner temporär nicht verfügbar</h3>
                           <p className="text-gray-600 dark:text-gray-300 mb-4">Der externe Kreditrechner ist momentan nicht erreichbar. Bitte versuchen Sie es später erneut oder kontaktieren Sie uns direkt.</p>
                           <div className="space-y-2">
-                            <a href="/kontakt" className="inline-block bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
-                              Jetzt Kontakt aufnehmen
-                            </a>
-                            <br />
-                            <button 
-                              onClick={() => window.location.reload()} 
-                              className="inline-block bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-                            >
-                              Seite neu laden
-                            </button>
-                          </div>
+                             <a href="/kontakt" className="inline-block bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                               Jetzt Kontakt aufnehmen
+                             </a>
+                             <br />
+                             <button 
+                               onClick={() => retryScriptLoad()} 
+                               className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors mr-2"
+                               disabled={retryCount >= 3}
+                             >
+                               {retryCount >= 3 ? 'Max. Versuche erreicht' : `Erneut versuchen (${retryCount}/3)`}
+                             </button>
+                             <button 
+                               onClick={() => window.location.reload()} 
+                               className="inline-block bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                             >
+                               Seite neu laden
+                             </button>
+                           </div>
                         </div>
                       </div>
                     )}
@@ -170,38 +250,8 @@ export default function KreditrechnerPage() {
       <Script 
         src="https://europace.nc.econ-application.de/frontend/europace/assets/js/econ.js" 
         strategy="afterInteractive"
-        onLoad={() => {
-          // Prevent double initialization
-          if (isInitialized) {
-            console.log('Econ widget already initialized, skipping...');
-            return;
-          }
-          
-          // Initialize Econ after script is loaded
-          try {
-            if (typeof window !== 'undefined' && (window as any).econ) {
-              // Clear any existing widget content
-              const econContainer = document.getElementById('econ');
-              if (econContainer) {
-                // Remove any existing iframes or content
-                const existingIframes = econContainer.querySelectorAll('iframe');
-                existingIframes.forEach(iframe => iframe.remove());
-              }
-              
-              (window as any).econ.initEcon('econ', 'https://europace.nc.econ-application.de/econ/process/LKJ98/kreditlead?epid_uv=XPS71', [], 0);
-              setWidgetLoaded(true);
-              setIsInitialized(true);
-              console.log('Econ widget initialized successfully');
-            }
-          } catch (error) {
-            console.error('Econ widget initialization failed:', error);
-            setWidgetError(true);
-          }
-        }}
-        onError={() => {
-          console.error('Econ script failed to load');
-          setWidgetError(true);
-        }}
+        onLoad={() => handleScriptLoad()}
+        onError={() => handleScriptError()}
       />
       </div>
     </>
