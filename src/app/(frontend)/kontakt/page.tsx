@@ -152,80 +152,80 @@ const KontaktPage = () => {
           </div>
           <div className="grid md:grid-cols-2 gap-12">
             <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-300">
-              <h3 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">Unsere Kontaktdaten</h3>
+              <h3 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">Warum Kreditheld24?</h3>
+              
               <div className="space-y-6">
-                  <div className="flex items-start group">
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center mr-4 shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <div className="w-6 h-6 flex items-center justify-center text-primary">
-                        <i className="ri-map-pin-line text-xl"></i>
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold mb-1 text-gray-900 dark:text-gray-100">Geschäftsadresse</h4>
-                      <p className="text-gray-600 dark:text-gray-300">Brockmannstr. 204<br />48163 Münster</p>
+                <div className="flex items-start group">
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center mr-4 shrink-0 group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-6 h-6 flex items-center justify-center text-primary">
+                      <i className="ri-shield-check-line text-xl"></i>
                     </div>
                   </div>
-
-                  <div className="flex items-start group">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-xl flex items-center justify-center mr-4 shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <div className="w-6 h-6 flex items-center justify-center text-blue-600">
-                        <i className="ri-mail-line text-xl"></i>
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold mb-1 text-gray-900 dark:text-gray-100">E-Mail</h4>
-                      <p className="text-gray-600 dark:text-gray-300">
-                        <a href="mailto:info@kreditheld24.de" className="hover:text-primary transition-colors">info@kreditheld24.de</a>
-                      </p>
-                    </div>
+                  <div>
+                    <h4 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">100% SCHUFA-neutral</h4>
+                    <p className="text-gray-600 dark:text-gray-300">Ihre Anfrage hat keinen Einfluss auf Ihren SCHUFA-Score. Wir prüfen diskret und unverbindlich.</p>
                   </div>
                 </div>
 
-              <div className="mt-10">
-                <h4 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">Öffnungszeiten</h4>
-                <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-700 dark:to-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600 overflow-hidden transition-colors duration-300">
-                  <table className="w-full">
-                    <tbody>
-                      <tr className="border-b border-gray-100 dark:border-gray-600">
-                        <td className="py-4 px-6 font-medium text-gray-900 dark:text-gray-100">Montag - Freitag</td>
-                        <td className="py-4 px-6 text-right text-gray-700 dark:text-gray-300">09:00 - 18:00 Uhr</td>
-                      </tr>
-                      <tr className="border-b border-gray-100 dark:border-gray-600">
-                        <td className="py-4 px-6 font-medium text-gray-900 dark:text-gray-100">Samstag</td>
-                        <td className="py-4 px-6 text-right text-gray-700 dark:text-gray-300">10:00 - 14:00 Uhr</td>
-                      </tr>
-                      <tr>
-                        <td className="py-4 px-6 font-medium text-gray-900 dark:text-gray-100">Sonntag</td>
-                        <td className="py-4 px-6 text-right text-red-600 dark:text-red-400">Geschlossen</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div className="flex items-start group">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-xl flex items-center justify-center mr-4 shrink-0 group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-6 h-6 flex items-center justify-center text-blue-600">
+                      <i className="ri-time-line text-xl"></i>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">Schnelle Bearbeitung</h4>
+                    <p className="text-gray-600 dark:text-gray-300">Antwort innerhalb von 24 Stunden und Auszahlung in nur 1-3 Werktagen.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start group">
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-800 dark:to-purple-700 rounded-xl flex items-center justify-center mr-4 shrink-0 group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-6 h-6 flex items-center justify-center text-purple-600">
+                      <i className="ri-bank-line text-xl"></i>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">Über 20 Partnerbanken</h4>
+                    <p className="text-gray-600 dark:text-gray-300">Wir vergleichen für Sie die besten Konditionen von mehr als 20 renommierten Banken.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start group">
+                  <div className="w-12 h-12 bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-800 dark:to-orange-700 rounded-xl flex items-center justify-center mr-4 shrink-0 group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-6 h-6 flex items-center justify-center text-orange-600">
+                      <i className="ri-customer-service-2-line text-xl"></i>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">Persönliche Beratung</h4>
+                    <p className="text-gray-600 dark:text-gray-300">Unsere Experten beraten Sie individuell und finden die optimale Finanzierungslösung.</p>
+                  </div>
                 </div>
               </div>
 
-              <div className="mt-10">
-                <h4 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">Folgen Sie uns</h4>
-                <div className="flex space-x-4">
-                  <a href="#" className="group w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-xl flex items-center justify-center text-blue-600 hover:from-blue-600 hover:to-blue-700 hover:text-white transition-all duration-300 transform hover:scale-110">
-                    <div className="w-6 h-6 flex items-center justify-center">
-                      <i className="ri-facebook-fill text-xl"></i>
-                    </div>
+              <div className="mt-10 p-6 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 rounded-xl border border-green-200 dark:border-green-700">
+                <div className="flex items-center mb-4">
+                  <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                    <i className="ri-phone-line text-white text-lg"></i>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100">Sofortige Beratung gewünscht?</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">Rufen Sie uns an oder vereinbaren Sie einen Rückruf</p>
+                  </div>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <a href="tel:+4925114914277" className="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition-colors text-center">
+                    <i className="ri-phone-line mr-2"></i>
+                    Jetzt anrufen
                   </a>
-                  <a href="#" className="group w-12 h-12 bg-gradient-to-br from-sky-100 to-sky-200 dark:from-sky-800 dark:to-sky-700 rounded-xl flex items-center justify-center text-sky-600 hover:from-sky-600 hover:to-sky-700 hover:text-white transition-all duration-300 transform hover:scale-110">
-                    <div className="w-6 h-6 flex items-center justify-center">
-                      <i className="ri-twitter-fill text-xl"></i>
-                    </div>
-                  </a>
-                  <a href="#" className="group w-12 h-12 bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-800 dark:to-pink-700 rounded-xl flex items-center justify-center text-pink-600 hover:from-pink-600 hover:to-pink-700 hover:text-white transition-all duration-300 transform hover:scale-110">
-                    <div className="w-6 h-6 flex items-center justify-center">
-                      <i className="ri-instagram-fill text-xl"></i>
-                    </div>
-                  </a>
-                  <a href="#" className="group w-12 h-12 bg-gradient-to-br from-indigo-100 to-indigo-200 dark:from-indigo-800 dark:to-indigo-700 rounded-xl flex items-center justify-center text-indigo-600 hover:from-indigo-600 hover:to-indigo-700 hover:text-white transition-all duration-300 transform hover:scale-110">
-                    <div className="w-6 h-6 flex items-center justify-center">
-                      <i className="ri-linkedin-fill text-xl"></i>
-                    </div>
-                  </a>
+                  <button 
+                    onClick={() => setShowCallbackModal(true)}
+                    className="flex-1 bg-white hover:bg-gray-50 text-green-600 border border-green-600 font-medium py-3 px-4 rounded-lg transition-colors"
+                  >
+                    <i className="ri-calendar-line mr-2"></i>
+                    Rückruf vereinbaren
+                  </button>
                 </div>
               </div>
             </div>
