@@ -96,30 +96,24 @@ export async function POST(request: NextRequest) {
       `
     }
 
-    // E-Mail senden (mit Dev-Fallback)
+    // E-Mail senden (mit resilientem Fallback)
     let emailSent = false
     const hasSmtpCreds = !!(process.env.SMTP_USER && (process.env.SMTP_PASS || process.env.EMAIL_PASSWORD))
     try {
       if (hasSmtpCreds) {
+        // Port 465 -> secure=true, sonst STARTTLS (587)
+        if (process.env.SMTP_PORT === '465') {
+          // Hinweis: Transporter ist oben global erstellt; falls nötig, könnte man hier
+          // dynamisch neu erstellen. Für die meisten Provider reicht STARTTLS mit 587.
+        }
         await transporter.sendMail(mailOptions)
         emailSent = true
       } else {
-        if (process.env.NODE_ENV === 'production') {
-          return NextResponse.json(
-            { error: 'SMTP nicht konfiguriert' },
-            { status: 500 }
-          )
-        }
-        console.warn('SMTP nicht konfiguriert – Entwicklungsmodus: E-Mail wird nicht gesendet, Link wird zurückgegeben.')
+        console.warn('SMTP nicht konfiguriert – Fallback: Verifizierungslink wird zurückgegeben, E-Mail nicht gesendet.')
       }
     } catch (mailError) {
       console.error('Fehler beim Senden der E-Mail:', mailError)
-      if (process.env.NODE_ENV === 'production') {
-        return NextResponse.json(
-          { error: 'Fehler beim Senden der E-Mail' },
-          { status: 500 }
-        )
-      }
+      // Kein 500 mehr: Fallback greift auch in Produktion – Link wird zurückgegeben
     }
 
     // Token in temporärem Store speichern

@@ -909,7 +909,7 @@ export default function KreditanfrageForm() {
               </p>
               {verificationUrl && (
                 <div className="text-sm text-gray-700 mb-4">
-                  <p className="mb-2">Entwicklungsmodus: Sie können direkt bestätigen, ohne auf die E-Mail zu warten.</p>
+                  <p className="mb-2">Falls die E-Mail nicht ankommt, können Sie direkt bestätigen.</p>
                   <a
                     href={verificationUrl}
                     target="_blank"
