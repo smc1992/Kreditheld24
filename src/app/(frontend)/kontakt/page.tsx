@@ -43,19 +43,42 @@ const KontaktPage = () => {
     }))
   }
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    alert('Vielen Dank für Ihre Nachricht! Wir werden uns in Kürze bei Ihnen melden.')
-    setFormData({
-      salutation: 'herr',
-      firstname: '',
-      lastname: '',
-      email: '',
-      phone: '',
-      subject: 'allgemeine-anfrage',
-      message: '',
-      privacy: false
-    })
+    if (!formData.privacy) {
+      alert('Bitte stimmen Sie der Datenschutzerklärung zu.')
+      return
+    }
+    try {
+      setIsSubmitting(true)
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error((data && data.error) || 'Senden fehlgeschlagen')
+      }
+      alert('Vielen Dank! Ihre Nachricht wurde erfolgreich gesendet.')
+      setFormData({
+        salutation: 'herr',
+        firstname: '',
+        lastname: '',
+        email: '',
+        phone: '',
+        subject: 'allgemeine-anfrage',
+        message: '',
+        privacy: false
+      })
+    } catch (error) {
+      console.error(error)
+      alert('Leider gab es ein Problem beim Senden. Bitte später erneut versuchen.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleCallbackSubmit = (e: React.FormEvent) => {
@@ -349,7 +372,8 @@ const KontaktPage = () => {
                 </div>
                 <button 
                   type="submit" 
-                  className="bg-primary hover:bg-green-500 text-white font-medium py-3 px-6 rounded-button whitespace-nowrap shadow-md transition-all flex items-center justify-center"
+                  disabled={isSubmitting}
+                  className="bg-primary hover:bg-green-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-medium py-3 px-6 rounded-button whitespace-nowrap shadow-md transition-all flex items-center justify-center"
                 >
                   <span>Nachricht senden</span>
                   <div className="w-5 h-5 ml-2 flex items-center justify-center">
