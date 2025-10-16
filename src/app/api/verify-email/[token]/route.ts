@@ -1,25 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { redirect } from 'next/navigation'
 import { getVerificationData, markTokenAsVerified } from '@/lib/verification'
 
 export const runtime = 'nodejs'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ token: string }> }
+  { params }: { params: { token: string } }
 ) {
   try {
-    const { token } = await params
+    const { token } = params
     
     if (!token) {
-      return redirect('/kreditanfrage?error=invalid-token')
+      return NextResponse.redirect(new URL('/kreditanfrage?error=invalid-token', request.url))
     }
 
     // Token in Store suchen
     const verificationData = getVerificationData(token)
     
     if (!verificationData) {
-      return redirect('/kreditanfrage?error=token-not-found')
+      return NextResponse.redirect(new URL('/kreditanfrage?error=token-not-found', request.url))
     }
 
     // Token-Ablauf prüfen (24 Stunden)
@@ -27,22 +26,22 @@ export async function GET(
     const maxAge = 24 * 60 * 60 * 1000 // 24 Stunden in Millisekunden
     
     if (tokenAge > maxAge) {
-      return redirect('/kreditanfrage?error=token-expired')
+      return NextResponse.redirect(new URL('/kreditanfrage?error=token-expired', request.url))
     }
 
     // Bereits verifiziert?
     if (verificationData.verified) {
-      return redirect('/kreditanfrage?success=already-verified')
+      return NextResponse.redirect(new URL('/kreditanfrage?success=already-verified', request.url))
     }
 
     // E-Mail als verifiziert markieren
     markTokenAsVerified(token)
 
     // Erfolgreiche Verifizierung
-    return redirect('/kreditanfrage?success=email-verified')
+    return NextResponse.redirect(new URL('/kreditanfrage?success=email-verified', request.url))
     
   } catch (error) {
     console.error('Fehler bei E-Mail-Verifizierung:', error)
-    return redirect('/kreditanfrage?error=verification-failed')
+    return NextResponse.redirect(new URL('/kreditanfrage?error=verification-failed', request.url))
   }
 }
