@@ -11,6 +11,8 @@ interface FormData {
   vorname: string
   nachname: string
   geburtsdatum: string
+  familienstand: string
+  staatsangehoerigkeit: string
   email: string
   telefon: string
   
@@ -21,15 +23,18 @@ interface FormData {
   ort: string
   
   // Kreditwunsch
+  produktKategorie: 'privatkredit' | 'baufinanzierung'
   kreditart: string
   kreditsumme: string
   laufzeit: string
   gewuenschteRate: string
   verwendungszweck: string
+  baufinanzierungArt: string
+  kaufpreisBaukosten: string
+  eigenkapital: string
   
   // Einkommen
   beschaeftigungsverhaeltnis: string
-  arbeitgeber: string
   nettoEinkommen: string
   beschaeftigtSeit: string
   
@@ -57,19 +62,24 @@ const initialFormData: FormData = {
   vorname: '',
   nachname: '',
   geburtsdatum: '',
+  familienstand: '',
+  staatsangehoerigkeit: '',
   email: '',
   telefon: '',
   strasse: '',
   hausnummer: '',
   plz: '',
   ort: '',
+  produktKategorie: 'privatkredit',
   kreditart: '',
   kreditsumme: '',
   laufzeit: '',
   gewuenschteRate: '',
   verwendungszweck: '',
+  baufinanzierungArt: '',
+  kaufpreisBaukosten: '',
+  eigenkapital: '',
   beschaeftigungsverhaeltnis: '',
-  arbeitgeber: '',
   nettoEinkommen: '',
   beschaeftigtSeit: '',
   miete: '',
@@ -204,18 +214,49 @@ export default function KreditanfrageForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Sicherheit: E-Mail muss verifiziert sein, bevor die Anfrage gesendet wird
+    if (!emailVerified) {
+      setSubmitStatus('error')
+      setUrlMessage({ type: 'error', message: 'Bitte bestätigen Sie zuerst Ihre E-Mail-Adresse.' })
+      return
+    }
+
     setIsSubmitting(true)
     
     try {
-      // Hier würde die API-Anfrage an den Server gesendet werden
-      await new Promise(resolve => setTimeout(resolve, 2000)) // Simulation
+      // FormData mit Feldern und Dateien erstellen
+      const payload = new FormData()
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) {
+          if (typeof File !== 'undefined' && value instanceof File) {
+            payload.append(key, value)
+          } else {
+            payload.append(key, String(value))
+          }
+        }
+      })
+      // Verifizierungs-Token beilegen (Server prüft es)
+      payload.append('verificationToken', verificationToken)
+
+      const res = await fetch('/api/kreditanfrage', {
+        method: 'POST',
+        body: payload
+      })
+
+      if (!res.ok) {
+        const errText = await res.text()
+        throw new Error(errText || 'Fehler beim Senden der Anfrage')
+      }
+
       setSubmitStatus('success')
       setFormData(initialFormData)
       setCurrentStep(1)
       setEmailVerificationSent(false)
       setEmailVerified(false)
       setVerificationToken('')
-    } catch {
+    } catch (err) {
+      console.error('Fehler beim Absenden:', err)
       setSubmitStatus('error')
     } finally {
       setIsSubmitting(false)
@@ -237,10 +278,13 @@ export default function KreditanfrageForm() {
   const isStepValid = (step: number): boolean => {
     switch (step) {
       case 1:
-        return !!(formData.anrede && formData.vorname && formData.nachname && formData.email && formData.telefon && !isUnder18)
+        return !!(formData.anrede && formData.vorname && formData.nachname && formData.email && formData.telefon && formData.familienstand && formData.staatsangehoerigkeit && !isUnder18)
       case 2:
         return !!(formData.strasse && formData.hausnummer && formData.plz && formData.ort)
       case 3:
+        if (formData.produktKategorie === 'baufinanzierung') {
+          return !!(formData.baufinanzierungArt && formData.kaufpreisBaukosten && formData.eigenkapital)
+        }
         return !!(formData.kreditart && formData.kreditsumme && formData.laufzeit)
       case 4:
         return !!(formData.beschaeftigungsverhaeltnis && formData.beschaeftigungsverhaeltnis !== 'arbeitslos' && formData.nettoEinkommen)
@@ -333,7 +377,7 @@ export default function KreditanfrageForm() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Geburtsdatum</label>
               <input
@@ -351,6 +395,35 @@ export default function KreditanfrageForm() {
                   Personen unter 18 Jahren dürfen keinen Kreditvertrag abschließen.
                 </p>
               )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Familienstand *</label>
+              <select
+                name="familienstand"
+                value={formData.familienstand}
+                onChange={handleInputChange}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <option value="">Bitte wählen</option>
+                <option value="ledig">Ledig</option>
+                <option value="verheiratet">Verheiratet</option>
+                <option value="geschieden">Geschieden</option>
+                <option value="verwitwet">Verwitwet</option>
+                <option value="lebenspartnerschaft">Eingetragene Lebenspartnerschaft</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Staatsangehörigkeit *</label>
+              <input
+                type="text"
+                name="staatsangehoerigkeit"
+                value={formData.staatsangehoerigkeit}
+                onChange={handleInputChange}
+                required
+                placeholder="z.B. Deutsch"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
             </div>
           </div>
 
@@ -443,24 +516,185 @@ export default function KreditanfrageForm() {
       {currentStep === 3 && (
         <div className="space-y-6">
           <h3 className="text-xl font-semibold text-gray-900 mb-6">Ihr Kreditwunsch</h3>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Kreditart *</label>
-            <select
-              name="kreditart"
-              value={formData.kreditart}
-              onChange={handleInputChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          {/* Kategorie-Navigation */}
+          <div className="flex gap-3 mb-2">
+            <Button
+              type="button"
+              variant={formData.produktKategorie === 'privatkredit' ? 'default' : 'outline'}
+              onClick={() => setFormData(prev => ({ ...prev, produktKategorie: 'privatkredit' }))}
             >
-              <option value="">Bitte wählen</option>
-              <option value="ratenkredit">Ratenkredit</option>
-              <option value="autokredit">Autokredit</option>
-              <option value="umschuldung">Umschuldungskredit</option>
-              <option value="sofortkredit">Sofortkredit</option>
-              <option value="selbststaendige">Kredit für Selbstständige</option>
-            </select>
+              Privatkredite
+            </Button>
+            <Button
+              type="button"
+              variant={formData.produktKategorie === 'baufinanzierung' ? 'default' : 'outline'}
+              onClick={() => setFormData(prev => ({ ...prev, produktKategorie: 'baufinanzierung' }))}
+            >
+              Baufinanzierung
+            </Button>
           </div>
+          
+          {formData.produktKategorie === 'privatkredit' ? (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Kreditart *</label>
+                <select
+                  name="kreditart"
+                  value={formData.kreditart}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  <option value="">Bitte wählen</option>
+                  <option value="ratenkredit">Ratenkredit</option>
+                  <option value="autokredit">Autokredit</option>
+                  <option value="umschuldung">Umschuldungskredit</option>
+                  <option value="sofortkredit">Sofortkredit</option>
+                  <option value="selbststaendige">Kredit für Selbstständige</option>
+                </select>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Gewünschte Kreditsumme *</label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      name="kreditsumme"
+                      value={formData.kreditsumme}
+                      onChange={handleInputChange}
+                      placeholder="z.B. 15.000"
+                      min="1000"
+                      max="500000"
+                      step="100"
+                      required
+                      className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
+                      €
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Gewünschte Laufzeit *</label>
+                  <select
+                    name="laufzeit"
+                    value={formData.laufzeit}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  >
+                    <option value="">Bitte wählen</option>
+                    <option value="12">12 Monate</option>
+                    <option value="24">24 Monate</option>
+                    <option value="36">36 Monate</option>
+                    <option value="48">48 Monate</option>
+                    <option value="60">60 Monate</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Gewünschte Rate</label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      name="gewuenschteRate"
+                      value={formData.gewuenschteRate}
+                      onChange={handleInputChange}
+                      placeholder="z.B. 250"
+                      min="50"
+                      max="5000"
+                      step="10"
+                      className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
+                      €
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">Falls Sie eine bestimmte Rate im Kopf haben</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Verwendungszweck</label>
+                  <select
+                    name="verwendungszweck"
+                    value={formData.verwendungszweck}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  >
+                    <option value="">Bitte wählen</option>
+                    <option value="auto">Autokauf</option>
+                    <option value="umschuldung">Umschuldung</option>
+                    <option value="renovierung">Renovierung/Modernisierung</option>
+                  </select>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Art der Baufinanzierung *</label>
+                <select
+                  name="baufinanzierungArt"
+                  value={formData.baufinanzierungArt}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  <option value="">Bitte wählen</option>
+                  <option value="neubau">Neubau</option>
+                  <option value="kauf">Kauf</option>
+                  <option value="modernisierung">Modernisierung</option>
+                  <option value="anschlussfinanzierung">Anschlussfinanzierung</option>
+                  <option value="kapitalbeschaffung">Kapitalbeschaffung</option>
+                </select>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Kaufpreis/Baukosten *</label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      name="kaufpreisBaukosten"
+                      value={formData.kaufpreisBaukosten}
+                      onChange={handleInputChange}
+                      placeholder="z.B. 350.000"
+                      min="10000"
+                      max="5000000"
+                      step="1000"
+                      required
+                      className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
+                      €
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Eigenkapital *</label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      name="eigenkapital"
+                      value={formData.eigenkapital}
+                      onChange={handleInputChange}
+                      placeholder="z.B. 60.000"
+                      min="0"
+                      max="5000000"
+                      step="1000"
+                      required
+                      className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
+                      €
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
 
           <div className="grid md:grid-cols-2 gap-4">
             <div>
@@ -526,25 +760,6 @@ export default function KreditanfrageForm() {
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Verwendungszweck</label>
-            <select
-              name="verwendungszweck"
-              value={formData.verwendungszweck}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-            >
-              <option value="">Bitte wählen</option>
-              <option value="auto">Autokauf</option>
-              <option value="umschuldung">Umschuldung</option>
-              <option value="renovierung">Renovierung/Modernisierung</option>
-              <option value="moebel">Möbel/Einrichtung</option>
-              <option value="urlaub">Urlaub/Reise</option>
-              <option value="hochzeit">Hochzeit</option>
-              <option value="ausbildung">Ausbildung/Weiterbildung</option>
-              <option value="sonstiges">Sonstiges</option>
-            </select>
-          </div>
         </div>
       )}
 
@@ -574,16 +789,6 @@ export default function KreditanfrageForm() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Arbeitgeber</label>
-              <input
-                type="text"
-                name="arbeitgeber"
-                value={formData.arbeitgeber}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Beschäftigt seit</label>
               <input
