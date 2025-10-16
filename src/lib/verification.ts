@@ -8,7 +8,8 @@ type VerificationRecord = {
   verified: boolean
 }
 
-const STORE_PATH = path.join(process.cwd(), '.next', 'verification-store.json')
+// Persistenz: Verwende Projektordner 'data' statt '.next', damit der Store bei Deployments stabiler bleibt
+const STORE_PATH = path.join(process.cwd(), 'data', 'verification-store.json')
 
 function readStore(): Record<string, VerificationRecord> {
   try {
