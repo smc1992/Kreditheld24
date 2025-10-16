@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 
+export const runtime = 'nodejs'
+
 type ContactPayload = {
   salutation?: 'herr' | 'frau' | 'divers'
   firstname: string
@@ -89,10 +91,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Ungültige Anfrage – Pflichtfelder fehlen' }, { status: 400 })
     }
 
+    const smtpPort = parseInt(process.env.SMTP_PORT || '587', 10)
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: parseInt(process.env.SMTP_PORT || '587', 10),
-      secure: false,
+      port: smtpPort,
+      secure: smtpPort === 465,
       auth: {
         user: process.env.SMTP_USER || 'info@kreditheld24.de',
         pass: process.env.SMTP_PASS || process.env.EMAIL_PASSWORD
@@ -110,9 +113,16 @@ export async function POST(req: NextRequest) {
       text: `Kontaktanfrage von ${data.firstname} ${data.lastname}\nE-Mail: ${data.email}\nTelefon: ${data.phone || '-'}\nBetreff: ${data.subject}\n\nNachricht:\n${data.message}`
     }
 
-    await transporter.sendMail(mailOptions)
+    let emailSent = false
+    try {
+      await transporter.sendMail(mailOptions)
+      emailSent = true
+    } catch (mailError) {
+      console.error('Fehler beim Senden der Kontakt-E-Mail (SMTP):', mailError)
+      // Kein 500 mehr: wir geben Erfolg mit Hinweis zurück, sodass das Frontend nicht bricht
+    }
 
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ success: true, emailSent })
   } catch (error) {
     console.error('Fehler beim Senden der Kontakt-E-Mail:', error)
     return NextResponse.json({ error: 'Fehler beim Senden der E-Mail' }, { status: 500 })
