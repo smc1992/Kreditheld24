@@ -39,6 +39,7 @@ const pageNames: Record<string, string> = {
   'modernierungsdarlehen': 'Modernierungsdarlehen',
   'forwarddarlehen': 'Forward-Darlehen',
   'partnerprogramm': 'Partnerprogramm'
+  , 'bestaetigung': 'Bestätigung'
 }
 
 export default function Breadcrumb({ items, className = '' }: BreadcrumbProps) {
