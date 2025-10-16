@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getVerificationData } from '@/lib/verification'
 
+export const runtime = 'nodejs'
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ token: string }> }

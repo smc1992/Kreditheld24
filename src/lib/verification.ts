@@ -1,40 +1,71 @@
-// Temporärer In-Memory Store für Demo-Zwecke
-// In Produktion sollte eine echte Datenbank verwendet werden
-const verificationStore = new Map<string, {
+import fs from 'fs'
+import path from 'path'
+
+type VerificationRecord = {
   email: string
   formData: Record<string, unknown>
-  createdAt: Date
+  createdAt: string // ISO string
   verified: boolean
-}>()
+}
+
+const STORE_PATH = path.join(process.cwd(), '.next', 'verification-store.json')
+
+function readStore(): Record<string, VerificationRecord> {
+  try {
+    const raw = fs.readFileSync(STORE_PATH, 'utf-8')
+    return JSON.parse(raw) as Record<string, VerificationRecord>
+  } catch {
+    return {}
+  }
+}
+
+function writeStore(store: Record<string, VerificationRecord>) {
+  try {
+    fs.mkdirSync(path.dirname(STORE_PATH), { recursive: true })
+    fs.writeFileSync(STORE_PATH, JSON.stringify(store))
+  } catch {
+    // noop
+  }
+}
 
 export function storeVerificationToken(
-  token: string, 
-  email: string, 
+  token: string,
+  email: string,
   formData: Record<string, unknown>
 ) {
-  verificationStore.set(token, {
+  const store = readStore()
+  store[token] = {
     email,
     formData,
-    createdAt: new Date(),
-    verified: false
-  })
+    createdAt: new Date().toISOString(),
+    verified: false,
+  }
+  writeStore(store)
 }
 
 export function getVerificationData(token: string) {
-  return verificationStore.get(token)
+  const store = readStore()
+  const rec = store[token]
+  if (!rec) return undefined
+  return {
+    email: rec.email,
+    formData: rec.formData,
+    createdAt: new Date(rec.createdAt),
+    verified: rec.verified,
+  }
 }
 
 export function isTokenVerified(token: string): boolean {
-  const data = verificationStore.get(token)
-  return data?.verified || false
+  const store = readStore()
+  return !!store[token]?.verified
 }
 
 export function markTokenAsVerified(token: string): boolean {
-  const data = verificationStore.get(token)
-  if (data) {
-    data.verified = true
-    verificationStore.set(token, data)
-    return true
-  }
-  return false
+  const store = readStore()
+  const rec = store[token]
+  if (!rec) return false
+  rec.verified = true
+  store[token] = rec
+  writeStore(store)
+  return true
 }

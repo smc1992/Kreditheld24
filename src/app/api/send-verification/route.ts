@@ -3,6 +3,8 @@ import nodemailer from 'nodemailer'
 import crypto from 'crypto'
 import { storeVerificationToken } from '@/lib/verification'
 
+export const runtime = 'nodejs'
+
 // Email-Transporter konfigurieren
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
@@ -29,7 +31,9 @@ export async function POST(request: NextRequest) {
     const token = crypto.randomBytes(32).toString('hex')
     
     // Verification Link erstellen
-    const verificationUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001'}/api/verify-email/${token}`
+    const origin = request.nextUrl?.origin
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || origin || 'http://localhost:3000'
+    const verificationUrl = `${baseUrl}/api/verify-email/${token}`
     
     // Email-Inhalt
     const mailOptions = {
@@ -66,6 +70,11 @@ export async function POST(request: NextRequest) {
                 E-Mail-Adresse bestätigen
               </a>
             </div>
+
+            <p style="font-size: 14px; color: #666;">
+              Nach dem Klick auf den Bestätigungsbutton werden Sie automatisch zu unserem Dokumenten-Upload weitergeleitet.
+              Dort können Sie die erforderlichen Unterlagen sicher hochladen, um Ihre Anfrage abzuschließen.
+            </p>
             
             <p style="font-size: 14px; color: #666; border-top: 1px solid #e9ecef; padding-top: 20px; margin-top: 30px;">
               <strong>Warum diese Bestätigung?</strong><br>
@@ -87,16 +96,43 @@ export async function POST(request: NextRequest) {
       `
     }
 
-    // E-Mail senden
-    await transporter.sendMail(mailOptions)
-    
+    // E-Mail senden (mit Dev-Fallback)
+    let emailSent = false
+    const hasSmtpCreds = !!(process.env.SMTP_USER && (process.env.SMTP_PASS || process.env.EMAIL_PASSWORD))
+    try {
+      if (hasSmtpCreds) {
+        await transporter.sendMail(mailOptions)
+        emailSent = true
+      } else {
+        if (process.env.NODE_ENV === 'production') {
+          return NextResponse.json(
+            { error: 'SMTP nicht konfiguriert' },
+            { status: 500 }
+          )
+        }
+        console.warn('SMTP nicht konfiguriert – Entwicklungsmodus: E-Mail wird nicht gesendet, Link wird zurückgegeben.')
+      }
+    } catch (mailError) {
+      console.error('Fehler beim Senden der E-Mail:', mailError)
+      if (process.env.NODE_ENV === 'production') {
+        return NextResponse.json(
+          { error: 'Fehler beim Senden der E-Mail' },
+          { status: 500 }
+        )
+      }
+    }
+
     // Token in temporärem Store speichern
     storeVerificationToken(token, email, formData)
     
     return NextResponse.json({ 
       success: true, 
       token,
-      message: 'Bestätigungs-E-Mail wurde gesendet' 
+      verificationUrl,
+      emailSent,
+      message: emailSent 
+        ? 'Bestätigungs-E-Mail wurde gesendet' 
+        : 'Entwicklungsmodus: Direkter Bestätigungslink verfügbar'
     })
     
   } catch (error) {

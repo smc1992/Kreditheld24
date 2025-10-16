@@ -107,6 +107,7 @@ export default function KreditanfrageForm() {
   const [emailVerificationSent, setEmailVerificationSent] = useState(false)
   const [emailVerified, setEmailVerified] = useState(false)
   const [verificationToken, setVerificationToken] = useState('')
+  const [verificationUrl, setVerificationUrl] = useState<string | null>(null)
   const [urlMessage, setUrlMessage] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
   const totalSteps = 6
 
@@ -188,8 +189,15 @@ export default function KreditanfrageForm() {
       })
       
       if (response.ok) {
-        const { token } = await response.json()
-        setVerificationToken(token)
+        const data = await response.json()
+        if (data?.token) {
+          setVerificationToken(data.token)
+        }
+        if (data?.verificationUrl) {
+          setVerificationUrl(data.verificationUrl)
+        } else {
+          setVerificationUrl(null)
+        }
         setEmailVerificationSent(true)
       }
     } catch (error) {
@@ -891,14 +899,27 @@ export default function KreditanfrageForm() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <h4 className="text-lg font-semibold text-green-900 mb-2">E-Mail wurde gesendet!</h4>
-                <p className="text-green-800 mb-4">
-                  Wir haben eine Bestätigungs-E-Mail an <strong>{formData.email}</strong> gesendet.
-                </p>
-                <p className="text-green-700 text-sm mb-6">
-                  Bitte prüfen Sie Ihr E-Mail-Postfach und klicken Sie auf den Bestätigungslink.
-                  Die Seite wird automatisch aktualisiert, sobald Sie Ihre E-Mail bestätigt haben.
-                </p>
+              <h4 className="text-lg font-semibold text-green-900 mb-2">E-Mail wurde gesendet!</h4>
+              <p className="text-green-800 mb-4">
+                Wir haben eine Bestätigungs-E-Mail an <strong>{formData.email}</strong> gesendet.
+              </p>
+              <p className="text-green-700 text-sm mb-6">
+                Bitte prüfen Sie Ihr E-Mail-Postfach und klicken Sie auf den Bestätigungslink.
+                Die Seite wird automatisch aktualisiert, sobald Sie Ihre E-Mail bestätigt haben.
+              </p>
+              {verificationUrl && (
+                <div className="text-sm text-gray-700 mb-4">
+                  <p className="mb-2">Entwicklungsmodus: Sie können direkt bestätigen, ohne auf die E-Mail zu warten.</p>
+                  <a
+                    href={verificationUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-green-600 hover:text-green-700 underline"
+                  >
+                    Link zur E-Mail-Bestätigung öffnen
+                  </a>
+                </div>
+              )}
                 
                 <div className="flex items-center justify-center space-x-2 mb-4">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600"></div>
@@ -918,6 +939,7 @@ export default function KreditanfrageForm() {
                 <button
                   onClick={() => {
                     setEmailVerificationSent(false)
+                    setVerificationUrl(null)
                     sendEmailVerification()
                   }}
                   className="text-green-600 hover:text-green-700 underline"
