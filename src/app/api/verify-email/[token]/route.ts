@@ -15,7 +15,7 @@ export async function GET(
     }
 
     // Token in Store suchen
-    const verificationData = getVerificationData(token)
+    const verificationData = await getVerificationData(token)
     
     if (!verificationData) {
       return NextResponse.redirect(new URL('/kreditanfrage?error=token-not-found', request.url))
@@ -35,7 +35,7 @@ export async function GET(
     }
 
     // E-Mail als verifiziert markieren
-    markTokenAsVerified(token)
+    await markTokenAsVerified(token)
 
     // Erfolgreiche Verifizierung
     return NextResponse.redirect(new URL('/kreditanfrage?success=email-verified', request.url))

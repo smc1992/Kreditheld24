@@ -18,7 +18,7 @@ export async function GET(
     }
 
     // Verifizierungsdaten abrufen
-    const verificationData = getVerificationData(token)
+    const verificationData = await getVerificationData(token)
     
     if (!verificationData) {
       return NextResponse.json(

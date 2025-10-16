@@ -124,8 +124,8 @@ export async function POST(request: NextRequest) {
       // Kein 500 mehr: Fallback greift auch in Produktion – Link wird zurückgegeben
     }
 
-    // Token in temporärem Store speichern
-    storeVerificationToken(token, email, formData)
+    // Token in temporärem Store speichern (Redis oder FS)
+    await storeVerificationToken(token, email, formData)
     
     return NextResponse.json({ 
       success: true, 

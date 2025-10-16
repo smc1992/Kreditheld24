@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import { ensureRedisConnected } from './redis'
 
 type VerificationRecord = {
   email: string
@@ -29,22 +30,54 @@ function writeStore(store: Record<string, VerificationRecord>) {
   }
 }
 
-export function storeVerificationToken(
+export async function storeVerificationToken(
   token: string,
   email: string,
   formData: Record<string, unknown>
 ) {
-  const store = readStore()
-  store[token] = {
+  const record: VerificationRecord = {
     email,
     formData,
     createdAt: new Date().toISOString(),
     verified: false,
   }
+
+  const redis = await ensureRedisConnected()
+  if (redis) {
+    try {
+      // 24h TTL
+      await redis.set(`verification:tokens:${token}`, JSON.stringify(record), 'EX', 24 * 60 * 60)
+      return
+    } catch (e) {
+      console.error('Redis storeVerificationToken error:', e)
+      // Fallback auf FS
+    }
+  }
+
+  const store = readStore()
+  store[token] = record
   writeStore(store)
 }
 
-export function getVerificationData(token: string) {
+export async function getVerificationData(token: string) {
+  const redis = await ensureRedisConnected()
+  if (redis) {
+    try {
+      const key = `verification:tokens:${token}`
+      const raw = await redis.get(key)
+      if (!raw) return undefined
+      const rec = JSON.parse(raw) as VerificationRecord
+      return {
+        email: rec.email,
+        formData: rec.formData,
+        createdAt: new Date(rec.createdAt),
+        verified: rec.verified,
+      }
+    } catch (e) {
+      console.error('Redis getVerificationData error:', e)
+    }
+  }
+
   const store = readStore()
   const rec = store[token]
   if (!rec) return undefined
@@ -56,12 +89,33 @@ export function getVerificationData(token: string) {
   }
 }
 
-export function isTokenVerified(token: string): boolean {
-  const store = readStore()
-  return !!store[token]?.verified
+export async function isTokenVerified(token: string): Promise<boolean> {
+  const data = await getVerificationData(token)
+  return !!data?.verified
 }
 
-export function markTokenAsVerified(token: string): boolean {
+export async function markTokenAsVerified(token: string): Promise<boolean> {
+  const redis = await ensureRedisConnected()
+  if (redis) {
+    try {
+      const key = `verification:tokens:${token}`
+      const raw = await redis.get(key)
+      if (!raw) return false
+      const rec = JSON.parse(raw) as VerificationRecord
+      rec.verified = true
+      const ttl = await redis.ttl(key)
+      if (ttl > 0) {
+        await redis.set(key, JSON.stringify(rec), 'EX', ttl)
+      } else {
+        await redis.set(key, JSON.stringify(rec))
+      }
+      return true
+    } catch (e) {
+      console.error('Redis markTokenAsVerified error:', e)
+      // Fallback auf FS
+    }
+  }
+
   const store = readStore()
   const rec = store[token]
   if (!rec) return false

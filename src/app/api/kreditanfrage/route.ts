@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     const email = form.get('email')?.toString()
 
     // Server-seitige Durchsetzung: E-Mail muss verifiziert sein
-    if (!verificationToken || !isTokenVerified(verificationToken)) {
+    if (!verificationToken || !(await isTokenVerified(verificationToken))) {
       return NextResponse.json({ error: 'E-Mail nicht verifiziert' }, { status: 403 })
     }
 
