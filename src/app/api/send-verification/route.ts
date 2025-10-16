@@ -31,9 +31,16 @@ export async function POST(request: NextRequest) {
     // Verification Token generieren
     const token = crypto.randomBytes(32).toString('hex')
     
-    // Verification Link erstellen
-    const origin = request.nextUrl?.origin
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || origin || 'http://localhost:3000'
+    // Verification Link erstellen – robust gegen Proxies und mit ENV-Override
+    const envBaseUrl = process.env.VERIFICATION_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL || process.env.BASE_URL
+    const xfProto = request.headers.get('x-forwarded-proto') || undefined
+    const xfHost = request.headers.get('x-forwarded-host') || undefined
+    const host = xfHost || request.headers.get('host') || undefined
+    const proto = xfProto || (request.nextUrl?.protocol ? request.nextUrl.protocol.replace(':', '') : undefined) || undefined
+    const originFromHeaders = host && (proto ? `${proto}://${host}` : `https://${host}`)
+    const fallbackProd = 'https://kreditheld24.de'
+    const fallbackDev = 'http://localhost:3000'
+    const baseUrl = envBaseUrl || originFromHeaders || request.nextUrl?.origin || (process.env.NODE_ENV === 'production' ? fallbackProd : fallbackDev)
     const verificationUrl = `${baseUrl}/api/verify-email/${token}`
     
     // Email-Inhalt
