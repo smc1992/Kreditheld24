@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  web:
+    build: .
+    environment:
+      NODE_ENV: production
+      # Redis connection (defaults to internal redis service)
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      # App configuration (mirror existing .env.example keys)
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
+      NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL}
+      VERIFICATION_BASE_URL: ${VERIFICATION_BASE_URL}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      WORDPRESS_URL: ${WORDPRESS_URL}
+      NEXT_PUBLIC_WORDPRESS_URL: ${NEXT_PUBLIC_WORDPRESS_URL}
+      WORDPRESS_HOSTNAME: ${WORDPRESS_HOSTNAME}
+      WORDPRESS_WEBHOOK_SECRET: ${WORDPRESS_WEBHOOK_SECRET}
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis
+    volumes:
+      - app-data:/app/data # Persistenz für FS-Fallback
+
+  redis:
+    image: redis:7
+    command: sh -c "redis-server --requirepass ${REDIS_PASSWORD}"
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    volumes:
+      - redis-data:/data
+    expose:
+      - "6379"
+
+volumes:
+  redis-data:
+  app-data:
