@@ -5,7 +5,7 @@ export const runtime = 'nodejs'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { token: string } }
+  { params }: any
 ) {
   try {
     const { token } = params
