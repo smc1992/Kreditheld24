@@ -6,10 +6,11 @@ import { storeVerificationToken } from '@/lib/verification'
 export const runtime = 'nodejs'
 
 // Email-Transporter konfigurieren
+const smtpPort = parseInt(process.env.SMTP_PORT || '587')
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.SMTP_PORT || '587'),
-  secure: false, // true für 465, false für andere Ports
+  port: smtpPort,
+  secure: smtpPort === 465, // Strato & andere nutzen 465 mit SSL
   auth: {
     user: process.env.SMTP_USER || 'info@kreditheld24.de',
     pass: process.env.SMTP_PASS || process.env.EMAIL_PASSWORD
