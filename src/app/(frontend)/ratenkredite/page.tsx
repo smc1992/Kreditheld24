@@ -1,29 +1,78 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import UnverbindlichAnfragenButton from '@/components/UnverbindlichAnfragenButton'
 
+
 const RatenkreditePage = () => {
-  const [loanAmount, setLoanAmount] = useState(10000)
-  const [loanTerm, setLoanTerm] = useState(60)
-  const [loanPurpose, setLoanPurpose] = useState('freie_verwendung')
+
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const [econLoaded, setEconLoaded] = useState(false)
+  const [econError, setEconError] = useState(false)
+  const econInitRef = useRef(false)
+  const scriptAddedRef = useRef(false)
 
-  // Calculate monthly rate and total cost
-  const calculateLoan = () => {
-    const interestRate = 0.0299 // 2.99% annual interest rate for Ratenkredite
-    const monthlyInterestRate = interestRate / 12
-    const monthlyPayment = loanAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, loanTerm)) / (Math.pow(1 + monthlyInterestRate, loanTerm) - 1)
-    const totalCost = monthlyPayment * loanTerm
-    
-    return {
-      monthlyPayment: monthlyPayment.toFixed(2),
-      totalCost: totalCost.toFixed(2),
-      interestRate: '2,99'
+  useEffect(() => {
+    const ECON_SRC = 'https://europace.nc.econ-application.de/frontend/europace/assets/js/econ.js'
+    const targetId = 'econ-ratenkredit'
+    const container = typeof document !== 'undefined' ? document.getElementById(targetId) : null
+    if (!container) return
+
+    const initialize = () => {
+      if (econInitRef.current) return
+      try {
+        const econ = (window as any).econ
+        if (econ && typeof econ.initEcon === 'function') {
+          econ.initEcon(
+            targetId,
+            'https://europace.nc.econ-application.de/econ/process/LKJ98/kreditlead?epid_uv=XPS71',
+            [],
+            0
+          )
+          econInitRef.current = true
+          setEconLoaded(true)
+        } else {
+          console.warn('Econ library loaded but API missing')
+        }
+      } catch (e) {
+        console.error('Econ init failed on ratenkredite page:', e)
+        setEconError(true)
+      }
     }
-  }
 
-  const loanCalculation = calculateLoan()
+    // If econ already available, initialize once
+    if (typeof window !== 'undefined' && (window as any).econ) {
+      initialize()
+    }
+
+    // Avoid re-adding script in StrictMode
+    let script = document.querySelector(`script[src="${ECON_SRC}"]`) as HTMLScriptElement | null
+    if (!script && !scriptAddedRef.current) {
+      script = document.createElement('script')
+      script.src = ECON_SRC
+      script.async = true
+      script.onload = initialize
+      script.onerror = (e) => {
+        console.error('Failed to load econ script', e)
+        setEconError(true)
+      }
+      document.body.appendChild(script)
+      scriptAddedRef.current = true
+    } else if (script) {
+      // If script exists and is already loaded, initialize
+      // Some browsers set readyState, otherwise rely on econ presence
+      if ((script as any).readyState === 'complete' || (window as any).econ) {
+        initialize()
+      } else {
+        script.addEventListener('load', initialize, { once: true })
+      }
+    }
+
+    return () => {
+      // Keep script; guards ensure no duplicate initialization on re-renders
+    }
+  }, [])
+
 
   const toggleFaq = (index: number) => {
     setOpenFaq(openFaq === index ? null : index)
@@ -74,7 +123,7 @@ const RatenkreditePage = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <Link
-                  href="#calculator"
+                  href="/kreditanfrage"
                   className="bg-primary hover:bg-green-500 text-white font-medium py-3 sm:py-4 px-6 sm:px-8 rounded-button shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base group"
                 >
                   <span>Jetzt Ratenkredit berechnen</span>
@@ -207,172 +256,24 @@ const RatenkreditePage = () => {
         </div>
       </section>
 
-      {/* Calculator Section */}
-      <section id="calculator" className="py-16 bg-gradient-to-br from-gray-50 via-green-50/20 to-gray-50 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 transition-colors duration-300 relative overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-10 right-10 w-24 h-24 border border-primary rounded-full"></div>
-          <div className="absolute bottom-10 left-10 w-32 h-32 border border-blue-500 rounded-full"></div>
-          <div className="absolute top-1/2 left-1/2 w-16 h-16 border border-green-400 rounded-full"></div>
-        </div>
-        
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-green-200 dark:border-green-700 mb-6">
-              <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-              <span className="text-sm font-medium text-green-700 dark:text-green-400">Kostenloser Rechner</span>
-            </div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Ratenkredit-Rechner</h2>
-            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Berechnen Sie Ihre individuelle Monatsrate und finden Sie den passenden Ratenkredit für Ihre Bedürfnisse.
-            </p>
+      {/* Live-Rechner Embed */}
+      <section className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Ratenkredit – Live-Rechner</h2>
+            <p className="text-gray-600 dark:text-gray-300">Starten Sie Ihre unverbindliche Konditionsübersicht.</p>
           </div>
-          <div className="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 md:p-8 max-w-4xl mx-auto transition-colors duration-300">
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <div className="mb-6">
-                  <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Kreditsumme</label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      value={loanAmount}
-                      onChange={(e) => setLoanAmount(Number(e.target.value))}
-                      className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300"
-                      min="1000"
-                      max="100000"
-                    />
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">
-                      €
-                    </div>
-                  </div>
-                  <input
-                    type="range"
-                    min="1000"
-                    max="100000"
-                    step="500"
-                    value={loanAmount}
-                    onChange={(e) => setLoanAmount(Number(e.target.value))}
-                    className="w-full mt-2"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    <span>1.000 €</span>
-                    <span>100.000 €</span>
-                  </div>
-                </div>
-                <div className="mb-6">
-                  <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Laufzeit</label>
-                  <div className="relative">
-                    <div className="flex">
-                      <button
-                        onClick={() => setLoanTerm(Math.max(12, loanTerm - 6))}
-                        className="bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 font-bold py-3 px-4 rounded-l border border-gray-300 dark:border-gray-600 rounded-button whitespace-nowrap transition-colors duration-300"
-                      >
-                        <div className="w-4 h-4 flex items-center justify-center">
-                          <i className="ri-subtract-line"></i>
-                        </div>
-                      </button>
-                      <input
-                        type="number"
-                        value={loanTerm}
-                        onChange={(e) => setLoanTerm(Number(e.target.value))}
-                        className="w-full border-y border-gray-300 dark:border-gray-600 py-3 px-4 text-center bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300"
-                        min="12"
-                        max="120"
-                      />
-                      <button
-                        onClick={() => setLoanTerm(Math.min(120, loanTerm + 6))}
-                        className="bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 font-bold py-3 px-4 rounded-r border border-gray-300 dark:border-gray-600 rounded-button whitespace-nowrap transition-colors duration-300"
-                      >
-                        <div className="w-4 h-4 flex items-center justify-center">
-                          <i className="ri-add-line"></i>
-                        </div>
-                      </button>
-                    </div>
-                    <div className="absolute inset-y-0 right-12 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">
-                      Monate
-                    </div>
-                  </div>
-                  <input
-                    type="range"
-                    min="12"
-                    max="120"
-                    step="6"
-                    value={loanTerm}
-                    onChange={(e) => setLoanTerm(Number(e.target.value))}
-                    className="w-full mt-2"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    <span>12 Monate</span>
-                    <span>120 Monate</span>
-                  </div>
-                </div>
-                <div className="mb-6">
-                  <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Verwendungszweck</label>
-                  <div className="relative">
-                    <select
-                      value={loanPurpose}
-                      onChange={(e) => setLoanPurpose(e.target.value)}
-                      className="w-full appearance-none border border-gray-300 dark:border-gray-600 rounded py-3 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 transition-colors duration-300"
-                    >
-                      <option value="freie_verwendung">Freie Verwendung</option>
-                      <option value="auto">Autokauf</option>
-                      <option value="umschuldung">Umschuldung</option>
-                      <option value="renovierung">Renovierung</option>
-                      <option value="moebel">Möbelkauf</option>
-                      <option value="elektronik">Elektronik</option>
-                      <option value="urlaub">Urlaub</option>
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">
-                      <div className="w-5 h-5 flex items-center justify-center">
-                        <i className="ri-arrow-down-s-line"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-gray-50 dark:bg-gray-600 rounded-lg p-6 transition-colors duration-300">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Ihre Kreditkonditionen</h3>
-                <div className="mb-6">
-                  <div className="flex justify-between mb-2">
-                    <span className="text-gray-600 dark:text-gray-300">Monatliche Rate:</span>
-                    <span className="font-semibold text-lg text-gray-900 dark:text-gray-100">{loanCalculation.monthlyPayment} €</span>
-                  </div>
-                  <div className="flex justify-between mb-2">
-                    <span className="text-gray-600 dark:text-gray-300">Effektiver Jahreszins:</span>
-                    <span className="font-semibold text-gray-900 dark:text-gray-100">{loanCalculation.interestRate} %</span>
-                  </div>
-                  <div className="flex justify-between mb-2">
-                    <span className="text-gray-600 dark:text-gray-300">Gesamtkosten:</span>
-                    <span className="font-semibold text-gray-900 dark:text-gray-100">{loanCalculation.totalCost} €</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-300">Zinsbindung:</span>
-                    <span className="font-semibold text-gray-900 dark:text-gray-100">Gesamte Laufzeit</span>
-                  </div>
-                </div>
-                <div className="mb-6">
-                  <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
-                    <div className="h-2 bg-primary rounded-full" style={{ width: '90%' }}></div>
-                  </div>
-                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    <span>Bonitätsscore: Sehr gut</span>
-                    <span>90/100</span>
-                  </div>
-                </div>
-                <Link
-                  href="/kontakt"
-                  className="block w-full bg-primary hover:bg-green-500 text-white font-medium py-3 px-6 rounded-button whitespace-nowrap shadow-md transition-all text-center"
-                >
-                  Jetzt Kreditangebote vergleichen
-                </Link>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">
-                  100% kostenlos & SCHUFA-neutral
-                </p>
-              </div>
-            </div>
-          </div>
+          <div id="econ-ratenkredit" className="min-h-[600px] w-full" />
+           {econError && (
+             <div className="text-center text-sm text-gray-600 dark:text-gray-300 mt-4">
+               Externer Kreditrechner aktuell nicht erreichbar. Bitte später erneut versuchen oder <a href="/kontakt" className="text-primary underline">Kontakt aufnehmen</a>.
+             </div>
+           )}
+
         </div>
       </section>
+
+
 
       {/* Process Section */}
       <section id="process" className="py-16 bg-gradient-to-br from-white via-blue-50/20 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300 relative overflow-hidden">
@@ -498,7 +399,7 @@ const RatenkreditePage = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="#calculator"
+              href="/kreditanfrage"
               className="bg-white text-primary hover:bg-gray-100 font-medium py-3 px-8 rounded-button shadow-md transition-all inline-flex items-center justify-center"
             >
               <span>Jetzt vergleichen</span>

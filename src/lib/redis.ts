@@ -28,12 +28,12 @@ export async function ensureRedisConnected(): Promise<Redis | null> {
   try {
     // ioredis connects automatically unless lazyConnect=true, then connect() is needed
     // We call connect() but ignore error to allow FS fallback
-    // @ts-expect-error connect exists on ioredis client
-    if (typeof c.connect === 'function') {
+    const rc = c as unknown as { connect?: () => Promise<void>; status?: string }
+    if (typeof rc.connect === 'function') {
       try {
         // status 'ready' means already connected
-        const status = (c as any).status
-        if (status !== 'ready') await c.connect()
+        const status = rc.status
+        if (status !== 'ready') await rc.connect()
       } catch (e) {
         console.error('Redis connect failed:', e)
         return null

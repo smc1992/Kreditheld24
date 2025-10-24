@@ -61,7 +61,6 @@ const megaMenuData = {
       {
         title: 'Informationen',
         items: [
-          { name: 'Kreditrechner', href: '/kreditrechner', icon: 'ri-calculator-line', description: 'Interaktiver Kreditrechner' },
           { name: 'Aktuelle Zinssätze', href: '/zinssaetze', icon: 'ri-line-chart-line', description: 'Tagesaktuelle Konditionen' },
           { name: 'Kreditglossar', href: '/glossar', icon: 'ri-book-open-line', description: 'Fachbegriffe einfach erklärt' },
           { name: 'FAQ', href: '/faq', icon: 'ri-question-answer-line', description: 'Häufig gestellte Fragen' },
@@ -76,12 +75,26 @@ const megaMenuData = {
         ]
       }
     ]
+  },
+  kontakt: {
+    title: 'Kontakt',
+    description: 'Nehmen Sie Kontakt mit uns auf',
+    icon: 'ri-customer-service-line',
+    href: '/kontakt',
+    sections: [
+      {
+        title: 'Kontakt & Unternehmen',
+        items: [
+          { name: 'Kontakt', href: '/kontakt', icon: 'ri-customer-service-line', description: 'Sprechen Sie mit unseren Experten' },
+          { name: 'Über uns', href: '/ueber-uns', icon: 'ri-user-heart-line', description: 'Erfahren Sie mehr über Kreditheld24' },
+        ]
+      }
+    ]
   }
 }
 
 const quickLinks = [
-  { name: 'Über uns', href: '/ueber-uns', icon: 'ri-user-heart-line' },
-  { name: 'Kontakt', href: '/kontakt', icon: 'ri-customer-service-line' },
+  { name: 'Kreditvergleich', href: '/kreditrechner', icon: 'ri-calculator-line' },
 ]
 
 export function Header() {
@@ -135,6 +148,18 @@ export function Header() {
           
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-2 mega-menu-container">
+            {/* Quick Links - First Position */}
+            {quickLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:text-primary font-medium rounded-xl hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10 dark:hover:bg-gray-800 transition-all duration-300 transform hover:scale-105"
+              >
+                <i className={`${link.icon} mr-2 text-lg`}></i>
+                {link.name}
+              </Link>
+            ))}
+            
             {/* Mega Menu Items */}
             {Object.entries(megaMenuData).map(([key, menuData]) => (
               <div key={key} className="relative group">
@@ -249,18 +274,6 @@ export function Header() {
                   </div>
                 )}
               </div>
-            ))}
-            
-            {/* Quick Links */}
-            {quickLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:text-primary font-medium rounded-xl hover:bg-gradient-to-r hover:from-primary/5 hover:to-primary/10 dark:hover:bg-gray-800 transition-all duration-300 transform hover:scale-105"
-              >
-                <i className={`${link.icon} mr-2 text-lg`}></i>
-                {link.name}
-              </Link>
             ))}
           </nav>
           

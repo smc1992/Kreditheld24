@@ -109,6 +109,7 @@ export default function KreditanfrageForm() {
   const [verificationToken, setVerificationToken] = useState('')
   const [verificationUrl, setVerificationUrl] = useState<string | null>(null)
   const [urlMessage, setUrlMessage] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
+  const [europaceCaseUrl, setEuropaceCaseUrl] = useState<string | null>(null)
   const totalSteps = 6
 
   const calculateAge = (birthDate: string): number => {
@@ -257,6 +258,41 @@ export default function KreditanfrageForm() {
         throw new Error(errText || 'Fehler beim Senden der Anfrage')
       }
 
+      // Nach erfolgreicher lokalen Anfrage: Europace-Vorgang anlegen (ohne Dateien)
+      setEuropaceCaseUrl(null)
+      try {
+        const leadRequest = {
+          anrede: formData.anrede,
+          vorname: formData.vorname,
+          nachname: formData.nachname,
+          email: formData.email,
+          telefon: formData.telefon,
+          strasse: formData.strasse,
+          hausnummer: formData.hausnummer,
+          plz: formData.plz,
+          ort: formData.ort,
+          kreditsumme: formData.kreditsumme,
+          laufzeit: formData.laufzeit,
+          verwendungszweck: formData.verwendungszweck,
+          beschaeftigungsverhaeltnis: formData.beschaeftigungsverhaeltnis,
+          nettoEinkommen: formData.nettoEinkommen,
+        }
+        const leadRes = await fetch('/api/europace/lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(leadRequest),
+        })
+        if (leadRes.ok) {
+          const leadData = await leadRes.json()
+          if (leadData?.openUrl && leadData?.source === 'europace') {
+            setEuropaceCaseUrl(leadData.openUrl)
+          }
+        }
+      } catch (leadErr) {
+        // Externe Verbindung kann fehlschlagen; wir behandeln dies nicht als Fehler für den Nutzer
+        console.warn('Europace Lead konnte nicht angelegt werden:', leadErr)
+      }
+
       setSubmitStatus('success')
       setFormData(initialFormData)
       setCurrentStep(1)
@@ -320,6 +356,11 @@ export default function KreditanfrageForm() {
         <p className="text-gray-600 mb-6">
           Wir haben Ihre Kreditanfrage erhalten und werden uns innerhalb von 24 Stunden bei Ihnen melden.
         </p>
+        {europaceCaseUrl && (
+          <p className="text-gray-700 mb-4">
+            Vorgang in Europace erstellt. <a href={europaceCaseUrl} target="_blank" rel="noopener noreferrer" className="text-green-700 underline">Vorgang öffnen</a>
+          </p>
+        )}
         <Button onClick={() => setSubmitStatus('idle')} className="bg-green-600 hover:bg-green-700">
           Neue Anfrage stellen
         </Button>

@@ -49,12 +49,19 @@ export default function KreditrechnerPage() {
           if (econContainer) {
             const existingIframes = econContainer.querySelectorAll('iframe');
             existingIframes.forEach(iframe => iframe.remove());
+            try {
+              (window as any).econ.initEcon('econ', 'https://europace.nc.econ-application.de/econ/process/LKJ98/kreditlead?epid_uv=XPS71', [], 0);
+              setWidgetLoaded(true);
+              setIsInitialized(true);
+              console.log('Econ widget initialized successfully');
+            } catch (e) {
+              console.error('Econ init failed on kreditrechner:', e);
+              setWidgetError(true);
+            }
+          } else {
+            console.warn("Econ container 'econ' not found. Skipping init.");
+            setWidgetError(true);
           }
-          
-          (window as any).econ.initEcon('econ', 'https://europace.nc.econ-application.de/econ/process/LKJ98/kreditlead?epid_uv=XPS71', [], 0);
-          setWidgetLoaded(true);
-          setIsInitialized(true);
-          console.log('Econ widget initialized successfully');
         } catch (error) {
           console.error('Econ widget initialization failed:', error);
           setWidgetError(true);

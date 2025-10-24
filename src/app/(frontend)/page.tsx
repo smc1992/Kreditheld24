@@ -1,13 +1,41 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import UnverbindlichAnfragenButton from '@/components/UnverbindlichAnfragenButton'
+import Script from 'next/script'
 
 const HomePage = () => {
   const [loanAmount, setLoanAmount] = useState(10000)
   const [loanTerm, setLoanTerm] = useState(60)
   const [loanPurpose, setLoanPurpose] = useState('freie_verwendung')
   const [showInfoModal, setShowInfoModal] = useState(false)
+  const [apiCalc, setApiCalc] = useState<{ monthlyPayment: string, totalCost?: string, source?: 'europace' | 'local' } | null>(null)
+  const [calcLoading, setCalcLoading] = useState(false)
+
+  useEffect(() => {
+    const controller = new AbortController()
+    async function run() {
+      try {
+        setCalcLoading(true)
+        const res = await fetch('/api/europace/calculate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount: loanAmount, term: loanTerm, purpose: loanPurpose }),
+          signal: controller.signal,
+          cache: 'no-store',
+        })
+        if (!res.ok) throw new Error(`Fehler: ${res.status}`)
+        const data = await res.json()
+        setApiCalc({ monthlyPayment: data?.monthlyPayment, totalCost: data?.totalCost, source: data?.source })
+      } catch (e) {
+        setApiCalc(null)
+      } finally {
+        setCalcLoading(false)
+      }
+    }
+    run()
+    return () => controller.abort()
+  }, [loanAmount, loanTerm, loanPurpose])
 
   // Calculate monthly rate and total cost
   const calculateLoan = () => {
@@ -185,7 +213,7 @@ const HomePage = () => {
               </div>
               <div className="mt-8">
                 <Link
-                  href="#calculator"
+                  href="/kreditanfrage"
                   className="block w-full bg-primary hover:bg-green-500 text-white font-medium py-3 px-6 rounded-button whitespace-nowrap shadow-md transition-all text-center"
                   onClick={() => setShowInfoModal(false)}
                 >
@@ -643,7 +671,7 @@ const HomePage = () => {
                 <div className="mb-6">
                   <div className="flex justify-between mb-2">
                     <span className="text-gray-600 dark:text-gray-300">Monatliche Rate:</span>
-                    <span className="font-semibold text-lg">{loanCalculation.monthlyPayment} €</span>
+                    <span className="font-semibold text-lg">{(apiCalc?.monthlyPayment ?? loanCalculation.monthlyPayment)} €</span>
                   </div>
                   <div className="flex justify-between mb-2">
                     <span className="text-gray-600 dark:text-gray-300">Effektiver Jahreszins:</span>
@@ -651,7 +679,7 @@ const HomePage = () => {
                   </div>
                   <div className="flex justify-between mb-2">
                     <span className="text-gray-600 dark:text-gray-300">Gesamtkosten:</span>
-                    <span className="font-semibold">{loanCalculation.totalCost} €</span>
+                    <span className="font-semibold">{(apiCalc?.totalCost ?? loanCalculation.totalCost)} €</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600 dark:text-gray-300">Zinsbindung:</span>
@@ -668,17 +696,58 @@ const HomePage = () => {
                   </div>
                 </div>
                 <Link
-                  href="/kontakt"
+                  href="/kreditanfrage"
                   className="block w-full bg-primary hover:bg-green-500 text-white font-medium py-3 px-6 rounded-button whitespace-nowrap shadow-md transition-all text-center"
                 >
                   Jetzt Kreditangebote vergleichen
                 </Link>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
+                   {calcLoading ? 'Verbindung zur Europace API wird aufgebaut…' : apiCalc?.source === 'europace' ? 'Verbunden mit Europace API' : 'Lokale Beispielrechnung – API nicht aktiv'}
+                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">
                   100% kostenlos & SCHUFA-neutral
                 </p>
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Europace KreditLead Embed */}
+      <section className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Kreditvergleich</h2>
+            <p className="text-gray-600 dark:text-gray-300">Starten Sie Ihre unverbindliche Konditionsübersicht.</p>
+          </div>
+          <div id="econ-home" className="min-h-[600px] w-full" />
+          <Script
+            src="https://europace.nc.econ-application.de/frontend/europace/assets/js/econ.js"
+            strategy="afterInteractive"
+            onLoad={() => {
+              const econ = (window as any).econ;
+              const targetId = 'econ-home';
+              const container = typeof document !== 'undefined' ? document.getElementById(targetId) : null;
+              if (!econ || typeof econ.initEcon !== 'function') {
+                console.warn('Econ library not available yet.');
+                return;
+              }
+              if (!container) {
+                console.warn(`Econ container '${targetId}' not found. Skipping init.`);
+                return;
+              }
+              try {
+                econ.initEcon(
+                  targetId,
+                  'https://europace.nc.econ-application.de/econ/process/LKJ98/kredittipp?epid_uv=XPS71',
+                  [],
+                  0
+                );
+              } catch (e) {
+                console.error('Econ init failed on homepage:', e);
+              }
+            }}
+          />
         </div>
       </section>
 
