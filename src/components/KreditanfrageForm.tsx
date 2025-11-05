@@ -1,9 +1,9 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import DragDropFileUpload from '@/components/DragDropFileUpload'
-import ProgressIndicator, { kreditanfrageSteps } from '@/components/ProgressIndicator'
+import { Button } from './ui/button'
+import DragDropFileUpload from './DragDropFileUpload'
+import ProgressIndicator, { kreditanfrageSteps } from './ProgressIndicator'
 
 interface FormData {
   // Persönliche Daten
