@@ -144,8 +144,22 @@ export default function KreditanfrageForm() {
     }
   }
 
+  const handleFileRemove = (name: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [name]: null
+    }) as FormData)
+  }
+
   const kreditsummeNumber = parseFloat(formData.kreditsumme) || 0
   const requiresKontoauszug = kreditsummeNumber >= 20000
+  const requiredSelectedCount = [
+    'gehaltsabrechnung1',
+    'gehaltsabrechnung2',
+    'personalausweisVorderseite',
+    'personalausweisRueckseite'
+  ].filter((key) => (formData as any)[key]).length
+  const requiredTotal = 4 + (requiresKontoauszug ? 1 : 0)
 
   // Handle URL parameters for email verification
   useEffect(() => {
@@ -961,7 +975,12 @@ export default function KreditanfrageForm() {
 
           {/* Pflichtdokumente */}
           <div className="space-y-6">
-            <h4 className="text-lg font-medium text-gray-800 border-b border-gray-200 pb-2">Pflichtdokumente *</h4>
+            <div className="flex items-center justify-between border-b border-gray-200 pb-2">
+              <h4 className="text-lg font-medium text-gray-800">Pflichtdokumente *</h4>
+              <span className="text-xs px-2 py-1 rounded bg-green-100 text-green-700">
+                {requiredSelectedCount}/{requiredTotal} ausgewählt
+              </span>
+            </div>
             
             <div className="grid md:grid-cols-2 gap-6">
               <DragDropFileUpload
@@ -970,6 +989,7 @@ export default function KreditanfrageForm() {
                 required
                 currentFile={formData.gehaltsabrechnung1}
                 onChange={handleFileChange}
+                onRemove={handleFileRemove}
               />
               
               <DragDropFileUpload
@@ -978,6 +998,7 @@ export default function KreditanfrageForm() {
                 required
                 currentFile={formData.gehaltsabrechnung2}
                 onChange={handleFileChange}
+                onRemove={handleFileRemove}
               />
             </div>
 
@@ -988,6 +1009,7 @@ export default function KreditanfrageForm() {
                 required
                 currentFile={formData.personalausweisVorderseite}
                 onChange={handleFileChange}
+                onRemove={handleFileRemove}
               />
               
               <DragDropFileUpload
@@ -996,6 +1018,7 @@ export default function KreditanfrageForm() {
                 required
                 currentFile={formData.personalausweisRueckseite}
                 onChange={handleFileChange}
+                onRemove={handleFileRemove}
               />
             </div>
           </div>
@@ -1013,6 +1036,7 @@ export default function KreditanfrageForm() {
                 required
                 currentFile={formData.kontoauszug}
                 onChange={handleFileChange}
+                onRemove={handleFileRemove}
                 helpText="Erforderlich bei Kreditsummen ab 20.000 € zur Einkommensprüfung"
               />
             </div>
@@ -1027,6 +1051,7 @@ export default function KreditanfrageForm() {
               label="Bestehende Kredite (falls vorhanden)"
               currentFile={formData.bestehendeKredite}
               onChange={handleFileChange}
+              onRemove={handleFileRemove}
               helpText="Kreditverträge oder Übersichten bestehender Verbindlichkeiten"
             />
           </div>

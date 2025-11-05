@@ -8,6 +8,7 @@ interface DragDropFileUploadProps {
   accept?: string
   currentFile?: File | null
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onRemove?: (name: string) => void
   helpText?: string
 }
 
@@ -18,10 +19,26 @@ export default function DragDropFileUpload({
   accept = '.pdf,.jpg,.jpeg,.png',
   currentFile,
   onChange,
+  onRemove,
   helpText
 }: DragDropFileUploadProps) {
   const [isDragOver, setIsDragOver] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+
+  // Erzeuge Vorschaulink für Bilder und räume auf
+  React.useEffect(() => {
+    if (currentFile && currentFile.type.startsWith('image/')) {
+      const url = URL.createObjectURL(currentFile)
+      setPreviewUrl(url)
+      return () => {
+        URL.revokeObjectURL(url)
+        setPreviewUrl(null)
+      }
+    } else {
+      setPreviewUrl(null)
+    }
+  }, [currentFile])
 
   const handleDragEnter = (e: React.DragEvent) => {
     e.preventDefault()
@@ -67,6 +84,11 @@ export default function DragDropFileUpload({
     onChange(e)
   }
 
+  const handleRemove = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (onRemove) onRemove(name)
+  }
+
   return (
     <div className="space-y-2">
       <label className="block text-sm font-medium text-gray-700">
@@ -108,14 +130,26 @@ export default function DragDropFileUpload({
                 </svg>
               </div>
               <p className="text-sm font-medium text-green-700">
-                ✓ {currentFile.name}
+                ✓ Datei ausgewählt: {currentFile.name}
               </p>
               <p className="text-xs text-gray-500">
                 {(currentFile.size / 1024 / 1024).toFixed(2)} MB
               </p>
-              <p className="text-xs text-green-600">
-                Klicken oder neue Datei hierher ziehen zum Ersetzen
-              </p>
+              {previewUrl && (
+                <div className="flex justify-center">
+                  <img src={previewUrl} alt="Vorschau" className="mt-1 max-h-24 rounded border border-gray-200" />
+                </div>
+              )}
+              <div className="flex items-center justify-center gap-3">
+                <button
+                  type="button"
+                  onClick={handleRemove}
+                  className="text-red-600 hover:text-red-700 text-xs underline"
+                >
+                  Entfernen
+                </button>
+                <span className="text-xs text-green-600">Klicken oder neue Datei hierher ziehen zum Ersetzen</span>
+              </div>
             </div>
           ) : (
             <div className="space-y-2">
