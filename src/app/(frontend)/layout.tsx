@@ -5,12 +5,12 @@ import { GeistSans } from 'geist/font/sans'
 import React from 'react'
 import { clsx } from 'clsx'
 
-import { Providers } from '@/providers'
-import { ThemeProvider } from '@/providers/ThemeProvider'
-import { Header } from '@/components/Header'
-import { Footer } from '@/components/Footer'
-import Breadcrumb from '@/components/Breadcrumb'
-import CookieBanner from '@/components/CookieBanner'
+import { Providers } from '../../providers'
+import { ThemeProvider } from '../../providers/ThemeProvider'
+import { Header } from '../../components/Header'
+import { Footer } from '../../components/Footer'
+import Breadcrumb from '../../components/Breadcrumb'
+import CookieBanner from '../../components/CookieBanner'
 
 import './globals.css'
 

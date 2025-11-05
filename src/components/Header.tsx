@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import { ThemeToggle } from '@/providers/ThemeProvider'
+import { ThemeToggle } from '../providers/ThemeProvider'
 
 const megaMenuData = {
   kreditarten: {

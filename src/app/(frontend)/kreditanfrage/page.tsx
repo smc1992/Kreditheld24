@@ -1,6 +1,6 @@
 import React from 'react'
 import { Metadata } from 'next'
-import KreditanfrageFormWrapper from '@/components/KreditanfrageFormWrapper'
+import KreditanfrageFormWrapper from '../../../components/KreditanfrageFormWrapper'
 
 export const metadata: Metadata = {
   title: 'Unverbindliche Kreditanfrage - Kreditheld24',
