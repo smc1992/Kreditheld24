@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import UnverbindlichAnfragenButton from '@/components/UnverbindlichAnfragenButton'
+import UnverbindlichAnfragenButton from '../../../components/UnverbindlichAnfragenButton'
 
 const AnschlussfinanzierungPage = () => {
   const [restschuld, setRestschuld] = useState(250000)

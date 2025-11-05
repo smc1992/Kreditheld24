@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Script from 'next/script'
-import UnverbindlichAnfragenButton from '@/components/UnverbindlichAnfragenButton'
+import UnverbindlichAnfragenButton from '../../../components/UnverbindlichAnfragenButton'
 
 const KreditSelbststaendigePage = () => {
   const [loanAmount, setLoanAmount] = useState(25000)

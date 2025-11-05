@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import UnverbindlichAnfragenButton from '@/components/UnverbindlichAnfragenButton'
+import UnverbindlichAnfragenButton from '../../../components/UnverbindlichAnfragenButton'
 
 const SchufaNeutralPage = () => {
   const [loanAmount, setLoanAmount] = useState(10000)

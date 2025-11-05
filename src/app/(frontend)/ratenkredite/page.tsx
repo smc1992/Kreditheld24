@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import UnverbindlichAnfragenButton from '@/components/UnverbindlichAnfragenButton'
+import UnverbindlichAnfragenButton from '../../../components/UnverbindlichAnfragenButton'
 
 
 const RatenkreditePage = () => {

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import UnverbindlichAnfragenButton from '@/components/UnverbindlichAnfragenButton'
+import UnverbindlichAnfragenButton from '../../../components/UnverbindlichAnfragenButton'
 
 const SofortkreditPage = () => {
   const [loanAmount, setLoanAmount] = useState(15000)

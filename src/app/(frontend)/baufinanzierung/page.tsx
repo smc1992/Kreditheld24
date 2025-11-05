@@ -2,19 +2,15 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import UnverbindlichAnfragenButton from '@/components/UnverbindlichAnfragenButton'
+import UnverbindlichAnfragenButton from '../../../components/UnverbindlichAnfragenButton'
 
-// JSX-Typdeklaration für Custom Element "baufi-passt-flex"
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'baufi-passt-flex': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
-        'frontend-key-id'?: string
-        datenkontext?: string
-      }
-    }
+// Wrapper-Komponente für das Custom Element, um TypeScript-Fehler zu vermeiden
+const BaufiPasstFlex = (
+  props: React.HTMLAttributes<HTMLElement> & {
+    'frontend-key-id'?: string
+    datenkontext?: string
   }
-}
+) => React.createElement('baufi-passt-flex', props)
 
 const BaufinanzierungPage = () => {
   const [immobilienpreis, setImmobilienpreis] = useState(350000)
@@ -252,7 +248,7 @@ const BaufinanzierungPage = () => {
             {/* Europace: Baufi-Passt Flex Embed */}
             <div className="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 md:p-8 transition-colors duration-300 mb-8">
               <div id="baufi-passt-flex-container" className="max-w-4xl mx-auto">
-                <baufi-passt-flex frontend-key-id="6eafd6d4143b294997fa9935eb2f58450d2fb51967290107b74791b4589507af" datenkontext="ECHT_GESCHAEFT"></baufi-passt-flex>
+                <BaufiPasstFlex frontend-key-id="6eafd6d4143b294997fa9935eb2f58450d2fb51967290107b74791b4589507af" datenkontext="ECHT_GESCHAEFT" />
               </div>
             </div>
             <div className="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 md:p-8 transition-colors duration-300">
