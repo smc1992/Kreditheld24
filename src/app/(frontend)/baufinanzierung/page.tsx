@@ -1,14 +1,49 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import UnverbindlichAnfragenButton from '@/components/UnverbindlichAnfragenButton'
+
+// JSX-Typdeklaration für Custom Element "baufi-passt-flex"
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'baufi-passt-flex': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+        'frontend-key-id'?: string
+        datenkontext?: string
+      }
+    }
+  }
+}
 
 const BaufinanzierungPage = () => {
   const [immobilienpreis, setImmobilienpreis] = useState(350000)
   const [eigenkapital, setEigenkapital] = useState(70000)
   const [laufzeit, setLaufzeit] = useState(25)
   const [zinsbindung, setZinsbindung] = useState(10)
+
+  // Europace: baufi-passt-flex Skript einmalig laden (StrictMode-safe)
+  const europaceScriptAddedRef = useRef(false)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (europaceScriptAddedRef.current) return
+
+    const scriptSrc = 'https://baufi-passt.passt.aws.europace.de/baufi-passt-flex/baufi-passt-flex.js'
+    const existing = Array.from(document.getElementsByTagName('script')).find(
+      (s) => s.src === scriptSrc
+    )
+
+    if (!existing) {
+      const script = document.createElement('script')
+      script.src = scriptSrc
+      script.async = true
+      script.defer = true
+      script.crossOrigin = 'anonymous'
+      document.head.appendChild(script)
+    }
+
+    europaceScriptAddedRef.current = true
+  }, [])
 
   // Berechnung der Baufinanzierung
   const calculateBaufinanzierung = () => {
@@ -214,6 +249,12 @@ const BaufinanzierungPage = () => {
                 Berechnen Sie Ihre individuelle Baufinanzierung und erhalten Sie einen ersten Überblick über Ihre monatliche Rate.
               </p>
             </div>
+            {/* Europace: Baufi-Passt Flex Embed */}
+            <div className="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 md:p-8 transition-colors duration-300 mb-8">
+              <div id="baufi-passt-flex-container" className="max-w-4xl mx-auto">
+                <baufi-passt-flex frontend-key-id="6eafd6d4143b294997fa9935eb2f58450d2fb51967290107b74791b4589507af" datenkontext="ECHT_GESCHAEFT"></baufi-passt-flex>
+              </div>
+            </div>
             <div className="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 md:p-8 transition-colors duration-300">
               <div className="grid md:grid-cols-2 gap-8">
                 <div>
@@ -268,7 +309,7 @@ const BaufinanzierungPage = () => {
                     />
                     <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
                       <span>0 €</span>
-                      <span>{immobilienpreis.toLocaleString()} €</span>
+                      <span>{immobilienpreis.toLocaleString('de-DE')} €</span>
                     </div>
                   </div>
                 </div>
@@ -278,11 +319,11 @@ const BaufinanzierungPage = () => {
                     <div className="space-y-3">
                       <div className="flex justify-between">
                         <span className="text-gray-600 dark:text-gray-300">Darlehenssumme:</span>
-                        <span className="font-semibold text-gray-900 dark:text-gray-100">{Number(berechnung.darlehenssumme).toLocaleString()} €</span>
+                        <span className="font-semibold text-gray-900 dark:text-gray-100">{Number(berechnung.darlehenssumme).toLocaleString('de-DE')} €</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600 dark:text-gray-300">Monatliche Rate:</span>
-                        <span className="font-semibold text-primary text-lg">{Number(berechnung.monatlicheRate).toLocaleString()} €</span>
+                        <span className="font-semibold text-primary text-lg">{Number(berechnung.monatlicheRate).toLocaleString('de-DE')} €</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600 dark:text-gray-300">Zinssatz (Beispiel):</span>
