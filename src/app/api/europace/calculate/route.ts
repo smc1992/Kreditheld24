@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { calculateWithEuropace } from '@/../lib/europace'
+import { calculateWithEuropace } from '../../../../../lib/europace'
 
 export async function POST(req: Request) {
   try {

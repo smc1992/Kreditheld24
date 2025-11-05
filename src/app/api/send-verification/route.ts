@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 import crypto from 'crypto'
-import { storeVerificationToken } from '@/lib/verification'
+import { storeVerificationToken } from '../../../lib/verification'
 
 export const runtime = 'nodejs'
 

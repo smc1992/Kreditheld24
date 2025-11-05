@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createKundenangabenCase } from '@/../lib/europace'
+import { createKundenangabenCase } from '../../../../../lib/europace'
 
 export const runtime = 'nodejs'
 

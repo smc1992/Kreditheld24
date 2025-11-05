@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
-import { isTokenVerified } from '@/lib/verification'
+import { isTokenVerified } from '../../../lib/verification'
 
 export const runtime = 'nodejs'
 

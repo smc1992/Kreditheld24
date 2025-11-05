@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getVerificationData, markTokenAsVerified } from '@/lib/verification'
+import { getVerificationData, markTokenAsVerified } from '../../../../lib/verification'
 
 export const runtime = 'nodejs'
 
