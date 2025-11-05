@@ -1,14 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
+import fs from 'fs'
+import path from 'path'
 import { isTokenVerified } from '../../../lib/verification'
 
 export const runtime = 'nodejs'
 
 // SMTP-Transporter konfigurieren
+const smtpPort = parseInt(process.env.SMTP_PORT || '587', 10)
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.SMTP_PORT || '587', 10),
-  secure: false, // true für 465, false für andere Ports
+  port: smtpPort,
+  secure: smtpPort === 465, // SSL nur bei 465
   auth: {
     user: process.env.SMTP_USER || 'info@kreditheld24.de',
     pass: process.env.SMTP_PASS || process.env.EMAIL_PASSWORD
@@ -80,6 +83,27 @@ export async function POST(request: NextRequest) {
           })
         }
       }
+    }
+
+    // Uploads temporär serverseitig speichern (z.B. zur Nachverfolgung)
+    try {
+      const baseDir = path.join(process.cwd(), 'uploads', 'kreditanfragen')
+      const requestDir = path.join(baseDir, `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`)
+      fs.mkdirSync(requestDir, { recursive: true })
+      for (const att of attachments) {
+        const filePath = path.join(requestDir, att.filename)
+        // fs.writeFileSync erwartet string oder ArrayBufferView; Buffer ist iterierbar,
+        // daher konvertieren wir ihn explizit zu Uint8Array für typsichere Übergabe.
+        const bytes = Uint8Array.from(att.content)
+        fs.writeFileSync(filePath, bytes)
+      }
+      console.info('[Kreditanfrage] Anhänge gespeichert:', {
+        dir: requestDir,
+        count: attachments.length,
+        files: attachments.map(a => a.filename)
+      })
+    } catch (storeErr) {
+      console.warn('Temporäres Speichern der Uploads fehlgeschlagen:', storeErr)
     }
 
     // HTML-E-Mail-Inhalt
@@ -174,6 +198,47 @@ export async function POST(request: NextRequest) {
     }
 
     await transporter.sendMail(mailOptions)
+
+    // Kundenkopie senden – gleiche CI, angepasster Betreff und Intro
+    const customerHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Ihre Kreditanfrage ist eingegangen</title>
+      </head>
+      <body style="font-family: Arial, sans-serif; color:#111; line-height:1.5;">
+        <div style="background:#0ea5e9; padding:20px; color:#fff;">
+          <h2 style="margin:0;">Kreditheld24 – Eingangsbestätigung Ihrer Anfrage</h2>
+        </div>
+        <div style="padding:20px; border:1px solid #e5e7eb; border-top:none;">
+          <p>Hallo ${data.vorname} ${data.nachname},</p>
+          <p>vielen Dank für Ihre Kreditanfrage. Wir haben Ihre Angaben erhalten und melden uns zeitnah bei Ihnen. Unten finden Sie die Zusammenfassung Ihrer Daten.</p>
+          <hr style="border:none; border-top:1px solid #e5e7eb; margin:20px 0;" />
+          ${html}
+          <hr style="border:none; border-top:1px solid #e5e7eb; margin:20px 0;" />
+          <p style="font-size:12px; color:#6b7280;">Diese E-Mail wurde automatisch generiert. Antworten Sie gern direkt auf diese Nachricht, falls Sie noch Unterlagen oder Hinweise ergänzen möchten.</p>
+        </div>
+      </body>
+      </html>
+    `
+
+    try {
+      await transporter.sendMail({
+        from: {
+          name: 'Kreditheld24',
+          address: process.env.SMTP_USER || 'info@kreditheld24.de'
+        },
+        to: email,
+        replyTo: 'info@kreditheld24.de',
+        subject: 'Ihre Kreditanfrage ist eingegangen – Kreditheld24',
+        html: customerHtml,
+        attachments
+      })
+    } catch (custErr) {
+      console.warn('Kundenkopie konnte nicht gesendet werden:', custErr)
+    }
 
     return NextResponse.json({ success: true, message: 'Kreditanfrage gesendet' })
   } catch (error) {
