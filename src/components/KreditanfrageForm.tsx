@@ -604,80 +604,22 @@ export default function KreditanfrageForm() {
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Gewünschte Kreditsumme *</label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      name="kreditsumme"
-                      value={formData.kreditsumme}
-                      onChange={handleInputChange}
-                      placeholder="z.B. 15.000"
-                      min="1000"
-                      max="500000"
-                      step="100"
-                      required
-                      className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
-                      €
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Gewünschte Laufzeit *</label>
-                  <select
-                    name="laufzeit"
-                    value={formData.laufzeit}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    <option value="">Bitte wählen</option>
-                    <option value="12">12 Monate</option>
-                    <option value="24">24 Monate</option>
-                    <option value="36">36 Monate</option>
-                    <option value="48">48 Monate</option>
-                    <option value="60">60 Monate</option>
-                  </select>
-                </div>
+                {/* Duplikate entfernt: Kreditsumme/Laufzeit werden im allgemeinen Bereich unten abgefragt */}
               </div>
 
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Gewünschte Rate</label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      name="gewuenschteRate"
-                      value={formData.gewuenschteRate}
-                      onChange={handleInputChange}
-                      placeholder="z.B. 250"
-                      min="50"
-                      max="5000"
-                      step="10"
-                      className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
-                      €
-                    </div>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-1">Falls Sie eine bestimmte Rate im Kopf haben</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Verwendungszweck</label>
-                  <select
-                    name="verwendungszweck"
-                    value={formData.verwendungszweck}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    <option value="">Bitte wählen</option>
-                    <option value="auto">Autokauf</option>
-                    <option value="umschuldung">Umschuldung</option>
-                    <option value="renovierung">Renovierung/Modernisierung</option>
-                  </select>
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Verwendungszweck</label>
+                <select
+                  name="verwendungszweck"
+                  value={formData.verwendungszweck}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  <option value="">Bitte wählen</option>
+                  <option value="auto">Autokauf</option>
+                  <option value="umschuldung">Umschuldung</option>
+                  <option value="renovierung">Renovierung/Modernisierung</option>
+                </select>
               </div>
             </>
           ) : (
