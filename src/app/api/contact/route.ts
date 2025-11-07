@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
+import { createKundenangabenCase } from '../../../../lib/europace'
 
 export const runtime = 'nodejs'
 
@@ -122,7 +123,55 @@ export async function POST(req: NextRequest) {
       // Kein 500 mehr: wir geben Erfolg mit Hinweis zurück, sodass das Frontend nicht bricht
     }
 
-    return NextResponse.json({ success: true, emailSent })
+    // Europace-Weiterleitung nur bei Betreff "kreditanfrage"
+    let europaceForwarded = false
+    let europaceInfo: { vorgangsNummer?: string; openUrl?: string } | undefined
+
+    if ((data.subject || '').toLowerCase() === 'kreditanfrage') {
+      try {
+        const datenkontext = process.env.EUROPACE_DATENKONTEXT === 'ECHT_GESCHAEFT' ? 'ECHT_GESCHAEFT' : 'TEST_MODUS'
+        const salutMap: Record<string, string> = { herr: 'HERR', frau: 'FRAU', divers: 'DIVERS' }
+
+        const payload = {
+          importMetadaten: {
+            datenkontext,
+            externeVorgangsId: `contact-${Date.now()}`,
+            importquelle: 'Kontaktformular Kreditheld24',
+          },
+          kundenangaben: {
+            haushalte: [
+              {
+                kunden: [
+                  {
+                    externeKundenId: data.email,
+                    personendaten: {
+                      person: {
+                        anrede: salutMap[(data.salutation || 'herr').toLowerCase()],
+                        vorname: data.firstname,
+                        nachname: data.lastname,
+                      },
+                    },
+                    kontakt: {
+                      telefonnummer: data.phone ? { nummer: data.phone } : undefined,
+                      email: data.email,
+                    },
+                  },
+                ],
+              },
+            ],
+            // Darlehenswunsch optional – wird später im Europace-Prozess ergänzt
+          },
+        }
+
+        const created = await createKundenangabenCase(payload, datenkontext as any)
+        europaceForwarded = true
+        europaceInfo = { vorgangsNummer: created.vorgangsNummer, openUrl: created.openUrl }
+      } catch (apiErr) {
+        console.error('Europace Weiterleitung fehlgeschlagen:', apiErr)
+      }
+    }
+
+    return NextResponse.json({ success: true, emailSent, europaceForwarded, europace: europaceInfo })
   } catch (error) {
     console.error('Fehler beim Senden der Kontakt-E-Mail:', error)
     return NextResponse.json({ error: 'Fehler beim Senden der E-Mail' }, { status: 500 })

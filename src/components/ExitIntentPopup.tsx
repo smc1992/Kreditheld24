@@ -44,7 +44,7 @@ const popupOffers: PopupOffer[] = [
     title: 'Noch nicht das Richtige gefunden?',
     subtitle: 'Lassen Sie uns Ihnen helfen',
     offer: 'Unsere Experten finden den perfekten Kredit für Ihre Situation - 100% kostenlos und unverbindlich',
-    ctaText: 'Kostenlose Kreditanfrage stellen',
+    ctaText: 'Individueller Service',
     ctaLink: '/kreditanfrage',
     badge: 'Unverbindlich',
     icon: (
@@ -57,7 +57,7 @@ const popupOffers: PopupOffer[] = [
     title: 'Exklusives Angebot!',
     subtitle: 'Nur für kurze Zeit verfügbar',
     offer: 'Sichern Sie sich jetzt 0,5% Zinsvorteil bei Ihrer Kreditanfrage - Angebot gültig nur heute',
-    ctaText: 'Zinsvorteil sichern',
+    ctaText: 'Individueller Service',
     ctaLink: '/kreditanfrage?promo=exit-intent',
     badge: 'Limitiert',
     icon: (
@@ -292,7 +292,7 @@ export function KreditartenExitPopup() {
       title="Perfekten Kredit gefunden?"
       subtitle="Lassen Sie uns Ihnen helfen"
       offer="Unsere Experten vergleichen über 20 Banken und finden garantiert den besten Zinssatz für Sie"
-      ctaText="Kostenlosen Vergleich starten"
+      ctaText="Individueller Service"
       ctaLink="/kreditanfrage"
       excludePaths={['/kreditanfrage', '/kontakt']}
     />

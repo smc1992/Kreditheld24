@@ -138,7 +138,7 @@ export function Footer() {
                 className="inline-flex items-center px-6 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary-600 transition-all duration-200 shadow-lg hover:shadow-xl"
               >
                 <i className="ri-calculator-line mr-2"></i>
-                Jetzt anfragen
+                Individueller Service
               </Link>
             </div>
           </div>

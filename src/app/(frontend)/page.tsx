@@ -145,17 +145,7 @@ const HomePage = () => {
             <div className="p-6 md:p-8">
               <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Warum Kreditheld24?</h3>
               <div className="grid md:grid-cols-2 gap-6 mb-8">
-                <div className="flex items-start">
-                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-4 shrink-0">
-                    <div className="w-5 h-5 flex items-center justify-center text-primary">
-                      <i className="ri-shield-check-line"></i>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-1">SCHUFA-neutrale Anfrage</h4>
-                    <p className="text-gray-600">Ihre Kreditanfrage hat keine Auswirkungen auf Ihren SCHUFA-Score.</p>
-                  </div>
-                </div>
+                
                 <div className="flex items-start">
                   <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-4 shrink-0">
                     <div className="w-5 h-5 flex items-center justify-center text-primary">
@@ -217,7 +207,7 @@ const HomePage = () => {
                   className="block w-full bg-primary hover:bg-green-500 text-white font-medium py-3 px-6 rounded-button whitespace-nowrap shadow-md transition-all text-center"
                   onClick={() => setShowInfoModal(false)}
                 >
-                  Jetzt Kreditangebote vergleichen
+                  Individueller Service
                 </Link>
               </div>
             </div>
@@ -345,17 +335,7 @@ const HomePage = () => {
                 Bei vielen Banken erhalten Sie Ihr Geld bereits innerhalb von 24 Stunden nach Zusage.
               </p>
             </div>
-            <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-blue-500/30 transform hover:-translate-y-2">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <div className="w-8 h-8 flex items-center justify-center text-blue-600">
-                  <i className="ri-shield-check-line text-2xl"></i>
-                </div>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">SCHUFA-neutrale Anfrage</h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                Unsere Vorabanfrage hat keinen Einfluss auf Ihren SCHUFA-Score – garantiert.
-              </p>
-            </div>
+            
             <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transform hover:-translate-y-2">
               <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                 <div className="w-8 h-8 flex items-center justify-center text-primary">
@@ -395,9 +375,9 @@ const HomePage = () => {
                   <i className="ri-timer-flash-line text-2xl"></i>
                 </div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Schnelle Auszahlung</h3>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Individueller Service</h3>
               <p className="text-gray-600 dark:text-gray-300">
-                Bei vielen Banken erhalten Sie Ihr Geld innerhalb von 24 Stunden nach Vertragsabschluss.
+                Persönliche Begleitung durch unsere Experten – von der Anfrage bis zur Auszahlung.
               </p>
             </div>
           </div>
@@ -699,7 +679,7 @@ const HomePage = () => {
                   href="/kreditanfrage"
                   className="block w-full bg-primary hover:bg-green-500 text-white font-medium py-3 px-6 rounded-button whitespace-nowrap shadow-md transition-all text-center"
                 >
-                  Jetzt Kreditangebote vergleichen
+                  Individueller Service
                 </Link>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
                    {calcLoading ? 'Verbindung zur Europace API wird aufgebaut…' : apiCalc?.source === 'europace' ? 'Verbunden mit Europace API' : 'Lokale Beispielrechnung – API nicht aktiv'}
@@ -713,43 +693,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Europace KreditLead Embed */}
-      <section className="py-16 bg-white dark:bg-gray-900 transition-colors duration-300">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Kreditvergleich</h2>
-            <p className="text-gray-600 dark:text-gray-300">Starten Sie Ihre unverbindliche Konditionsübersicht.</p>
-          </div>
-          <div id="econ-home" className="min-h-[600px] w-full" />
-          <Script
-            src="https://europace.nc.econ-application.de/frontend/europace/assets/js/econ.js"
-            strategy="afterInteractive"
-            onLoad={() => {
-              const econ = (window as any).econ;
-              const targetId = 'econ-home';
-              const container = typeof document !== 'undefined' ? document.getElementById(targetId) : null;
-              if (!econ || typeof econ.initEcon !== 'function') {
-                console.warn('Econ library not available yet.');
-                return;
-              }
-              if (!container) {
-                console.warn(`Econ container '${targetId}' not found. Skipping init.`);
-                return;
-              }
-              try {
-                econ.initEcon(
-                  targetId,
-                  'https://europace.nc.econ-application.de/econ/process/LKJ98/kredittipp?epid_uv=XPS71',
-                  [],
-                  0
-                );
-              } catch (e) {
-                console.error('Econ init failed on homepage:', e);
-              }
-            }}
-          />
-        </div>
-      </section>
+      
 
       {/* Testimonials */}
       <section className="py-16 bg-gradient-to-br from-white via-green-50/20 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300 relative overflow-hidden">
@@ -899,7 +843,7 @@ const HomePage = () => {
                  </div>
               </div>
               <Link
-                href="#calculator"
+                href="/kreditrechner"
                 className="group bg-gradient-to-r from-primary to-green-600 hover:from-green-600 hover:to-primary text-white font-medium py-4 px-8 rounded-button shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center transform hover:scale-105"
               >
                 <span>Jetzt Ihren Kredit finden</span>

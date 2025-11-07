@@ -122,11 +122,11 @@ const RatenkreditePage = () => {
                 Flexible Laufzeiten, günstige Zinsen und schnelle Auszahlung – Ihr maßgeschneiderter Ratenkredit bei Kreditheld24.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Link
+                <Link 
                   href="/kreditanfrage"
                   className="bg-primary hover:bg-green-500 text-white font-medium py-3 sm:py-4 px-6 sm:px-8 rounded-button shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base group"
                 >
-                  <span>Jetzt Ratenkredit berechnen</span>
+                  <span>Individueller Service</span>
                   <div className="w-4 h-4 sm:w-5 sm:h-5 ml-2 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
                     <i className="ri-arrow-right-line"></i>
                   </div>
@@ -402,7 +402,7 @@ const RatenkreditePage = () => {
               href="/kreditanfrage"
               className="bg-white text-primary hover:bg-gray-100 font-medium py-3 px-8 rounded-button shadow-md transition-all inline-flex items-center justify-center"
             >
-              <span>Jetzt vergleichen</span>
+              <span>Individueller Service</span>
               <div className="w-5 h-5 ml-2 flex items-center justify-center">
                 <i className="ri-arrow-right-line"></i>
               </div>

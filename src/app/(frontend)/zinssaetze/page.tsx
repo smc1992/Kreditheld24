@@ -287,7 +287,7 @@ export default function ZinssaetzePage() {
                               href="/kreditanfrage"
                               className="bg-primary hover:bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                             >
-                              Jetzt anfragen
+                              Individueller Service
                             </Link>
                           </td>
                         </tr>
@@ -334,7 +334,7 @@ export default function ZinssaetzePage() {
                   href="/kreditanfrage"
                   className="bg-primary hover:bg-green-500 text-white font-medium py-3 px-8 rounded-button shadow-md hover:shadow-lg transition-all"
                 >
-                  Jetzt Kreditanfrage stellen
+                  Individueller Service
                 </Link>
                 <Link
                   href="/kontakt"

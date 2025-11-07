@@ -68,7 +68,7 @@ export default function UnverbindlichAnfragenButton({
             d="M12 6v6m0 0v6m0-6h6m-6 0H6" 
           />
         </svg>
-        <span className="font-medium tracking-wide">Unverbindlich anfragen</span>
+        <span className="font-medium tracking-wide">Individueller Service</span>
         <svg 
           className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" 
           fill="none" 

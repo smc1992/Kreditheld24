@@ -551,7 +551,7 @@ export default function GlossarPage() {
                   href="/kreditanfrage"
                   className="bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-primary dark:text-green-400 border-2 border-primary dark:border-green-400 font-medium py-3 px-8 rounded-button shadow-md hover:shadow-lg transition-all"
                 >
-                  Unverbindliche Anfrage
+                  Individueller Service
                 </Link>
               </div>
             </div>

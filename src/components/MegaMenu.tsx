@@ -282,7 +282,7 @@ export default function MegaMenu({
                       href="/kreditanfrage"
                       className="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-green-600 hover:bg-green-700 transition-colors"
                     >
-                      Jetzt anfragen
+                      Individueller Service
                     </Link>
                   </div>
                 </div>

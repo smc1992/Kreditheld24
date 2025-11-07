@@ -41,7 +41,7 @@ export default function BestaetigungPage() {
                 className="inline-flex items-center px-6 py-3 bg-white dark:bg-gray-800 text-primary dark:text-green-400 border-2 border-primary dark:border-green-400 font-semibold rounded-button hover:bg-gray-50 dark:hover:bg-gray-700 transition-all shadow-md hover:shadow-lg"
               >
                 <i className="ri-calculator-line mr-2"></i>
-                Weitere Anfrage stellen
+                Individueller Service
               </Link>
             </div>
           </div>
