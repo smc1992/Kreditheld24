@@ -183,7 +183,7 @@ const ImmobilienkreditPage = () => {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Link
-                href="#rechner"
+                href="/kreditrechner"
                 className="group bg-gradient-to-r from-primary to-green-600 hover:from-green-600 hover:to-primary text-white font-medium py-4 px-8 rounded-button whitespace-nowrap shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center transform hover:scale-105"
               >
                 <span>Immobilienkredit berechnen</span>
@@ -505,7 +505,7 @@ const ImmobilienkreditPage = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
-                href="#rechner" 
+                href="/kreditrechner" 
                 className="bg-primary hover:bg-green-500 text-white font-medium py-3 px-8 rounded-button transition-all flex items-center justify-center"
               >
                 <span>Kredit berechnen</span>

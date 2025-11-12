@@ -78,7 +78,7 @@ const AutokreditPage = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <Link
-                href="#calculator"
+                href="/kreditrechner"
                 className="bg-primary hover:bg-green-500 text-white font-medium py-3 sm:py-4 px-6 sm:px-8 rounded-button shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base group"
               >
                 <span>Jetzt Autokredit berechnen</span>
@@ -520,7 +520,7 @@ const AutokreditPage = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="#calculator"
+              href="/kreditrechner"
               className="bg-white text-primary hover:bg-gray-100 font-medium py-3 px-8 rounded-button shadow-md transition-all inline-flex items-center justify-center"
             >
               <span>Jetzt vergleichen</span>

@@ -149,7 +149,7 @@ export const kreditanfrageSteps: Step[] = [
   {
     id: 'personal',
     title: 'Persönliche Daten',
-    description: 'Name, Adresse, Kontaktdaten'
+    description: 'Name, Geburtsdaten, Kontaktdaten'
   },
   {
     id: 'address',
@@ -159,17 +159,7 @@ export const kreditanfrageSteps: Step[] = [
   {
     id: 'credit',
     title: 'Kreditwunsch',
-    description: 'Summe, Laufzeit, Verwendung'
-  },
-  {
-    id: 'income',
-    title: 'Einkommen',
-    description: 'Finanzielle Situation'
-  },
-  {
-    id: 'verification',
-    title: 'Bestätigung',
-    description: 'E-Mail-Verifizierung'
+    description: 'Summe, Laufzeit, Verwendung + Datenschutz'
   },
   {
     id: 'documents',

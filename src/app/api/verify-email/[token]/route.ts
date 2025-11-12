@@ -42,9 +42,9 @@ export async function GET(
       return NextResponse.redirect(new URL('/kreditanfrage?error=token-not-found', baseUrl))
     }
 
-    // Token-Ablauf prüfen (24 Stunden)
+    // Token-Ablauf prüfen (konfigurierbar; Standard 7 Tage)
     const tokenAge = Date.now() - verificationData.createdAt.getTime()
-    const maxAge = 24 * 60 * 60 * 1000 // 24 Stunden in Millisekunden
+    const maxAge = (parseInt(process.env.VERIFICATION_TTL_SECONDS || '', 10) || (7 * 24 * 60 * 60)) * 1000
     
     if (tokenAge > maxAge) {
       const envBaseUrl = process.env.VERIFICATION_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL || process.env.BASE_URL
@@ -72,7 +72,8 @@ export async function GET(
       const fallbackDev = 'http://localhost:3000'
       const baseUrl = envBaseUrl || originFromHeaders || request.nextUrl?.origin || (process.env.NODE_ENV === 'production' ? fallbackProd : fallbackDev)
 
-      return NextResponse.redirect(new URL('/kreditanfrage?success=already-verified', baseUrl))
+      // Token für Client-Hydration mitgeben
+      return NextResponse.redirect(new URL(`/kreditanfrage?success=already-verified&token=${encodeURIComponent(token)}`, baseUrl))
     }
 
     // E-Mail als verifiziert markieren
@@ -89,7 +90,8 @@ export async function GET(
     const fallbackDev = 'http://localhost:3000'
     const baseUrl = envBaseUrl || originFromHeaders || request.nextUrl?.origin || (process.env.NODE_ENV === 'production' ? fallbackProd : fallbackDev)
 
-    return NextResponse.redirect(new URL('/kreditanfrage?success=email-verified', baseUrl))
+    // Token für Client-Hydration mitgeben
+    return NextResponse.redirect(new URL(`/kreditanfrage?success=email-verified&token=${encodeURIComponent(token)}`, baseUrl))
     
   } catch (error) {
     console.error('Fehler bei E-Mail-Verifizierung:', error)

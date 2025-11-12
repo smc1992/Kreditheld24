@@ -206,7 +206,7 @@ const KreditSelbststaendigePage = () => {
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                 <Link
-                  href="#calculator"
+                  href="/kreditrechner"
                   className="group bg-gradient-to-r from-primary to-green-600 hover:from-green-600 hover:to-primary text-white font-medium py-4 px-8 rounded-button whitespace-nowrap shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center transform hover:scale-105"
                 >
                   <span>Jetzt Kredit berechnen</span>

@@ -377,7 +377,7 @@ const HomePage = () => {
               </div>
               <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Individueller Service</h3>
               <p className="text-gray-600 dark:text-gray-300">
-                Persönliche Begleitung durch unsere Experten – von der Anfrage bis zur Auszahlung.
+                Sie senden uns Ihre Unterlagen – wir übernehmen den Rest.
               </p>
             </div>
           </div>
@@ -888,7 +888,7 @@ const HomePage = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="#calculator"
+              href="/kreditrechner"
               className="group bg-white text-primary hover:bg-gray-100 dark:bg-gray-200 dark:hover:bg-gray-300 font-medium py-4 px-8 rounded-button shadow-lg hover:shadow-xl transition-all inline-flex items-center justify-center transform hover:scale-105"
             >
               <span>Jetzt vergleichen</span>

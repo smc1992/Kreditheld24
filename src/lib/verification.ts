@@ -46,8 +46,9 @@ export async function storeVerificationToken(
   const redis = await ensureRedisConnected()
   if (redis) {
     try {
-      // 24h TTL
-      await redis.set(`verification:tokens:${token}`, JSON.stringify(record), 'EX', 24 * 60 * 60)
+      // Konfigurierbare TTL (Standard: 7 Tage)
+      const ttlSeconds = parseInt(process.env.VERIFICATION_TTL_SECONDS || '', 10) || (7 * 24 * 60 * 60)
+      await redis.set(`verification:tokens:${token}`, JSON.stringify(record), 'EX', ttlSeconds)
       return
     } catch (e) {
       console.error('Redis storeVerificationToken error:', e)

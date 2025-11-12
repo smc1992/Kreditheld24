@@ -89,7 +89,7 @@ const SchufaNeutralPage = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <Link 
-                href="#kreditrechner" 
+                href="/kreditrechner" 
                 className="bg-primary hover:bg-green-500 text-white font-medium py-3 sm:py-4 px-6 sm:px-8 rounded-button shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base group"
               >
                 <span>Jetzt Kredit berechnen</span>
@@ -297,7 +297,7 @@ const SchufaNeutralPage = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
-                href="#kreditrechner" 
+                href="/kreditrechner" 
                 className="bg-primary hover:bg-green-500 text-white font-medium py-3 px-8 rounded-button whitespace-nowrap shadow-md transition-all flex items-center justify-center"
               >
                 <span>Jetzt berechnen</span>

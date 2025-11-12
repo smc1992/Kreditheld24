@@ -36,10 +36,7 @@ function buildPayloadFromForm(data: any) {
       },
       email: data.email,
     },
-    finanzielles: {
-      beschaeftigung: data.beschaeftigungsverhaeltnis ? { '@type': 'ANGESTELLTER' } : undefined,
-      einkommenNetto: data.nettoEinkommen ? Number(data.nettoEinkommen) : undefined,
-    },
+    // finanzielles entfernt – Angaben erfolgen später im Europace-Prozess
   }
 
   const haushalt = {

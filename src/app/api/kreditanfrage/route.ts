@@ -40,18 +40,18 @@ export async function POST(request: NextRequest) {
     // Relevante Felder extrahieren
     const fields = [
       // Persönlich
-      'anrede','vorname','nachname','geburtsdatum','familienstand','staatsangehoerigkeit','telefon','email',
+      'anrede','vorname','nachname','geburtsdatum','geburtsort','familienstand','staatsangehoerigkeit','telefon','email',
       // Adresse
       'strasse','hausnummer','plz','ort',
       // Kreditwunsch
       'produktKategorie','kreditart','kreditsumme','laufzeit','gewuenschteRate','verwendungszweck',
       'baufinanzierungArt','kaufpreisBaukosten','eigenkapital',
-      // Einkommen
-      'beschaeftigungsverhaeltnis','nettoEinkommen','beschaeftigtSeit',
-      // Ausgaben
-      'miete','sonstigeAusgaben','bestehendeDarlehen',
       // Sonstiges
-      'bemerkungen','datenschutz','newsletter'
+      'bemerkungen','datenschutz','newsletter','beschaeftigungsverhaeltnis',
+      // Flags
+      'hatBestehendeKredite','hatBaufinanzierung',
+      // Objektdaten
+      'objektart','baujahr','grundstuecksgroesse','wohnflaeche','kaufpreis','modernisierungen'
     ]
     const data: Record<string,string> = {}
     for (const key of fields) {
@@ -63,10 +63,17 @@ export async function POST(request: NextRequest) {
     const fileFieldNames = [
       'gehaltsabrechnung1',
       'gehaltsabrechnung2',
-      'personalausweisVorderseite',
-      'personalausweisRueckseite',
+      'gehaltsabrechnung3',
+      'steuerbescheid1',
+      'steuerbescheid2',
+      'steuerbescheid3',
+      'bwaGuV',
+      'meldebescheinigung',
       'bestehendeKredite',
-      'kontoauszug'
+      'baufinanzierungNachweis',
+      'jahreskontoauszug',
+      'kontoauszug',
+      'expose'
     ]
 
     const attachments: Array<{ filename: string; content: Buffer; contentType?: string }> = []
@@ -106,6 +113,36 @@ export async function POST(request: NextRequest) {
       console.warn('Temporäres Speichern der Uploads fehlgeschlagen:', storeErr)
     }
 
+    // Serverseitige Minimal-Validierung (spiegelt die wichtigsten Regeln)
+    const missing: string[] = []
+    const isSelbststaendig = (data.beschaeftigungsverhaeltnis || '').toLowerCase() === 'selbstständig' || (data.beschaeftigungsverhaeltnis || '').toLowerCase() === 'selbststaendig'
+    const getFile = (name: string) => form.get(name) as File | null
+    if (isSelbststaendig) {
+      if (!getFile('steuerbescheid1')) missing.push('Steuerbescheid Jahr 1')
+      if (!getFile('steuerbescheid2')) missing.push('Steuerbescheid Jahr 2')
+      if (!getFile('steuerbescheid3')) missing.push('Steuerbescheid Jahr 3')
+      // BWA optional
+    } else {
+      if (!getFile('gehaltsabrechnung1')) missing.push('Gehaltsabrechnung 1')
+      if (!getFile('gehaltsabrechnung2')) missing.push('Gehaltsabrechnung 2')
+      if (!getFile('gehaltsabrechnung3')) missing.push('Gehaltsabrechnung 3')
+    }
+    if (!getFile('kontoauszug')) missing.push('Kontoauszug letzter Monat')
+    if ((data.staatsangehoerigkeit || '').toLowerCase() !== 'deutsch' && !getFile('meldebescheinigung')) missing.push('Meldebescheinigung')
+    const hasBestehendeKredite = (data.hatBestehendeKredite || '').toLowerCase() === 'true'
+    const hasBaufinanzierung = (data.hatBaufinanzierung || '').toLowerCase() === 'true'
+    if (hasBestehendeKredite && !getFile('bestehendeKredite')) missing.push('Nachweis bestehende Kredite')
+    if (hasBaufinanzierung && !getFile('baufinanzierungNachweis')) missing.push('Nachweis bestehende Baufinanzierung')
+    if ((hasBestehendeKredite || hasBaufinanzierung) && !getFile('jahreskontoauszug')) missing.push('Jahreskontoauszug')
+    if ((data.produktKategorie || '') === 'baufinanzierung') {
+      const objektdatenOk = !!(data.objektart && data.baujahr && data.grundstuecksgroesse && data.wohnflaeche && data.kaufpreis)
+      if (!getFile('expose') && !objektdatenOk) missing.push('Expose oder vollständige Objektdaten')
+    }
+
+    if (missing.length > 0) {
+      return NextResponse.json({ error: 'Fehlende Dokumente', missing }, { status: 400 })
+    }
+
     // HTML-E-Mail-Inhalt
     const html = `
       <!DOCTYPE html>
@@ -124,11 +161,13 @@ export async function POST(request: NextRequest) {
           <p>
             <strong>Name:</strong> ${data.anrede} ${data.vorname} ${data.nachname}<br/>
             <strong>Geburtsdatum:</strong> ${data.geburtsdatum}<br/>
+            <strong>Geburtsort:</strong> ${data.geburtsort}<br/>
             <strong>Familienstand:</strong> ${data.familienstand}<br/>
             <strong>Staatsangehörigkeit:</strong> ${data.staatsangehoerigkeit}<br/>
             <strong>E-Mail:</strong> ${email}<br/>
             <strong>Telefon:</strong> ${data.telefon}<br/>
-            <strong>Adresse:</strong> ${data.strasse} ${data.hausnummer}, ${data.plz} ${data.ort}
+            <strong>Adresse:</strong> ${data.strasse} ${data.hausnummer}, ${data.plz} ${data.ort}<br/>
+            ${data.beschaeftigungsverhaeltnis ? `<strong>Beschäftigungsverhältnis:</strong> ${data.beschaeftigungsverhaeltnis}` : ''}
           </p>
 
           <h3 style="color:#16a34a;">Kreditwunsch</h3>
@@ -139,6 +178,12 @@ export async function POST(request: NextRequest) {
                 <strong>Art der Baufinanzierung:</strong> ${data.baufinanzierungArt}<br/>
                 <strong>Kaufpreis/Baukosten:</strong> ${data.kaufpreisBaukosten} €<br/>
                 <strong>Eigenkapital:</strong> ${data.eigenkapital} €
+                ${data.objektart ? `<br/><strong>Objektart:</strong> ${data.objektart}` : ''}
+                ${data.baujahr ? `<br/><strong>Baujahr:</strong> ${data.baujahr}` : ''}
+                ${data.grundstuecksgroesse ? `<br/><strong>Grundstücksgröße:</strong> ${data.grundstuecksgroesse} m²` : ''}
+                ${data.wohnflaeche ? `<br/><strong>Wohnfläche:</strong> ${data.wohnflaeche} m²` : ''}
+                ${data.kaufpreis ? `<br/><strong>Kaufpreis:</strong> ${data.kaufpreis} €` : ''}
+                ${data.modernisierungen ? `<br/><strong>Letzte Modernisierungen:</strong> ${data.modernisierungen}` : ''}
               `
               : `
                 <strong>Kreditart:</strong> ${data.kreditart}<br/>
@@ -150,19 +195,7 @@ export async function POST(request: NextRequest) {
             }
           </p>
 
-          <h3 style="color:#16a34a;">Beschäftigung</h3>
-          <p>
-            <strong>Verhältnis:</strong> ${data.beschaeftigungsverhaeltnis}<br/>
-            <strong>Netto-Einkommen:</strong> ${data.nettoEinkommen} €<br/>
-            <strong>Beschäftigt seit:</strong> ${data.beschaeftigtSeit}
-          </p>
-
-          <h3 style="color:#16a34a;">Finanzen</h3>
-          <p>
-            <strong>Miete:</strong> ${data.miete} €<br/>
-            <strong>Sonstige Ausgaben:</strong> ${data.sonstigeAusgaben} €<br/>
-            <strong>Bestehende Darlehen:</strong> ${data.bestehendeDarlehen}
-          </p>
+          
 
           <h3 style="color:#16a34a;">Hinweise</h3>
           <p>

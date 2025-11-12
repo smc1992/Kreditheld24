@@ -29,8 +29,8 @@ const SofortkreditPage = () => {
   const vorteile = [
     {
       icon: "ri-flashlight-line",
-      title: "Sofortige Zusage",
-      description: "Erhalten Sie innerhalb weniger Minuten eine verbindliche Kreditentscheidung - 24/7 verfügbar."
+      title: "Kontocheck",
+      description: "Der Kontocheck beschleunigt die Auszahlung innerhalb von 24 h."
     },
     {
       icon: "ri-time-line",
@@ -50,7 +50,7 @@ const SofortkreditPage = () => {
     {
       icon: "ri-money-euro-circle-line",
       title: "Flexible Beträge",
-      description: "Kreditsummen von 1.000 € bis 50.000 € - genau passend zu Ihrem Finanzierungsbedarf."
+      description: "Kreditsummen von 50.000 € bis 100.000 € – genau passend zu Ihrem Finanzierungsbedarf."
     },
     {
       icon: "ri-file-list-3-line",
@@ -139,7 +139,7 @@ const SofortkreditPage = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <Link 
-                  href="#calculator" 
+                  href="/kreditrechner" 
                   className="bg-primary hover:bg-green-500 text-white font-medium py-3 sm:py-4 px-6 sm:px-8 rounded-button shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base group"
                 >
                   <span>Jetzt Sofortkredit berechnen</span>
@@ -312,7 +312,7 @@ const SofortkreditPage = () => {
                     >
                       Jetzt Sofortkredit beantragen
                     </Link>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">Sofortige Zusage • 24h Auszahlung</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">Kontocheck • 24h Auszahlung</p>
                   </div>
                 </div>
               </div>
@@ -395,7 +395,7 @@ const SofortkreditPage = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
-                href="#calculator" 
+                href="/kreditrechner" 
                 className="bg-primary hover:bg-green-500 text-white font-medium py-3 px-8 rounded-button whitespace-nowrap shadow-md transition-all flex items-center justify-center"
               >
                 <span>Jetzt beantragen</span>
@@ -418,7 +418,7 @@ const SofortkreditPage = () => {
                 <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
                   <i className="ri-check-line"></i>
                 </div>
-                <span className="text-gray-600">Sofortige Zusage</span>
+                <span className="text-gray-600">Kontocheck</span>
               </div>
               <div className="flex items-center">
                 <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">

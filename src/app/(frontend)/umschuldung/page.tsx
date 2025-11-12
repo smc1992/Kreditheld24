@@ -239,7 +239,7 @@ const UmschuldungPage = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <Link 
-                  href="#calculator" 
+                  href="/kreditrechner" 
                   className="bg-primary hover:bg-green-500 text-white font-medium py-3 sm:py-4 px-6 sm:px-8 rounded-button shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base group"
                 >
                   <span>Sparpotenzial berechnen</span>
@@ -406,220 +406,56 @@ const UmschuldungPage = () => {
           </div>
         </section>
 
-        {/* Calculator */}
-        <section id="calculator" className="py-16 bg-gradient-to-br from-gray-50 via-green-50/20 to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300 relative overflow-hidden">
-          {/* Background Pattern */}
+        {/* Aktionen statt Rechner */}
+        <section id="aktionen" className="py-16 bg-gradient-to-br from-gray-50 via-green-50/20 to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300 relative overflow-hidden">
+          {/* Hintergrundmuster */}
           <div className="absolute inset-0 opacity-5">
             <div className="absolute top-10 right-10 w-24 h-24 border border-primary rounded-full"></div>
             <div className="absolute bottom-10 left-10 w-32 h-32 border border-blue-500 rounded-full"></div>
             <div className="absolute top-1/2 left-1/2 w-16 h-16 border border-green-400 rounded-full"></div>
           </div>
-          
+
           <div className="container mx-auto px-4 relative z-10">
-            <div className="text-center mb-12">
+            <div className="text-center mb-8">
               <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-green-200 dark:border-green-700 mb-6">
                 <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-                <span className="text-sm font-medium text-green-700 dark:text-green-400">Kostenloser Rechner</span>
+                <span className="text-sm font-medium text-green-700 dark:text-green-400">Schnellstart</span>
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Umschuldungsrechner</h2>
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Was möchten Sie tun?</h2>
               <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                Berechnen Sie Ihr individuelles Sparpotenzial und finden Sie heraus, wie viel Sie durch eine Umschuldung sparen können.
+                Wählen Sie zwischen dem Kreditvergleich und unserer individuellen Service-Anfrage.
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 md:p-8 max-w-4xl mx-auto transition-colors duration-300">
-              <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">Aktuelle Situation</h3>
-                  
-                  <div className="mb-6">
-                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Gesamte Kreditsumme</label>
-                    <div className="relative">
-                      <input 
-                        type="number" 
-                        value={totalDebtAmount}
-                        onChange={(e) => setTotalDebtAmount(Number(e.target.value))}
-                        className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300" 
-                        min="1000" 
-                        max="100000"
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">€</div>
-                    </div>
-                    <input 
-                      type="range" 
-                      value={totalDebtAmount}
-                      onChange={(e) => setTotalDebtAmount(Number(e.target.value))}
-                      min="1000" 
-                      max="100000" 
-                      step="500" 
-                      className="w-full mt-2 accent-primary"
-                    />
-                    <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      <span>1.000 €</span>
-                      <span>100.000 €</span>
-                    </div>
-                  </div>
-
-                  <div className="mb-6">
-                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Durchschnittlicher Zinssatz</label>
-                    <div className="relative">
-                      <input 
-                        type="number" 
-                        value={currentInterestRate}
-                        onChange={(e) => setCurrentInterestRate(Number(e.target.value))}
-                        className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300" 
-                        min="1" 
-                        max="20" 
-                        step="0.1"
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">%</div>
-                    </div>
-                    <input 
-                      type="range" 
-                      value={currentInterestRate}
-                      onChange={(e) => setCurrentInterestRate(Number(e.target.value))}
-                      min="1" 
-                      max="20" 
-                      step="0.1" 
-                      className="w-full mt-2 accent-primary"
-                    />
-                    <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      <span>1%</span>
-                      <span>20%</span>
-                    </div>
-                  </div>
-
-                  <div className="mb-6">
-                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Aktuelle monatliche Rate</label>
-                    <div className="relative">
-                      <input 
-                        type="number" 
-                        value={currentMonthlyPayment}
-                        onChange={(e) => setCurrentMonthlyPayment(Number(e.target.value))}
-                        className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300" 
-                        min="50" 
-                        max="5000"
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">€</div>
-                    </div>
-                  </div>
-
-                  <div className="mb-6">
-                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Anzahl Kredite</label>
-                    <div className="flex">
-                      <button 
-                        onClick={() => setLoansCount(Math.max(1, loansCount - 1))}
-                        className="bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 font-bold py-3 px-4 rounded-l border border-gray-300 dark:border-gray-600 transition-colors duration-300"
-                      >
-                        <i className="ri-subtract-line"></i>
-                      </button>
-                      <input 
-                        type="number" 
-                        value={loansCount}
-                        onChange={(e) => setLoansCount(Number(e.target.value))}
-                        className="w-full border-y border-gray-300 dark:border-gray-600 py-3 px-4 text-center bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300" 
-                        min="1" 
-                        max="10"
-                      />
-                      <button 
-                        onClick={() => setLoansCount(Math.min(10, loansCount + 1))}
-                        className="bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 font-bold py-3 px-4 rounded-r border border-gray-300 dark:border-gray-600 transition-colors duration-300"
-                      >
-                        <i className="ri-add-line"></i>
-                      </button>
-                    </div>
-                  </div>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link 
+                href="/kreditrechner" 
+                className="bg-primary hover:bg-green-500 text-white font-medium py-3 px-8 rounded-button whitespace-nowrap shadow-md transition-all flex items-center justify-center"
+              >
+                <div className="w-5 h-5 mr-2 flex items-center justify-center">
+                  <i className="ri-external-link-line"></i>
                 </div>
-
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">Neue Konditionen</h3>
-                  
-                  <div className="mb-6">
-                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Neuer Zinssatz</label>
-                    <div className="relative">
-                      <input 
-                        type="number" 
-                        value={newInterestRate}
-                        onChange={(e) => setNewInterestRate(Number(e.target.value))}
-                        className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300" 
-                        min="1" 
-                        max="15" 
-                        step="0.1"
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">%</div>
-                    </div>
-                    <input 
-                      type="range" 
-                      value={newInterestRate}
-                      onChange={(e) => setNewInterestRate(Number(e.target.value))}
-                      min="1" 
-                      max="15" 
-                      step="0.1" 
-                      className="w-full mt-2 accent-primary"
-                    />
-                    <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      <span>1%</span>
-                      <span>15%</span>
-                    </div>
-                  </div>
-
-                  <div className="mb-6">
-                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Neue Laufzeit</label>
-                    <div className="flex">
-                      <button 
-                        onClick={() => setNewLoanTerm(Math.max(12, newLoanTerm - 6))}
-                        className="bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 font-bold py-3 px-4 rounded-l border border-gray-300 dark:border-gray-600 transition-colors duration-300"
-                      >
-                        <i className="ri-subtract-line"></i>
-                      </button>
-                      <input 
-                        type="number" 
-                        value={newLoanTerm}
-                        onChange={(e) => setNewLoanTerm(Number(e.target.value))}
-                        className="w-full border-y border-gray-300 dark:border-gray-600 py-3 px-4 text-center bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300" 
-                        min="12" 
-                        max="120"
-                      />
-                      <button 
-                        onClick={() => setNewLoanTerm(Math.min(120, newLoanTerm + 6))}
-                        className="bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 font-bold py-3 px-4 rounded-r border border-gray-300 dark:border-gray-600 transition-colors duration-300"
-                      >
-                        <i className="ri-add-line"></i>
-                      </button>
-                    </div>
-                    <div className="absolute inset-y-0 right-12 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">Monate</div>
-                    <input 
-                      type="range" 
-                      value={newLoanTerm}
-                      onChange={(e) => setNewLoanTerm(Number(e.target.value))}
-                      min="12" 
-                      max="120" 
-                      step="6" 
-                      className="w-full mt-2 accent-primary"
-                    />
-                    <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      <span>12 Monate</span>
-                      <span>120 Monate</span>
-                    </div>
-                  </div>
-
-                  <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg transition-colors duration-300">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Ihr Sparpotenzial</h4>
-                    <div className="space-y-3">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600 dark:text-gray-300">Neue monatliche Rate:</span>
-                        <span className="font-semibold text-primary">{savings.newPayment} €</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600 dark:text-gray-300">Monatliche Ersparnis:</span>
-                        <span className="font-semibold text-primary">{savings.monthlySaving} €</span>
-                      </div>
-                      <div className="flex justify-between border-t pt-3">
-                        <span className="text-gray-600 dark:text-gray-300">Gesamtersparnis:</span>
-                        <span className="font-bold text-primary text-lg">{savings.totalSaving} €</span>
-                      </div>
-                    </div>
-                  </div>
+                <span>Jetzt Kredit vergleichen</span>
+              </Link>
+              <UnverbindlichAnfragenButton variant="secondary" size="md" className="py-3 px-8" />
+            </div>
+            <div className="mt-8 flex flex-wrap justify-center gap-6">
+              <div className="flex items-center">
+                <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
+                  <i className="ri-check-line"></i>
                 </div>
+                <span className="text-gray-600 dark:text-gray-300">100% kostenlos</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
+                  <i className="ri-check-line"></i>
+                </div>
+                <span className="text-gray-600 dark:text-gray-300">SCHUFA-neutral</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
+                  <i className="ri-check-line"></i>
+                </div>
+                <span className="text-gray-600 dark:text-gray-300">Unverbindlich</span>
               </div>
             </div>
           </div>
@@ -1000,7 +836,7 @@ const UmschuldungPage = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link 
-                  href="#calculator" 
+                  href="/kreditrechner" 
                   className="bg-primary hover:bg-green-500 text-white font-medium py-3 px-8 rounded-button whitespace-nowrap shadow-md transition-all flex items-center justify-center"
                 >
                   <span>Sparpotenzial berechnen</span>

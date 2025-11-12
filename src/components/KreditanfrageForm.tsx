@@ -11,6 +11,7 @@ interface FormData {
   vorname: string
   nachname: string
   geburtsdatum: string
+  geburtsort: string
   familienstand: string
   staatsangehoerigkeit: string
   email: string
@@ -51,10 +52,29 @@ interface FormData {
   // Dokumenten-Upload
   gehaltsabrechnung1: File | null
   gehaltsabrechnung2: File | null
-  personalausweisVorderseite: File | null
-  personalausweisRueckseite: File | null
+  gehaltsabrechnung3: File | null
+  steuerbescheid1: File | null
+  steuerbescheid2: File | null
+  steuerbescheid3: File | null
+  bwaGuV: File | null
   bestehendeKredite: File | null
   kontoauszug: File | null
+  meldebescheinigung: File | null
+  jahreskontoauszug: File | null
+  baufinanzierungNachweis: File | null
+  expose: File | null
+
+  // Bedingungs-Flags
+  hatBestehendeKredite: boolean
+  hatBaufinanzierung: boolean
+
+  // Objektdaten (Baufinanzierung)
+  objektart: string
+  baujahr: string
+  grundstuecksgroesse: string
+  wohnflaeche: string
+  kaufpreis: string
+  modernisierungen: string
 }
 
 const initialFormData: FormData = {
@@ -62,6 +82,7 @@ const initialFormData: FormData = {
   vorname: '',
   nachname: '',
   geburtsdatum: '',
+  geburtsort: '',
   familienstand: '',
   staatsangehoerigkeit: '',
   email: '',
@@ -92,10 +113,29 @@ const initialFormData: FormData = {
   // Dokumenten-Upload
   gehaltsabrechnung1: null,
   gehaltsabrechnung2: null,
-  personalausweisVorderseite: null,
-  personalausweisRueckseite: null,
+  gehaltsabrechnung3: null,
+  steuerbescheid1: null,
+  steuerbescheid2: null,
+  steuerbescheid3: null,
+  bwaGuV: null,
   bestehendeKredite: null,
-  kontoauszug: null
+  kontoauszug: null,
+  meldebescheinigung: null,
+  jahreskontoauszug: null,
+  baufinanzierungNachweis: null,
+  expose: null,
+
+  // Bedingungs-Flags
+  hatBestehendeKredite: false,
+  hatBaufinanzierung: false,
+
+  // Objektdaten (Baufinanzierung)
+  objektart: '',
+  baujahr: '',
+  grundstuecksgroesse: '',
+  wohnflaeche: '',
+  kaufpreis: '',
+  modernisierungen: ''
 }
 
 export default function KreditanfrageForm() {
@@ -110,7 +150,69 @@ export default function KreditanfrageForm() {
   const [verificationUrl, setVerificationUrl] = useState<string | null>(null)
   const [urlMessage, setUrlMessage] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
   const [europaceCaseUrl, setEuropaceCaseUrl] = useState<string | null>(null)
-  const totalSteps = 6
+  
+  // Persistenz-Schlüssel
+  const STORAGE_KEY = 'kh24_kreditanfrage_form_v1'
+  const STORAGE_META_KEY = 'kh24_kreditanfrage_meta_v1'
+  const FILE_KEYS: (keyof FormData)[] = [
+    'gehaltsabrechnung1',
+    'gehaltsabrechnung2',
+    'gehaltsabrechnung3',
+    'steuerbescheid1',
+    'steuerbescheid2',
+    'steuerbescheid3',
+    'bwaGuV',
+    'bestehendeKredite',
+    'kontoauszug',
+    'meldebescheinigung',
+    'jahreskontoauszug',
+    'baufinanzierungNachweis',
+    'expose'
+  ]
+
+  const serializeFormData = (data: FormData): Record<string, any> => {
+    const copy: Record<string, any> = {}
+    Object.entries(data).forEach(([key, value]) => {
+      if (!FILE_KEYS.includes(key as keyof FormData)) {
+        copy[key] = value
+      }
+    })
+    return copy
+  }
+
+  // Beim ersten Laden: aus localStorage wiederherstellen
+  useEffect(() => {
+    try {
+      const raw = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null
+      if (raw) {
+        const saved = JSON.parse(raw)
+        setFormData(prev => ({ ...prev, ...saved }))
+      }
+      const metaRaw = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_META_KEY) : null
+      if (metaRaw) {
+        const meta = JSON.parse(metaRaw)
+        if (typeof meta.currentStep === 'number') setCurrentStep(meta.currentStep)
+        if (typeof meta.emailVerificationSent === 'boolean') setEmailVerificationSent(meta.emailVerificationSent)
+        if (typeof meta.emailVerified === 'boolean') setEmailVerified(meta.emailVerified)
+        if (typeof meta.verificationToken === 'string') setVerificationToken(meta.verificationToken)
+      }
+    } catch (e) {
+      console.warn('Konnte gespeicherte Formularwerte nicht laden:', e)
+    }
+  }, [])
+
+  // Änderungen kontinuierlich speichern (ohne Datei-Felder)
+  useEffect(() => {
+    try {
+      const sanitized = serializeFormData(formData)
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(sanitized))
+      const meta = { currentStep, emailVerificationSent, emailVerified, verificationToken }
+      localStorage.setItem(STORAGE_META_KEY, JSON.stringify(meta))
+    } catch (e) {
+      // Speichern ist optional, Fehler hier sind nicht kritisch
+    }
+  }, [formData, currentStep, emailVerificationSent, emailVerified, verificationToken])
+  const totalSteps = 5
 
   const calculateAge = (birthDate: string): number => {
     if (!birthDate) return 0
@@ -151,29 +253,72 @@ export default function KreditanfrageForm() {
     }) as FormData)
   }
 
-  const kreditsummeNumber = parseFloat(formData.kreditsumme) || 0
-  const requiresKontoauszug = kreditsummeNumber >= 20000
-  const requiredSelectedCount = [
-    'gehaltsabrechnung1',
-    'gehaltsabrechnung2',
-    'personalausweisVorderseite',
-    'personalausweisRueckseite'
-  ].filter((key) => (formData as any)[key]).length
-  const requiredTotal = 4 + (requiresKontoauszug ? 1 : 0)
+  // Kontoauszug 1 Monat ist generell erforderlich (Privatkredit, Selbständige und Baufinanzierung)
+  const requiresKontoauszug = true
+  // Dynamische Pflichtdokumente basierend auf Beschäftigungsverhältnis
+  const isSelbststaendig = (formData.beschaeftigungsverhaeltnis || '').toLowerCase() === 'selbstständig' || (formData.beschaeftigungsverhaeltnis || '').toLowerCase() === 'selbststaendig'
+  const requiredDocKeys = isSelbststaendig 
+    ? ['steuerbescheid1', 'steuerbescheid2', 'steuerbescheid3'] 
+    : ['gehaltsabrechnung1', 'gehaltsabrechnung2', 'gehaltsabrechnung3']
+  const requiredSelectedCount = requiredDocKeys.filter((key) => (formData as any)[key]).length + (formData.kontoauszug ? 1 : 0)
+  const requiredTotal = requiredDocKeys.length + (requiresKontoauszug ? 1 : 0)
+
+  // Dynamische Liste der fehlenden Pflichtdokumente für klare Validierung
+  const missingDocs: string[] = []
+  if (isSelbststaendig) {
+    if (!formData.steuerbescheid1) missingDocs.push('Steuerbescheid Jahr 1')
+    if (!formData.steuerbescheid2) missingDocs.push('Steuerbescheid Jahr 2')
+    if (!formData.steuerbescheid3) missingDocs.push('Steuerbescheid Jahr 3')
+    // BWA optional
+  } else {
+    if (!formData.gehaltsabrechnung1) missingDocs.push('Gehaltsabrechnung 1')
+    if (!formData.gehaltsabrechnung2) missingDocs.push('Gehaltsabrechnung 2')
+    if (!formData.gehaltsabrechnung3) missingDocs.push('Gehaltsabrechnung 3')
+  }
+  if (!formData.kontoauszug) missingDocs.push('Kontoauszug letzter Monat')
+  // Ausländische Staatsbürger: Meldebescheinigung
+  if ((formData.staatsangehoerigkeit || '').toLowerCase() !== 'deutsch' && !formData.meldebescheinigung) {
+    missingDocs.push('Meldebescheinigung')
+  }
+  // Bestehende Kredite/Baufinanzierung: Nachweise + Jahreskontoauszug
+  if (formData.hatBestehendeKredite && !formData.bestehendeKredite) missingDocs.push('Nachweis bestehende Kredite')
+  if (formData.hatBaufinanzierung && !formData.baufinanzierungNachweis) missingDocs.push('Nachweis bestehende Baufinanzierung')
+  if ((formData.hatBestehendeKredite || formData.hatBaufinanzierung) && !formData.jahreskontoauszug) missingDocs.push('Jahreskontoauszug')
+  // Baufinanzierung: Expose oder Objektdaten
+  if (formData.produktKategorie === 'baufinanzierung') {
+    const objektdatenOk = !!(formData.objektart && formData.baujahr && formData.grundstuecksgroesse && formData.wohnflaeche && formData.kaufpreis)
+    if (!(formData.expose || objektdatenOk)) {
+      missingDocs.push('Expose oder vollständige Objektdaten')
+    }
+  }
 
   // Handle URL parameters for email verification
   useEffect(() => {
     const success = searchParams.get('success')
     const error = searchParams.get('error')
+    const tokenFromUrl = searchParams.get('token')
     
-    if (success === 'email-verified') {
+    if (success === 'email-verified' || success === 'already-verified') {
       setEmailVerified(true)
-      setCurrentStep(6)
-      setUrlMessage({ type: 'success', message: 'E-Mail erfolgreich bestätigt! Sie können nun Ihre Dokumente hochladen.' })
-    } else if (success === 'already-verified') {
-      setEmailVerified(true)
-      setCurrentStep(6)
-      setUrlMessage({ type: 'success', message: 'E-Mail bereits bestätigt. Sie können Ihre Dokumente hochladen.' })
+      setCurrentStep(5)
+      setUrlMessage({ type: 'success', message: success === 'email-verified' ? 'E-Mail erfolgreich bestätigt! Sie können nun Ihre Dokumente hochladen.' : 'E-Mail bereits bestätigt. Sie können Ihre Dokumente hochladen.' })
+      // Falls Token vorhanden: gespeicherte Formulardaten vom Server laden und zusammenführen
+      if (tokenFromUrl) {
+        setVerificationToken(tokenFromUrl)
+        ;(async () => {
+          try {
+            const resp = await fetch(`/api/check-verification/${tokenFromUrl}`)
+            if (resp.ok) {
+              const data = await resp.json()
+              if (data?.formData) {
+                setFormData(prev => ({ ...prev, ...data.formData }))
+              }
+            }
+          } catch (e) {
+            console.warn('Konnte gespeicherte Formulardaten nicht laden:', e)
+          }
+        })()
+      }
     } else if (error) {
       let errorMessage = 'Ein Fehler ist aufgetreten.'
       switch (error) {
@@ -227,7 +372,7 @@ export default function KreditanfrageForm() {
         const { verified } = await response.json()
         if (verified) {
           setEmailVerified(true)
-          setCurrentStep(6) // Zu Dokumenten-Upload
+          setCurrentStep(5) // Zu Dokumenten-Upload
         }
       }
     } catch (error) {
@@ -286,10 +431,8 @@ export default function KreditanfrageForm() {
           plz: formData.plz,
           ort: formData.ort,
           kreditsumme: formData.kreditsumme,
-          laufzeit: formData.laufzeit,
+          laufzeit: (formData.produktKategorie === 'baufinanzierung' ? (formData.laufzeit ? String(Number(formData.laufzeit) * 12) : '') : formData.laufzeit),
           verwendungszweck: formData.verwendungszweck,
-          beschaeftigungsverhaeltnis: formData.beschaeftigungsverhaeltnis,
-          nettoEinkommen: formData.nettoEinkommen,
         }
         const leadRes = await fetch('/api/europace/lead', {
           method: 'POST',
@@ -308,6 +451,11 @@ export default function KreditanfrageForm() {
       }
 
       setSubmitStatus('success')
+      // Nach erfolgreichem finalem Absenden: lokale Speicherung aus Datenschutzgründen leeren
+      try {
+        localStorage.removeItem(STORAGE_KEY)
+        localStorage.removeItem(STORAGE_META_KEY)
+      } catch {}
       setFormData(initialFormData)
       setCurrentStep(1)
       setEmailVerificationSent(false)
@@ -336,23 +484,30 @@ export default function KreditanfrageForm() {
   const isStepValid = (step: number): boolean => {
     switch (step) {
       case 1:
-        return !!(formData.anrede && formData.vorname && formData.nachname && formData.email && formData.telefon && formData.familienstand && formData.staatsangehoerigkeit && !isUnder18)
+        return !!(formData.anrede && formData.vorname && formData.nachname && formData.email && formData.telefon && formData.familienstand && formData.staatsangehoerigkeit && formData.geburtsort && !isUnder18)
       case 2:
         return !!(formData.strasse && formData.hausnummer && formData.plz && formData.ort)
       case 3:
         if (formData.produktKategorie === 'baufinanzierung') {
-          return !!(formData.baufinanzierungArt && formData.kaufpreisBaukosten && formData.eigenkapital)
+          return !!(formData.baufinanzierungArt && formData.kaufpreisBaukosten && formData.eigenkapital && formData.miete && formData.datenschutz)
         }
-        return !!(formData.kreditart && formData.kreditsumme && formData.laufzeit)
+        return !!(formData.kreditart && formData.kreditsumme && formData.laufzeit && formData.miete && formData.datenschutz)
       case 4:
-        return !!(formData.beschaeftigungsverhaeltnis && formData.beschaeftigungsverhaeltnis !== 'arbeitslos' && formData.nettoEinkommen)
-      case 5:
         return emailVerified
-      case 6:
-        const requiredDocs = !!(formData.gehaltsabrechnung1 && formData.gehaltsabrechnung2 && 
-                               formData.personalausweisVorderseite && formData.personalausweisRueckseite)
-        const kontoauszugOk = !requiresKontoauszug || !!formData.kontoauszug
-        return requiredDocs && kontoauszugOk
+      case 5:
+        const baseDocsOk = isSelbststaendig
+          ? !!(formData.steuerbescheid1 && formData.steuerbescheid2 && formData.steuerbescheid3)
+          : !!(formData.gehaltsabrechnung1 && formData.gehaltsabrechnung2 && formData.gehaltsabrechnung3)
+        const kontoauszugOk = !!formData.kontoauszug
+        const meldeOk = (formData.staatsangehoerigkeit || '').toLowerCase() === 'deutsch' || !!formData.meldebescheinigung
+        const krediteOk = !formData.hatBestehendeKredite || (!!formData.bestehendeKredite && !!formData.jahreskontoauszug)
+        const baufinOk = !formData.hatBaufinanzierung || (!!formData.baufinanzierungNachweis && !!formData.jahreskontoauszug)
+        let exposeObjektOk = true
+        if (formData.produktKategorie === 'baufinanzierung') {
+          const objektdatenOk = !!(formData.objektart && formData.baujahr && formData.grundstuecksgroesse && formData.wohnflaeche && formData.kaufpreis)
+          exposeObjektOk = !!(formData.expose || objektdatenOk)
+        }
+        return baseDocsOk && kontoauszugOk && meldeOk && krediteOk && baufinOk && exposeObjektOk
       default:
         return false
     }
@@ -391,6 +546,28 @@ export default function KreditanfrageForm() {
           currentStep={currentStep - 1} 
         />
       </div>
+
+      {/* Schnellzugriff: Upload-Bereich öffnen / Link kopieren */}
+      {(verificationToken && (emailVerificationSent || emailVerified)) && (
+        <div className="mb-6 flex items-center justify-between bg-yellow-50 border border-yellow-200 rounded px-4 py-3">
+          <span className="text-sm text-yellow-800">Sie können jederzeit zum Dokumenten-Upload zurückkehren.</span>
+          <div className="flex gap-2">
+            <Button type="button" onClick={() => setCurrentStep(5)} className="bg-yellow-600 hover:bg-yellow-700 text-white">
+              Upload-Bereich öffnen
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                const url = `${window.location.origin}/kreditanfrage?success=already-verified&token=${verificationToken}`
+                navigator.clipboard.writeText(url)
+              }}
+            >
+              Link kopieren
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Step 1: Persönliche Daten */}
       {currentStep === 1 && (
@@ -460,6 +637,18 @@ export default function KreditanfrageForm() {
               )}
             </div>
             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Geburtsort *</label>
+              <input
+                type="text"
+                name="geburtsort"
+                value={formData.geburtsort}
+                onChange={handleInputChange}
+                required
+                placeholder="z.B. Berlin"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Familienstand *</label>
               <select
                 name="familienstand"
@@ -487,6 +676,20 @@ export default function KreditanfrageForm() {
                 placeholder="z.B. Deutsch"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Beschäftigungsverhältnis *</label>
+              <select
+                name="beschaeftigungsverhaeltnis"
+                value={formData.beschaeftigungsverhaeltnis}
+                onChange={handleInputChange}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <option value="">Bitte wählen</option>
+                <option value="angestellt">Angestellt</option>
+                <option value="selbstständig">Selbstständig</option>
+              </select>
             </div>
           </div>
 
@@ -723,7 +926,9 @@ export default function KreditanfrageForm() {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Gewünschte Laufzeit *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {formData.produktKategorie === 'baufinanzierung' ? 'Gewünschte Laufzeit (Jahre) *' : 'Gewünschte Laufzeit *'}
+              </label>
               <select
                 name="laufzeit"
                 value={formData.laufzeit}
@@ -731,16 +936,30 @@ export default function KreditanfrageForm() {
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               >
-                <option value="">Bitte wählen</option>
-                <option value="12">12 Monate</option>
-                <option value="24">24 Monate</option>
-                <option value="36">36 Monate</option>
-                <option value="48">48 Monate</option>
-                <option value="60">60 Monate</option>
-                <option value="72">72 Monate</option>
-                <option value="84">84 Monate</option>
-                <option value="96">96 Monate</option>
-                <option value="120">120 Monate</option>
+                {formData.produktKategorie === 'baufinanzierung' ? (
+                  <>
+                    <option value="">Bitte wählen</option>
+                    <option value="5">5 Jahre</option>
+                    <option value="10">10 Jahre</option>
+                    <option value="15">15 Jahre</option>
+                    <option value="20">20 Jahre</option>
+                    <option value="25">25 Jahre</option>
+                    <option value="30">30 Jahre</option>
+                  </>
+                ) : (
+                  <>
+                    <option value="">Bitte wählen</option>
+                    <option value="12">12 Monate</option>
+                    <option value="24">24 Monate</option>
+                    <option value="36">36 Monate</option>
+                    <option value="48">48 Monate</option>
+                    <option value="60">60 Monate</option>
+                    <option value="72">72 Monate</option>
+                    <option value="84">84 Monate</option>
+                    <option value="96">96 Monate</option>
+                    <option value="120">120 Monate</option>
+                  </>
+                )}
               </select>
             </div>
             <div>
@@ -763,70 +982,141 @@ export default function KreditanfrageForm() {
               </div>
               <p className="text-xs text-gray-500 mt-1">Falls Sie eine bestimmte Rate im Kopf haben</p>
             </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Monatliche Miete *</label>
+              <div className="relative">
+                <input
+                  type="number"
+                  name="miete"
+                  value={formData.miete}
+                  onChange={handleInputChange}
+                  placeholder="z.B. 850"
+                  min="0"
+                  max="10000"
+                  step="10"
+                  required
+                  className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
+                  €
+                </div>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">Ihre monatliche Miete inkl. Nebenkosten</p>
+            </div>
           </div>
+
+          {/* Bestehende Verbindlichkeiten: Flags zur späteren Upload-Pflicht */}
+          <div className="grid md:grid-cols-2 gap-4 mt-4">
+            <div className="flex items-start">
+              <input
+                type="checkbox"
+                name="hatBestehendeKredite"
+                checked={formData.hatBestehendeKredite}
+                onChange={handleInputChange}
+                className="mt-1 mr-3 h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+              />
+              <label className="text-sm text-gray-700">Ich habe bestehende Kredite</label>
+            </div>
+            <div className="flex items-start">
+              <input
+                type="checkbox"
+                name="hatBaufinanzierung"
+                checked={formData.hatBaufinanzierung}
+                onChange={handleInputChange}
+                className="mt-1 mr-3 h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+              />
+              <label className="text-sm text-gray-700">Ich habe eine bestehende Baufinanzierung</label>
+            </div>
+          </div>
+
+          {/* Objektdaten für Baufinanzierung */}
+          {formData.produktKategorie === 'baufinanzierung' && (
+            <div className="mt-6 space-y-4">
+              <h4 className="text-lg font-medium text-gray-800 border-b border-gray-200 pb-2">Objektdaten</h4>
+              <p className="text-sm text-gray-600">Sie können alternativ später ein Exposé hochladen.</p>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Objektart</label>
+                  <select
+                    name="objektart"
+                    value={formData.objektart}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  >
+                    <option value="">Bitte wählen</option>
+                    <option value="einfamilienhaus">Einfamilienhaus</option>
+                    <option value="reihenhaus">Reihenhaus</option>
+                    <option value="doppelhaushälfte">Doppelhaushälfte</option>
+                    <option value="doppelhaus">Doppelhaus</option>
+                    <option value="eigentumswohnung">Eigentumswohnung</option>
+                    <option value="sonstige">Sonstige</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Baujahr</label>
+                  <input
+                    type="text"
+                    name="baujahr"
+                    value={formData.baujahr}
+                    onChange={handleInputChange}
+                    placeholder="z.B. 1998"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Grundstücksgröße (m²)</label>
+                  <input
+                    type="text"
+                    name="grundstuecksgroesse"
+                    value={formData.grundstuecksgroesse}
+                    onChange={handleInputChange}
+                    placeholder="z.B. 450"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Wohnfläche (m²)</label>
+                  <input
+                    type="text"
+                    name="wohnflaeche"
+                    value={formData.wohnflaeche}
+                    onChange={handleInputChange}
+                    placeholder="z.B. 120"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Kaufpreis (€)</label>
+                  <input
+                    type="text"
+                    name="kaufpreis"
+                    value={formData.kaufpreis}
+                    onChange={handleInputChange}
+                    placeholder="z.B. 350.000"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Letzte Modernisierungen (mit Jahr)</label>
+                  <input
+                    type="text"
+                    name="modernisierungen"
+                    value={formData.modernisierungen}
+                    onChange={handleInputChange}
+                    placeholder="z.B. 2020 Bad, 2018 Dach"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
 
         </div>
       )}
 
-      {/* Step 4: Einkommen und Ausgaben */}
-      {currentStep === 4 && (
+      {/* Datenschutz & Newsletter: nach Kreditwunsch (Teil von Schritt 3) */}
+      {currentStep === 3 && (
         <div className="space-y-6">
-          <h3 className="text-xl font-semibold text-gray-900 mb-6">Einkommen und Ausgaben</h3>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Beschäftigungsverhältnis *</label>
-            <select
-              name="beschaeftigungsverhaeltnis"
-              value={formData.beschaeftigungsverhaeltnis}
-              onChange={handleInputChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-            >
-              <option value="">Bitte wählen</option>
-              <option value="angestellt">Angestellt</option>
-              <option value="beamter">Beamter</option>
-              <option value="selbststaendig">Selbstständig</option>
-              <option value="freiberufler">Freiberufler</option>
-              <option value="rentner">Rentner</option>
-              <option value="arbeitslos">Arbeitslos</option>
-              <option value="student">Student</option>
-            </select>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Beschäftigt seit</label>
-              <input
-                type="month"
-                name="beschaeftigtSeit"
-                value={formData.beschaeftigtSeit}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Monatliches Nettoeinkommen *</label>
-            <select
-              name="nettoEinkommen"
-              value={formData.nettoEinkommen}
-              onChange={handleInputChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-            >
-              <option value="">Bitte wählen</option>
-              <option value="unter-1000">unter 1.000 €</option>
-              <option value="1000-1500">1.000 € - 1.500 €</option>
-              <option value="1500-2000">1.500 € - 2.000 €</option>
-              <option value="2000-2500">2.000 € - 2.500 €</option>
-              <option value="2500-3000">2.500 € - 3.000 €</option>
-              <option value="3000-4000">3.000 € - 4.000 €</option>
-              <option value="4000-5000">4.000 € - 5.000 €</option>
-              <option value="ueber-5000">über 5.000 €</option>
-            </select>
-          </div>
-
           <div className="space-y-4">
             <div className="flex items-start">
               <input
@@ -861,8 +1151,8 @@ export default function KreditanfrageForm() {
         </div>
       )}
 
-      {/* Step 5: E-Mail-Bestätigung */}
-      {currentStep === 5 && (
+      {/* Step 4: E-Mail-Bestätigung */}
+      {currentStep === 4 && (
         <div className="space-y-6">
           <h3 className="text-xl font-semibold text-gray-900 mb-6">E-Mail-Bestätigung erforderlich</h3>
           
@@ -949,10 +1239,11 @@ export default function KreditanfrageForm() {
         </div>
       )}
 
-      {/* Step 6: Dokumenten-Upload */}
-      {currentStep === 6 && (
+      {/* Step 5: Dokumenten-Upload */}
+      {currentStep === 5 && (
         <div className="space-y-6">
           <h3 className="text-xl font-semibold text-gray-900 mb-6">Erforderliche Dokumente</h3>
+          {/* Beschäftigungsverhältnis wird in Schritt 1 abgefragt */}
           
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
             <div className="flex items-start">
@@ -965,9 +1256,7 @@ export default function KreditanfrageForm() {
                   <li>• Alle Dokumente müssen gut lesbar und vollständig sein</li>
                   <li>• Akzeptierte Formate: PDF, JPG, PNG (max. 5MB pro Datei)</li>
                   <li>• Persönliche Daten werden verschlüsselt übertragen und sicher gespeichert</li>
-                  {requiresKontoauszug && (
-                    <li>• Bei Kreditsummen ab 20.000 € ist ein Kontoauszug erforderlich</li>
-                  )}
+                  <li>• Kontoauszug (letzter Monat) ist erforderlich</li>
                 </ul>
               </div>
             </div>
@@ -981,80 +1270,171 @@ export default function KreditanfrageForm() {
                 {requiredSelectedCount}/{requiredTotal} ausgewählt
               </span>
             </div>
-            
-            <div className="grid md:grid-cols-2 gap-6">
-              <DragDropFileUpload
-                name="gehaltsabrechnung1"
-                label="Gehaltsabrechnung 1 (vorletzter Monat)"
-                required
-                currentFile={formData.gehaltsabrechnung1}
-                onChange={handleFileChange}
-                onRemove={handleFileRemove}
-              />
-              
-              <DragDropFileUpload
-                name="gehaltsabrechnung2"
-                label="Gehaltsabrechnung 2 (letzter Monat)"
-                required
-                currentFile={formData.gehaltsabrechnung2}
-                onChange={handleFileChange}
-                onRemove={handleFileRemove}
-              />
-            </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              <DragDropFileUpload
-                name="personalausweisVorderseite"
-                label="Personalausweis Vorderseite"
-                required
-                currentFile={formData.personalausweisVorderseite}
-                onChange={handleFileChange}
-                onRemove={handleFileRemove}
-              />
-              
-              <DragDropFileUpload
-                name="personalausweisRueckseite"
-                label="Personalausweis Rückseite"
-                required
-                currentFile={formData.personalausweisRueckseite}
-                onChange={handleFileChange}
-                onRemove={handleFileRemove}
-              />
-            </div>
+            {/* Validierungshinweis: Zeigt klar, welche Pflichtdokumente fehlen */}
+            {missingDocs.length > 0 && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <p className="text-sm font-medium text-red-800 mb-1">Bitte laden Sie die fehlenden Pflichtdokumente hoch:</p>
+                <ul className="text-sm text-red-700 list-disc list-inside">
+                  {missingDocs.map((doc) => (
+                    <li key={doc}>{doc}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            
+            {isSelbststaendig ? (
+              <div className="grid md:grid-cols-3 gap-6">
+                <DragDropFileUpload
+                  name="steuerbescheid1"
+                  label="Steuerbescheid Jahr 1"
+                  required
+                  currentFile={formData.steuerbescheid1}
+                  onChange={handleFileChange}
+                  onRemove={handleFileRemove}
+                />
+                <DragDropFileUpload
+                  name="steuerbescheid2"
+                  label="Steuerbescheid Jahr 2"
+                  required
+                  currentFile={formData.steuerbescheid2}
+                  onChange={handleFileChange}
+                  onRemove={handleFileRemove}
+                />
+                <DragDropFileUpload
+                  name="steuerbescheid3"
+                  label="Steuerbescheid Jahr 3"
+                  required
+                  currentFile={formData.steuerbescheid3}
+                  onChange={handleFileChange}
+                  onRemove={handleFileRemove}
+                />
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-3 gap-6">
+                <DragDropFileUpload
+                  name="gehaltsabrechnung1"
+                  label="Gehaltsabrechnung 1"
+                  required
+                  currentFile={formData.gehaltsabrechnung1}
+                  onChange={handleFileChange}
+                  onRemove={handleFileRemove}
+                />
+                <DragDropFileUpload
+                  name="gehaltsabrechnung2"
+                  label="Gehaltsabrechnung 2"
+                  required
+                  currentFile={formData.gehaltsabrechnung2}
+                  onChange={handleFileChange}
+                  onRemove={handleFileRemove}
+                />
+                <DragDropFileUpload
+                  name="gehaltsabrechnung3"
+                  label="Gehaltsabrechnung 3"
+                  required
+                  currentFile={formData.gehaltsabrechnung3}
+                  onChange={handleFileChange}
+                  onRemove={handleFileRemove}
+                />
+              </div>
+            )}
           </div>
 
-          {/* Bedingte Dokumente */}
-          {requiresKontoauszug && (
-            <div className="space-y-4">
-              <h4 className="text-lg font-medium text-gray-800 border-b border-gray-200 pb-2">
-                Zusätzlich erforderlich (Kreditsumme ≥ 20.000 €)
-              </h4>
-              
-              <DragDropFileUpload
-                name="kontoauszug"
-                label="Kontoauszug letzter Monat"
-                required
-                currentFile={formData.kontoauszug}
-                onChange={handleFileChange}
-                onRemove={handleFileRemove}
-                helpText="Erforderlich bei Kreditsummen ab 20.000 € zur Einkommensprüfung"
-              />
-            </div>
-          )}
-
-          {/* Optionale Dokumente */}
+          {/* Weitere erforderliche/bedingte Dokumente */}
           <div className="space-y-4">
-            <h4 className="text-lg font-medium text-gray-800 border-b border-gray-200 pb-2">Optionale Dokumente</h4>
-            
+            <h4 className="text-lg font-medium text-gray-800 border-b border-gray-200 pb-2">Weitere Dokumente</h4>
+
+            {/* Kontoauszug immer erforderlich */}
             <DragDropFileUpload
-              name="bestehendeKredite"
-              label="Bestehende Kredite (falls vorhanden)"
-              currentFile={formData.bestehendeKredite}
+              name="kontoauszug"
+              label="Kontoauszug letzter Monat"
+              required
+              currentFile={formData.kontoauszug}
               onChange={handleFileChange}
               onRemove={handleFileRemove}
-              helpText="Kreditverträge oder Übersichten bestehender Verbindlichkeiten"
             />
+
+            {/* Meldebescheinigung für nicht-deutsche Staatsangehörigkeit */}
+            {(formData.staatsangehoerigkeit || '').toLowerCase() !== 'deutsch' && (
+              <DragDropFileUpload
+                name="meldebescheinigung"
+                label="Meldebescheinigung"
+                required
+                currentFile={formData.meldebescheinigung}
+                onChange={handleFileChange}
+                onRemove={handleFileRemove}
+              />
+            )}
+
+            {/* Bestehende Kredite */}
+            {formData.hatBestehendeKredite && (
+              <>
+                <DragDropFileUpload
+                  name="bestehendeKredite"
+                  label="Nachweis bestehende Kredite"
+                  required
+                  currentFile={formData.bestehendeKredite}
+                  onChange={handleFileChange}
+                  onRemove={handleFileRemove}
+                />
+                <DragDropFileUpload
+                  name="jahreskontoauszug"
+                  label="Jahreskontoauszug"
+                  required
+                  currentFile={formData.jahreskontoauszug}
+                  onChange={handleFileChange}
+                  onRemove={handleFileRemove}
+                />
+              </>
+            )}
+
+            {/* Bestehende Baufinanzierung */}
+            {formData.hatBaufinanzierung && (
+              <>
+                <DragDropFileUpload
+                  name="baufinanzierungNachweis"
+                  label="Nachweis bestehende Baufinanzierung"
+                  required
+                  currentFile={formData.baufinanzierungNachweis}
+                  onChange={handleFileChange}
+                  onRemove={handleFileRemove}
+                />
+                {!formData.hatBestehendeKredite && (
+                  <DragDropFileUpload
+                    name="jahreskontoauszug"
+                    label="Jahreskontoauszug"
+                    required
+                    currentFile={formData.jahreskontoauszug}
+                    onChange={handleFileChange}
+                    onRemove={handleFileRemove}
+                  />
+                )}
+              </>
+            )}
+
+            {/* BWA optional für Selbstständige */}
+            {isSelbststaendig && (
+              <DragDropFileUpload
+                name="bwaGuV"
+                label="BWA/GuV (optional)"
+                currentFile={formData.bwaGuV}
+                onChange={handleFileChange}
+                onRemove={handleFileRemove}
+              />
+            )}
+
+            {/* Exposé Upload für Baufinanzierungen (Alternative zu Objektdaten) */}
+            {formData.produktKategorie === 'baufinanzierung' && (
+              <DragDropFileUpload
+                name="expose"
+                label="Exposé (optional – alternativ Objektdaten angeben)"
+                currentFile={formData.expose}
+                onChange={handleFileChange}
+                onRemove={handleFileRemove}
+              />
+            )}
           </div>
+
 
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
             <div className="flex items-start">
@@ -1090,13 +1470,13 @@ export default function KreditanfrageForm() {
         
         <div>
           {currentStep < totalSteps ? (
-            currentStep === 4 ? (
+            currentStep === 3 ? (
               <Button
                 type="button"
                 onClick={() => {
                   if (isStepValid(currentStep)) {
                     sendEmailVerification()
-                    setCurrentStep(5)
+                    setCurrentStep(4)
                   }
                 }}
                 disabled={!isStepValid(currentStep)}
@@ -1104,7 +1484,7 @@ export default function KreditanfrageForm() {
               >
                 Daten bestätigen
               </Button>
-            ) : currentStep === 5 ? (
+            ) : currentStep === 4 ? (
               <Button
                 type="button"
                 onClick={nextStep}
@@ -1126,8 +1506,8 @@ export default function KreditanfrageForm() {
           ) : (
             <Button
               type="submit"
-              disabled={!isStepValid(currentStep) || !formData.datenschutz || formData.beschaeftigungsverhaeltnis === 'arbeitslos' || isUnder18 || isSubmitting}
-              className="bg-green-600 hover:bg-green-700 px-8 py-2"
+              disabled={!isStepValid(currentStep) || !formData.datenschutz || isUnder18 || isSubmitting}
+              className="bg-green-600 hover:bg-green-700 px-8 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? 'Wird gesendet...' : 'Anfrage absenden'}
             </Button>
@@ -1168,19 +1548,7 @@ export default function KreditanfrageForm() {
         </div>
       )}
 
-      {formData.beschaeftigungsverhaeltnis === 'arbeitslos' && (
-        <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mt-4">
-          <div className="flex items-center">
-            <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-            </svg>
-            <span className="font-medium">Hinweis:</span>
-          </div>
-          <p className="mt-1">
-            Leider können wir Ihnen als arbeitslose Person keinen Kredit anbieten. Für eine Kreditvergabe ist ein regelmäßiges Einkommen erforderlich.
-          </p>
-        </div>
-      )}
+      {/* Hinweis für arbeitslos entfernt – Beschäftigungsdaten werden nicht mehr abgefragt */}
 
       {isUnder18 && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mt-4">
