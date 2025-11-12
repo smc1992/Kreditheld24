@@ -1,12 +1,11 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import UnverbindlichAnfragenButton from '../../../components/UnverbindlichAnfragenButton'
 import Script from 'next/script'
 import { useSearchParams } from 'next/navigation'
 
 const UmschuldungPage = () => {
-  const searchParams = useSearchParams()
   const [totalDebtAmount, setTotalDebtAmount] = useState(24000)
   const [currentInterestRate, setCurrentInterestRate] = useState(8.5)
   const [currentMonthlyPayment, setCurrentMonthlyPayment] = useState(730)
@@ -91,45 +90,49 @@ const UmschuldungPage = () => {
     }
   ]
 
-  // Prefill from query params if present
-  useEffect(() => {
-    if (!searchParams) return
+  // Prefill via Suspense-isolated Client subcomponent to satisfy Next.js build
+  const PrefillFromParams: React.FC = () => {
+    const params = useSearchParams()
+    useEffect(() => {
+      if (!params) return
 
-    const amount = searchParams.get('amount')
-    const currentInterest = searchParams.get('currentInterest')
-    const newInterest = searchParams.get('newInterest')
-    const termYears = searchParams.get('termYears')
-    const currentMonthly = searchParams.get('currentMonthly')
+      const amount = params.get('amount')
+      const currentInterest = params.get('currentInterest')
+      const newInterest = params.get('newInterest')
+      const termYears = params.get('termYears')
+      const currentMonthly = params.get('currentMonthly')
 
-    if (amount) {
-      const val = parseFloat(amount)
-      if (!Number.isNaN(val)) setTotalDebtAmount(val)
-    }
-    if (currentInterest) {
-      const val = parseFloat(currentInterest)
-      if (!Number.isNaN(val)) setCurrentInterestRate(val)
-    }
-    if (newInterest) {
-      const val = parseFloat(newInterest)
-      if (!Number.isNaN(val)) setNewInterestRate(val)
-    }
-    if (termYears) {
-      const years = parseFloat(termYears)
-      if (!Number.isNaN(years)) setNewLoanTerm(Math.round(years * 12))
-    }
-    // If currentMonthly not provided, approximate from amount & current interest
-    if (currentMonthly) {
-      const val = parseFloat(currentMonthly)
-      if (!Number.isNaN(val)) setCurrentMonthlyPayment(val)
-    } else if (amount && currentInterest) {
-      const amt = parseFloat(amount)
-      const rate = parseFloat(currentInterest)
-      if (!Number.isNaN(amt) && !Number.isNaN(rate)) {
-        const approx = (amt * (rate / 100)) / 12
-        setCurrentMonthlyPayment(Number(approx.toFixed(2)))
+      if (amount) {
+        const val = parseFloat(amount)
+        if (!Number.isNaN(val)) setTotalDebtAmount(val)
       }
-    }
-  }, [searchParams])
+      if (currentInterest) {
+        const val = parseFloat(currentInterest)
+        if (!Number.isNaN(val)) setCurrentInterestRate(val)
+      }
+      if (newInterest) {
+        const val = parseFloat(newInterest)
+        if (!Number.isNaN(val)) setNewInterestRate(val)
+      }
+      if (termYears) {
+        const years = parseFloat(termYears)
+        if (!Number.isNaN(years)) setNewLoanTerm(Math.round(years * 12))
+      }
+      // If currentMonthly not provided, approximate from amount & current interest
+      if (currentMonthly) {
+        const val = parseFloat(currentMonthly)
+        if (!Number.isNaN(val)) setCurrentMonthlyPayment(val)
+      } else if (amount && currentInterest) {
+        const amt = parseFloat(amount)
+        const rate = parseFloat(currentInterest)
+        if (!Number.isNaN(amt) && !Number.isNaN(rate)) {
+          const approx = (amt * (rate / 100)) / 12
+          setCurrentMonthlyPayment(Number(approx.toFixed(2)))
+        }
+      }
+    }, [params])
+    return null
+  }
 
   useEffect(() => {
     // Initialize ECharts for savings chart with delay to ensure script is loaded
@@ -261,6 +264,11 @@ const UmschuldungPage = () => {
       <Script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js" />
       
       <div className="font-sans text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-900 transition-colors duration-300">
+
+        {/* Suspense boundary for query param prefill */}
+        <Suspense fallback={null}>
+          <PrefillFromParams />
+        </Suspense>
 
         {/* Hero Section */}
         <section className="relative w-full bg-gradient-to-r from-green-50 to-green-100 dark:from-gray-900 dark:to-gray-800 overflow-hidden min-h-[500px] sm:min-h-[600px] lg:min-h-[700px] transition-colors duration-300">

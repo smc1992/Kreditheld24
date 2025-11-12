@@ -6,9 +6,10 @@ WORKDIR /app
 ENV COREPACK_HOME=/root/.corepack
 RUN corepack enable && corepack prepare pnpm@9.9.0 --activate
 
-# Install deps
+# Install deps (ensure devDependencies are available during build)
 COPY package.json pnpm-lock.yaml .npmrc ./
-RUN pnpm install --frozen-lockfile
+ENV NODE_ENV=development
+RUN pnpm install --frozen-lockfile --prod=false
 
 # Build app
 COPY . .
