@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from './ui/button'
 import DragDropFileUpload from './DragDropFileUpload'
+import MultiFileUpload from './MultiFileUpload'
 import ProgressIndicator, { kreditanfrageSteps } from './ProgressIndicator'
 
 interface FormData {
@@ -64,6 +65,9 @@ interface FormData {
   baufinanzierungNachweis: File | null
   expose: File | null
 
+  // Zusätzliche, optionale Dokumente (bis zu 10)
+  additionalDocuments: File[]
+
   // Bedingungs-Flags
   hatBestehendeKredite: boolean
   hatBaufinanzierung: boolean
@@ -124,6 +128,7 @@ const initialFormData: FormData = {
   jahreskontoauszug: null,
   baufinanzierungNachweis: null,
   expose: null,
+  additionalDocuments: [],
 
   // Bedingungs-Flags
   hatBestehendeKredite: false,
@@ -167,7 +172,8 @@ export default function KreditanfrageForm() {
     'meldebescheinigung',
     'jahreskontoauszug',
     'baufinanzierungNachweis',
-    'expose'
+    'expose',
+    'additionalDocuments'
   ]
 
   const serializeFormData = (data: FormData): Record<string, any> => {
@@ -200,6 +206,29 @@ export default function KreditanfrageForm() {
       console.warn('Konnte gespeicherte Formularwerte nicht laden:', e)
     }
   }, [])
+
+  // Query-Parameter verwenden, um Formularfelder vorzufüllen (Kreditsumme, Laufzeit, Zweck, Rate, Kreditart)
+  useEffect(() => {
+    const getParam = (name: string): string | null => searchParams.get(name)
+    const sum = getParam('kreditsumme') || getParam('amount')
+    const term = getParam('laufzeit') || getParam('term')
+    const rate = getParam('gewuenschteRate') || getParam('monthly') || getParam('rate')
+    const purpose = getParam('verwendungszweck') || getParam('zweck')
+    const art = getParam('kreditart')
+    const category = getParam('produktKategorie')
+
+    if (sum || term || rate || purpose || art || category) {
+      setFormData(prev => ({
+        ...prev,
+        produktKategorie: category === 'baufinanzierung' ? 'baufinanzierung' : (category === 'privatkredit' ? 'privatkredit' : prev.produktKategorie),
+        kreditart: art || prev.kreditart,
+        kreditsumme: sum || prev.kreditsumme,
+        laufzeit: term || prev.laufzeit,
+        gewuenschteRate: rate || prev.gewuenschteRate,
+        verwendungszweck: purpose || prev.verwendungszweck,
+      }))
+    }
+  }, [searchParams])
 
   // Änderungen kontinuierlich speichern (ohne Datei-Felder)
   useEffect(() => {
@@ -251,6 +280,40 @@ export default function KreditanfrageForm() {
       ...prev,
       [name]: null
     }) as FormData)
+  }
+
+  // Zusätzliche Dokumente: bis zu 10 Dateien sammeln
+  const MAX_ADDITIONAL = 10
+  // Robustere Erkennung erlaubter Dateitypen (einige Browser liefern leeren oder abweichenden MIME-Type)
+  const allowedMimeTypes = ['application/pdf', 'application/x-pdf', 'application/octet-stream', 'image/jpeg', 'image/jpg', 'image/png']
+  const allowedExts = ['pdf', 'jpg', 'jpeg', 'png']
+  const isAllowedFile = (f: File) => {
+    const type = (f.type || '').toLowerCase()
+    const ext = (f.name?.split('.').pop() || '').toLowerCase()
+    const mimeOk = type ? allowedMimeTypes.includes(type) : true // wenn leer, anhand der Endung prüfen
+    const extOk = allowedExts.includes(ext)
+    return (mimeOk && extOk)
+  }
+  const handleAdditionalFilesAdd = (newFiles: FileList | File[]) => {
+    const incoming = Array.from(newFiles)
+      .filter(f => isAllowedFile(f) && f.size <= 5 * 1024 * 1024)
+    setFormData(prev => {
+      const merged = [...prev.additionalDocuments]
+      for (const f of incoming) {
+        if (merged.length >= MAX_ADDITIONAL) break
+        // optional: avoid duplicates by name+size
+        const exists = merged.some(m => m.name === f.name && m.size === f.size)
+        if (!exists) merged.push(f)
+      }
+      return { ...prev, additionalDocuments: merged }
+    })
+  }
+  const handleAdditionalFileRemove = (index: number) => {
+    setFormData(prev => {
+      const copy = [...prev.additionalDocuments]
+      copy.splice(index, 1)
+      return { ...prev, additionalDocuments: copy }
+    })
   }
 
   // Kontoauszug 1 Monat ist generell erforderlich (Privatkredit, Selbständige und Baufinanzierung)
@@ -397,6 +460,10 @@ export default function KreditanfrageForm() {
       const payload = new FormData()
       Object.entries(formData).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
+          // Arrays (z.B. additionalDocuments) separat unten anhängen
+          if (Array.isArray(value)) {
+            return
+          }
           if (typeof File !== 'undefined' && value instanceof File) {
             payload.append(key, value)
           } else {
@@ -404,6 +471,12 @@ export default function KreditanfrageForm() {
           }
         }
       })
+      // Zusätzliche Dokumente separat anhängen (als Mehrfach-Feld)
+      if (formData.additionalDocuments && formData.additionalDocuments.length > 0) {
+        for (const file of formData.additionalDocuments) {
+          payload.append('additionalDocuments', file)
+        }
+      }
       // Verifizierungs-Token beilegen (Server prüft es)
       payload.append('verificationToken', verificationToken)
 
@@ -1498,6 +1571,21 @@ export default function KreditanfrageForm() {
                 onRemove={handleFileRemove}
               />
             )}
+          </div>
+
+          {/* Zusätzliche optionale Uploads (bis zu 10 Dateien) */}
+          <div className="space-y-4 mt-6">
+            <h4 className="text-lg font-medium text-gray-800 border-b border-gray-200 pb-2">Zusätzliche Dokumente (optional)</h4>
+            <MultiFileUpload
+              name="additionalDocuments"
+              label="Weitere Dateien hochladen (max. 10)"
+              files={formData.additionalDocuments}
+              maxFiles={10}
+              accept=".pdf,.jpg,.jpeg,.png"
+              onAddFiles={handleAdditionalFilesAdd}
+              onRemoveFile={handleAdditionalFileRemove}
+              helpText="Sie können bis zu 10 PDF/JPG/PNG-Dateien ergänzen."
+            />
           </div>
 
 

@@ -186,10 +186,12 @@ export function Header() {
                 {activeMegaMenu === key && (
                   <div 
                     className={`absolute top-full mt-3 w-screen max-w-5xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden z-50 animate-in slide-in-from-top-2 duration-300 ${
-                      key === 'kreditarten' || key === Object.keys(megaMenuData)[0] 
-                        ? 'left-0' 
+                      key === 'kreditarten' || key === Object.keys(megaMenuData)[0]
+                        ? 'left-0'
                         : key === 'service'
                         ? 'left-1/2 transform -translate-x-1/2'
+                        : key === 'kontakt'
+                        ? 'right-0'
                         : 'left-1/2 transform -translate-x-1/2'
                     }`}
                     onMouseLeave={() => setActiveMegaMenu(null)}

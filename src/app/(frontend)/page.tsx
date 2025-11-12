@@ -1,57 +1,12 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import UnverbindlichAnfragenButton from '../../components/UnverbindlichAnfragenButton'
 import Script from 'next/script'
 
 const HomePage = () => {
-  const [loanAmount, setLoanAmount] = useState(10000)
-  const [loanTerm, setLoanTerm] = useState(60)
-  const [loanPurpose, setLoanPurpose] = useState('freie_verwendung')
   const [showInfoModal, setShowInfoModal] = useState(false)
-  const [apiCalc, setApiCalc] = useState<{ monthlyPayment: string, totalCost?: string, source?: 'europace' | 'local' } | null>(null)
-  const [calcLoading, setCalcLoading] = useState(false)
-
-  useEffect(() => {
-    const controller = new AbortController()
-    async function run() {
-      try {
-        setCalcLoading(true)
-        const res = await fetch('/api/europace/calculate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount: loanAmount, term: loanTerm, purpose: loanPurpose }),
-          signal: controller.signal,
-          cache: 'no-store',
-        })
-        if (!res.ok) throw new Error(`Fehler: ${res.status}`)
-        const data = await res.json()
-        setApiCalc({ monthlyPayment: data?.monthlyPayment, totalCost: data?.totalCost, source: data?.source })
-      } catch (e) {
-        setApiCalc(null)
-      } finally {
-        setCalcLoading(false)
-      }
-    }
-    run()
-    return () => controller.abort()
-  }, [loanAmount, loanTerm, loanPurpose])
-
-  // Calculate monthly rate and total cost
-  const calculateLoan = () => {
-    const interestRate = 0.0399 // 3.99% annual interest rate
-    const monthlyInterestRate = interestRate / 12
-    const monthlyPayment = loanAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, loanTerm)) / (Math.pow(1 + monthlyInterestRate, loanTerm) - 1)
-    const totalCost = monthlyPayment * loanTerm
-    
-    return {
-      monthlyPayment: monthlyPayment.toFixed(2),
-      totalCost: totalCost.toFixed(2),
-      interestRate: '3,99'
-    }
-  }
-
-  const loanCalculation = calculateLoan()
+  // Hinweis: Rechner-Logik entfernt, um API-Aufrufe auf der Startseite zu vermeiden.
 
   return (
     <div className="font-sans text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-900 transition-colors duration-300">
@@ -313,6 +268,18 @@ const HomePage = () => {
                 Wir vergleichen über 20 Banken und Kreditinstitute, um Ihnen das beste Angebot zu präsentieren.
               </p>
             </div>
+            {/* Position 2: Individueller Service */}
+            <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transform hover:-translate-y-2">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-8 h-8 flex items-center justify-center text-primary">
+                  <i className="ri-timer-flash-line text-2xl"></i>
+                </div>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Individueller Service</h3>
+              <p className="text-gray-600 dark:text-gray-300">
+                Sie senden uns Ihre Unterlagen – wir übernehmen den Rest.
+              </p>
+            </div>
             <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-blue-500/30 transform hover:-translate-y-2">
               <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                 <div className="w-8 h-8 flex items-center justify-center text-blue-600">
@@ -347,17 +314,6 @@ const HomePage = () => {
                 Unser Service ist für Sie zu 100% kostenlos – wir verdienen an den Banken, nicht an Ihnen.
               </p>
             </div>
-            <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transform hover:-translate-y-2">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <div className="w-8 h-8 flex items-center justify-center text-primary">
-                  <i className="ri-smartphone-line text-2xl"></i>
-                </div>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Digitale Antragsstrecke</h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                Erledigen Sie den gesamten Kreditantrag online – von der Anfrage bis zur Unterschrift.
-              </p>
-            </div>
             <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-blue-500/30 transform hover:-translate-y-2">
               <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                 <div className="w-8 h-8 flex items-center justify-center text-blue-600">
@@ -367,17 +323,6 @@ const HomePage = () => {
               <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Persönliche Beratung</h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Bei Fragen steht Ihnen unser Expertenteam telefonisch oder per E-Mail zur Verfügung.
-              </p>
-            </div>
-            <div className="group bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-primary/30 transform hover:-translate-y-2">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <div className="w-8 h-8 flex items-center justify-center text-primary">
-                  <i className="ri-timer-flash-line text-2xl"></i>
-                </div>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Individueller Service</h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                Sie senden uns Ihre Unterlagen – wir übernehmen den Rest.
               </p>
             </div>
           </div>
@@ -404,7 +349,7 @@ const HomePage = () => {
               Wir bieten maßgeschneiderte Finanzierungslösungen für jeden Bedarf – finden Sie den passenden Kredit für Ihre Situation.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <Link href="/ratenkredite" className="group">
               <div className="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600 hover:border-primary/50 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
                 <div className="w-14 h-14 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
@@ -415,6 +360,25 @@ const HomePage = () => {
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-primary transition-colors">Ratenkredit</h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
                   Flexible Laufzeiten und Raten für Ihre persönlichen Wünsche.
+                </p>
+                <div className="text-primary font-medium flex items-center text-sm">
+                  <span>Mehr erfahren</span>
+                  <div className="w-4 h-4 ml-1 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
+                    <i className="ri-arrow-right-line"></i>
+                  </div>
+                </div>
+              </div>
+            </Link>
+            <Link href="/baufinanzierung" className="group">
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600 hover:border-primary/50 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                <div className="w-14 h-14 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-700 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-7 h-7 flex items-center justify-center text-primary">
+                    <i className="ri-home-3-line text-xl"></i>
+                  </div>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-primary transition-colors">Baufinanzierung</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
+                  Maßgeschneiderte Finanzierung für Haus, Wohnung und Neubau.
                 </p>
                 <div className="text-primary font-medium flex items-center text-sm">
                   <span>Mehr erfahren</span>
@@ -436,25 +400,6 @@ const HomePage = () => {
                   Bestehende Kredite zusammenfassen und Geld sparen.
                 </p>
                 <div className="text-primary font-medium flex items-center text-sm">
-                  <span>Mehr erfahren</span>
-                  <div className="w-4 h-4 ml-1 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
-                    <i className="ri-arrow-right-line"></i>
-                  </div>
-                </div>
-              </div>
-            </Link>
-            <Link href="/schufa-neutral" className="group">
-              <div className="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600 hover:border-blue-500/50 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-                <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <div className="w-7 h-7 flex items-center justify-center text-blue-600">
-                    <i className="ri-file-shield-line text-xl"></i>
-                  </div>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-blue-600 transition-colors">SCHUFA-neutral</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
-                  Kreditanfrage ohne Einfluss auf Ihren SCHUFA-Score.
-                </p>
-                <div className="text-blue-600 font-medium flex items-center text-sm">
                   <span>Mehr erfahren</span>
                   <div className="w-4 h-4 ml-1 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
                     <i className="ri-arrow-right-line"></i>
@@ -524,7 +469,7 @@ const HomePage = () => {
       </section>
 
       {/* Calculator */}
-      <section id="calculator" className="py-16 bg-gradient-to-br from-gray-50 via-green-50/20 to-gray-50 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 transition-colors duration-300 relative overflow-hidden">
+      <section id="cta-home" className="py-16 bg-gradient-to-br from-gray-50 via-green-50/20 to-gray-50 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 transition-colors duration-300 relative overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-10 right-10 w-24 h-24 border border-primary rounded-full"></div>
@@ -536,157 +481,38 @@ const HomePage = () => {
           <div className="text-center mb-12">
             <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-green-200 dark:border-green-700 mb-6">
               <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-              <span className="text-sm font-medium text-green-700 dark:text-green-400">Kostenloser Rechner</span>
+              <span className="text-sm font-medium text-green-700 dark:text-green-400">Nächster Schritt</span>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Kreditrechner</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Wie möchten Sie starten?</h2>
             <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Berechnen Sie Ihre monatliche Rate und finden Sie den passenden Kredit für Ihre Bedürfnisse.
+              Wählen Sie zwischen persönlichem Service oder einem schnellen Kreditvergleich.
             </p>
           </div>
-          <div className="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 md:p-8 max-w-4xl mx-auto transition-colors duration-300">
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <div className="mb-6">
-                  <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Kreditsumme</label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      value={loanAmount}
-                      onChange={(e) => setLoanAmount(Number(e.target.value))}
-                      className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300"
-                      min="1000"
-                      max="100000"
-                    />
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">
-                      €
-                    </div>
-                  </div>
-                  <input
-                    type="range"
-                    min="1000"
-                    max="100000"
-                    step="500"
-                    value={loanAmount}
-                    onChange={(e) => setLoanAmount(Number(e.target.value))}
-                    className="w-full mt-2"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    <span>1.000 €</span>
-                    <span>100.000 €</span>
-                  </div>
+          <div className="max-w-3xl mx-auto">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <UnverbindlichAnfragenButton variant="primary" size="md" className="py-4 px-8" />
+              <Link
+                href="/kreditrechner"
+                className="group bg-gradient-to-r from-primary to-green-600 hover:from-green-600 hover:to-primary text-white font-medium py-4 px-8 rounded-button whitespace-nowrap shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center"
+              >
+                <div className="w-5 h-5 mr-2 flex items-center justify-center">
+                  <i className="ri-external-link-line"></i>
                 </div>
-                <div className="mb-6">
-                  <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Laufzeit</label>
-                  <div className="relative">
-                    <div className="flex">
-                      <button
-                        onClick={() => setLoanTerm(Math.max(12, loanTerm - 6))}
-                        className="bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 font-bold py-3 px-4 rounded-l border border-gray-300 dark:border-gray-600 rounded-button whitespace-nowrap transition-colors duration-300"
-                      >
-                        <div className="w-4 h-4 flex items-center justify-center">
-                          <i className="ri-subtract-line"></i>
-                        </div>
-                      </button>
-                      <input
-                        type="number"
-                        value={loanTerm}
-                        onChange={(e) => setLoanTerm(Number(e.target.value))}
-                        className="w-full border-y border-gray-300 dark:border-gray-600 py-3 px-4 text-center bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300"
-                        min="12"
-                        max="120"
-                      />
-                      <button
-                        onClick={() => setLoanTerm(Math.min(120, loanTerm + 6))}
-                        className="bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 font-bold py-3 px-4 rounded-r border border-gray-300 dark:border-gray-600 rounded-button whitespace-nowrap transition-colors duration-300"
-                      >
-                        <div className="w-4 h-4 flex items-center justify-center">
-                          <i className="ri-add-line"></i>
-                        </div>
-                      </button>
-                    </div>
-                    <div className="absolute inset-y-0 right-12 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">
-                      Monate
-                    </div>
-                  </div>
-                  <input
-                    type="range"
-                    min="12"
-                    max="120"
-                    step="6"
-                    value={loanTerm}
-                    onChange={(e) => setLoanTerm(Number(e.target.value))}
-                    className="w-full mt-2"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>12 Monate</span>
-                    <span>120 Monate</span>
-                  </div>
+                <span>Kreditvergleich</span>
+              </Link>
+            </div>
+            <div className="mt-6 flex flex-wrap justify-center gap-6">
+              <div className="flex items-center">
+                <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
+                  <i className="ri-check-line"></i>
                 </div>
-                <div className="mb-6">
-                  <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Verwendungszweck</label>
-                  <div className="relative">
-                    <select
-                      value={loanPurpose}
-                      onChange={(e) => setLoanPurpose(e.target.value)}
-                      className="w-full appearance-none border border-gray-300 dark:border-gray-600 rounded py-3 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 transition-colors duration-300"
-                    >
-                      <option value="freie_verwendung">Freie Verwendung</option>
-                      <option value="auto">Autokauf</option>
-                      <option value="umschuldung">Umschuldung</option>
-                      <option value="renovierung">Renovierung</option>
-                      <option value="moebel">Möbelkauf</option>
-                      <option value="elektronik">Elektronik</option>
-                      <option value="urlaub">Urlaub</option>
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500 dark:text-gray-400">
-                      <div className="w-5 h-5 flex items-center justify-center">
-                        <i className="ri-arrow-down-s-line"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <span className="text-gray-600 dark:text-gray-300">100% kostenlos</span>
               </div>
-              <div className="bg-gray-50 dark:bg-gray-600 rounded-lg p-6 transition-colors duration-300">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Ihre Kreditkonditionen</h3>
-                <div className="mb-6">
-                  <div className="flex justify-between mb-2">
-                    <span className="text-gray-600 dark:text-gray-300">Monatliche Rate:</span>
-                    <span className="font-semibold text-lg">{(apiCalc?.monthlyPayment ?? loanCalculation.monthlyPayment)} €</span>
-                  </div>
-                  <div className="flex justify-between mb-2">
-                    <span className="text-gray-600 dark:text-gray-300">Effektiver Jahreszins:</span>
-                    <span className="font-semibold">{loanCalculation.interestRate} %</span>
-                  </div>
-                  <div className="flex justify-between mb-2">
-                    <span className="text-gray-600 dark:text-gray-300">Gesamtkosten:</span>
-                    <span className="font-semibold">{(apiCalc?.totalCost ?? loanCalculation.totalCost)} €</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-300">Zinsbindung:</span>
-                    <span className="font-semibold">Gesamte Laufzeit</span>
-                  </div>
+              <div className="flex items-center">
+                <div className="w-5 h-5 flex items-center justify-center text-primary mr-2">
+                  <i className="ri-shield-check-line"></i>
                 </div>
-                <div className="mb-6">
-                  <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
-                    <div className="h-2 bg-primary rounded-full" style={{ width: '85%' }}></div>
-                  </div>
-                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    <span>Bonitätsscore: Gut</span>
-                    <span>85/100</span>
-                  </div>
-                </div>
-                <Link
-                  href="/kreditanfrage"
-                  className="block w-full bg-primary hover:bg-green-500 text-white font-medium py-3 px-6 rounded-button whitespace-nowrap shadow-md transition-all text-center"
-                >
-                  Individueller Service
-                </Link>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-                   {calcLoading ? 'Verbindung zur Europace API wird aufgebaut…' : apiCalc?.source === 'europace' ? 'Verbunden mit Europace API' : 'Lokale Beispielrechnung – API nicht aktiv'}
-                 </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">
-                  100% kostenlos & SCHUFA-neutral
-                </p>
+                <span className="text-gray-600 dark:text-gray-300">SCHUFA-neutral</span>
               </div>
             </div>
           </div>

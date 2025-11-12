@@ -180,7 +180,7 @@ const ForwarddarlehenPage = () => {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Link
-                href="/kreditrechner"
+                href="#rechner"
                 className="group bg-gradient-to-r from-primary to-green-600 hover:from-green-600 hover:to-primary text-white font-medium py-4 px-8 rounded-button whitespace-nowrap shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center transform hover:scale-105"
               >
                 <span>Forward-Zins berechnen</span>
@@ -283,7 +283,7 @@ const ForwarddarlehenPage = () => {
                         <td className="text-center py-4 px-4 text-gray-600 dark:text-gray-300">{szenario.aktuell.toFixed(2)}%</td>
                         <td className="text-center py-4 px-4 text-gray-600 dark:text-gray-300">{szenario.zukunft.toFixed(2)}%</td>
                         <td className={`text-right py-4 px-4 font-semibold ${szenario.farbe}`}>
-                          {szenario.ersparnis ? `+${Number(szenario.ersparnis).toLocaleString()} €` : `-${Number(szenario.mehrkosten).toLocaleString()} €`}
+                          {szenario.ersparnis ? `+${Number(szenario.ersparnis).toLocaleString('de-DE')} €` : `-${Number(szenario.mehrkosten).toLocaleString('de-DE')} €`}
                         </td>
                       </tr>
                     ))}
@@ -292,7 +292,7 @@ const ForwarddarlehenPage = () => {
               </div>
               <div className="mt-6 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
                 <p className="text-purple-700 dark:text-purple-300 text-sm">
-                  💡 <strong>Hinweis:</strong> Die Tabelle zeigt die Auswirkungen über {zinsbindung} Jahre Zinsbindung bei einer Restschuld von {restschuld.toLocaleString()} €.
+                  💡 <strong>Hinweis:</strong> Die Tabelle zeigt die Auswirkungen über {zinsbindung} Jahre Zinsbindung bei einer Restschuld von {restschuld.toLocaleString('de-DE')} €.
                 </p>
               </div>
             </div>
@@ -398,7 +398,7 @@ const ForwarddarlehenPage = () => {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600 dark:text-gray-300">Monatliche Rate:</span>
-                        <span className="font-semibold text-gray-900 dark:text-gray-100">{Number(berechnung.monatlicheRate).toLocaleString()} €</span>
+                        <span className="font-semibold text-gray-900 dark:text-gray-100">{Number(berechnung.monatlicheRate).toLocaleString('de-DE')} €</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600 dark:text-gray-300">Vorlaufzeit:</span>
@@ -407,12 +407,14 @@ const ForwarddarlehenPage = () => {
                     </div>
                   </div>
                   <div className="mt-6">
-                    <Link
-                      href="/kontakt"
-                      className="block w-full bg-primary hover:bg-green-500 text-white font-medium py-3 px-6 rounded-button text-center transition-all"
-                    >
-                      Kostenlose Beratung anfordern
-                    </Link>
+                    <div className="mt-4 grid grid-cols-1 gap-3">
+                      <UnverbindlichAnfragenButton
+                        variant="secondary"
+                        size="md"
+                        fullWidth
+                        className=""
+                      />
+                    </div>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">
                       Unverbindliche Forward-Beratung
                     </p>
@@ -513,7 +515,7 @@ const ForwarddarlehenPage = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
-                href="/kreditrechner" 
+                href="#rechner" 
                 className="bg-primary hover:bg-green-500 text-white font-medium py-3 px-8 rounded-button transition-all flex items-center justify-center"
               >
                 <span>Forward-Zins berechnen</span>

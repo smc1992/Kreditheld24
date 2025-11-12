@@ -511,135 +511,7 @@ const UmschuldungPage = () => {
           </div>
         </section>
 
-        {/* Contact Form */}
-        <section id="angebot" className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Unverbindliches Angebot anfordern</h2>
-              <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                Füllen Sie das Formular aus und erhalten Sie ein individuelles Umschuldungsangebot von unseren Experten.
-              </p>
-            </div>
-            <div className="max-w-2xl mx-auto">
-              <form onSubmit={handleFormSubmit} className="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 md:p-8 transition-colors duration-300">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Anrede</label>
-                    <div className="flex space-x-4">
-                      <label className="flex items-center">
-                        <input 
-                          type="radio" 
-                          name="anrede" 
-                          value="herr" 
-                          checked={formData.anrede === 'herr'}
-                          onChange={handleInputChange}
-                          className="sr-only"
-                        />
-                        <div className="w-4 h-4 border-2 border-gray-300 dark:border-gray-600 rounded-full mr-2 flex items-center justify-center">
-                          <div className={`w-2 h-2 bg-primary rounded-full ${formData.anrede === 'herr' ? 'opacity-100' : 'opacity-0'}`}></div>
-                        </div>
-                        <span className="text-gray-900 dark:text-gray-100">Herr</span>
-                      </label>
-                      <label className="flex items-center">
-                        <input 
-                          type="radio" 
-                          name="anrede" 
-                          value="frau" 
-                          checked={formData.anrede === 'frau'}
-                          onChange={handleInputChange}
-                          className="sr-only"
-                        />
-                        <div className="w-4 h-4 border-2 border-gray-300 dark:border-gray-600 rounded-full mr-2 flex items-center justify-center">
-                          <div className={`w-2 h-2 bg-primary rounded-full ${formData.anrede === 'frau' ? 'opacity-100' : 'opacity-0'}`}></div>
-                        </div>
-                        <span className="text-gray-900 dark:text-gray-100">Frau</span>
-                      </label>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Vorname</label>
-                    <input 
-                      type="text" 
-                      name="vorname"
-                      value={formData.vorname}
-                      onChange={handleInputChange}
-                      className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300" 
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Nachname</label>
-                    <input 
-                      type="text" 
-                      name="nachname"
-                      value={formData.nachname}
-                      onChange={handleInputChange}
-                      className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300" 
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">E-Mail</label>
-                    <input 
-                      type="email" 
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300" 
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Telefon</label>
-                    <input 
-                      type="tel" 
-                      name="telefon"
-                      value={formData.telefon}
-                      onChange={handleInputChange}
-                      className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Geburtsdatum</label>
-                    <input 
-                      type="date" 
-                      name="geburtsdatum"
-                      value={formData.geburtsdatum}
-                      onChange={handleInputChange}
-                      className="w-full border border-gray-300 dark:border-gray-600 rounded py-3 px-4 bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-300"
-                    />
-                  </div>
-                </div>
-                
-                <div className="mt-6">
-                  <label className="flex items-start">
-                    <input 
-                      type="checkbox" 
-                      name="datenschutz"
-                      checked={formData.datenschutz}
-                      onChange={handleInputChange}
-                      className="mt-1 mr-3"
-                      required
-                    />
-                    <span className="text-gray-700 dark:text-gray-300">
-                      Ich habe die <Link href="/datenschutz" className="text-primary hover:underline">Datenschutzerklärung</Link> gelesen und stimme der Verarbeitung meiner Daten zu.
-                    </span>
-                  </label>
-                </div>
-                
-                <div className="mt-8">
-                  <button 
-                    type="submit" 
-                    className="w-full bg-primary hover:bg-green-500 text-white font-medium py-3 px-6 rounded-button whitespace-nowrap shadow-md transition-all text-center"
-                  >
-                    Unverbindliches Angebot anfordern
-                  </button>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">100% kostenlos & SCHUFA-neutral</p>
-                </div>
-              </form>
-            </div>
-          </div>
-        </section>
+        {/* Contact Form entfernt */}
 
         {/* Process */}
         <section className="py-16 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
@@ -894,15 +766,11 @@ const UmschuldungPage = () => {
                     <i className="ri-arrow-right-line"></i>
                   </div>
                 </Link>
-                <Link 
-                  href="#angebot" 
-                  className="border border-gray-300 dark:border-gray-600 hover:border-primary text-gray-700 dark:text-gray-300 hover:text-primary font-medium py-3 px-8 rounded-button whitespace-nowrap flex items-center justify-center transition-all"
-                >
-                  <div className="w-5 h-5 mr-2 flex items-center justify-center">
-                    <i className="ri-customer-service-2-line"></i>
-                  </div>
-                  <span>Beratung anfordern</span>
-                </Link>
+                <UnverbindlichAnfragenButton 
+                  variant="secondary" 
+                  size="md" 
+                  className="px-8"
+                />
               </div>
               <div className="mt-8 flex flex-wrap justify-center gap-6">
                 <div className="flex items-center">

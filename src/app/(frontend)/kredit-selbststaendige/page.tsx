@@ -439,6 +439,14 @@ const KreditSelbststaendigePage = () => {
                   >
                     Jetzt Kreditangebote vergleichen
                   </Link>
+                  {/* Zusätzlicher CTA: Individueller Service */}
+                  <div className="mt-4">
+                    <UnverbindlichAnfragenButton
+                      variant="secondary"
+                      size="md"
+                      fullWidth
+                    />
+                  </div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">100% kostenlos & SCHUFA-neutral</p>
                 </div>
               </div>

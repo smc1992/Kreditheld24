@@ -131,7 +131,15 @@ const RatenkreditePage = () => {
                     <i className="ri-arrow-right-line"></i>
                   </div>
                 </Link>
-                <UnverbindlichAnfragenButton variant="secondary" size="md" className="py-3 sm:py-4 px-6 sm:px-8 text-sm sm:text-base" />
+                <Link 
+                  href="#econ-ratenkredit"
+                  className="group bg-white text-primary border-2 border-primary hover:bg-primary hover:text-white font-medium py-3 sm:py-4 px-6 sm:px-8 rounded-button shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base"
+                >
+                  <span>Jetzt Kredit berechnen</span>
+                  <div className="w-4 h-4 sm:w-5 sm:h-5 ml-2 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
+                    <i className="ri-arrow-right-line"></i>
+                  </div>
+                </Link>
               </div>
               
             {/* Mobile Trust Indicators */}

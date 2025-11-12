@@ -381,12 +381,24 @@ const AutokreditPage = () => {
                     <span>85/100</span>
                   </div>
                 </div>
-                <Link
-                  href="/kontakt"
-                  className="block w-full bg-primary hover:bg-green-500 text-white font-medium py-3 px-6 rounded-button whitespace-nowrap shadow-md transition-all text-center"
-                >
-                  Jetzt Autokredit beantragen
-                </Link>
+                {/* Zusätzliche CTA-Buttons: Individueller Service & Kreditvergleich */}
+                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <UnverbindlichAnfragenButton
+                    variant="secondary"
+                    size="md"
+                    fullWidth
+                    className=""
+                  />
+                  <Link
+                    href="/kreditrechner"
+                    className="w-full border-2 border-primary text-primary hover:bg-primary hover:text-white font-semibold rounded-button px-6 py-3 transition-all inline-flex items-center justify-center gap-2"
+                  >
+                    <span>Jetzt Kredit berechnen</span>
+                    <div className="w-4 h-4 flex items-center justify-center">
+                      <i className="ri-arrow-right-line"></i>
+                    </div>
+                  </Link>
+                </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">
                   100% kostenlos & SCHUFA-neutral
                 </p>

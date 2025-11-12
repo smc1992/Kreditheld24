@@ -92,6 +92,22 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Zusätzliche optionale Dokumente (mehrere Einträge unter dem gleichen Feldnamen)
+    const additionalDocs = form.getAll('additionalDocuments') as (File | string)[]
+    for (const entry of additionalDocs) {
+      if (entry && typeof entry === 'object' && 'arrayBuffer' in entry) {
+        const arrayBuffer = await (entry as File).arrayBuffer()
+        const buffer = Buffer.from(arrayBuffer)
+        if (buffer.length > 0) {
+          attachments.push({
+            filename: (entry as File).name || 'zusatzdatei.dat',
+            content: buffer,
+            contentType: (entry as any).type || undefined
+          })
+        }
+      }
+    }
+
     // Uploads temporär serverseitig speichern (z.B. zur Nachverfolgung)
     try {
       const baseDir = path.join(process.cwd(), 'uploads', 'kreditanfragen')

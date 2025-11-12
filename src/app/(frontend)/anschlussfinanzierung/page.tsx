@@ -180,7 +180,7 @@ const AnschlussfinanzierungPage = () => {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Link
-                href="/kreditrechner"
+                href="#rechner"
                 className="group bg-gradient-to-r from-primary to-green-600 hover:from-green-600 hover:to-primary text-white font-medium py-4 px-8 rounded-button whitespace-nowrap shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center transform hover:scale-105"
               >
                 <span>Ersparnis berechnen</span>
@@ -404,20 +404,23 @@ const AnschlussfinanzierungPage = () => {
                     </div>
                   </div>
                   <div className="mt-6">
-                    <Link
-                      href={{
-                        pathname: '/umschuldung',
-                        query: {
-                          amount: restschuld,
-                          currentInterest: aktuellerZins,
-                          newInterest: neuerZins,
-                          termYears: laufzeit,
-                        },
-                      }}
-                      className="block w-full bg-primary hover:bg-green-500 text-white font-medium py-3 px-6 rounded-button text-center transition-all"
-                    >
-                      Kostenlose Beratung anfordern
-                    </Link>
+                    <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <UnverbindlichAnfragenButton
+                        variant="secondary"
+                        size="md"
+                        fullWidth
+                        className=""
+                      />
+                      <Link
+                        href="/kreditrechner"
+                        className="w-full border-2 border-primary text-primary hover:bg-primary hover:text-white font-semibold rounded-button px-6 py-3 transition-all inline-flex items-center justify-center gap-2"
+                      >
+                        <span>Ersparnis berechnen</span>
+                        <div className="w-4 h-4 flex items-center justify-center">
+                          <i className="ri-arrow-right-line"></i>
+                        </div>
+                      </Link>
+                    </div>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">
                       100% kostenlos & unverbindlich
                     </p>
