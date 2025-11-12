@@ -495,19 +495,8 @@ export default function KreditanfrageForm() {
       case 4:
         return emailVerified
       case 5:
-        const baseDocsOk = isSelbststaendig
-          ? !!(formData.steuerbescheid1 && formData.steuerbescheid2 && formData.steuerbescheid3)
-          : !!(formData.gehaltsabrechnung1 && formData.gehaltsabrechnung2 && formData.gehaltsabrechnung3)
-        const kontoauszugOk = !!formData.kontoauszug
-        const meldeOk = (formData.staatsangehoerigkeit || '').toLowerCase() === 'deutsch' || !!formData.meldebescheinigung
-        const krediteOk = !formData.hatBestehendeKredite || (!!formData.bestehendeKredite && !!formData.jahreskontoauszug)
-        const baufinOk = !formData.hatBaufinanzierung || (!!formData.baufinanzierungNachweis && !!formData.jahreskontoauszug)
-        let exposeObjektOk = true
-        if (formData.produktKategorie === 'baufinanzierung') {
-          const objektdatenOk = !!(formData.objektart && formData.baujahr && formData.grundstuecksgroesse && formData.wohnflaeche && formData.kaufpreis)
-          exposeObjektOk = !!(formData.expose || objektdatenOk)
-        }
-        return baseDocsOk && kontoauszugOk && meldeOk && krediteOk && baufinOk && exposeObjektOk
+        // Schritt 5 ist rein informativ: keine Pflicht-Validierung der Dokumente
+        return true
       default:
         return false
     }
@@ -1242,7 +1231,7 @@ export default function KreditanfrageForm() {
       {/* Step 5: Dokumenten-Upload */}
       {currentStep === 5 && (
         <div className="space-y-6">
-          <h3 className="text-xl font-semibold text-gray-900 mb-6">Erforderliche Dokumente</h3>
+          <h3 className="text-xl font-semibold text-gray-900 mb-6">Dokumenten-Checkliste</h3>
           {/* Beschäftigungsverhältnis wird in Schritt 1 abgefragt */}
           
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
@@ -1251,13 +1240,14 @@ export default function KreditanfrageForm() {
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
               </svg>
               <div>
-                <h4 className="font-medium text-blue-900 mb-1">Wichtige Hinweise zum Dokumenten-Upload:</h4>
+                <h4 className="font-medium text-blue-900 mb-1">Hinweis zur Vorbereitung:</h4>
                 <ul className="text-sm text-blue-800 space-y-1">
                   <li>• Alle Dokumente müssen gut lesbar und vollständig sein</li>
                   <li>• Akzeptierte Formate: PDF, JPG, PNG (max. 5MB pro Datei)</li>
                   <li>• Persönliche Daten werden verschlüsselt übertragen und sicher gespeichert</li>
-                  <li>• Kontoauszug (letzter Monat) ist erforderlich</li>
+                  <li>• Kontoauszug (letzter Monat) empfohlen</li>
                 </ul>
+                <p className="text-xs text-blue-700 mt-2">Diese Liste dient Ihrer Orientierung. Uploads sind optional und keine Pflichtfelder.</p>
               </div>
             </div>
           </div>
@@ -1265,23 +1255,11 @@ export default function KreditanfrageForm() {
           {/* Pflichtdokumente */}
           <div className="space-y-6">
             <div className="flex items-center justify-between border-b border-gray-200 pb-2">
-              <h4 className="text-lg font-medium text-gray-800">Pflichtdokumente *</h4>
-              <span className="text-xs px-2 py-1 rounded bg-green-100 text-green-700">
-                {requiredSelectedCount}/{requiredTotal} ausgewählt
-              </span>
+              <h4 className="text-lg font-medium text-gray-800">Dokumenten-Checkliste (nur Orientierung)</h4>
             </div>
 
             {/* Validierungshinweis: Zeigt klar, welche Pflichtdokumente fehlen */}
-            {missingDocs.length > 0 && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <p className="text-sm font-medium text-red-800 mb-1">Bitte laden Sie die fehlenden Pflichtdokumente hoch:</p>
-                <ul className="text-sm text-red-700 list-disc list-inside">
-                  {missingDocs.map((doc) => (
-                    <li key={doc}>{doc}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
+            
 
             {/* Checkliste der erforderlichen Unterlagen */}
             <div className="bg-green-50 border border-green-200 rounded-lg p-4">
@@ -1387,7 +1365,6 @@ export default function KreditanfrageForm() {
                 <DragDropFileUpload
                   name="steuerbescheid1"
                   label="Steuerbescheid Jahr 1"
-                  required
                   currentFile={formData.steuerbescheid1}
                   onChange={handleFileChange}
                   onRemove={handleFileRemove}
@@ -1395,7 +1372,6 @@ export default function KreditanfrageForm() {
                 <DragDropFileUpload
                   name="steuerbescheid2"
                   label="Steuerbescheid Jahr 2"
-                  required
                   currentFile={formData.steuerbescheid2}
                   onChange={handleFileChange}
                   onRemove={handleFileRemove}
@@ -1403,7 +1379,6 @@ export default function KreditanfrageForm() {
                 <DragDropFileUpload
                   name="steuerbescheid3"
                   label="Steuerbescheid Jahr 3"
-                  required
                   currentFile={formData.steuerbescheid3}
                   onChange={handleFileChange}
                   onRemove={handleFileRemove}
@@ -1414,7 +1389,6 @@ export default function KreditanfrageForm() {
                 <DragDropFileUpload
                   name="gehaltsabrechnung1"
                   label="Gehaltsabrechnung 1"
-                  required
                   currentFile={formData.gehaltsabrechnung1}
                   onChange={handleFileChange}
                   onRemove={handleFileRemove}
@@ -1422,7 +1396,6 @@ export default function KreditanfrageForm() {
                 <DragDropFileUpload
                   name="gehaltsabrechnung2"
                   label="Gehaltsabrechnung 2"
-                  required
                   currentFile={formData.gehaltsabrechnung2}
                   onChange={handleFileChange}
                   onRemove={handleFileRemove}
@@ -1430,7 +1403,6 @@ export default function KreditanfrageForm() {
                 <DragDropFileUpload
                   name="gehaltsabrechnung3"
                   label="Gehaltsabrechnung 3"
-                  required
                   currentFile={formData.gehaltsabrechnung3}
                   onChange={handleFileChange}
                   onRemove={handleFileRemove}
@@ -1447,7 +1419,6 @@ export default function KreditanfrageForm() {
             <DragDropFileUpload
               name="kontoauszug"
               label="Kontoauszug letzter Monat"
-              required
               currentFile={formData.kontoauszug}
               onChange={handleFileChange}
               onRemove={handleFileRemove}
@@ -1458,7 +1429,6 @@ export default function KreditanfrageForm() {
               <DragDropFileUpload
                 name="meldebescheinigung"
                 label="Meldebescheinigung"
-                required
                 currentFile={formData.meldebescheinigung}
                 onChange={handleFileChange}
                 onRemove={handleFileRemove}
@@ -1471,7 +1441,6 @@ export default function KreditanfrageForm() {
                 <DragDropFileUpload
                   name="bestehendeKredite"
                   label="Nachweis bestehende Kredite"
-                  required
                   currentFile={formData.bestehendeKredite}
                   onChange={handleFileChange}
                   onRemove={handleFileRemove}
@@ -1479,7 +1448,6 @@ export default function KreditanfrageForm() {
                 <DragDropFileUpload
                   name="jahreskontoauszug"
                   label="Jahreskontoauszug"
-                  required
                   currentFile={formData.jahreskontoauszug}
                   onChange={handleFileChange}
                   onRemove={handleFileRemove}
@@ -1493,7 +1461,6 @@ export default function KreditanfrageForm() {
                 <DragDropFileUpload
                   name="baufinanzierungNachweis"
                   label="Nachweis bestehende Baufinanzierung"
-                  required
                   currentFile={formData.baufinanzierungNachweis}
                   onChange={handleFileChange}
                   onRemove={handleFileRemove}
@@ -1502,7 +1469,6 @@ export default function KreditanfrageForm() {
                   <DragDropFileUpload
                     name="jahreskontoauszug"
                     label="Jahreskontoauszug"
-                    required
                     currentFile={formData.jahreskontoauszug}
                     onChange={handleFileChange}
                     onRemove={handleFileRemove}
