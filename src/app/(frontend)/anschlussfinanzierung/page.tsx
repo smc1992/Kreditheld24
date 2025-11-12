@@ -405,7 +405,15 @@ const AnschlussfinanzierungPage = () => {
                   </div>
                   <div className="mt-6">
                     <Link
-                      href="/kontakt"
+                      href={{
+                        pathname: '/umschuldung',
+                        query: {
+                          amount: restschuld,
+                          currentInterest: aktuellerZins,
+                          newInterest: neuerZins,
+                          termYears: laufzeit,
+                        },
+                      }}
                       className="block w-full bg-primary hover:bg-green-500 text-white font-medium py-3 px-6 rounded-button text-center transition-all"
                     >
                       Kostenlose Beratung anfordern

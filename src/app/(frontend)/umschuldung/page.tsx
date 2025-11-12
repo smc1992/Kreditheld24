@@ -3,8 +3,10 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import UnverbindlichAnfragenButton from '../../../components/UnverbindlichAnfragenButton'
 import Script from 'next/script'
+import { useSearchParams } from 'next/navigation'
 
 const UmschuldungPage = () => {
+  const searchParams = useSearchParams()
   const [totalDebtAmount, setTotalDebtAmount] = useState(24000)
   const [currentInterestRate, setCurrentInterestRate] = useState(8.5)
   const [currentMonthlyPayment, setCurrentMonthlyPayment] = useState(730)
@@ -88,6 +90,46 @@ const UmschuldungPage = () => {
       answer: "Nach Genehmigung des neuen Kredits übernimmt die Bank in der Regel die komplette Abwicklung. Die Ablösesummen werden direkt an Ihre bisherigen Kreditgeber überwiesen. Sie müssen sich um nichts kümmern."
     }
   ]
+
+  // Prefill from query params if present
+  useEffect(() => {
+    if (!searchParams) return
+
+    const amount = searchParams.get('amount')
+    const currentInterest = searchParams.get('currentInterest')
+    const newInterest = searchParams.get('newInterest')
+    const termYears = searchParams.get('termYears')
+    const currentMonthly = searchParams.get('currentMonthly')
+
+    if (amount) {
+      const val = parseFloat(amount)
+      if (!Number.isNaN(val)) setTotalDebtAmount(val)
+    }
+    if (currentInterest) {
+      const val = parseFloat(currentInterest)
+      if (!Number.isNaN(val)) setCurrentInterestRate(val)
+    }
+    if (newInterest) {
+      const val = parseFloat(newInterest)
+      if (!Number.isNaN(val)) setNewInterestRate(val)
+    }
+    if (termYears) {
+      const years = parseFloat(termYears)
+      if (!Number.isNaN(years)) setNewLoanTerm(Math.round(years * 12))
+    }
+    // If currentMonthly not provided, approximate from amount & current interest
+    if (currentMonthly) {
+      const val = parseFloat(currentMonthly)
+      if (!Number.isNaN(val)) setCurrentMonthlyPayment(val)
+    } else if (amount && currentInterest) {
+      const amt = parseFloat(amount)
+      const rate = parseFloat(currentInterest)
+      if (!Number.isNaN(amt) && !Number.isNaN(rate)) {
+        const approx = (amt * (rate / 100)) / 12
+        setCurrentMonthlyPayment(Number(approx.toFixed(2)))
+      }
+    }
+  }, [searchParams])
 
   useEffect(() => {
     // Initialize ECharts for savings chart with delay to ensure script is loaded
