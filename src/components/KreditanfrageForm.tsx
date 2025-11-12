@@ -1282,6 +1282,105 @@ export default function KreditanfrageForm() {
                 </ul>
               </div>
             )}
+
+            {/* Checkliste der erforderlichen Unterlagen */}
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <h4 className="text-md font-medium text-green-900 mb-2">
+                Checkliste {formData.produktKategorie === 'baufinanzierung' ? 'Baufinanzierung' : 'Privatkredit'}
+              </h4>
+              <ul className="text-sm text-green-800 space-y-1">
+                {isSelbststaendig ? (
+                  <>
+                    <li className="flex items-center">
+                      <svg className={`w-4 h-4 mr-2 ${formData.steuerbescheid1 ? 'text-green-600' : 'text-red-600'}`} fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d={formData.steuerbescheid1 ? 'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' : 'M10 2a8 8 0 100 16 8 8 0 000-16zm3.707 5.293a1 1 0 00-1.414-1.414L9 9.171 7.707 7.879a1 1 0 00-1.414 1.414L9 12l4.707-4.707z'} clipRule="evenodd" />
+                      </svg>
+                      <span>Steuerbescheid Jahr 1</span>
+                    </li>
+                    <li className="flex items-center">
+                      <svg className={`w-4 h-4 mr-2 ${formData.steuerbescheid2 ? 'text-green-600' : 'text-red-600'}`} fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d={formData.steuerbescheid2 ? 'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' : 'M10 2a8 8 0 100 16 8 8 0 000-16zm3.707 5.293a1 1 0 00-1.414-1.414L9 9.171 7.707 7.879a1 1 0 00-1.414 1.414L9 12l4.707-4.707z'} clipRule="evenodd" />
+                      </svg>
+                      <span>Steuerbescheid Jahr 2</span>
+                    </li>
+                    <li className="flex items-center">
+                      <svg className={`w-4 h-4 mr-2 ${formData.steuerbescheid3 ? 'text-green-600' : 'text-red-600'}`} fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d={formData.steuerbescheid3 ? 'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' : 'M10 2a8 8 0 100 16 8 8 0 000-16zm3.707 5.293a1 1 0 00-1.414-1.414L9 9.171 7.707 7.879a1 1 0 00-1.414 1.414L9 12l4.707-4.707z'} clipRule="evenodd" />
+                      </svg>
+                      <span>Steuerbescheid Jahr 3</span>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li className="flex items-center">
+                      <svg className={`w-4 h-4 mr-2 ${formData.gehaltsabrechnung1 ? 'text-green-600' : 'text-red-600'}`} fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d={formData.gehaltsabrechnung1 ? 'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' : 'M10 2a8 8 0 100 16 8 8 0 000-16zm3.707 5.293a1 1 0 00-1.414-1.414L9 9.171 7.707 7.879a1 1 0 00-1.414 1.414L9 12l4.707-4.707z'} clipRule="evenodd" />
+                      </svg>
+                      <span>Gehaltsabrechnung 1</span>
+                    </li>
+                    <li className="flex items-center">
+                      <svg className={`w-4 h-4 mr-2 ${formData.gehaltsabrechnung2 ? 'text-green-600' : 'text-red-600'}`} fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d={formData.gehaltsabrechnung2 ? 'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' : 'M10 2a8 8 0 100 16 8 8 0 000-16zm3.707 5.293a1 1 0 00-1.414-1.414L9 9.171 7.707 7.879a1 1 0 00-1.414 1.414L9 12l4.707-4.707z'} clipRule="evenodd" />
+                      </svg>
+                      <span>Gehaltsabrechnung 2</span>
+                    </li>
+                    <li className="flex items-center">
+                      <svg className={`w-4 h-4 mr-2 ${formData.gehaltsabrechnung3 ? 'text-green-600' : 'text-red-600'}`} fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d={formData.gehaltsabrechnung3 ? 'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' : 'M10 2a8 8 0 100 16 8 8 0 000-16zm3.707 5.293a1 1 0 00-1.414-1.414L9 9.171 7.707 7.879a1 1 0 00-1.414 1.414L9 12l4.707-4.707z'} clipRule="evenodd" />
+                      </svg>
+                      <span>Gehaltsabrechnung 3</span>
+                    </li>
+                  </>
+                )}
+                <li className="flex items-center">
+                  <svg className={`w-4 h-4 mr-2 ${formData.kontoauszug ? 'text-green-600' : 'text-red-600'}`} fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d={formData.kontoauszug ? 'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' : 'M10 2a8 8 0 100 16 8 8 0 000-16zm3.707 5.293a1 1 0 00-1.414-1.414L9 9.171 7.707 7.879a1 1 0 00-1.414 1.414L9 12l4.707-4.707z'} clipRule="evenodd" />
+                  </svg>
+                  <span>Kontoauszug (letzter Monat)</span>
+                </li>
+                <li className="flex items-center">
+                  <svg className={`w-4 h-4 mr-2 ${formData.miete ? 'text-green-600' : 'text-red-600'}`} fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d={formData.miete ? 'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' : 'M10 2a8 8 0 100 16 8 8 0 000-16zm3.707 5.293a1 1 0 00-1.414-1.414L9 9.171 7.707 7.879a1 1 0 00-1.414 1.414L9 12l4.707-4.707z'} clipRule="evenodd" />
+                  </svg>
+                  <span>Miete angegeben (Höhe)</span>
+                </li>
+                <li className="flex items-center">
+                  <svg className={`w-4 h-4 mr-2 ${((formData.staatsangehoerigkeit || '').toLowerCase() === 'deutsch' || formData.meldebescheinigung) ? 'text-green-600' : 'text-red-600'}`} fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d={((formData.staatsangehoerigkeit || '').toLowerCase() === 'deutsch' || formData.meldebescheinigung) ? 'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' : 'M10 2a8 8 0 100 16 8 8 0 000-16zm3.707 5.293a1 1 0 00-1.414-1.414L9 9.171 7.707 7.879a1 1 0 00-1.414 1.414L9 12l4.707-4.707z'} clipRule="evenodd" />
+                  </svg>
+                  <span>Meldebescheinigung (nur bei ausländischer Staatsbürgerschaft)</span>
+                  {(formData.staatsangehoerigkeit || '').toLowerCase() === 'deutsch' && (
+                    <span className="ml-2 text-xs text-gray-600">nicht erforderlich</span>
+                  )}
+                </li>
+                {formData.produktKategorie === 'baufinanzierung' && (
+                  <>
+                    <li className="flex items-center">
+                      <svg className={`w-4 h-4 mr-2 ${((formData.expose || (formData.objektart && formData.baujahr && formData.grundstuecksgroesse && formData.wohnflaeche && formData.kaufpreis))) ? 'text-green-600' : 'text-red-600'}`} fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d={((formData.expose || (formData.objektart && formData.baujahr && formData.grundstuecksgroesse && formData.wohnflaeche && formData.kaufpreis))) ? 'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' : 'M10 2a8 8 0 100 16 8 8 0 000-16zm3.707 5.293a1 1 0 00-1.414-1.414L9 9.171 7.707 7.879a1 1 0 00-1.414 1.414L9 12l4.707-4.707z'} clipRule="evenodd" />
+                      </svg>
+                      <span>Exposé oder vollständige Objektdaten</span>
+                    </li>
+                    {formData.hatBaufinanzierung && (
+                      <li className="flex items-center">
+                        <svg className={`w-4 h-4 mr-2 ${formData.baufinanzierungNachweis ? 'text-green-600' : 'text-red-600'}`} fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d={formData.baufinanzierungNachweis ? 'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' : 'M10 2a8 8 0 100 16 8 8 0 000-16zm3.707 5.293a1 1 0 00-1.414-1.414L9 9.171 7.707 7.879a1 1 0 00-1.414 1.414L9 12l4.707-4.707z'} clipRule="evenodd" />
+                        </svg>
+                        <span>Nachweis bestehende Baufinanzierung</span>
+                      </li>
+                    )}
+                    {(formData.hatBestehendeKredite || formData.hatBaufinanzierung) && (
+                      <li className="flex items-center">
+                        <svg className={`w-4 h-4 mr-2 ${formData.jahreskontoauszug ? 'text-green-600' : 'text-red-600'}`} fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d={formData.jahreskontoauszug ? 'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' : 'M10 2a8 8 0 100 16 8 8 0 000-16zm3.707 5.293a1 1 0 00-1.414-1.414L9 9.171 7.707 7.879a1 1 0 00-1.414 1.414L9 12l4.707-4.707z'} clipRule="evenodd" />
+                        </svg>
+                        <span>Jahreskontoauszug</span>
+                      </li>
+                    )}
+                  </>
+                )}
+              </ul>
+            </div>
             
             {isSelbststaendig ? (
               <div className="grid md:grid-cols-3 gap-6">
