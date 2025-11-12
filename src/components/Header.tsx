@@ -287,7 +287,7 @@ export function Header() {
             
             <Link
               href="/kreditanfrage"
-              className="hidden md:flex items-center px-6 py-3 bg-gradient-to-r from-primary to-primary-600 text-white font-semibold rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105"
+              className="hidden md:flex items-center px-4 py-2 bg-gradient-to-r from-primary to-primary-600 text-white text-sm font-medium rounded-lg hover:from-primary-600 hover:to-primary-700 transition-all duration-300 shadow-sm hover:shadow-md"
             >
               <i className="ri-calculator-line mr-2"></i>
               Individueller Service
