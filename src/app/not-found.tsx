@@ -1,16 +1,18 @@
 import Link from 'next/link'
-import { Button } from '../components/ui/button'
 
 export default function NotFound() {
   return (
-    <div className="container py-28">
-      <div className="prose max-w-none">
-        <h1 style={{ marginBottom: 0 }}>404</h1>
-        <p className="mb-4">Diese Seite wurde nicht gefunden.</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="text-center px-4">
+        <h1 className="text-6xl font-bold text-gray-900 dark:text-gray-100 mb-4">404</h1>
+        <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">Diese Seite wurde nicht gefunden.</p>
+        <Link 
+          href="/" 
+          className="inline-block bg-primary hover:bg-green-500 text-white font-medium py-3 px-8 rounded-lg transition-all"
+        >
+          Zurück zur Startseite
+        </Link>
       </div>
-      <Button asChild variant="default">
-        <Link href="/">Zurück zur Startseite</Link>
-      </Button>
     </div>
   )
 }
