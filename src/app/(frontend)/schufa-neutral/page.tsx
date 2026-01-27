@@ -4,6 +4,8 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import UnverbindlichAnfragenButton from '../../../components/UnverbindlichAnfragenButton'
 
+export const dynamic = 'force-dynamic'
+
 const SchufaNeutralPage = () => {
   const [loanAmount, setLoanAmount] = useState(10000)
   const [loanTerm, setLoanTerm] = useState(36)
