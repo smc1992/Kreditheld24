@@ -5,6 +5,9 @@ import UnverbindlichAnfragenButton from '../../../components/UnverbindlichAnfrag
 import Script from 'next/script'
 import { useSearchParams } from 'next/navigation'
 
+// Force dynamic rendering to prevent useContext errors during static generation
+export const dynamic = 'force-dynamic'
+
 const UmschuldungPage = () => {
   const [totalDebtAmount, setTotalDebtAmount] = useState(24000)
   const [currentInterestRate, setCurrentInterestRate] = useState(8.5)
