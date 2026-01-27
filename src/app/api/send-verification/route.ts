@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 import crypto from 'crypto'
 import { storeVerificationToken } from '../../../lib/verification'
+import { db, crmCustomers, crmCases } from '@/db'
+import { eq, and } from 'drizzle-orm'
 
 export const runtime = 'nodejs'
 
@@ -26,6 +28,65 @@ export async function POST(request: NextRequest) {
         { error: 'E-Mail-Adresse ist erforderlich' },
         { status: 400 }
       )
+    }
+
+    // 1. CRM Integration: Kunde finden oder erstellen
+    let customerId: string;
+    const existingCustomers = await db.select().from(crmCustomers).where(eq(crmCustomers.email, email.toLowerCase()));
+    
+    if (existingCustomers.length > 0) {
+      customerId = existingCustomers[0].id;
+      // Namen ggf. aktualisieren falls noch leer
+      if (!existingCustomers[0].firstName || !existingCustomers[0].lastName) {
+        await db.update(crmCustomers)
+          .set({ 
+            firstName: formData.vorname || existingCustomers[0].firstName, 
+            lastName: formData.nachname || existingCustomers[0].lastName,
+            phone: formData.telefon || existingCustomers[0].phone,
+            updatedAt: new Date()
+          })
+          .where(eq(crmCustomers.id, customerId));
+      }
+    } else {
+      const [newCustomer] = await db.insert(crmCustomers).values({
+        email: email.toLowerCase(),
+        firstName: formData.vorname || 'Interessent',
+        lastName: formData.nachname || '(Neu)',
+        phone: formData.telefon || null,
+      }).returning();
+      customerId = newCustomer.id;
+    }
+
+    // 2. CRM Integration: Case finden oder erstellen (Status 'draft')
+    let caseId: string;
+    const existingDraftCases = await db.select().from(crmCases).where(
+      and(
+        eq(crmCases.customerId, customerId),
+        eq(crmCases.status, 'draft')
+      )
+    );
+
+    if (existingDraftCases.length > 0) {
+      caseId = existingDraftCases[0].id;
+      // Case-Daten aktualisieren
+      await db.update(crmCases)
+        .set({ 
+          formData: formData,
+          currentStep: 1,
+          updatedAt: new Date()
+        })
+        .where(eq(crmCases.id, caseId));
+    } else {
+      const caseNumber = `VG-WEB-${Date.now().toString().slice(-6)}`;
+      const [newCase] = await db.insert(crmCases).values({
+        customerId,
+        caseNumber,
+        status: 'draft',
+        formData: formData,
+        currentStep: 1,
+        requestedAmount: formData.kreditsumme ? formData.kreditsumme.toString() : null,
+      }).returning();
+      caseId = newCase.id;
     }
 
     // Verification Token generieren
@@ -109,11 +170,6 @@ export async function POST(request: NextRequest) {
     const hasSmtpCreds = !!(process.env.SMTP_USER && (process.env.SMTP_PASS || process.env.EMAIL_PASSWORD))
     try {
       if (hasSmtpCreds) {
-        // Port 465 -> secure=true, sonst STARTTLS (587)
-        if (process.env.SMTP_PORT === '465') {
-          // Hinweis: Transporter ist oben global erstellt; falls nötig, könnte man hier
-          // dynamisch neu erstellen. Für die meisten Provider reicht STARTTLS mit 587.
-        }
         await transporter.sendMail(mailOptions)
         emailSent = true
       } else {
@@ -121,17 +177,18 @@ export async function POST(request: NextRequest) {
       }
     } catch (mailError) {
       console.error('Fehler beim Senden der E-Mail:', mailError)
-      // Kein 500 mehr: Fallback greift auch in Produktion – Link wird zurückgegeben
     }
 
     // Token in temporärem Store speichern (Redis oder FS)
-    await storeVerificationToken(token, email, formData)
+    // Wir speichern die caseId mit, um sie später wiederherzustellen
+    await storeVerificationToken(token, email, { ...formData, caseId })
     
     return NextResponse.json({ 
       success: true, 
       token,
       verificationUrl,
       emailSent,
+      caseId,
       message: emailSent 
         ? 'Bestätigungs-E-Mail wurde gesendet' 
         : 'Entwicklungsmodus: Direkter Bestätigungslink verfügbar'

@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 import fs from 'fs'
 import path from 'path'
-import { isTokenVerified } from '../../../lib/verification'
+import { isTokenVerified, getVerificationData } from '../../../lib/verification'
+import { db, crmCustomers, crmCases, crmActivities, crmDocuments } from '@/db'
+import { eq, and } from 'drizzle-orm'
 
 export const runtime = 'nodejs'
 
@@ -287,6 +289,76 @@ export async function POST(request: NextRequest) {
       })
     } catch (custErr) {
       console.warn('Kundenkopie konnte nicht gesendet werden:', custErr)
+    }
+
+    // 3. CRM Integration: Case finalisieren
+    if (verificationToken) {
+      const verificationData = await getVerificationData(verificationToken);
+      if (verificationData?.formData?.caseId) {
+        const caseId = verificationData.formData.caseId as string;
+        
+        // Kundendaten im CRM aktualisieren
+        const existingCustomer = await db.select().from(crmCustomers).where(eq(crmCustomers.email, email.toLowerCase()));
+        if (existingCustomer.length > 0) {
+          await db.update(crmCustomers)
+            .set({
+              firstName: data.vorname || existingCustomer[0].firstName,
+              lastName: data.nachname || existingCustomer[0].lastName,
+              phone: data.telefon || existingCustomer[0].phone,
+              address: `${data.strasse} ${data.hausnummer}, ${data.plz} ${data.ort}`,
+              birthDate: data.geburtsdatum ? new Date(data.geburtsdatum) : existingCustomer[0].birthDate,
+              birthPlace: data.geburtsort || existingCustomer[0].birthPlace,
+              maritalStatus: data.familienstand || existingCustomer[0].maritalStatus,
+              nationality: data.staatsangehoerigkeit || existingCustomer[0].nationality,
+              updatedAt: new Date()
+            })
+            .where(eq(crmCustomers.id, existingCustomer[0].id));
+        }
+
+        // Case im CRM finalisieren
+        await db.update(crmCases)
+          .set({
+            status: 'open', // Von 'draft' auf 'open'
+            formData: data,
+            currentStep: 5,
+            requestedAmount: data.kreditsumme || undefined,
+            bank: data.bank || undefined,
+            duration: data.laufzeit ? parseInt(data.laufzeit) : undefined,
+            updatedAt: new Date()
+          })
+          .where(eq(crmCases.id, caseId));
+
+        // Aktivität loggen
+        await db.insert(crmActivities).values({
+          caseId,
+          customerId: existingCustomer[0]?.id,
+          type: 'note',
+          subject: 'Kreditanfrage abgeschlossen',
+          description: `Die Kreditanfrage über das Web-Formular wurde erfolgreich eingereicht.`,
+          date: new Date()
+        });
+
+        // Dokumente im CRM registrieren (Prüfung auf Duplikate)
+        for (const att of attachments) {
+          const existingDoc = await db.query.crmDocuments.findFirst({
+            where: and(
+              eq(crmDocuments.caseId, caseId),
+              eq(crmDocuments.name, att.filename)
+            )
+          });
+
+          if (!existingDoc) {
+            await db.insert(crmDocuments).values({
+              caseId,
+              customerId: existingCustomer[0]?.id,
+              name: att.filename,
+              type: att.contentType || 'application/octet-stream',
+              fileUrl: `/uploads/kreditanfragen/${att.filename}`, // In echter Implementierung: Upload-Pfad
+              createdAt: new Date()
+            });
+          }
+        }
+      }
     }
 
     return NextResponse.json({ success: true, message: 'Kreditanfrage gesendet' })

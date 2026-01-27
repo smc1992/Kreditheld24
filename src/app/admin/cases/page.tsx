@@ -1,0 +1,301 @@
+'use client';
+
+import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import DashboardLayout from '@/components/admin/DashboardLayout';
+import Link from 'next/link';
+import { 
+  Briefcase, 
+  Plus, 
+  Search, 
+  Filter, 
+  User, 
+  Building2, 
+  Euro, 
+  ChevronRight,
+  MoreVertical,
+  Calendar,
+  CheckCircle2,
+  Clock,
+  XCircle,
+  AlertCircle,
+  Activity,
+  Trash2,
+  Download,
+  Mail
+} from 'lucide-react';
+
+export default function CasesPage() {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const [cases, setCases] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
+
+  useEffect(() => {
+    if (!session) {
+      router.push('/admin/login');
+      return;
+    }
+
+    fetch('/api/admin/cases')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          const formattedCases = data.data.map((item: any) => ({
+            ...item.case,
+            customer: item.customer
+          }));
+          setCases(formattedCases);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching cases:', err);
+        setLoading(false);
+      });
+  }, [session, router]);
+
+  if (!session) return null;
+
+  const getStatusConfig = (status: string) => {
+    switch (status) {
+      case 'open': return { label: 'Offen', color: 'text-blue-700', bg: 'bg-blue-50', border: 'border-blue-100', icon: Clock };
+      case 'in_progress': return { label: 'In Bearbeitung', color: 'text-amber-700', bg: 'bg-amber-50', border: 'border-amber-100', icon: Activity };
+      case 'approved': return { label: 'Genehmigt', color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-100', icon: CheckCircle2 };
+      case 'rejected': return { label: 'Abgelehnt', color: 'text-red-700', bg: 'bg-red-50', border: 'border-red-100', icon: XCircle };
+      case 'closed': return { label: 'Geschlossen', color: 'text-slate-700', bg: 'bg-slate-50', border: 'border-slate-100', icon: AlertCircle };
+      default: return { label: status, color: 'text-slate-700', bg: 'bg-slate-50', border: 'border-slate-100', icon: AlertCircle };
+    }
+  };
+
+  const filteredCases = cases.filter(c => 
+    c.caseNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    `${c.customer?.firstName} ${c.customer?.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    c.bank?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <DashboardLayout>
+      <div className="space-y-6">
+        {/* Page Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl flex items-center gap-3">
+              <Briefcase className="h-8 w-8 text-emerald-600" />
+              Vorgänge
+            </h1>
+            <p className="mt-1 text-sm text-slate-500">
+              Verwalten und verfolgen Sie den Status aller Kreditvorgänge.
+            </p>
+          </div>
+          <Link
+            href="/admin/cases/new"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 transition-all"
+          >
+            <Plus className="h-4 w-4" />
+            Neuer Vorgang
+          </Link>
+        </div>
+
+        {/* Filters & Search */}
+        <div className="flex flex-col sm:flex-row gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Vorgang suchen (Nummer, Kunde, Bank...)"
+              className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <button className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-all">
+            <Filter className="h-4 w-4 text-slate-400" />
+            Status
+          </button>
+        </div>
+
+        {/* Cases Table */}
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-left text-sm">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-200">
+                  <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Vorgang & Datum</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Kunde</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Finanzierung</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Bank</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Aktionen</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {loading ? (
+                  Array.from({ length: 5 }).map((_, i) => (
+                    <tr key={i} className="animate-pulse">
+                      <td colSpan={6} className="px-6 py-4">
+                        <div className="h-12 bg-slate-50 rounded-lg"></div>
+                      </td>
+                    </tr>
+                  ))
+                ) : filteredCases.length > 0 ? (
+                  filteredCases.map((caseItem) => {
+                    const status = getStatusConfig(caseItem.status);
+                    return (
+                      <tr key={caseItem.id} className="hover:bg-slate-50/50 transition-colors group">
+                        <td className="px-6 py-4 text-slate-900">
+                          <div className="flex items-center gap-3">
+                            <div className="h-9 w-9 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-100">
+                              <Briefcase className="h-4 w-4" />
+                            </div>
+                            <div>
+                              <div className="font-bold">{caseItem.caseNumber}</div>
+                              <div className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
+                                <Calendar className="h-3 w-3" />
+                                {new Date(caseItem.createdAt).toLocaleDateString('de-DE')}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2 font-medium text-slate-700">
+                            <User className="h-3.5 w-3.5 text-slate-400" />
+                            {caseItem.customer?.firstName} {caseItem.customer?.lastName}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-1.5 font-bold text-slate-900">
+                              <Euro className="h-3.5 w-3.5 text-slate-400" />
+                              {caseItem.requestedAmount ? `${parseFloat(caseItem.requestedAmount).toLocaleString('de-DE')} €` : '-'}
+                            </div>
+                            {caseItem.approvedAmount && (
+                              <div className="text-xs text-emerald-600 flex items-center gap-1">
+                                <CheckCircle2 className="h-3 w-3" />
+                                {parseFloat(caseItem.approvedAmount).toLocaleString('de-DE')} € genehmigt
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2 text-slate-600">
+                            <Building2 className="h-3.5 w-3.5 text-slate-400" />
+                            {caseItem.bank || '-'}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold border ${status.bg} ${status.color} ${status.border}`}>
+                            <status.icon className="h-3 w-3" />
+                            {status.label}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <Link
+                              href={`/admin/cases/${caseItem.id}`}
+                              className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg text-xs font-bold hover:bg-emerald-600 hover:text-white transition-all"
+                            >
+                              Details
+                              <ChevronRight className="h-3 w-3" />
+                            </Link>
+                            <div className="relative">
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (activeMenu === caseItem.id) {
+                                    setActiveMenu(null);
+                                  } else {
+                                    const rect = e.currentTarget.getBoundingClientRect();
+                                    setMenuPos({ top: rect.bottom + 5, right: window.innerWidth - rect.right });
+                                    setActiveMenu(caseItem.id);
+                                  }
+                                }}
+                                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-md hover:bg-slate-100 transition-colors"
+                              >
+                                <MoreVertical className="h-4 w-4" />
+                              </button>
+                              {activeMenu === caseItem.id && (
+                                <>
+                                  <div 
+                                    className="fixed inset-0 z-40" 
+                                    onClick={() => setActiveMenu(null)}
+                                  />
+                                  <div 
+                                    className="fixed z-50 w-48 rounded-xl bg-white shadow-xl ring-1 ring-black ring-opacity-5 overflow-hidden animate-in fade-in zoom-in-95 duration-100"
+                                    style={{ top: `${menuPos.top}px`, right: `${menuPos.right}px` }}
+                                  >
+                                    <div className="py-1">
+                                      <button
+                                        className="flex w-full items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 font-medium"
+                                      >
+                                        <Download className="h-4 w-4 text-emerald-600" />
+                                        Exposé (PDF)
+                                      </button>
+                                      <button
+                                        className="flex w-full items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 font-medium"
+                                      >
+                                        <Mail className="h-4 w-4 text-blue-600" />
+                                        An Bank senden
+                                      </button>
+                                      <div className="h-px bg-slate-100 my-1" />
+                                      <button
+                                        onClick={async () => {
+                                          if (confirm('Vorgang wirklich archivieren?')) {
+                                            await fetch(`/api/admin/cases/${caseItem.id}`, {
+                                              method: 'PATCH',
+                                              headers: { 'Content-Type': 'application/json' },
+                                              body: JSON.stringify({ status: 'closed' })
+                                            });
+                                            router.refresh();
+                                          }
+                                          setActiveMenu(null);
+                                        }}
+                                        className="flex w-full items-center gap-2 px-4 py-2 text-sm text-amber-600 hover:bg-amber-50 font-medium"
+                                      >
+                                        <XCircle className="h-4 w-4" />
+                                        Archivieren
+                                      </button>
+                                      <button
+                                        onClick={async () => {
+                                          if (confirm('Vorgang wirklich unwiderruflich löschen?')) {
+                                            await fetch(`/api/admin/cases/${caseItem.id}`, {
+                                              method: 'DELETE'
+                                            });
+                                            setCases(cases.filter(c => c.id !== caseItem.id));
+                                          }
+                                          setActiveMenu(null);
+                                        }}
+                                        className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium"
+                                      >
+                                        <Trash2 className="h-4 w-4" />
+                                        Löschen
+                                      </button>
+                                    </div>
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
+                      Keine Vorgänge gefunden.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </DashboardLayout>
+  );
+}

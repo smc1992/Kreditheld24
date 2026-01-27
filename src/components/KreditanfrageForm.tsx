@@ -154,6 +154,7 @@ export default function KreditanfrageForm() {
   const [verificationToken, setVerificationToken] = useState('')
   const [verificationUrl, setVerificationUrl] = useState<string | null>(null)
   const [urlMessage, setUrlMessage] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
+  const [caseId, setCaseId] = useState<string | null>(null)
   const [europaceCaseUrl, setEuropaceCaseUrl] = useState<string | null>(null)
   
   // Persistenz-Schlüssel
@@ -201,6 +202,7 @@ export default function KreditanfrageForm() {
         if (typeof meta.emailVerificationSent === 'boolean') setEmailVerificationSent(meta.emailVerificationSent)
         if (typeof meta.emailVerified === 'boolean') setEmailVerified(meta.emailVerified)
         if (typeof meta.verificationToken === 'string') setVerificationToken(meta.verificationToken)
+        if (typeof meta.caseId === 'string') setCaseId(meta.caseId)
       }
     } catch (e) {
       console.warn('Konnte gespeicherte Formularwerte nicht laden:', e)
@@ -235,7 +237,7 @@ export default function KreditanfrageForm() {
     try {
       const sanitized = serializeFormData(formData)
       localStorage.setItem(STORAGE_KEY, JSON.stringify(sanitized))
-      const meta = { currentStep, emailVerificationSent, emailVerified, verificationToken }
+      const meta = { currentStep, emailVerificationSent, emailVerified, verificationToken, caseId }
       localStorage.setItem(STORAGE_META_KEY, JSON.stringify(meta))
     } catch (e) {
       // Speichern ist optional, Fehler hier sind nicht kritisch
@@ -265,13 +267,82 @@ export default function KreditanfrageForm() {
     }))
   }
 
+  const [showAccountCreation, setShowAccountCreation] = useState(false)
+  const [accountPassword, setAccountPassword] = useState('')
+  const [accountPasswordConfirm, setAccountPasswordConfirm] = useState('')
+  const [accountCreationStatus, setAccountCreationStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [accountCreationError, setAccountCreationError] = useState('')
+
+  const uploadFileToCrm = async (file: File, fieldName: string) => {
+    if (!caseId) return
+    
+    const uploadData = new FormData()
+    uploadData.append('file', file)
+    uploadData.append('caseId', caseId)
+    uploadData.append('documentType', fieldName)
+    if (verificationToken) {
+      uploadData.append('verificationToken', verificationToken)
+    }
+
+    try {
+      await fetch('/api/kreditanfrage/upload', {
+        method: 'POST',
+        body: uploadData
+      })
+    } catch (error) {
+      console.warn('Sofortiger Upload fehlgeschlagen:', error)
+    }
+  }
+
+  const handleCreateAccount = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (accountPassword !== accountPasswordConfirm) {
+      setAccountCreationError('Passwörter stimmen nicht überein')
+      return
+    }
+    if (accountPassword.length < 8) {
+      setAccountCreationError('Passwort muss mind. 8 Zeichen lang sein')
+      return
+    }
+
+    setAccountCreationStatus('loading')
+    setAccountCreationError('')
+
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName: formData.vorname,
+          lastName: formData.nachname,
+          email: formData.email,
+          password: accountPassword
+        })
+      })
+
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Fehler beim Erstellen des Kontos')
+
+      setAccountCreationStatus('success')
+    } catch (err: any) {
+      setAccountCreationStatus('error')
+      setAccountCreationError(err.message || 'Ein Fehler ist aufgetreten')
+    }
+  }
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target
     if (files && files[0]) {
+      const file = files[0]
       setFormData(prev => ({
         ...prev,
-        [name]: files[0]
+        [name]: file
       }) as FormData)
+      
+      // Sofortiger Upload ins CRM
+      if (caseId) {
+        uploadFileToCrm(file, name)
+      }
     }
   }
 
@@ -297,6 +368,7 @@ export default function KreditanfrageForm() {
   const handleAdditionalFilesAdd = (newFiles: FileList | File[]) => {
     const incoming = Array.from(newFiles)
       .filter(f => isAllowedFile(f) && f.size <= 5 * 1024 * 1024)
+    
     setFormData(prev => {
       const merged = [...prev.additionalDocuments]
       for (const f of incoming) {
@@ -307,6 +379,11 @@ export default function KreditanfrageForm() {
       }
       return { ...prev, additionalDocuments: merged }
     })
+
+    // Sofortiger Upload für alle neuen Dateien
+    if (caseId) {
+      incoming.forEach(f => uploadFileToCrm(f, 'additionalDocuments'))
+    }
   }
   const handleAdditionalFileRemove = (index: number) => {
     setFormData(prev => {
@@ -415,6 +492,9 @@ export default function KreditanfrageForm() {
         const data = await response.json()
         if (data?.token) {
           setVerificationToken(data.token)
+        }
+        if (data?.caseId) {
+          setCaseId(data.caseId)
         }
         if (data?.verificationUrl) {
           setVerificationUrl(data.verificationUrl)
@@ -542,9 +622,27 @@ export default function KreditanfrageForm() {
     }
   }
 
-  const nextStep = () => {
+  const nextStep = async () => {
     if (currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1)
+      const next = currentStep + 1
+      setCurrentStep(next)
+      
+      // CRM Integration: Zwischenspeichern
+      if (caseId) {
+        try {
+          await fetch('/api/kreditanfrage/partial', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              caseId,
+              formData: serializeFormData(formData),
+              currentStep: next
+            })
+          })
+        } catch (err) {
+          console.warn('CRM-Zwischenspeicherung fehlgeschlagen:', err)
+        }
+      }
     }
   }
 
@@ -1603,6 +1701,103 @@ export default function KreditanfrageForm() {
               </div>
             </div>
           </div>
+
+          {/* Später fortsetzen / Konto erstellen Option */}
+          {!showAccountCreation && accountCreationStatus !== 'success' && (
+            <div className="mt-8 pt-6 border-t border-gray-200">
+              <h4 className="text-lg font-medium text-gray-900 mb-2">Keine Unterlagen zur Hand?</h4>
+              <p className="text-sm text-gray-600 mb-4">
+                Sie können Ihre Anfrage jetzt speichern und die Dokumente später bequem über unser Kundenportal hochladen.
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowAccountCreation(true)}
+                className="w-full sm:w-auto"
+              >
+                Konto erstellen & später fortsetzen
+              </Button>
+            </div>
+          )}
+
+          {showAccountCreation && accountCreationStatus !== 'success' && (
+            <div className="mt-8 pt-6 border-t border-emerald-100 bg-emerald-50 p-6 rounded-xl">
+              <h4 className="text-lg font-bold text-emerald-900 mb-2">Kundenkonto erstellen</h4>
+              <p className="text-sm text-emerald-800 mb-4">
+                Erstellen Sie ein Passwort, um später auf Ihre Anfrage zugreifen zu können. 
+                Ihr Benutzername ist Ihre E-Mail-Adresse: <strong>{formData.email}</strong>
+              </p>
+              
+              {accountCreationError && (
+                 <div className="bg-red-50 text-red-600 text-sm p-3 rounded-md mb-4 border border-red-100">
+                   {accountCreationError}
+                 </div>
+              )}
+
+              <div className="space-y-4 max-w-md">
+                <div>
+                  <label className="block text-sm font-medium text-emerald-900 mb-1">Passwort wählen</label>
+                  <input
+                    type="password"
+                    value={accountPassword}
+                    onChange={(e) => setAccountPassword(e.target.value)}
+                    className="w-full px-3 py-2 border border-emerald-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
+                    placeholder="Mindestens 8 Zeichen"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-emerald-900 mb-1">Passwort bestätigen</label>
+                  <input
+                    type="password"
+                    value={accountPasswordConfirm}
+                    onChange={(e) => setAccountPasswordConfirm(e.target.value)}
+                    className="w-full px-3 py-2 border border-emerald-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
+                    placeholder="Passwort wiederholen"
+                  />
+                </div>
+                <div className="flex gap-3 pt-2">
+                  <Button
+                    type="button"
+                    onClick={handleCreateAccount}
+                    disabled={accountCreationStatus === 'loading'}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                  >
+                    {accountCreationStatus === 'loading' ? 'Wird erstellt...' : 'Konto erstellen'}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => setShowAccountCreation(false)}
+                    className="text-emerald-700 hover:text-emerald-900 hover:bg-emerald-100"
+                  >
+                    Abbrechen
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {accountCreationStatus === 'success' && (
+            <div className="mt-8 pt-6 border-t border-green-100 bg-green-50 p-6 rounded-xl text-center">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h4 className="text-lg font-bold text-green-900 mb-2">Konto erfolgreich erstellt!</h4>
+              <p className="text-sm text-green-800 mb-4">
+                Sie können sich nun jederzeit im <a href="/portal/login" target="_blank" className="underline font-bold">Kundenportal</a> anmelden, 
+                um den Status einzusehen oder Dokumente nachzureichen.
+              </p>
+              <Button
+                type="button"
+                onClick={() => window.location.href = '/portal'}
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
+                Zum Kundenportal
+              </Button>
+            </div>
+          )}
         </div>
       )}
 
