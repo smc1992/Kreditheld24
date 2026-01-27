@@ -2,6 +2,8 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 const TippsKreditaufnahmePage = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
 
