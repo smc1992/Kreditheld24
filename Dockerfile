@@ -13,6 +13,12 @@ RUN pnpm install --frozen-lockfile --prod=false
 
 # Build app
 COPY . .
+
+# Debug: Verify admin components are present
+RUN echo "=== Checking for admin components ===" && \
+    ls -la src/components/ && \
+    ls -la src/components/admin/ || echo "Admin components directory not found!"
+
 ENV NODE_OPTIONS=--no-deprecation
 RUN pnpm build
 

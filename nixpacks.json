@@ -1,0 +1,26 @@
+{
+  "providers": [],
+  "buildImage": "node:20-bullseye",
+  "phases": {
+    "setup": {
+      "nixPkgs": ["nodejs_20"],
+      "aptPkgs": []
+    },
+    "install": {
+      "cmds": [
+        "corepack enable",
+        "corepack prepare pnpm@9.9.0 --activate",
+        "pnpm install --frozen-lockfile --prod=false"
+      ]
+    },
+    "build": {
+      "cmds": [
+        "echo '=== Verifying admin components ===' && ls -la src/components/admin/ || echo 'Admin dir not found'",
+        "pnpm run build"
+      ]
+    }
+  },
+  "start": {
+    "cmd": "pnpm start"
+  }
+}
