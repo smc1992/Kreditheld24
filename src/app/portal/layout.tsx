@@ -21,7 +21,7 @@ export default function PortalLayout({
 }) {
   return (
     <html lang="de" className={clsx(GeistSans.variable, GeistMono.variable)} suppressHydrationWarning>
-      <body className="antialiased" suppressHydrationWarning>
+      <body className="antialiased bg-slate-50" suppressHydrationWarning>
         <ThemeProvider>
           <SessionProvider>
             {children}
