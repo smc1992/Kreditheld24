@@ -1,12 +1,12 @@
 'use client'
+
+// Force dynamic rendering to prevent useContext errors during static generation
+export const dynamic = 'force-dynamic'
 import React, { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import UnverbindlichAnfragenButton from '../../../components/UnverbindlichAnfragenButton'
 import Script from 'next/script'
 import { useSearchParams } from 'next/navigation'
-
-// Force dynamic rendering to prevent useContext errors during static generation
-export const dynamic = 'force-dynamic'
 
 const UmschuldungPage = () => {
   const [totalDebtAmount, setTotalDebtAmount] = useState(24000)

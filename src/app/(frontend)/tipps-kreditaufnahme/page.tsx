@@ -1,8 +1,9 @@
 'use client'
+
+// Force dynamic rendering to prevent useContext errors during static generation
+export const dynamic = 'force-dynamic'
 import React, { useState } from 'react'
 import Link from 'next/link'
-
-export const dynamic = 'force-dynamic'
 
 const TippsKreditaufnahmePage = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null)

@@ -1,10 +1,10 @@
 'use client'
 
-import React from 'react'
-import Link from 'next/link'
-
 // Force dynamic rendering to prevent useContext errors during static generation
 export const dynamic = 'force-dynamic'
+
+import React from 'react'
+import Link from 'next/link'
 
 const UeberUnsPage = () => {
   const werte = [

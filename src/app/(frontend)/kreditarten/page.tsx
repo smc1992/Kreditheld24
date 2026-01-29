@@ -1,12 +1,12 @@
 'use client'
 
+// Force dynamic rendering to prevent useContext errors during static generation
+export const dynamic = 'force-dynamic'
+
 
 import React from 'react'
 import Link from 'next/link'
 import UnverbindlichAnfragenButton from '../../../components/UnverbindlichAnfragenButton'
-
-// Force dynamic rendering to prevent useContext errors during static generation
-export const dynamic = 'force-dynamic'
 
 const KreditartenPage = () => {
   const kreditarten = [

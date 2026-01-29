@@ -1,11 +1,11 @@
 'use client'
 
+// Force dynamic rendering to prevent useContext errors during static generation
+export const dynamic = 'force-dynamic'
+
 import React, { useState } from 'react'
 import Link from 'next/link'
 import UnverbindlichAnfragenButton from '../../../components/UnverbindlichAnfragenButton'
-
-// Force dynamic rendering to prevent useContext errors during static generation
-export const dynamic = 'force-dynamic'
 
 const AutokreditPage = () => {
   const [vehiclePrice, setVehiclePrice] = useState(25000)
