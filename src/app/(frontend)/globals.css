@@ -148,3 +148,126 @@ html[data-theme='dark'],
 html[data-theme='light'] {
   opacity: initial;
 }
+
+/* Admin Dark Mode Styles */
+.dark {
+  /* Background colors */
+  --tw-bg-opacity: 1;
+  background-color: rgb(15 23 42 / var(--tw-bg-opacity));
+}
+
+.dark body {
+  background-color: rgb(15 23 42);
+  color: rgb(226 232 240);
+}
+
+/* Input fields in dark mode */
+.dark input[type="text"],
+.dark input[type="email"],
+.dark input[type="password"],
+.dark input[type="number"],
+.dark input[type="tel"],
+.dark input[type="url"],
+.dark input[type="search"],
+.dark input[type="date"],
+.dark textarea,
+.dark select {
+  background-color: rgb(30 41 59) !important;
+  border-color: rgb(51 65 85) !important;
+  color: rgb(226 232 240) !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: rgb(100 116 139) !important;
+}
+
+/* Cards and containers in dark mode */
+.dark .bg-white {
+  background-color: rgb(30 41 59) !important;
+}
+
+.dark .bg-slate-50,
+.dark .bg-gray-50 {
+  background-color: rgb(30 41 59) !important;
+}
+
+.dark .bg-slate-100,
+.dark .bg-gray-100 {
+  background-color: rgb(51 65 85) !important;
+}
+
+.dark .bg-slate-200,
+.dark .bg-gray-200 {
+  background-color: rgb(71 85 105) !important;
+}
+
+/* Text colors in dark mode */
+.dark .text-slate-900,
+.dark .text-gray-900 {
+  color: rgb(226 232 240) !important;
+}
+
+.dark .text-slate-800,
+.dark .text-gray-800 {
+  color: rgb(203 213 225) !important;
+}
+
+.dark .text-slate-700,
+.dark .text-gray-700 {
+  color: rgb(203 213 225) !important;
+}
+
+.dark .text-slate-600,
+.dark .text-gray-600 {
+  color: rgb(148 163 184) !important;
+}
+
+.dark .text-slate-500,
+.dark .text-gray-500 {
+  color: rgb(148 163 184) !important;
+}
+
+.dark .text-slate-400,
+.dark .text-gray-400 {
+  color: rgb(100 116 139) !important;
+}
+
+/* Borders in dark mode */
+.dark .border-slate-200,
+.dark .border-gray-200 {
+  border-color: rgb(51 65 85) !important;
+}
+
+.dark .border-slate-300,
+.dark .border-gray-300 {
+  border-color: rgb(71 85 105) !important;
+}
+
+/* Sidebar in dark mode */
+.dark .bg-slate-900 {
+  background-color: rgb(15 23 42) !important;
+}
+
+/* Tables in dark mode */
+.dark table {
+  color: rgb(226 232 240);
+}
+
+.dark th {
+  background-color: rgb(30 41 59) !important;
+  color: rgb(148 163 184) !important;
+}
+
+.dark td {
+  border-color: rgb(51 65 85) !important;
+}
+
+/* Hover states */
+.dark .hover\:bg-slate-100:hover {
+  background-color: rgb(51 65 85) !important;
+}
+
+.dark .hover\:bg-slate-200:hover {
+  background-color: rgb(71 85 105) !important;
+}
