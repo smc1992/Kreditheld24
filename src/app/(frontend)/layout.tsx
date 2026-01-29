@@ -14,6 +14,9 @@ import CookieBanner from '../../components/CookieBanner'
 
 import './globals.css'
 
+// Force dynamic rendering for all frontend pages to prevent useContext errors
+export const dynamic = 'force-dynamic'
+
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kreditheld24.de'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
