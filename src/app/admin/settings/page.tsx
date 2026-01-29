@@ -108,6 +108,8 @@ export default function SettingsPage() {
       const result = await res.json();
       if (result.success) {
         alert('Profil erfolgreich aktualisiert!');
+        // Reload page to refresh session and header
+        window.location.reload();
       } else {
         alert('Fehler: ' + result.error);
       }
