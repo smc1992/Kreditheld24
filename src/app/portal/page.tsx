@@ -1,4 +1,5 @@
 import { auth } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 import { db, crmCases, crmDocuments } from '@/db';
 import { eq, desc } from 'drizzle-orm';
 import Link from 'next/link';
@@ -7,7 +8,9 @@ import { Button } from '@/components/ui/button';
 
 export default async function PortalDashboard() {
   const session = await auth();
-  if (!session) return null;
+  if (!session) {
+    redirect('/portal/login');
+  }
 
   // Fetch customer cases
   const cases = await db.query.crmCases.findMany({
