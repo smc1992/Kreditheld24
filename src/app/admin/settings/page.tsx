@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/admin/DashboardLayout';
+import { useAdminTheme } from '@/providers/AdminThemeProvider';
 import { 
   Settings, 
   User, 
@@ -21,6 +22,7 @@ import {
 
 export default function SettingsPage() {
   const { data: session } = useSession();
+  const { colorTheme, darkMode, compactMode, setColorTheme, setDarkMode, setCompactMode, refreshSettings } = useAdminTheme();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
   const [settings, setSettings] = useState<any>({
@@ -328,12 +330,15 @@ export default function SettingsPage() {
                       </h3>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div 
-                          onClick={() => setSettings({...settings, appearance: {...settings.appearance, theme: 'emerald'}})}
-                          className={`p-4 rounded-2xl border-2 transition-all cursor-pointer ${settings.appearance.theme === 'emerald' ? 'border-emerald-500 bg-emerald-50' : 'border-slate-200 bg-white hover:border-slate-300'}`}
+                          onClick={() => {
+                            setSettings({...settings, appearance: {...settings.appearance, theme: 'emerald'}});
+                            setColorTheme('emerald');
+                          }}
+                          className={`p-4 rounded-2xl border-2 transition-all cursor-pointer ${colorTheme === 'emerald' ? 'border-emerald-500 bg-emerald-50' : 'border-slate-200 bg-white hover:border-slate-300'}`}
                         >
                           <div className="flex items-center justify-between mb-3">
                             <span className="text-xs font-bold text-emerald-700">Emerald (Standard)</span>
-                            {settings.appearance.theme === 'emerald' && <CheckCircle2 className="h-4 w-4 text-emerald-600" />}
+                            {colorTheme === 'emerald' && <CheckCircle2 className="h-4 w-4 text-emerald-600" />}
                           </div>
                           <div className="flex gap-1">
                             <div className="h-4 w-full bg-emerald-600 rounded-sm" />
@@ -342,12 +347,15 @@ export default function SettingsPage() {
                           </div>
                         </div>
                         <div 
-                          onClick={() => setSettings({...settings, appearance: {...settings.appearance, theme: 'ocean'}})}
-                          className={`p-4 rounded-2xl border-2 transition-all cursor-pointer ${settings.appearance.theme === 'ocean' ? 'border-blue-500 bg-blue-50' : 'border-slate-200 bg-white hover:border-slate-300'}`}
+                          onClick={() => {
+                            setSettings({...settings, appearance: {...settings.appearance, theme: 'ocean'}});
+                            setColorTheme('ocean');
+                          }}
+                          className={`p-4 rounded-2xl border-2 transition-all cursor-pointer ${colorTheme === 'ocean' ? 'border-blue-500 bg-blue-50' : 'border-slate-200 bg-white hover:border-slate-300'}`}
                         >
                           <div className="flex items-center justify-between mb-3">
                             <span className="text-xs font-bold text-blue-700">Ocean Blue</span>
-                            {settings.appearance.theme === 'ocean' && <CheckCircle2 className="h-4 w-4 text-blue-600" />}
+                            {colorTheme === 'ocean' && <CheckCircle2 className="h-4 w-4 text-blue-600" />}
                           </div>
                           <div className="flex gap-1">
                             <div className="h-4 w-full bg-blue-600 rounded-sm" />
@@ -356,12 +364,15 @@ export default function SettingsPage() {
                           </div>
                         </div>
                         <div 
-                          onClick={() => setSettings({...settings, appearance: {...settings.appearance, theme: 'purple'}})}
-                          className={`p-4 rounded-2xl border-2 transition-all cursor-pointer ${settings.appearance.theme === 'purple' ? 'border-purple-500 bg-purple-50' : 'border-slate-200 bg-white hover:border-slate-300'}`}
+                          onClick={() => {
+                            setSettings({...settings, appearance: {...settings.appearance, theme: 'purple'}});
+                            setColorTheme('purple');
+                          }}
+                          className={`p-4 rounded-2xl border-2 transition-all cursor-pointer ${colorTheme === 'purple' ? 'border-purple-500 bg-purple-50' : 'border-slate-200 bg-white hover:border-slate-300'}`}
                         >
                           <div className="flex items-center justify-between mb-3">
                             <span className="text-xs font-bold text-purple-700">Deep Purple</span>
-                            {settings.appearance.theme === 'purple' && <CheckCircle2 className="h-4 w-4 text-purple-600" />}
+                            {colorTheme === 'purple' && <CheckCircle2 className="h-4 w-4 text-purple-600" />}
                           </div>
                           <div className="flex gap-1">
                             <div className="h-4 w-full bg-purple-600 rounded-sm" />
@@ -380,10 +391,14 @@ export default function SettingsPage() {
                           <p className="text-xs text-slate-500">Weniger Abstände in Tabellen und Listen</p>
                         </div>
                         <button 
-                          onClick={() => setSettings({...settings, appearance: {...settings.appearance, compactMode: !settings.appearance.compactMode}})}
-                          className={`h-6 w-11 rounded-full relative transition-colors ${settings.appearance.compactMode ? 'bg-emerald-600' : 'bg-slate-200'}`}
+                          onClick={() => {
+                            const newCompact = !compactMode;
+                            setSettings({...settings, appearance: {...settings.appearance, compactMode: newCompact}});
+                            setCompactMode(newCompact);
+                          }}
+                          className={`h-6 w-11 rounded-full relative transition-colors ${compactMode ? 'bg-emerald-600' : 'bg-slate-200'}`}
                         >
-                          <div className={`h-4 w-4 bg-white rounded-full absolute top-1 transition-all ${settings.appearance.compactMode ? 'right-1' : 'left-1'}`} />
+                          <div className={`h-4 w-4 bg-white rounded-full absolute top-1 transition-all ${compactMode ? 'right-1' : 'left-1'}`} />
                         </button>
                       </div>
                       <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
@@ -392,10 +407,14 @@ export default function SettingsPage() {
                           <p className="text-xs text-slate-500">Dunkles Design für die gesamte Admin-Oberfläche</p>
                         </div>
                         <button 
-                          onClick={() => setSettings({...settings, appearance: {...settings.appearance, darkMode: !settings.appearance.darkMode}})}
-                          className={`h-6 w-11 rounded-full relative transition-colors ${settings.appearance.darkMode ? 'bg-emerald-600' : 'bg-slate-200'}`}
+                          onClick={() => {
+                            const newDark = !darkMode;
+                            setSettings({...settings, appearance: {...settings.appearance, darkMode: newDark}});
+                            setDarkMode(newDark);
+                          }}
+                          className={`h-6 w-11 rounded-full relative transition-colors ${darkMode ? 'bg-emerald-600' : 'bg-slate-200'}`}
                         >
-                          <div className={`h-4 w-4 bg-white rounded-full absolute top-1 transition-all ${settings.appearance.darkMode ? 'right-1' : 'left-1'}`} />
+                          <div className={`h-4 w-4 bg-white rounded-full absolute top-1 transition-all ${darkMode ? 'right-1' : 'left-1'}`} />
                         </button>
                       </div>
                     </div>

@@ -4,6 +4,7 @@ import { GeistMono } from 'geist/font/mono';
 import { GeistSans } from 'geist/font/sans';
 import { clsx } from 'clsx';
 import { ThemeProvider } from '@/providers/ThemeProvider';
+import { AdminThemeProvider } from '@/providers/AdminThemeProvider';
 import '../(frontend)/globals.css';
 
 // Force dynamic rendering for all admin pages
@@ -24,7 +25,9 @@ export default function AdminLayout({
       <body className="antialiased" suppressHydrationWarning>
         <ThemeProvider>
           <SessionProvider>
-            {children}
+            <AdminThemeProvider>
+              {children}
+            </AdminThemeProvider>
           </SessionProvider>
         </ThemeProvider>
       </body>
