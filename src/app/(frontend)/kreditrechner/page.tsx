@@ -1,8 +1,12 @@
 'use client'
 
+
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Script from 'next/script'
+
+// Force dynamic rendering to prevent useContext errors during static generation
+export const dynamic = 'force-dynamic'
 
 export default function KreditrechnerPage() {
   const [widgetLoaded, setWidgetLoaded] = useState(false)

@@ -1,9 +1,13 @@
 'use client'
 
+
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Script from 'next/script'
 import UnverbindlichAnfragenButton from '../../../components/UnverbindlichAnfragenButton'
+
+// Force dynamic rendering to prevent useContext errors during static generation
+export const dynamic = 'force-dynamic'
 
 const KreditSelbststaendigePage = () => {
   const [loanAmount, setLoanAmount] = useState(25000)

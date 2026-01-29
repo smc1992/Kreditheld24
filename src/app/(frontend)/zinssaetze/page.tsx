@@ -1,7 +1,11 @@
 'use client'
+
 import React, { useState, useEffect } from 'react'
 import { Metadata } from 'next'
 import Link from 'next/link'
+
+// Force dynamic rendering to prevent useContext errors during static generation
+export const dynamic = 'force-dynamic'
 
 // Zinssatz-Datentyp
 interface InterestRate {

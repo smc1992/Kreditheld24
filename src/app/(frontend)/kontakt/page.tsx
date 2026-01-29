@@ -1,7 +1,11 @@
 'use client'
 
+
 import React, { useState } from 'react'
 import Link from 'next/link'
+
+// Force dynamic rendering to prevent useContext errors during static generation
+export const dynamic = 'force-dynamic'
 
 const KontaktPage = () => {
   const [formData, setFormData] = useState({
