@@ -7,11 +7,12 @@ let dbInstance: ReturnType<typeof drizzle> | null = null;
 
 function getDb() {
   if (!dbInstance) {
-    if (!process.env.DATABASE_URL) {
-      throw new Error('DATABASE_URL environment variable is not set');
+    // Support both DATABASE_URL and DATABASE_URI (Payload CMS uses DATABASE_URI)
+    const connectionString = process.env.DATABASE_URL || process.env.DATABASE_URI;
+    
+    if (!connectionString) {
+      throw new Error('DATABASE_URL or DATABASE_URI environment variable is not set');
     }
-
-    const connectionString = process.env.DATABASE_URL;
 
     client = postgres(connectionString, { 
       max: 10,
