@@ -23,7 +23,24 @@ export default function SettingsPage() {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
-  const [settings, setSettings] = useState<any>(null);
+  const [settings, setSettings] = useState<any>({
+    appearance: {
+      theme: 'emerald',
+      compactMode: false,
+      darkMode: false
+    },
+    notifications: {
+      newCustomer: true,
+      caseUpdate: true,
+      systemWarnings: true,
+      documentUpload: true
+    },
+    smtp: {
+      server: '',
+      fromName: 'Kreditheld24',
+      fromEmail: ''
+    }
+  });
   const [saving, setSaving] = useState(false);
   const [profileData, setProfileData] = useState({
     name: '',
@@ -50,8 +67,26 @@ export default function SettingsPage() {
     try {
       const res = await fetch('/api/admin/settings');
       const data = await res.json();
-      if (data.success) {
-        setSettings(data.data);
+      if (data.success && data.data) {
+        // Merge loaded settings with defaults to prevent null references
+        setSettings({
+          appearance: {
+            theme: data.data.appearance?.theme || 'emerald',
+            compactMode: data.data.appearance?.compactMode || false,
+            darkMode: data.data.appearance?.darkMode || false
+          },
+          notifications: {
+            newCustomer: data.data.notifications?.newCustomer ?? true,
+            caseUpdate: data.data.notifications?.caseUpdate ?? true,
+            systemWarnings: data.data.notifications?.systemWarnings ?? true,
+            documentUpload: data.data.notifications?.documentUpload ?? true
+          },
+          smtp: {
+            server: data.data.smtp?.server || '',
+            fromName: data.data.smtp?.fromName || 'Kreditheld24',
+            fromEmail: data.data.smtp?.fromEmail || ''
+          }
+        });
       }
     } catch (error) {
       console.error('Error fetching settings:', error);
@@ -120,10 +155,12 @@ export default function SettingsPage() {
       const result = await res.json();
       if (result.success) {
         alert('Einstellungen erfolgreich gespeichert!');
+      } else {
+        alert('Fehler: ' + result.error);
       }
     } catch (error) {
       console.error('Error saving settings:', error);
-      alert('Fehler beim Speichern');
+      alert('Fehler beim Speichern der Einstellungen');
     } finally {
       setSaving(false);
     }
