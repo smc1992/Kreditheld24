@@ -5,6 +5,9 @@ import { LogOut, User, FileText, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { signOut } from '@/lib/auth'; // We'll need a client component for signout ideally, but for now server action or similar
 
+// Force dynamic rendering for all portal pages
+export const dynamic = 'force-dynamic'
+
 export default async function PortalLayout({
   children,
 }: {

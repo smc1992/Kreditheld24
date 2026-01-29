@@ -6,6 +6,9 @@ import { clsx } from 'clsx';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import '../(frontend)/globals.css';
 
+// Force dynamic rendering for all admin pages
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Kreditheld24 Admin',
   description: 'CRM Admin Dashboard',
