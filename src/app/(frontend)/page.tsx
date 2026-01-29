@@ -4,6 +4,9 @@ import Link from 'next/link'
 import UnverbindlichAnfragenButton from '../../components/UnverbindlichAnfragenButton'
 import Script from 'next/script'
 
+// Force dynamic rendering to prevent useContext errors during static generation
+export const dynamic = 'force-dynamic'
+
 const HomePage = () => {
   const [showInfoModal, setShowInfoModal] = useState(false)
   // Hinweis: Rechner-Logik entfernt, um API-Aufrufe auf der Startseite zu vermeiden.
