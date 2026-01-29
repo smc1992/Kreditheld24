@@ -28,7 +28,8 @@ import {
   Clock,
   X,
   Eye,
-  Trash2
+  Trash2,
+  Edit
 } from 'lucide-react';
 
 export default function CustomerDetailPage() {
@@ -260,19 +261,26 @@ export default function CustomerDetailPage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <Link
+              href={`/admin/customers/${params?.id}/edit`}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-500 transition-all"
+            >
+              <Edit className="h-4 w-4" />
+              Bearbeiten
+            </Link>
             <button
               onClick={() => {
                 setEmailType('custom');
                 setShowEmailEditor(true);
               }}
               disabled={!customer.email || sendingEmail}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-600/20 hover:bg-emerald-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 hover:bg-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Send className="h-4 w-4" />
               E-Mail schreiben
             </button>
             <Link
-              href={`/admin/cases/new?customerId=${params.id}`}
+              href={`/admin/cases/new?customerId=${params?.id}`}
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 transition-all"
             >
               <Plus className="h-4 w-4" />
