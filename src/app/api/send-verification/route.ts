@@ -143,9 +143,9 @@ export async function POST(request: NextRequest) {
               </p>
               
               <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e9ecef; font-size: 14px; color: #666;">
-                <p><strong>Kreditheld24</strong><br>
                 E-Mail: info@kreditheld24.de<br>
-                Web: www.kreditheld24.de</p>
+                Web: www.kreditheld24.de<br>
+                <span style="color: #ccc; font-size: 10px;">Gesendet: ${new Date().toLocaleString('de-DE')}</span></p>
               </div>
             </div>
           </body>
