@@ -186,15 +186,15 @@ const ImmobilienkreditPage = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <Link
-                href="/kreditrechner"
+              <a
+                href="#rechner"
                 className="group bg-gradient-to-r from-primary to-green-600 hover:from-green-600 hover:to-primary text-white font-medium py-4 px-8 rounded-button whitespace-nowrap shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center transform hover:scale-105"
               >
                 <span>Immobilienkredit berechnen</span>
                 <div className="w-5 h-5 ml-2 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
                   <i className="ri-arrow-right-line"></i>
                 </div>
-              </Link>
+              </a>
               <UnverbindlichAnfragenButton variant="secondary" size="md" className="backdrop-blur-sm" />
             </div>
             
@@ -516,15 +516,15 @@ const ImmobilienkreditPage = () => {
               Lassen Sie sich kostenlos beraten und finden Sie den optimalen Immobilienkredit für Ihr Vorhaben.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link 
-                href="/kreditrechner" 
+              <a 
+                href="#rechner" 
                 className="bg-primary hover:bg-green-500 text-white font-medium py-3 px-8 rounded-button transition-all flex items-center justify-center"
               >
                 <span>Kredit berechnen</span>
                 <div className="w-5 h-5 ml-2 flex items-center justify-center">
                   <i className="ri-arrow-right-line"></i>
                 </div>
-              </Link>
+              </a>
               <Link 
                 href="/kontakt" 
                 className="border border-gray-300 dark:border-gray-600 hover:border-primary text-gray-700 dark:text-gray-300 hover:text-primary font-medium py-3 px-8 rounded-button transition-all flex items-center justify-center"

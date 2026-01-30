@@ -11,6 +11,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="de"
       suppressHydrationWarning
     >
+      <head>
+        <link
+          href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
+          rel="stylesheet"
+        />
+      </head>
       <body>{children}</body>
     </html>
   )

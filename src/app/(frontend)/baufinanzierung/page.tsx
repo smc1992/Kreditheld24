@@ -174,15 +174,15 @@ const BaufinanzierungPage = () => {
                 Verwirklichen Sie Ihren Traum vom Eigenheim. Günstige Zinsen, flexible Tilgung und persönliche Beratung von über 400 Banken.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Link 
-                  href="/kreditrechner" 
+                <a 
+                  href="#rechner" 
                   className="bg-primary hover:bg-green-500 text-white font-medium py-3 sm:py-4 px-6 sm:px-8 rounded-button shadow-md hover:shadow-lg transition-all flex items-center justify-center text-sm sm:text-base group"
                 >
                   <span>Finanzierung berechnen</span>
                   <div className="w-4 h-4 sm:w-5 sm:h-5 ml-2 flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
                     <i className="ri-arrow-right-line"></i>
                   </div>
-                </Link>
+                </a>
                 <UnverbindlichAnfragenButton variant="secondary" size="md" className="py-3 sm:py-4 px-6 sm:px-8 text-sm sm:text-base" />
               </div>
             </div>
@@ -359,15 +359,15 @@ const BaufinanzierungPage = () => {
               Lassen Sie sich kostenlos beraten und finden Sie die optimale Finanzierung für Ihr Eigenheim.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link 
-                href="/kreditrechner" 
+              <a 
+                href="#rechner" 
                 className="bg-primary hover:bg-green-500 text-white font-medium py-3 px-8 rounded-button transition-all flex items-center justify-center"
               >
                 <span>Finanzierung berechnen</span>
                 <div className="w-5 h-5 ml-2 flex items-center justify-center">
                   <i className="ri-arrow-right-line"></i>
                 </div>
-              </Link>
+              </a>
               <Link 
                 href="/kontakt" 
                 className="border border-gray-300 dark:border-gray-600 hover:border-primary text-gray-700 dark:text-gray-300 hover:text-primary font-medium py-3 px-8 rounded-button transition-all flex items-center justify-center"
