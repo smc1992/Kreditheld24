@@ -34,7 +34,7 @@ import {
 } from 'lucide-react';
 
 export default function CaseDetailsPage() {
-  const { data: session, status } = useSession();
+  const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
   const params = useParams();
   const [caseData, setCaseData] = useState<any>(null);
@@ -131,11 +131,11 @@ export default function CaseDetailsPage() {
   };
 
   useEffect(() => {
-    if (status === 'loading' || !params.id) {
+    if (sessionStatus === 'loading' || !params.id) {
       return;
     }
 
-    if (status === 'authenticated') {
+    if (sessionStatus === 'authenticated') {
       Promise.all([
         fetch(`/api/admin/cases/${params.id}`).then(res => res.json()),
         fetch(`/api/admin/activities?caseId=${params.id}`).then(res => res.json()),
@@ -159,7 +159,7 @@ export default function CaseDetailsPage() {
           setLoading(false);
         });
     }
-  }, [status, params.id]);
+  }, [sessionStatus, params.id]);
 
   if (!session) return null;
 
@@ -312,8 +312,8 @@ export default function CaseDetailsPage() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex items-center gap-2 px-6 py-4 text-sm font-bold transition-all border-b-2 -mb-px ${activeTab === tab.id
-                  ? 'border-emerald-600 text-emerald-600'
-                  : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+                ? 'border-emerald-600 text-emerald-600'
+                : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
                 }`}
             >
               <tab.icon className="h-4 w-4" />
@@ -826,8 +826,8 @@ export default function CaseDetailsPage() {
                           key={type.id}
                           onClick={() => setNewActivity({ ...newActivity, type: type.id })}
                           className={`flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all ${newActivity.type === type.id
-                              ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                              : 'border-slate-100 hover:border-slate-200 text-slate-500'
+                            ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                            : 'border-slate-100 hover:border-slate-200 text-slate-500'
                             }`}
                         >
                           <type.icon className="h-5 w-5" />
