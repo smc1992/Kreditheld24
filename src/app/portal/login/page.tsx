@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Loader2, AlertCircle } from 'lucide-react';
+import { Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
 export default function PortalLoginPage() {
   const router = useRouter();
@@ -17,6 +17,7 @@ export default function PortalLoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const currentYear = new Date().getFullYear();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -57,10 +58,10 @@ export default function PortalLoginPage() {
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-green-600 shadow-xl shadow-emerald-500/20 mb-6">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-              <circle cx="9" cy="7" r="4"/>
-              <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
             </svg>
           </div>
           <h1 className="text-3xl font-bold text-white tracking-tight">
@@ -99,22 +100,31 @@ export default function PortalLoginPage() {
                 <label htmlFor="password" className="block text-sm font-medium text-slate-300">
                   Passwort
                 </label>
-                <Link 
-                  href="/portal/reset-password" 
+                <Link
+                  href="/portal/reset-password"
                   className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors"
                 >
                   Passwort vergessen?
                 </Link>
               </div>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
-                placeholder="••••••••"
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all pr-10"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300 transition-colors"
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
+              </div>
             </div>
 
             {error && (
@@ -153,7 +163,7 @@ export default function PortalLoginPage() {
           {/* Demo Credentials Hint */}
           <div className="mt-4 text-center">
             <p className="text-xs text-slate-500">
-              <span className="font-semibold text-slate-400">Demo Zugang:</span><br/>
+              <span className="font-semibold text-slate-400">Demo Zugang:</span><br />
               test@kreditheld24.de / test123
             </p>
           </div>
