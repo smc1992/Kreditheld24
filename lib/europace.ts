@@ -210,9 +210,8 @@ export async function fetchBaufinanzierungProcesses(): Promise<EuropaceProcess[]
   const scope = 'baufinanzierung:vorgang:lesen'
   const token = await getEuropaceAccessTokenWithScope(scope)
 
-  // TODO: Replace with actual endpoint from documentation
-  // Placeholder endpoint - needs to be updated with real API endpoint
-  const endpoint = 'https://baufinanzierung.api.europace.de/vorgaenge'
+  // Endpoint from Europace Postman Collection
+  const endpoint = 'https://api.europace2.de/v2/vorgaenge'
 
   const res = await fetch(endpoint, {
     method: 'GET',
@@ -237,16 +236,16 @@ export async function fetchPrivatkreditProcesses(): Promise<EuropaceProcess[]> {
   const scope = 'privatkredit:vorgang:lesen'
   const token = await getEuropaceAccessTokenWithScope(scope)
 
-  // TODO: Replace with actual endpoint from documentation
-  // Placeholder endpoint - needs to be updated with real API endpoint
-  const endpoint = 'https://kreditsmart.api.europace.de/vorgaenge'
+  // Endpoint from Europace Postman Collection (POST request with empty body)
+  const endpoint = 'https://www.europace2.de/kreditsmart/kex/vorgaenge'
 
   const res = await fetch(endpoint, {
-    method: 'GET',
+    method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
+    body: JSON.stringify({}),
     cache: 'no-store',
   })
 
