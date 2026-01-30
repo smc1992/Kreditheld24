@@ -43,7 +43,7 @@ export async function PATCH(req: Request) {
     }
 
     const body = await req.json();
-    const { firstName, lastName, email, phone, street, houseNumber, postalCode, city } = body;
+    const { firstName, lastName, email, phone, address } = body;
 
     const [updatedCustomer] = await db
       .update(crmCustomers)
@@ -52,7 +52,7 @@ export async function PATCH(req: Request) {
         lastName,
         email,
         phone,
-        address: street && houseNumber ? `${street} ${houseNumber}, ${postalCode} ${city}` : null,
+        address,
         updatedAt: new Date(),
       })
       .where(eq(crmCustomers.id, session.user.id))

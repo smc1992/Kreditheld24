@@ -17,20 +17,19 @@ export async function DELETE(
 
     const { id: documentId } = await params;
 
-    // Get document with case info
-    const document = await db.query.crmDocuments.findFirst({
-      where: eq(crmDocuments.id, documentId),
-      with: {
-        case: true
-      }
-    });
+    // Get document
+    const [document] = await db
+      .select()
+      .from(crmDocuments)
+      .where(eq(crmDocuments.id, documentId))
+      .limit(1);
 
     if (!document) {
       return NextResponse.json({ error: 'Document not found' }, { status: 404 });
     }
 
-    // Verify the document belongs to the user's case
-    if (document.case?.customerId !== session.user.id) {
+    // Verify the document belongs to the user
+    if (document.customerId !== session.user.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 

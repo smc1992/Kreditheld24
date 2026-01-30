@@ -13,10 +13,7 @@ interface CustomerProfile {
   lastName: string;
   email: string;
   phone: string;
-  street: string;
-  houseNumber: string;
-  postalCode: string;
-  city: string;
+  address: string;
   dateOfBirth: string;
   createdAt: string;
 }
@@ -32,10 +29,7 @@ export default function ProfilPage() {
     lastName: '',
     email: '',
     phone: '',
-    street: '',
-    houseNumber: '',
-    postalCode: '',
-    city: '',
+    address: '',
   });
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
@@ -64,10 +58,7 @@ export default function ProfilPage() {
           lastName: data.data.lastName || '',
           email: data.data.email || '',
           phone: data.data.phone || '',
-          street: data.data.street || '',
-          houseNumber: data.data.houseNumber || '',
-          postalCode: data.data.postalCode || '',
-          city: data.data.city || '',
+          address: data.data.address || '',
         });
       }
     } catch (error) {
@@ -208,45 +199,15 @@ export default function ProfilPage() {
               <MapPin className="h-4 w-4" />
               Adresse
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="md:col-span-2 grid grid-cols-4 gap-4">
-                <div className="col-span-3">
-                  <label className="block text-sm font-bold text-slate-300 mb-2">Straße</label>
-                  <input
-                    type="text"
-                    value={formData.street}
-                    onChange={(e) => setFormData({ ...formData, street: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-xl text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-slate-300 mb-2">Nr.</label>
-                  <input
-                    type="text"
-                    value={formData.houseNumber}
-                    onChange={(e) => setFormData({ ...formData, houseNumber: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-xl text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-slate-300 mb-2">PLZ</label>
-                <input
-                  type="text"
-                  value={formData.postalCode}
-                  onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-xl text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-slate-300 mb-2">Stadt</label>
-                <input
-                  type="text"
-                  value={formData.city}
-                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-xl text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-                />
-              </div>
+            <div>
+              <label className="block text-sm font-bold text-slate-300 mb-2">Adresse</label>
+              <textarea
+                value={formData.address}
+                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                rows={3}
+                placeholder="Straße, Hausnummer, PLZ, Stadt"
+                className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-xl text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all resize-none"
+              />
             </div>
           </div>
 
