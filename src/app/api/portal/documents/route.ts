@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { db, crmDocuments } from '@/db';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, and } from 'drizzle-orm';
 import { saveFile } from '@/lib/file-upload';
+import { unlink } from 'fs/promises';
+import { join } from 'path';
 
 export async function GET() {
   try {

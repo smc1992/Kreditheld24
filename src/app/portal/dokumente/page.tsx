@@ -44,6 +44,9 @@ export default function DokumentePage() {
   const [selectedCase, setSelectedCase] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewDocument, setPreviewDocument] = useState<Document | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -123,6 +126,36 @@ export default function DokumentePage() {
       alert('Fehler beim Hochladen der Dokumente');
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handlePreview = (doc: Document) => {
+    setPreviewDocument(doc);
+    setShowPreview(true);
+  };
+
+  const handleDelete = async (docId: string) => {
+    if (!confirm('Möchten Sie dieses Dokument wirklich löschen?')) {
+      return;
+    }
+
+    setDeleting(docId);
+    try {
+      const res = await fetch(`/api/portal/documents/${docId}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert('Dokument erfolgreich gelöscht!');
+        fetchData();
+      } else {
+        alert('Fehler: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error deleting document:', error);
+      alert('Fehler beim Löschen des Dokuments');
+    } finally {
+      setDeleting(null);
     }
   };
 
@@ -355,13 +388,37 @@ export default function DokumentePage() {
                               </div>
                             </div>
                           </div>
-                          <a
-                            href={doc.fileUrl}
-                            download
-                            className="p-2 text-slate-400 hover:text-emerald-500 hover:bg-slate-700 rounded-lg transition-all"
-                          >
-                            <Download className="h-5 w-5" />
-                          </a>
+                          <div className="flex items-center gap-2">
+                            {doc.name.toLowerCase().endsWith('.pdf') && (
+                              <button
+                                onClick={() => handlePreview(doc)}
+                                className="p-2 text-slate-400 hover:text-blue-500 hover:bg-slate-700 rounded-lg transition-all"
+                                title="Vorschau"
+                              >
+                                <FileText className="h-5 w-5" />
+                              </button>
+                            )}
+                            <a
+                              href={doc.fileUrl}
+                              download={doc.name}
+                              className="p-2 text-slate-400 hover:text-emerald-500 hover:bg-slate-700 rounded-lg transition-all"
+                              title="Herunterladen"
+                            >
+                              <Download className="h-5 w-5" />
+                            </a>
+                            <button
+                              onClick={() => handleDelete(doc.id)}
+                              disabled={deleting === doc.id}
+                              className="p-2 text-slate-400 hover:text-red-500 hover:bg-slate-700 rounded-lg transition-all disabled:opacity-50"
+                              title="Löschen"
+                            >
+                              {deleting === doc.id ? (
+                                <Loader2 className="h-5 w-5 animate-spin" />
+                              ) : (
+                                <X className="h-5 w-5" />
+                              )}
+                            </button>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -394,13 +451,37 @@ export default function DokumentePage() {
                           </div>
                         </div>
                       </div>
-                      <a
-                        href={doc.fileUrl}
-                        download
-                        className="p-2 text-slate-400 hover:text-emerald-500 hover:bg-slate-700 rounded-lg transition-all"
-                      >
-                        <Download className="h-5 w-5" />
-                      </a>
+                      <div className="flex items-center gap-2">
+                        {doc.name.toLowerCase().endsWith('.pdf') && (
+                          <button
+                            onClick={() => handlePreview(doc)}
+                            className="p-2 text-slate-400 hover:text-blue-500 hover:bg-slate-700 rounded-lg transition-all"
+                            title="Vorschau"
+                          >
+                            <FileText className="h-5 w-5" />
+                          </button>
+                        )}
+                        <a
+                          href={doc.fileUrl}
+                          download={doc.name}
+                          className="p-2 text-slate-400 hover:text-emerald-500 hover:bg-slate-700 rounded-lg transition-all"
+                          title="Herunterladen"
+                        >
+                          <Download className="h-5 w-5" />
+                        </a>
+                        <button
+                          onClick={() => handleDelete(doc.id)}
+                          disabled={deleting === doc.id}
+                          className="p-2 text-slate-400 hover:text-red-500 hover:bg-slate-700 rounded-lg transition-all disabled:opacity-50"
+                          title="Löschen"
+                        >
+                          {deleting === doc.id ? (
+                            <Loader2 className="h-5 w-5 animate-spin" />
+                          ) : (
+                            <X className="h-5 w-5" />
+                          )}
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -414,6 +495,33 @@ export default function DokumentePage() {
             <p className="text-slate-400 mb-6">
               Erstellen Sie zuerst eine Kreditanfrage, um Dokumente hochzuladen.
             </p>
+          </div>
+        )}
+
+        {/* PDF Preview Modal */}
+        {showPreview && previewDocument && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 backdrop-blur-sm p-4">
+            <div className="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-5xl h-[90vh] flex flex-col">
+              <div className="flex items-center justify-between p-6 border-b border-slate-700">
+                <div>
+                  <h2 className="text-xl font-bold text-white">{previewDocument.name}</h2>
+                  <p className="text-sm text-slate-400 mt-1">{getCategoryLabel(previewDocument.type)}</p>
+                </div>
+                <button
+                  onClick={() => setShowPreview(false)}
+                  className="p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition-all"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+              <div className="flex-1 overflow-hidden">
+                <iframe
+                  src={previewDocument.fileUrl}
+                  className="w-full h-full"
+                  title="PDF Vorschau"
+                />
+              </div>
+            </div>
           </div>
         )}
       </div>
