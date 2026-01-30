@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { db, crmDocuments } from '@/db';
 import { eq, desc } from 'drizzle-orm';
+import { saveFile } from '@/lib/file-upload';
 
 export async function GET() {
   try {
@@ -51,8 +52,10 @@ export async function POST(req: Request) {
     const uploadedDocuments = [];
 
     for (const file of files) {
-      // For now, store file metadata only (no actual file storage)
-      // In production, you would upload to S3, Cloudinary, or similar
+      // Save file to disk
+      const fileUrl = await saveFile(file);
+      
+      // Save metadata to database
       const [document] = await db
         .insert(crmDocuments)
         .values({
@@ -60,7 +63,7 @@ export async function POST(req: Request) {
           caseId: caseId || null,
           name: file.name,
           type: documentType || 'other',
-          fileUrl: `/uploads/${Date.now()}-${file.name}`, // Placeholder URL
+          fileUrl: fileUrl,
           fileSize: file.size,
         })
         .returning();
