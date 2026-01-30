@@ -7,18 +7,6 @@ import { eq, and } from 'drizzle-orm'
 
 export const runtime = 'nodejs'
 
-// Email-Transporter konfigurieren
-const smtpPort = parseInt(process.env.SMTP_PORT || '587')
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: smtpPort,
-  secure: smtpPort === 465, // Strato & andere nutzen 465 mit SSL
-  auth: {
-    user: process.env.SMTP_USER || 'info@kreditheld24.de',
-    pass: process.env.SMTP_PASS || process.env.EMAIL_PASSWORD
-  }
-})
-
 export async function POST(request: NextRequest) {
   try {
     const { email, formData } = await request.json()
@@ -28,6 +16,49 @@ export async function POST(request: NextRequest) {
         { error: 'E-Mail-Adresse ist erforderlich' },
         { status: 400 }
       )
+    }
+
+    // DEBUG: Check Environment Variables availability
+    console.log('----- EMAIL DEBUG START -----');
+    console.log('ENV SMTP_HOST:', process.env.SMTP_HOST);
+    console.log('ENV SMTP_PORT:', process.env.SMTP_PORT);
+    console.log('ENV SMTP_USER:', process.env.SMTP_USER);
+    console.log('ENV SMTP_PASS (length):', process.env.SMTP_PASS ? process.env.SMTP_PASS.length : 0);
+
+    // Configure Transporter dynamically to ensure latest ENV vars are used
+    const smtpPort = parseInt(process.env.SMTP_PORT || '587')
+    const host = process.env.SMTP_HOST || 'smtp.gmail.com'
+    const user = process.env.SMTP_USER || 'info@kreditheld24.de'
+    const pass = process.env.SMTP_PASS || process.env.EMAIL_PASSWORD
+
+    console.log('Transporter Config:', { host, port: smtpPort, secure: smtpPort === 465, user });
+
+    const transporter = nodemailer.createTransport({
+      host: host,
+      port: smtpPort,
+      secure: smtpPort === 465,
+      auth: {
+        user: user,
+        pass: pass
+      },
+      debug: true, // Enable nodemailer debug output
+      logger: true // Log to console
+    })
+
+    // Verify connection configuration
+    try {
+      await transporter.verify();
+      console.log('SMTP Connection Verified Successfully');
+    } catch (verifyError) {
+      console.error('SMTP Connection Verification Failed:', verifyError);
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'SMTP Verbindungsfehler: Konnte keine Verbindung zum Mailserver herstellen.',
+          details: (verifyError as Error).message
+        },
+        { status: 500 }
+      );
     }
 
     // 1. CRM Integration: Kunde finden oder erstellen
@@ -96,9 +127,9 @@ export async function POST(request: NextRequest) {
     const envBaseUrl = process.env.VERIFICATION_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL || process.env.BASE_URL
     const xfProto = request.headers.get('x-forwarded-proto') || undefined
     const xfHost = request.headers.get('x-forwarded-host') || undefined
-    const host = xfHost || request.headers.get('host') || undefined
+    const hostHeader = xfHost || request.headers.get('host') || undefined
     const proto = xfProto || (request.nextUrl?.protocol ? request.nextUrl.protocol.replace(':', '') : undefined) || undefined
-    const originFromHeaders = host && (proto ? `${proto}://${host}` : `https://${host}`)
+    const originFromHeaders = hostHeader && (proto ? `${proto}://${hostHeader}` : `https://${hostHeader}`)
     const fallbackProd = 'https://kreditheld24.de'
     const fallbackDev = 'http://localhost:3000'
     const baseUrl = envBaseUrl || originFromHeaders || request.nextUrl?.origin || (process.env.NODE_ENV === 'production' ? fallbackProd : fallbackDev)
@@ -108,7 +139,7 @@ export async function POST(request: NextRequest) {
     const mailOptions = {
       from: {
         name: 'Kreditheld24',
-        address: 'info@kreditheld24.de'
+        address: user // Use the authenticated user as sender
       },
       to: email,
       subject: 'E-Mail-Bestätigung für Ihre Kreditanfrage - Kreditheld24',
@@ -165,19 +196,13 @@ export async function POST(request: NextRequest) {
       `
     }
 
-    // E-Mail senden (mit resilientem Fallback)
+    // E-Mail senden
     let emailSent = false
-    const hasSmtpCreds = !!(process.env.SMTP_USER && (process.env.SMTP_PASS || process.env.EMAIL_PASSWORD))
-    try {
-      if (hasSmtpCreds) {
-        await transporter.sendMail(mailOptions)
-        emailSent = true
-      } else {
-        console.warn('SMTP nicht konfiguriert – Fallback: Verifizierungslink wird zurückgegeben, E-Mail nicht gesendet.')
-      }
-    } catch (mailError) {
-      console.error('Fehler beim Senden der E-Mail:', mailError)
-    }
+
+    console.log('Attempting to send email via Transporter...');
+    const info = await transporter.sendMail(mailOptions)
+    console.log('Email sent successfully. MessageID:', info.messageId)
+    emailSent = true
 
     // Token in temporärem Store speichern (Redis oder FS)
     // Wir speichern die caseId mit, um sie später wiederherzustellen
@@ -189,15 +214,17 @@ export async function POST(request: NextRequest) {
       verificationUrl,
       emailSent,
       caseId,
-      message: emailSent
-        ? 'Bestätigungs-E-Mail wurde gesendet'
-        : 'Entwicklungsmodus: Direkter Bestätigungslink verfügbar'
+      message: 'Bestätigungs-E-Mail wurde gesendet'
     })
 
   } catch (error) {
-    console.error('Fehler beim Senden der Bestätigungs-E-Mail:', error)
+    console.error('CRITICAL ERROR in /api/send-verification:', error)
     return NextResponse.json(
-      { error: 'Fehler beim Senden der E-Mail' },
+      {
+        success: false,
+        error: 'Ein interner Fehler ist aufgetreten.',
+        details: (error as Error).message
+      },
       { status: 500 }
     )
   }

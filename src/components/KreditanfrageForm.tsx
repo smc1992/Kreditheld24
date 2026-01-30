@@ -502,9 +502,21 @@ export default function KreditanfrageForm() {
           setVerificationUrl(null)
         }
         setEmailVerificationSent(true)
+        setUrlMessage(null)
+      } else {
+        const errData = await response.json().catch(() => ({}))
+        console.error('Fehler beim Senden:', errData)
+        setUrlMessage({
+          type: 'error',
+          message: errData.error || 'E-Mail konnte nicht gesendet werden. Bitte versuchen Sie es erneut.'
+        })
       }
     } catch (error) {
       console.error('Fehler beim Senden der E-Mail-Bestätigung:', error)
+      setUrlMessage({
+        type: 'error',
+        message: 'Ein Netzwerkfehler ist aufgetreten. Bitte prüfen Sie Ihre Verbindung.'
+      })
     }
   }
 
@@ -1332,6 +1344,12 @@ export default function KreditanfrageForm() {
                 <p className="font-semibold text-blue-900 text-lg">{formData.email}</p>
               </div>
 
+              {urlMessage && urlMessage.type === 'error' && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                  {urlMessage.message}
+                </div>
+              )}
+
               <button
                 onClick={sendEmailVerification}
                 className="bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-8 rounded-lg shadow-md transition-all"
@@ -1872,8 +1890,8 @@ export default function KreditanfrageForm() {
 
       {urlMessage && (
         <div className={`border px-4 py-3 rounded mt-4 ${urlMessage.type === 'success'
-            ? 'bg-green-100 border-green-400 text-green-700'
-            : 'bg-red-100 border-red-400 text-red-700'
+          ? 'bg-green-100 border-green-400 text-green-700'
+          : 'bg-red-100 border-red-400 text-red-700'
           }`}>
           <div className="flex items-center">
             <svg className={`w-5 h-5 mr-2 ${urlMessage.type === 'success' ? 'text-green-600' : 'text-red-600'
