@@ -31,6 +31,12 @@ export default function ProfilPage() {
     phone: '',
     address: '',
   });
+  const [addressFields, setAddressFields] = useState({
+    street: '',
+    houseNumber: '',
+    postalCode: '',
+    city: '',
+  });
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
@@ -60,6 +66,24 @@ export default function ProfilPage() {
           phone: data.data.phone || '',
           address: data.data.address || '',
         });
+        
+        // Parse address into separate fields for better UX
+        if (data.data.address) {
+          const addressParts = data.data.address.split(',').map((part: string) => part.trim());
+          const streetParts = addressParts[0]?.split(' ') || [];
+          const houseNumber = streetParts.pop() || '';
+          const street = streetParts.join(' ') || '';
+          const postalAndCity = addressParts[1]?.split(' ') || [];
+          const postalCode = postalAndCity[0] || '';
+          const city = postalAndCity.slice(1).join(' ') || '';
+          
+          setAddressFields({
+            street,
+            houseNumber,
+            postalCode,
+            city,
+          });
+        }
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -71,10 +95,18 @@ export default function ProfilPage() {
   const handleSaveProfile = async () => {
     setSaving(true);
     try {
+      // Combine address fields into single string
+      const combinedAddress = addressFields.street && addressFields.houseNumber
+        ? `${addressFields.street} ${addressFields.houseNumber}, ${addressFields.postalCode} ${addressFields.city}`.trim()
+        : '';
+      
       const res = await fetch('/api/portal/profile', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          address: combinedAddress,
+        }),
       });
       const result = await res.json();
       if (result.success) {
@@ -199,15 +231,45 @@ export default function ProfilPage() {
               <MapPin className="h-4 w-4" />
               Adresse
             </h3>
-            <div>
-              <label className="block text-sm font-bold text-slate-300 mb-2">Adresse</label>
-              <textarea
-                value={formData.address}
-                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                rows={3}
-                placeholder="Straße, Hausnummer, PLZ, Stadt"
-                className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-xl text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all resize-none"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="md:col-span-2 grid grid-cols-4 gap-4">
+                <div className="col-span-3">
+                  <label className="block text-sm font-bold text-slate-300 mb-2">Straße</label>
+                  <input
+                    type="text"
+                    value={addressFields.street}
+                    onChange={(e) => setAddressFields({ ...addressFields, street: e.target.value })}
+                    className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-xl text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-slate-300 mb-2">Nr.</label>
+                  <input
+                    type="text"
+                    value={addressFields.houseNumber}
+                    onChange={(e) => setAddressFields({ ...addressFields, houseNumber: e.target.value })}
+                    className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-xl text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-slate-300 mb-2">PLZ</label>
+                <input
+                  type="text"
+                  value={addressFields.postalCode}
+                  onChange={(e) => setAddressFields({ ...addressFields, postalCode: e.target.value })}
+                  className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-xl text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-slate-300 mb-2">Stadt</label>
+                <input
+                  type="text"
+                  value={addressFields.city}
+                  onChange={(e) => setAddressFields({ ...addressFields, city: e.target.value })}
+                  className="w-full px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-xl text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                />
+              </div>
             </div>
           </div>
 
