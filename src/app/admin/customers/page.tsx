@@ -19,7 +19,8 @@ import {
   CheckSquare,
   Square,
   Send,
-  Trash2
+  Trash2,
+  RefreshCw
 } from 'lucide-react';
 import EmailEditor from '@/components/admin/EmailEditor';
 
@@ -33,6 +34,37 @@ export default function CustomersPage() {
   const [showEmailEditor, setShowEmailEditor] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
+  const [syncing, setSyncing] = useState(false);
+  const [syncResult, setSyncResult] = useState<any>(null);
+
+  const handleEuropaceSync = async () => {
+    setSyncing(true);
+    setSyncResult(null);
+    
+    try {
+      const response = await fetch('/api/admin/europace/sync-customers', {
+        method: 'POST',
+      });
+      const result = await response.json();
+      
+      if (result.success) {
+        setSyncResult(result);
+        // Refresh customer list
+        const customersRes = await fetch('/api/admin/customers', { cache: 'no-store' });
+        const customersData = await customersRes.json();
+        if (customersData.success) {
+          setCustomers(customersData.data);
+        }
+      } else {
+        alert('Synchronisation fehlgeschlagen: ' + result.error);
+      }
+    } catch (error) {
+      console.error('Error syncing with Europace:', error);
+      alert('Fehler bei der Synchronisation mit Europace.');
+    } finally {
+      setSyncing(false);
+    }
+  };
 
   const deleteCustomer = async (id: string) => {
     if (!confirm('Möchten Sie diesen Kunden wirklich unwiderruflich löschen? Alle zugehörigen Vorgänge und Dokumente werden ebenfalls entfernt.')) return;
@@ -134,6 +166,14 @@ export default function CustomersPage() {
                 Bulk-Mail ({selectedCustomers.length})
               </button>
             )}
+            <button 
+              onClick={handleEuropaceSync}
+              disabled={syncing}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <RefreshCw className={`h-4 w-4 ${syncing ? 'animate-spin' : ''}`} />
+              {syncing ? 'Synchronisiere...' : 'Europace Sync'}
+            </button>
             <button className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 transition-all">
               <Download className="h-4 w-4" />
               Export
@@ -147,6 +187,42 @@ export default function CustomersPage() {
             </Link>
           </div>
         </div>
+
+        {/* Sync Result Notification */}
+        {syncResult && (
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 animate-in fade-in slide-in-from-top-2">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <h3 className="text-sm font-bold text-blue-900 mb-2">Europace Synchronisation abgeschlossen</h3>
+                <p className="text-sm text-blue-700 mb-3">{syncResult.message}</p>
+                <div className="grid grid-cols-4 gap-4 text-xs">
+                  <div className="bg-white rounded-lg p-3 border border-blue-100">
+                    <div className="text-blue-600 font-bold text-lg">{syncResult.results?.total || 0}</div>
+                    <div className="text-slate-600">Gefunden</div>
+                  </div>
+                  <div className="bg-white rounded-lg p-3 border border-green-100">
+                    <div className="text-green-600 font-bold text-lg">{syncResult.results?.created || 0}</div>
+                    <div className="text-slate-600">Neu erstellt</div>
+                  </div>
+                  <div className="bg-white rounded-lg p-3 border border-yellow-100">
+                    <div className="text-yellow-600 font-bold text-lg">{syncResult.results?.updated || 0}</div>
+                    <div className="text-slate-600">Aktualisiert</div>
+                  </div>
+                  <div className="bg-white rounded-lg p-3 border border-slate-100">
+                    <div className="text-slate-600 font-bold text-lg">{syncResult.results?.skipped || 0}</div>
+                    <div className="text-slate-600">Übersprungen</div>
+                  </div>
+                </div>
+              </div>
+              <button 
+                onClick={() => setSyncResult(null)}
+                className="ml-4 text-blue-400 hover:text-blue-600 transition-colors"
+              >
+                <span className="text-xl">×</span>
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* E-Mail Editor Overlay for Bulk */}
         {showEmailEditor && (

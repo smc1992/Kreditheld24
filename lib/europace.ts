@@ -166,3 +166,132 @@ export async function createKundenangabenCase(payload: any, datenkontext: 'TEST_
     openUrl: `https://www.europace2.de/vorgang/oeffne/${vorgangsNummer}`,
   }
 }
+
+// Types for Europace processes
+export type EuropaceProcess = {
+  vorgangsNummer?: string
+  kundenangaben?: {
+    haushalte?: Array<{
+      antragsteller?: Array<{
+        personendaten?: {
+          anrede?: string
+          vorname?: string
+          nachname?: string
+          email?: string
+          telefonnummer?: string
+        }
+        wohnsituation?: {
+          anschrift?: {
+            strasse?: string
+            hausnummer?: string
+            plz?: string
+            ort?: string
+          }
+        }
+      }>
+    }>
+  }
+  [key: string]: any
+}
+
+export type EuropaceCustomerData = {
+  europaceId?: string
+  vorgangsNummer?: string
+  firstName?: string
+  lastName?: string
+  email?: string
+  phone?: string
+  address?: string
+  source: 'baufinanzierung' | 'privatkredit'
+}
+
+// Fetch Baufinanzierung processes
+export async function fetchBaufinanzierungProcesses(): Promise<EuropaceProcess[]> {
+  const scope = 'baufinanzierung:vorgang:lesen'
+  const token = await getEuropaceAccessTokenWithScope(scope)
+
+  // TODO: Replace with actual endpoint from documentation
+  // Placeholder endpoint - needs to be updated with real API endpoint
+  const endpoint = 'https://baufinanzierung.api.europace.de/vorgaenge'
+
+  const res = await fetch(endpoint, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    cache: 'no-store',
+  })
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => '')
+    throw new Error(`Baufinanzierung Vorgänge abrufen fehlgeschlagen: ${res.status} ${res.statusText} ${text}`)
+  }
+
+  const data = await res.json()
+  return Array.isArray(data) ? data : (data?.vorgaenge || [])
+}
+
+// Fetch Privatkredit processes
+export async function fetchPrivatkreditProcesses(): Promise<EuropaceProcess[]> {
+  const scope = 'privatkredit:vorgang:lesen'
+  const token = await getEuropaceAccessTokenWithScope(scope)
+
+  // TODO: Replace with actual endpoint from documentation
+  // Placeholder endpoint - needs to be updated with real API endpoint
+  const endpoint = 'https://kreditsmart.api.europace.de/vorgaenge'
+
+  const res = await fetch(endpoint, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    cache: 'no-store',
+  })
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => '')
+    throw new Error(`Privatkredit Vorgänge abrufen fehlgeschlagen: ${res.status} ${res.statusText} ${text}`)
+  }
+
+  const data = await res.json()
+  return Array.isArray(data) ? data : (data?.vorgaenge || [])
+}
+
+// Extract customer data from Europace process
+export function extractCustomerFromProcess(process: EuropaceProcess, source: 'baufinanzierung' | 'privatkredit'): EuropaceCustomerData | null {
+  try {
+    // Try to extract customer data from process structure
+    const antragsteller = process?.kundenangaben?.haushalte?.[0]?.antragsteller?.[0]
+    if (!antragsteller) return null
+
+    const personendaten = antragsteller.personendaten
+    const anschrift = antragsteller.wohnsituation?.anschrift
+
+    if (!personendaten?.email) return null // Email is required for duplicate detection
+
+    // Build address string
+    let address = ''
+    if (anschrift) {
+      const parts = [
+        anschrift.strasse && anschrift.hausnummer ? `${anschrift.strasse} ${anschrift.hausnummer}` : '',
+        anschrift.plz && anschrift.ort ? `${anschrift.plz} ${anschrift.ort}` : ''
+      ].filter(Boolean)
+      address = parts.join(', ')
+    }
+
+    return {
+      vorgangsNummer: process.vorgangsNummer,
+      firstName: personendaten.vorname || '',
+      lastName: personendaten.nachname || '',
+      email: personendaten.email,
+      phone: personendaten.telefonnummer || '',
+      address,
+      source,
+    }
+  } catch (error) {
+    console.error('Error extracting customer from process:', error)
+    return null
+  }
+}

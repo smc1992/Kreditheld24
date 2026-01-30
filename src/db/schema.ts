@@ -97,6 +97,7 @@ export const crmCustomers = pgTable('crm_customers', {
   childrenCount: integer('children_count').default(0),
   nationality: varchar('nationality', { length: 100 }),
   notes: text('notes'),
+  europaceId: varchar('europace_id', { length: 255 }),
   // Portal Access
   passwordHash: varchar('password_hash', { length: 255 }),
   isActiveUser: boolean('is_active_user').default(false),
