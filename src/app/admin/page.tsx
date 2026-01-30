@@ -5,13 +5,13 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/admin/DashboardLayout';
 import Link from 'next/link';
-import { 
-  Users, 
-  Briefcase, 
-  BarChart3, 
-  Clock, 
-  PlusCircle, 
-  ArrowUpRight, 
+import {
+  Users,
+  Briefcase,
+  BarChart3,
+  Clock,
+  PlusCircle,
+  ArrowUpRight,
   TrendingUp,
   Activity,
   Percent,
@@ -48,7 +48,7 @@ export default function AdminDashboard() {
         console.error('Error fetching dashboard data:', err);
         setLoading(false);
       });
-  }, [session, router]);
+  }, [session]);
 
   if (!session) {
     return null;
@@ -208,7 +208,7 @@ export default function AdminDashboard() {
                           {new Date(activity.date).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                         </p>
                       </div>
-                      <Link 
+                      <Link
                         href={activity.caseId ? `/admin/cases/${activity.caseId}` : `/admin/customers/${activity.customerId}`}
                         className="p-2 text-slate-300 hover:text-emerald-600 transition-colors"
                       >
@@ -254,8 +254,8 @@ export default function AdminDashboard() {
                 Schnellstart
               </h3>
               <div className="space-y-4">
-                <Link 
-                  href="/admin/customers/new" 
+                <Link
+                  href="/admin/customers/new"
                   className="flex items-center gap-4 rounded-2xl border border-slate-100 p-4 hover:bg-slate-50 hover:border-emerald-200 transition-all group shadow-sm hover:shadow-md"
                 >
                   <div className="rounded-xl bg-blue-50 p-2.5 text-blue-600 group-hover:scale-110 transition-transform">
@@ -263,8 +263,8 @@ export default function AdminDashboard() {
                   </div>
                   <span className="text-sm font-bold text-slate-700">Kunden-Onboarding</span>
                 </Link>
-                <Link 
-                  href="/admin/cases/new" 
+                <Link
+                  href="/admin/cases/new"
                   className="flex items-center gap-4 rounded-2xl border border-slate-100 p-4 hover:bg-slate-50 hover:border-emerald-200 transition-all group shadow-sm hover:shadow-md"
                 >
                   <div className="rounded-xl bg-emerald-50 p-2.5 text-emerald-600 group-hover:scale-110 transition-transform">
@@ -272,8 +272,8 @@ export default function AdminDashboard() {
                   </div>
                   <span className="text-sm font-bold text-slate-700">Kredit-Vorgang</span>
                 </Link>
-                <Link 
-                  href="/admin/rates" 
+                <Link
+                  href="/admin/rates"
                   className="flex items-center gap-4 rounded-2xl border border-slate-100 p-4 hover:bg-slate-50 hover:border-emerald-200 transition-all group shadow-sm hover:shadow-md"
                 >
                   <div className="rounded-xl bg-amber-50 p-2.5 text-amber-600 group-hover:scale-110 transition-transform">

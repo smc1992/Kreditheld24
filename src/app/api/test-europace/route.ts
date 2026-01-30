@@ -4,10 +4,10 @@ import { getEuropaceAccessTokenWithScope } from '../../../../lib/europace'
 // Ungeschützte Test-Route (nur für Development!)
 export async function GET(request: Request) {
   try {
-    const results = {
-      oauth: { success: false, error: null, token: null as string | null },
-      baufinanzierung: { success: false, error: null as string | null, data: null as any, endpoint: null as string | null },
-      privatkredit: { success: false, error: null as string | null, data: null as any, endpoint: null as string | null },
+    const results: any = {
+      oauth: { success: false, error: null, token: null },
+      baufinanzierung: { success: false, error: null, data: null, endpoint: null, detailData: null },
+      privatkredit: { success: false, error: null, data: null, endpoint: null }
     }
 
     // Test 1: OAuth Token abrufen
@@ -30,154 +30,208 @@ export async function GET(request: Request) {
       }
     }
 
-    // Test 2: Baufinanzierung API (both TEST_MODUS and ECHT_GESCHAEFT)
+    // Define foundVorgangsNummer in the outer scope to be accessible for detail fetching
+    let foundVorgangsNummer = ''
+
+    // Test 2: Baufinanzierung API (Debug Headers)
     if (results.oauth.success) {
-      console.log('Testing Baufinanzierung API...')
+      console.log('Testing Baufinanzierung API with different headers...')
       
-      const baufiEndpoints = [
-        { url: 'https://api.europace2.de/v3/vorgaenge?datenKontext=TEST_MODUS', mode: 'TEST_MODUS' },
-        { url: 'https://api.europace2.de/v3/vorgaenge', mode: 'ECHT_GESCHAEFT' },
+      const strategies = [
+        { name: 'No Extra Headers', headers: {} },
+        { name: 'With Partner-ID', headers: { 'X-Partner-ID': process.env.EUROPACE_PERSON_ID || '' } },
+        { name: 'With Org-ID', headers: { 'X-Organisationseinheit': process.env.EUROPACE_ORG_ID || '' } },
+        { name: 'With Both', headers: { 'X-Partner-ID': process.env.EUROPACE_PERSON_ID || '', 'X-Organisationseinheit': process.env.EUROPACE_ORG_ID || '' } }
       ]
 
-      const allResults: any = { test: null, echt: null }
+      const baufiResults: any = {}
 
-      for (const { url: endpoint, mode } of baufiEndpoints) {
+      for (const strategy of strategies) {
+        // Skip strategies with missing env vars
+        if ((strategy.name.includes('Partner-ID') && !process.env.EUROPACE_PERSON_ID) || 
+            (strategy.name.includes('Org-ID') && !process.env.EUROPACE_ORG_ID)) {
+          continue
+        }
+
         try {
-          const token = await getEuropaceAccessTokenWithScope('baufinanzierung:vorgang:lesen')
-          console.log(`Trying endpoint: ${endpoint} (${mode})`)
-          
-          // Add X-Partner-ID and X-Organisationseinheit headers
+          // Use correct scope including echtgeschaeft
+          const token = await getEuropaceAccessTokenWithScope('baufinanzierung:vorgang:lesen baufinanzierung:echtgeschaeft')
+          const endpoint = 'https://api.europace2.de/v3/vorgaenge?limit=5'
+          const url = `${endpoint}&datenKontext=ECHT_GESCHAEFT`
+
           const headers: Record<string, string> = {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
             'X-TraceId': `test-${Date.now()}`,
           }
-          
-          if (process.env.EUROPACE_PERSON_ID) {
-            headers['X-Partner-ID'] = process.env.EUROPACE_PERSON_ID
-          }
-          
-          if (process.env.EUROPACE_ORG_ID) {
-            headers['X-Organisationseinheit'] = process.env.EUROPACE_ORG_ID
-          }
-          
-          console.log(`Using headers:`, { 
-            'X-Partner-ID': headers['X-Partner-ID'],
-            'X-Organisationseinheit': headers['X-Organisationseinheit']
+
+          // Merge strategy headers safely
+          Object.entries(strategy.headers).forEach(([key, value]) => {
+            if (value) {
+              headers[key] = value as string
+            }
           })
           
+          console.log(`Testing strategy: ${strategy.name}`)
+          
+          const res = await fetch(url, {
+            method: 'GET',
+            headers,
+            cache: 'no-store',
+          })
+
+          const text = await res.text()
+          let data = null
+          let count = -1
+          
+          if (res.ok) {
+            try {
+              data = JSON.parse(text)
+              if (Array.isArray(data.vorgaenge)) {
+                count = data.vorgaenge.length
+                if (count > 0 && !foundVorgangsNummer) {
+                  foundVorgangsNummer = data.vorgaenge[0].vorgangsNummer
+                }
+              }
+              else if (Array.isArray(data)) {
+                count = data.length
+                // Try to find vorgangsNummer if array of objects
+                if (count > 0 && !foundVorgangsNummer && data[0].vorgangsNummer) {
+                   foundVorgangsNummer = data[0].vorgangsNummer
+                }
+              }
+              else count = 0
+            } catch (e) {
+               // ignore json error
+            }
+          }
+          
+          baufiResults[strategy.name] = {
+            status: res.status,
+            count: count,
+            preview: text.substring(0, 500) // Longer preview to see structure
+          }
+
+        } catch (error) {
+          baufiResults[strategy.name] = { error: error instanceof Error ? error.message : String(error) }
+        }
+      }
+      
+      results.baufinanzierung.data = baufiResults
+      results.baufinanzierung.endpoint = 'https://api.europace2.de/v3/vorgaenge (Header Strategy Test + Scope echtgeschaeft)'
+    }
+
+    // Test 2b: Baufinanzierung Process Details (Fetch data for first found process)
+    if (foundVorgangsNummer) {
+      console.log('Fetching details for first process...')
+      const vorgangsNummer = foundVorgangsNummer
+
+      if (vorgangsNummer) {
+        try {
+          const token = await getEuropaceAccessTokenWithScope('baufinanzierung:vorgang:lesen baufinanzierung:echtgeschaeft')
+          const endpoint = `https://api.europace2.de/v3/vorgaenge/${vorgangsNummer}`
+          
+          console.log(`Fetching details for ${vorgangsNummer}...`)
+          
+          const headers: Record<string, string> = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          }
+          if (process.env.EUROPACE_PERSON_ID) headers['X-Partner-ID'] = process.env.EUROPACE_PERSON_ID
+          if (process.env.EUROPACE_ORG_ID) headers['X-Organisationseinheit'] = process.env.EUROPACE_ORG_ID
+
           const res = await fetch(endpoint, {
             method: 'GET',
             headers,
             cache: 'no-store',
           })
 
-          const responseText = await res.text()
-          
+          const text = await res.text()
           if (res.ok) {
-            try {
-              const data = JSON.parse(responseText)
-              const vorgaengeCount = data?.vorgaenge?.length || 0
-              
-              // Log full response structure for debugging
-              console.log(`✓ Baufinanzierung API (${mode}): ${vorgaengeCount} vorgaenge found`)
-              console.log(`Response structure:`, JSON.stringify(data, null, 2).substring(0, 1000))
-              console.log(`Response headers:`, Object.fromEntries(res.headers.entries()))
-              
-              // Store result
-              if (mode === 'TEST_MODUS') {
-                allResults.test = data
-              } else {
-                allResults.echt = data
-              }
-            } catch (e) {
-              console.log(`Failed to parse response for ${mode}:`, e)
+            const detailData = JSON.parse(text)
+            results.baufinanzierung.detailData = {
+              vorgangsNummer,
+              structure: JSON.stringify(detailData, null, 2).substring(0, 5000) // Log generic structure
             }
+            console.log(`✓ Details for ${vorgangsNummer} fetched successfully`)
           } else {
-            console.log(`✗ Baufinanzierung API (${mode}) failed: ${res.status}`)
-            console.log(`Error response:`, responseText.substring(0, 200))
+            console.log(`✗ Failed to fetch details for ${vorgangsNummer}: ${res.status}`)
+            results.baufinanzierung.detailData = { error: `HTTP ${res.status}`, response: text.substring(0, 500) }
           }
         } catch (error) {
-          console.log(`✗ Error trying ${endpoint}:`, error)
+          console.log('Error fetching details:', error)
+          results.baufinanzierung.detailData = { error: error instanceof Error ? error.message : String(error) }
         }
       }
-
-      // Set results based on which mode has data
-      const testVorgaenge = allResults.test?.vorgaenge?.length || 0
-      const echtVorgaenge = allResults.echt?.vorgaenge?.length || 0
-      
-      results.baufinanzierung.success = true
-      results.baufinanzierung.data = {
-        test_modus: allResults.test,
-        echt_geschaeft: allResults.echt,
-        summary: `TEST_MODUS: ${testVorgaenge} vorgaenge, ECHT_GESCHAEFT: ${echtVorgaenge} vorgaenge`
-      }
-      results.baufinanzierung.endpoint = 'https://api.europace2.de/v3/vorgaenge (both modes tested)'
     }
 
-    // Test 3: Privatkredit API
+    // Test 3: Privatkredit API (Introspection - Mutations)
     if (results.oauth.success) {
-      console.log('Testing Privatkredit API...')
+      console.log('Testing Privatkredit API Introspection (Mutations)...')
       
-      const privatkreditEndpoints = [
-        'https://www.europace2.de/kreditsmart/kex/vorgaenge',
-      ]
-
-      for (const endpoint of privatkreditEndpoints) {
-        try {
-          const token = await getEuropaceAccessTokenWithScope('privatkredit:vorgang:lesen')
-          console.log(`Trying endpoint: ${endpoint}`)
-          
-          // GraphQL query for Privatkredit
-          const graphqlQuery = {
-            query: `
-              query {
-                vorgaenge {
-                  vorgangsnummer
-                  antragsteller1 {
-                    personendaten {
-                      vorname
-                      nachname
-                      email
+      const endpoint = 'https://www.europace2.de/kreditsmart/kex/vorgaenge'
+      
+      try {
+        const token = await getEuropaceAccessTokenWithScope('privatkredit:vorgang:lesen')
+        
+        // Introspection of Mutation type
+        const graphqlQuery = {
+          query: `
+            query {
+              __schema {
+                mutationType {
+                  fields {
+                    name
+                    description
+                    args {
+                      name
+                      type {
+                        kind
+                        name
+                        ofType {
+                          kind
+                          name
+                        }
+                      }
                     }
                   }
                 }
               }
-            `
-          }
-          
-          const res = await fetch(endpoint, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(graphqlQuery),
-            cache: 'no-store',
-          })
-
-          const responseText = await res.text()
-          
-          results.privatkredit.endpoint = endpoint
-          results.privatkredit.success = res.ok
-          
-          if (res.ok) {
-            try {
-              results.privatkredit.data = JSON.parse(responseText)
-              console.log(`✓ Privatkredit API successful at ${endpoint}`)
-              console.log('Response preview:', JSON.stringify(results.privatkredit.data).substring(0, 200))
-              break
-            } catch (e) {
-              results.privatkredit.data = responseText
             }
-          } else {
-            results.privatkredit.error = `HTTP ${res.status}: ${responseText}`
-            console.log(`✗ Privatkredit API failed at ${endpoint}: ${res.status}`)
-          }
-        } catch (error) {
-          console.log(`✗ Error trying ${endpoint}:`, error)
-          results.privatkredit.error = error instanceof Error ? error.message : 'Unknown error'
+          `
         }
+        
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(graphqlQuery),
+          cache: 'no-store',
+        })
+
+        const text = await res.text()
+        
+        if (res.ok) {
+           try {
+             const json = JSON.parse(text)
+             const fields = json.data?.__schema?.mutationType?.fields || []
+             
+             const simplifiedFields = fields.map((f: any) => ({
+               name: f.name,
+               args: f.args.map((a: any) => a.name)
+             }))
+             
+             results.privatkredit.mutations = simplifiedFields
+             console.log('Privatkredit API Mutations:', JSON.stringify(simplifiedFields, null, 2))
+           } catch (e) {
+             results.privatkredit.mutationError = { raw: text }
+           }
+        }
+
+      } catch (error) {
+        console.error('Error introspecting mutations:', error)
       }
     }
 

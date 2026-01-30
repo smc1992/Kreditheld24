@@ -18,7 +18,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       // Redirect customers to portal
       router.push('/portal');
     }
-  }, [status, session, router]);
+  }, [status, session]);
 
   if (status === 'loading') {
     return (
@@ -45,7 +45,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div 
+          <div
             className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm"
             onClick={() => setSidebarOpen(false)}
           />
@@ -58,7 +58,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Main Content Area */}
       <div className="flex flex-1 flex-col overflow-hidden">
         <AdminHeader onMenuClick={() => setSidebarOpen(true)} />
-        
+
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
           <div className="mx-auto max-w-7xl animate-in fade-in duration-500">
             {children}

@@ -5,14 +5,14 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/admin/DashboardLayout';
 import Link from 'next/link';
-import { 
-  Briefcase, 
-  Plus, 
-  Search, 
-  Filter, 
-  User, 
-  Building2, 
-  Euro, 
+import {
+  Briefcase,
+  Plus,
+  Search,
+  Filter,
+  User,
+  Building2,
+  Euro,
   ChevronRight,
   MoreVertical,
   Calendar,
@@ -57,7 +57,7 @@ export default function CasesPage() {
         console.error('Error fetching cases:', err);
         setLoading(false);
       });
-  }, [session, router]);
+  }, [session]);
 
   if (!session) return null;
 
@@ -72,7 +72,7 @@ export default function CasesPage() {
     }
   };
 
-  const filteredCases = cases.filter(c => 
+  const filteredCases = cases.filter(c =>
     c.caseNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     `${c.customer?.firstName} ${c.customer?.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
     c.bank?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -203,7 +203,7 @@ export default function CasesPage() {
                               <ChevronRight className="h-3 w-3" />
                             </Link>
                             <div className="relative">
-                              <button 
+                              <button
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   if (activeMenu === caseItem.id) {
@@ -220,11 +220,11 @@ export default function CasesPage() {
                               </button>
                               {activeMenu === caseItem.id && (
                                 <>
-                                  <div 
-                                    className="fixed inset-0 z-40" 
+                                  <div
+                                    className="fixed inset-0 z-40"
                                     onClick={() => setActiveMenu(null)}
                                   />
-                                  <div 
+                                  <div
                                     className="fixed z-50 w-48 rounded-xl bg-white shadow-xl ring-1 ring-black ring-opacity-5 overflow-hidden animate-in fade-in zoom-in-95 duration-100"
                                     style={{ top: `${menuPos.top}px`, right: `${menuPos.right}px` }}
                                   >

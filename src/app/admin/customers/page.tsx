@@ -5,14 +5,14 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/admin/DashboardLayout';
 import Link from 'next/link';
-import { 
-  Users, 
-  Plus, 
-  Search, 
-  Filter, 
-  Mail, 
-  Phone, 
-  Calendar, 
+import {
+  Users,
+  Plus,
+  Search,
+  Filter,
+  Mail,
+  Phone,
+  Calendar,
   ChevronRight,
   MoreVertical,
   Download,
@@ -20,7 +20,8 @@ import {
   Square,
   Send,
   Trash2,
-  RefreshCw
+  RefreshCw,
+  Upload
 } from 'lucide-react';
 import EmailEditor from '@/components/admin/EmailEditor';
 
@@ -36,25 +37,23 @@ export default function CustomersPage() {
   const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
   const [syncing, setSyncing] = useState(false);
   const [syncResult, setSyncResult] = useState<any>(null);
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importId, setImportId] = useState('');
+  const [importing, setImporting] = useState(false);
 
   const handleEuropaceSync = async () => {
     setSyncing(true);
     setSyncResult(null);
-    
+
     try {
       const response = await fetch('/api/admin/europace/sync-customers', {
         method: 'POST',
       });
       const result = await response.json();
-      
+
       if (result.success) {
         setSyncResult(result);
-        // Refresh customer list
-        const customersRes = await fetch('/api/admin/customers', { cache: 'no-store' });
-        const customersData = await customersRes.json();
-        if (customersData.success) {
-          setCustomers(customersData.data);
-        }
+        refreshCustomers();
       } else {
         alert('Synchronisation fehlgeschlagen: ' + result.error);
       }
@@ -63,6 +62,53 @@ export default function CustomersPage() {
       alert('Fehler bei der Synchronisation mit Europace.');
     } finally {
       setSyncing(false);
+    }
+  };
+
+  const handlePrivatkreditImport = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!importId.trim()) return;
+
+    setImporting(true);
+    try {
+      const response = await fetch('/api/admin/europace/sync-customers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ privatkreditIds: [importId.trim()] })
+      });
+      const result = await response.json();
+
+      if (result.success) {
+        if (result.results.created > 0 || result.results.updated > 0) {
+          alert('Privatkredit erfolgreich importiert!');
+          setShowImportModal(false);
+          setImportId('');
+          refreshCustomers();
+        } else if (result.results.errors > 0) {
+          alert('Fehler beim Import: Vorgang nicht gefunden oder Zugriff verweigert.');
+        } else {
+          alert('Keine Änderungen vorgenommen (Vorgang evtl. leer oder ohne E-Mail).');
+        }
+      } else {
+        alert('Import fehlgeschlagen: ' + result.error);
+      }
+    } catch (error) {
+      console.error('Error importing Privatkredit:', error);
+      alert('Fehler beim Import.');
+    } finally {
+      setImporting(false);
+    }
+  };
+
+  const refreshCustomers = async () => {
+    try {
+      const customersRes = await fetch('/api/admin/customers', { cache: 'no-store' });
+      const customersData = await customersRes.json();
+      if (customersData.success) {
+        setCustomers(customersData.data);
+      }
+    } catch (err) {
+      console.error('Error refreshing customers:', err);
     }
   };
 
@@ -105,7 +151,7 @@ export default function CustomersPage() {
         console.error('Error fetching customers:', err);
         setLoading(false);
       });
-  }, [session, router]);
+  }, [session]);
 
   const toggleSelectAll = () => {
     if (selectedCustomers.length === filteredCustomers.length) {
@@ -128,7 +174,7 @@ export default function CustomersPage() {
       .filter(c => selectedCustomers.includes(c.id))
       .map(c => c.email)
       .filter(Boolean);
-    
+
     console.log('Bulk Sending to:', emails, emailData);
     alert(`${emails.length} E-Mails wurden in die Warteschlange gestellt.`);
     setShowEmailEditor(false);
@@ -137,7 +183,7 @@ export default function CustomersPage() {
 
   if (!session) return null;
 
-  const filteredCustomers = customers.filter(c => 
+  const filteredCustomers = customers.filter(c =>
     `${c.firstName} ${c.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
     c.email?.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -158,7 +204,7 @@ export default function CustomersPage() {
           </div>
           <div className="flex items-center gap-3">
             {selectedCustomers.length > 0 && (
-              <button 
+              <button
                 onClick={() => setShowEmailEditor(true)}
                 className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-50 px-4 py-2.5 text-sm font-bold text-emerald-700 shadow-sm ring-1 ring-inset ring-emerald-200 hover:bg-emerald-100 transition-all animate-in fade-in slide-in-from-right-2"
               >
@@ -166,7 +212,14 @@ export default function CustomersPage() {
                 Bulk-Mail ({selectedCustomers.length})
               </button>
             )}
-            <button 
+            <button
+              onClick={() => setShowImportModal(true)}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 transition-all"
+            >
+              <Upload className="h-4 w-4" />
+              Privatkredit Import
+            </button>
+            <button
               onClick={handleEuropaceSync}
               disabled={syncing}
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
@@ -214,7 +267,7 @@ export default function CustomersPage() {
                   </div>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => setSyncResult(null)}
                 className="ml-4 text-blue-400 hover:text-blue-600 transition-colors"
               >
@@ -235,6 +288,65 @@ export default function CustomersPage() {
               .filter(Boolean)
               .join(', ')}
           />
+        )}
+
+        {/* Import Modal */}
+        {showImportModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+              <div className="p-6">
+                <h3 className="text-lg font-bold text-slate-900 mb-2">Privatkredit importieren</h3>
+                <p className="text-sm text-slate-500 mb-4">
+                  Geben Sie die Vorgangsnummer des Privatkredits ein (z.B. AY0916), um diesen manuell zu importieren.
+                </p>
+                <form onSubmit={handlePrivatkreditImport}>
+                  <div className="space-y-4">
+                    <div>
+                      <label htmlFor="importId" className="block text-sm font-medium text-slate-700 mb-1">
+                        Vorgangsnummer
+                      </label>
+                      <input
+                        id="importId"
+                        type="text"
+                        value={importId}
+                        onChange={(e) => setImportId(e.target.value)}
+                        placeholder="z.B. AY0916"
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
+                        autoFocus
+                      />
+                    </div>
+                    <div className="flex gap-3 justify-end pt-2">
+                      <button
+                        type="button"
+                        onClick={() => setShowImportModal(false)}
+                        className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                        disabled={importing}
+                      >
+                        Abbrechen
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={importing || !importId.trim()}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {importing ? (
+                          <>
+                            <RefreshCw className="h-4 w-4 animate-spin" />
+                            Importiere...
+                          </>
+                        ) : (
+                          <>
+                            <Download className="h-4 w-4" />
+                            Importieren
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Filters & Search */}
@@ -262,7 +374,7 @@ export default function CustomersPage() {
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200">
                   <th className="px-6 py-4 w-10">
-                    <button 
+                    <button
                       onClick={toggleSelectAll}
                       className="text-slate-400 hover:text-emerald-600 transition-colors"
                     >
@@ -291,12 +403,12 @@ export default function CustomersPage() {
                   ))
                 ) : filteredCustomers.length > 0 ? (
                   filteredCustomers.map((customer) => (
-                    <tr 
-                      key={customer.id} 
+                    <tr
+                      key={customer.id}
                       className={`hover:bg-slate-50/50 transition-colors group ${selectedCustomers.includes(customer.id) ? 'bg-emerald-50/30' : ''}`}
                     >
                       <td className="px-6 py-4">
-                        <button 
+                        <button
                           onClick={() => toggleSelectCustomer(customer.id)}
                           className="text-slate-400 hover:text-emerald-600 transition-colors"
                         >
@@ -363,7 +475,7 @@ export default function CustomersPage() {
                             <ChevronRight className="h-3 w-3" />
                           </Link>
                           <div className="relative">
-                            <button 
+                            <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 if (activeMenu === customer.id) {
@@ -380,11 +492,11 @@ export default function CustomersPage() {
                             </button>
                             {activeMenu === customer.id && (
                               <>
-                                <div 
-                                  className="fixed inset-0 z-40" 
+                                <div
+                                  className="fixed inset-0 z-40"
                                   onClick={() => setActiveMenu(null)}
                                 />
-                                <div 
+                                <div
                                   className="fixed z-50 w-48 rounded-xl bg-white shadow-xl ring-1 ring-black ring-opacity-5 overflow-hidden animate-in fade-in zoom-in-95 duration-100"
                                   style={{ top: `${menuPos.top}px`, right: `${menuPos.right}px` }}
                                 >
@@ -439,7 +551,7 @@ export default function CustomersPage() {
               </tbody>
             </table>
           </div>
-          
+
           {/* Pagination (Visual only for now) */}
           <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
             <p className="text-xs text-slate-500">

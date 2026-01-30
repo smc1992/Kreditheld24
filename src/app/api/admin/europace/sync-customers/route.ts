@@ -4,7 +4,8 @@ import { db, crmCustomers } from '@/db'
 import { eq } from 'drizzle-orm'
 import {
   fetchBaufinanzierungProcesses,
-  fetchPrivatkreditProcesses,
+  fetchBaufinanzierungProcessDetails,
+  fetchPrivatkreditProcessDetails,
   extractCustomerFromProcess,
   type EuropaceCustomerData,
 } from '../../../../../../lib/europace'
@@ -15,6 +16,17 @@ export async function POST(request: Request) {
     const session = await auth()
     if (!session || session.user.role !== 'admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Parse body for optional privatkreditIds
+    let privatkreditIds: string[] = []
+    try {
+      const body = await request.json()
+      if (body && Array.isArray(body.privatkreditIds)) {
+        privatkreditIds = body.privatkreditIds
+      }
+    } catch (e) {
+      // Body might be empty, ignore
     }
 
     const results = {
@@ -28,8 +40,7 @@ export async function POST(request: Request) {
 
     // Fetch processes from both APIs and both modes (TEST_MODUS + ECHT_GESCHAEFT)
     let baufiProcesses: any[] = []
-    let privatkreditProcesses: any[] = []
-
+    
     try {
       // Fetch both TEST_MODUS and ECHT_GESCHAEFT
       const [testProcesses, echtProcesses] = await Promise.all([
@@ -42,32 +53,36 @@ export async function POST(request: Request) {
       // Continue even if Baufi fails
     }
 
-    // Privatkredit sync temporarily disabled - GraphQL schema doesn't support listing all vorgaenge
-    // Only individual vorgaenge can be fetched by vorgangsnummer
-    // TODO: Enable when Europace provides a way to list all Privatkredit vorgaenge
-    /*
-    try {
-      privatkreditProcesses = await fetchPrivatkreditProcesses()
-    } catch (error) {
-      console.error('Error fetching Privatkredit processes:', error)
-      // Continue even if Privatkredit fails
-    }
-    */
-
     // Extract customer data from processes
     const customerDataList: EuropaceCustomerData[] = []
 
-    for (const process of baufiProcesses) {
-      const customerData = extractCustomerFromProcess(process, 'baufinanzierung')
-      if (customerData) {
-        customerDataList.push(customerData)
+    // Baufinanzierung: List endpoint only returns metadata, need to fetch details for each process
+    for (const processMeta of baufiProcesses) {
+      if (processMeta.vorgangsNummer) {
+        try {
+          const fullProcess = await fetchBaufinanzierungProcessDetails(processMeta.vorgangsNummer)
+          const customerData = extractCustomerFromProcess(fullProcess, 'baufinanzierung')
+          if (customerData) {
+            customerDataList.push(customerData)
+          }
+        } catch (err) {
+          console.error(`Error fetching details for process ${processMeta.vorgangsNummer}:`, err)
+          // Continue with next process
+        }
       }
     }
 
-    for (const process of privatkreditProcesses) {
-      const customerData = extractCustomerFromProcess(process, 'privatkredit')
-      if (customerData) {
-        customerDataList.push(customerData)
+    // Privatkredit: Fetch specific IDs if provided (API does not support listing)
+    for (const id of privatkreditIds) {
+      try {
+        const process = await fetchPrivatkreditProcessDetails(id)
+        const customerData = extractCustomerFromProcess(process, 'privatkredit')
+        if (customerData) {
+          customerDataList.push(customerData)
+        }
+      } catch (err) {
+        console.error(`Error fetching Privatkredit details for ID ${id}:`, err)
+        results.errors++
       }
     }
 

@@ -3,6 +3,7 @@ import { db, crmCustomers } from '@/db'
 import { eq } from 'drizzle-orm'
 import {
   fetchBaufinanzierungProcesses,
+  fetchBaufinanzierungProcessDetails,
   fetchPrivatkreditProcesses,
   extractCustomerFromProcess,
   type EuropaceCustomerData,
@@ -61,10 +62,19 @@ export async function GET(request: Request) {
     // Extract customer data from processes
     const customerDataList: EuropaceCustomerData[] = []
 
-    for (const process of baufiProcesses) {
-      const customerData = extractCustomerFromProcess(process, 'baufinanzierung')
-      if (customerData) {
-        customerDataList.push(customerData)
+    // Baufinanzierung: List endpoint only returns metadata, need to fetch details for each process
+    for (const processMeta of baufiProcesses) {
+      if (processMeta.vorgangsNummer) {
+        try {
+          const fullProcess = await fetchBaufinanzierungProcessDetails(processMeta.vorgangsNummer)
+          const customerData = extractCustomerFromProcess(fullProcess, 'baufinanzierung')
+          if (customerData) {
+            customerDataList.push(customerData)
+          }
+        } catch (err) {
+          console.error(`[Cron] Error fetching details for process ${processMeta.vorgangsNummer}:`, err)
+          // Continue with next process
+        }
       }
     }
 

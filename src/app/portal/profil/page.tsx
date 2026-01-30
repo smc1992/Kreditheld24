@@ -201,7 +201,7 @@ export default function ProfilPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-slate-300 mb-2 flex items-center gap-2">
+              <label className="text-sm font-bold text-slate-300 mb-2 flex items-center gap-2">
                 <Mail className="h-4 w-4" />
                 E-Mail
               </label>
@@ -213,7 +213,7 @@ export default function ProfilPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-slate-300 mb-2 flex items-center gap-2">
+              <label className="text-sm font-bold text-slate-300 mb-2 flex items-center gap-2">
                 <Phone className="h-4 w-4" />
                 Telefon
               </label>
