@@ -3,11 +3,11 @@
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/admin/DashboardLayout';
-import { 
-  Activity, 
-  Search, 
-  Filter, 
-  Calendar, 
+import {
+  Activity,
+  Search,
+  Filter,
+  Calendar,
   ChevronRight,
   Mail,
   FileText,
@@ -21,15 +21,17 @@ import {
 import Link from 'next/link';
 
 export default function ActivitiesPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [activities, setActivities] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    if (!session) return;
-    fetchActivities();
-  }, [session]);
+    if (status === 'loading') return;
+    if (status === 'authenticated') {
+      fetchActivities();
+    }
+  }, [status]);
 
   const fetchActivities = async () => {
     setLoading(true);
@@ -73,7 +75,7 @@ export default function ActivitiesPage() {
 
   if (!session) return null;
 
-  const filteredActivities = activities.filter(a => 
+  const filteredActivities = activities.filter(a =>
     a.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
     a.description?.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -84,7 +86,7 @@ export default function ActivitiesPage() {
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-4">
-            <Link 
+            <Link
               href="/admin"
               className="p-2 rounded-xl bg-white border border-slate-200 text-slate-500 hover:bg-slate-50 transition-all shadow-sm"
             >
@@ -143,15 +145,15 @@ export default function ActivitiesPage() {
                         <div className="flex items-center gap-4">
                           <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
                             <Calendar className="h-3.5 w-3.5" />
-                            {new Date(activity.date).toLocaleString('de-DE', { 
-                              day: '2-digit', 
-                              month: 'long', 
+                            {new Date(activity.date).toLocaleString('de-DE', {
+                              day: '2-digit',
+                              month: 'long',
                               year: 'numeric',
-                              hour: '2-digit', 
-                              minute: '2-digit' 
+                              hour: '2-digit',
+                              minute: '2-digit'
                             })}
                           </div>
-                          <button 
+                          <button
                             onClick={() => handleDeleteActivity(activity.id)}
                             className="p-1.5 text-slate-300 hover:text-red-500 transition-all opacity-0 group-hover:opacity-100 hover:bg-red-50 rounded-lg"
                             title="Löschen"
@@ -161,10 +163,10 @@ export default function ActivitiesPage() {
                         </div>
                       </div>
                       <p className="text-slate-600 leading-relaxed font-medium whitespace-pre-wrap">{activity.description}</p>
-                      
+
                       <div className="mt-6 pt-4 border-t border-slate-200/50 flex flex-wrap items-center gap-4">
                         {activity.customerId && (
-                          <Link 
+                          <Link
                             href={`/admin/customers/${activity.customerId}`}
                             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-bold hover:bg-blue-100 transition-colors"
                           >
@@ -173,7 +175,7 @@ export default function ActivitiesPage() {
                           </Link>
                         )}
                         {activity.caseId && (
-                          <Link 
+                          <Link
                             href={`/admin/cases/${activity.caseId}`}
                             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-bold hover:bg-emerald-100 transition-colors"
                           >

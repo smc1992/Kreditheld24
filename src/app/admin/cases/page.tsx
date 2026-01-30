@@ -27,7 +27,7 @@ import {
 } from 'lucide-react';
 
 export default function CasesPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [cases, setCases] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,7 +36,9 @@ export default function CasesPage() {
   const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
 
   useEffect(() => {
-    if (!session) {
+    if (status === 'loading') return;
+
+    if (status === 'unauthenticated') {
       router.push('/admin/login');
       return;
     }
@@ -57,7 +59,7 @@ export default function CasesPage() {
         console.error('Error fetching cases:', err);
         setLoading(false);
       });
-  }, [session]);
+  }, [status]);
 
   if (!session) return null;
 

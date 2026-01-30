@@ -5,16 +5,16 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/admin/DashboardLayout';
 import Link from 'next/link';
-import { 
-  ArrowLeft, 
-  Briefcase, 
-  User, 
-  Building2, 
-  Euro, 
-  Calendar, 
-  Clock, 
-  Plus, 
-  Save, 
+import {
+  ArrowLeft,
+  Briefcase,
+  User,
+  Building2,
+  Euro,
+  Calendar,
+  Clock,
+  Plus,
+  Save,
   X,
   Loader2,
   Search,
@@ -25,7 +25,7 @@ import {
 function NewCaseForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [loading, setLoading] = useState(false);
   const [customers, setCustomers] = useState<any[]>([]);
   const [formData, setFormData] = useState({
@@ -42,24 +42,25 @@ function NewCaseForm() {
   });
 
   useEffect(() => {
-    if (!session) return;
+    if (status === 'loading') return;
+    if (status === 'authenticated') {
+      // Fetch customers for dropdown
+      fetch('/api/admin/customers')
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            setCustomers(data.data);
+          }
+        })
+        .catch(err => console.error('Error fetching customers:', err));
 
-    // Fetch customers for dropdown
-    fetch('/api/admin/customers')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          setCustomers(data.data);
-        }
-      })
-      .catch(err => console.error('Error fetching customers:', err));
-
-    // Generate case number if not already set
-    if (!formData.caseNumber) {
-      const caseNumber = `VG-${Date.now().toString().slice(-8)}`;
-      setFormData(prev => ({ ...prev, caseNumber }));
+      // Generate case number if not already set
+      if (!formData.caseNumber) {
+        const caseNumber = `VG-${Date.now().toString().slice(-8)}`;
+        setFormData(prev => ({ ...prev, caseNumber }));
+      }
     }
-  }, [session]);
+  }, [status]);
 
   if (!session) return null;
 
@@ -95,7 +96,7 @@ function NewCaseForm() {
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Page Header */}
         <div className="flex items-center gap-4">
-          <Link 
+          <Link
             href="/admin/cases"
             className="inline-flex items-center justify-center p-2 rounded-lg bg-white border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700 transition-all shadow-sm group"
           >

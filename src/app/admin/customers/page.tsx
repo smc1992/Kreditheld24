@@ -26,7 +26,7 @@ import {
 import EmailEditor from '@/components/admin/EmailEditor';
 
 export default function CustomersPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [customers, setCustomers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -133,7 +133,9 @@ export default function CustomersPage() {
   };
 
   useEffect(() => {
-    if (!session) {
+    if (status === 'loading') return;
+
+    if (status === 'unauthenticated') {
       router.push('/admin/login');
       return;
     }
@@ -151,7 +153,7 @@ export default function CustomersPage() {
         console.error('Error fetching customers:', err);
         setLoading(false);
       });
-  }, [session]);
+  }, [status]);
 
   const toggleSelectAll = () => {
     if (selectedCustomers.length === filteredCustomers.length) {

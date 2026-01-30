@@ -33,7 +33,7 @@ import {
 } from 'lucide-react';
 
 export default function CustomerDetailPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const params = useParams();
   const [customer, setCustomer] = useState<any>(null);
@@ -82,40 +82,42 @@ export default function CustomerDetailPage() {
   };
 
   useEffect(() => {
-    if (!session || !params?.id) {
+    if (status === 'loading' || !params?.id) {
       return;
     }
 
-    Promise.all([
-      fetch(`/api/admin/customers/${params.id}`).then(res => res.json()),
-      fetch(`/api/admin/cases?customerId=${params.id}`).then(res => res.json()),
-      fetch(`/api/admin/customers/${params.id}/documents`).then(res => res.json()),
-      fetch(`/api/admin/activities?customerId=${params.id}`).then(res => res.json()),
-    ])
-      .then(([customerRes, casesRes, docsRes, activitiesRes]) => {
-        if (customerRes.success) {
-          setCustomer(customerRes.data);
-          setNotes(customerRes.data.notes || '');
-        }
-        if (casesRes.success) {
-          setCases(casesRes.data.map((item: any) => ({
-            ...item.case,
-            customer: item.customer
-          })));
-        }
-        if (docsRes.success) {
-          setDocuments(docsRes.data);
-        }
-        if (activitiesRes.success) {
-          setActivities(activitiesRes.data);
-        }
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Error fetching customer details:', err);
-        setLoading(false);
-      });
-  }, [session, params?.id]);
+    if (status === 'authenticated') {
+      Promise.all([
+        fetch(`/api/admin/customers/${params.id}`).then(res => res.json()),
+        fetch(`/api/admin/cases?customerId=${params.id}`).then(res => res.json()),
+        fetch(`/api/admin/customers/${params.id}/documents`).then(res => res.json()),
+        fetch(`/api/admin/activities?customerId=${params.id}`).then(res => res.json()),
+      ])
+        .then(([customerRes, casesRes, docsRes, activitiesRes]) => {
+          if (customerRes.success) {
+            setCustomer(customerRes.data);
+            setNotes(customerRes.data.notes || '');
+          }
+          if (casesRes.success) {
+            setCases(casesRes.data.map((item: any) => ({
+              ...item.case,
+              customer: item.customer
+            })));
+          }
+          if (docsRes.success) {
+            setDocuments(docsRes.data);
+          }
+          if (activitiesRes.success) {
+            setActivities(activitiesRes.data);
+          }
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error('Error fetching customer details:', err);
+          setLoading(false);
+        });
+    }
+  }, [status, params?.id]);
 
   const handleSaveNotes = async () => {
     if (!params?.id) return;
@@ -369,8 +371,8 @@ export default function CustomerDetailPage() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex items-center gap-2 px-6 py-4 text-sm font-bold transition-all border-b-2 -mb-px ${activeTab === tab.id
-                  ? 'border-emerald-600 text-emerald-600'
-                  : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+                ? 'border-emerald-600 text-emerald-600'
+                : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
                 }`}
             >
               <tab.icon className="h-4 w-4" />

@@ -4,14 +4,14 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/admin/DashboardLayout';
 import { useAdminTheme } from '@/providers/AdminThemeProvider';
-import { 
-  Settings, 
-  User, 
-  Lock, 
-  Bell, 
-  Shield, 
-  Mail, 
-  Save, 
+import {
+  Settings,
+  User,
+  Lock,
+  Bell,
+  Shield,
+  Mail,
+  Save,
   Loader2,
   Database,
   Globe,
@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 
 export default function SettingsPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const { colorTheme, darkMode, compactMode, setColorTheme, setDarkMode, setCompactMode, refreshSettings } = useAdminTheme();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
@@ -55,14 +55,14 @@ export default function SettingsPage() {
   });
 
   useEffect(() => {
-    if (session?.user) {
+    if (status === 'authenticated' && session?.user) {
       setProfileData({
         name: session.user.name || '',
         email: session.user.email || ''
       });
       fetchSettings();
     }
-  }, [session]);
+  }, [status]);
 
   const fetchSettings = async () => {
     setLoading(true);
@@ -207,11 +207,10 @@ export default function SettingsPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
-                  activeTab === tab.id 
-                    ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' 
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === tab.id
+                    ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20'
                     : 'bg-white text-slate-500 hover:bg-slate-50 border border-slate-200'
-                }`}
+                  }`}
               >
                 <tab.icon className="h-5 w-5" />
                 {tab.label}
@@ -252,19 +251,19 @@ export default function SettingsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <label className="text-sm font-bold text-slate-700">Anzeigename</label>
-                        <input 
-                          type="text" 
+                        <input
+                          type="text"
                           value={profileData.name}
-                          onChange={(e) => setProfileData({...profileData, name: e.target.value})}
+                          onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
                           className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                         />
                       </div>
                       <div className="space-y-2">
                         <label className="text-sm font-bold text-slate-700">E-Mail Adresse</label>
-                        <input 
-                          type="email" 
+                        <input
+                          type="email"
                           value={profileData.email}
-                          onChange={(e) => setProfileData({...profileData, email: e.target.value})}
+                          onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
                           className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                         />
                       </div>
@@ -280,12 +279,12 @@ export default function SettingsPage() {
                           <Lock className="h-4 w-4 text-slate-400" />
                           Aktuelles Passwort
                         </label>
-                        <input 
-                          type="password" 
-                          placeholder="••••••••" 
+                        <input
+                          type="password"
+                          placeholder="••••••••"
                           value={passwordData.currentPassword}
-                          onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})}
-                          className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all" 
+                          onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                          className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                         />
                       </div>
                       <div className="space-y-2">
@@ -293,26 +292,26 @@ export default function SettingsPage() {
                           <Lock className="h-4 w-4 text-slate-400" />
                           Neues Passwort
                         </label>
-                        <input 
-                          type="password" 
-                          placeholder="Mindestens 8 Zeichen" 
+                        <input
+                          type="password"
+                          placeholder="Mindestens 8 Zeichen"
                           value={passwordData.newPassword}
-                          onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
-                          className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all" 
+                          onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                          className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                         />
                       </div>
                       <div className="space-y-2">
                         <label className="text-sm font-bold text-slate-700">Passwort bestätigen</label>
-                        <input 
-                          type="password" 
-                          placeholder="Passwort wiederholen" 
+                        <input
+                          type="password"
+                          placeholder="Passwort wiederholen"
                           value={passwordData.confirmPassword}
-                          onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
-                          className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all" 
+                          onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                          className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                         />
                       </div>
                     </div>
-                    
+
                     <div className="p-4 bg-amber-50 rounded-xl border border-amber-100 flex gap-4">
                       <AlertCircle className="h-5 w-5 text-amber-500 shrink-0" />
                       <p className="text-xs text-amber-700 leading-relaxed">
@@ -331,9 +330,9 @@ export default function SettingsPage() {
                         Farbschema & Design
                       </h3>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div 
+                        <div
                           onClick={() => {
-                            setSettings({...settings, appearance: {...settings.appearance, theme: 'emerald'}});
+                            setSettings({ ...settings, appearance: { ...settings.appearance, theme: 'emerald' } });
                             setColorTheme('emerald');
                           }}
                           className={`p-4 rounded-2xl border-2 transition-all cursor-pointer ${colorTheme === 'emerald' ? 'border-emerald-500 bg-emerald-50' : 'border-slate-200 bg-white hover:border-slate-300'}`}
@@ -348,9 +347,9 @@ export default function SettingsPage() {
                             <div className="h-4 w-full bg-slate-900 rounded-sm" />
                           </div>
                         </div>
-                        <div 
+                        <div
                           onClick={() => {
-                            setSettings({...settings, appearance: {...settings.appearance, theme: 'ocean'}});
+                            setSettings({ ...settings, appearance: { ...settings.appearance, theme: 'ocean' } });
                             setColorTheme('ocean');
                           }}
                           className={`p-4 rounded-2xl border-2 transition-all cursor-pointer ${colorTheme === 'ocean' ? 'border-blue-500 bg-blue-50' : 'border-slate-200 bg-white hover:border-slate-300'}`}
@@ -365,9 +364,9 @@ export default function SettingsPage() {
                             <div className="h-4 w-full bg-slate-900 rounded-sm" />
                           </div>
                         </div>
-                        <div 
+                        <div
                           onClick={() => {
-                            setSettings({...settings, appearance: {...settings.appearance, theme: 'purple'}});
+                            setSettings({ ...settings, appearance: { ...settings.appearance, theme: 'purple' } });
                             setColorTheme('purple');
                           }}
                           className={`p-4 rounded-2xl border-2 transition-all cursor-pointer ${colorTheme === 'purple' ? 'border-purple-500 bg-purple-50' : 'border-slate-200 bg-white hover:border-slate-300'}`}
@@ -392,10 +391,10 @@ export default function SettingsPage() {
                           <p className="text-sm font-bold text-slate-700">Kompakter Modus</p>
                           <p className="text-xs text-slate-500">Weniger Abstände in Tabellen und Listen</p>
                         </div>
-                        <button 
+                        <button
                           onClick={() => {
                             const newCompact = !compactMode;
-                            setSettings({...settings, appearance: {...settings.appearance, compactMode: newCompact}});
+                            setSettings({ ...settings, appearance: { ...settings.appearance, compactMode: newCompact } });
                             setCompactMode(newCompact);
                           }}
                           className={`h-6 w-11 rounded-full relative transition-colors ${compactMode ? 'bg-emerald-600' : 'bg-slate-200'}`}
@@ -408,10 +407,10 @@ export default function SettingsPage() {
                           <p className="text-sm font-bold text-slate-700">Dark Mode (Beta)</p>
                           <p className="text-xs text-slate-500">Dunkles Design für die gesamte Admin-Oberfläche</p>
                         </div>
-                        <button 
+                        <button
                           onClick={() => {
                             const newDark = !darkMode;
-                            setSettings({...settings, appearance: {...settings.appearance, darkMode: newDark}});
+                            setSettings({ ...settings, appearance: { ...settings.appearance, darkMode: newDark } });
                             setDarkMode(newDark);
                           }}
                           className={`h-6 w-11 rounded-full relative transition-colors ${darkMode ? 'bg-emerald-600' : 'bg-slate-200'}`}
@@ -442,8 +441,8 @@ export default function SettingsPage() {
                             <p className="text-sm font-bold text-slate-700">{item.title}</p>
                             <p className="text-xs text-slate-500">{item.desc}</p>
                           </div>
-                          <button 
-                            onClick={() => setSettings({...settings, notifications: {...settings.notifications, [item.key]: !settings.notifications[item.key]}})}
+                          <button
+                            onClick={() => setSettings({ ...settings, notifications: { ...settings.notifications, [item.key]: !settings.notifications[item.key] } })}
                             className={`h-6 w-11 rounded-full relative transition-colors ${settings.notifications[item.key] ? 'bg-emerald-600' : 'bg-slate-200'}`}
                           >
                             <div className={`h-4 w-4 bg-white rounded-full absolute top-1 transition-all ${settings.notifications[item.key] ? 'right-1' : 'left-1'}`} />
@@ -465,29 +464,29 @@ export default function SettingsPage() {
                         </h3>
                         <div className="space-y-2">
                           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">SMTP Server</label>
-                          <input 
-                            type="text" 
-                            value={settings.smtp.server} 
-                            onChange={(e) => setSettings({...settings, smtp: {...settings.smtp, server: e.target.value}})}
-                            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all" 
+                          <input
+                            type="text"
+                            value={settings.smtp.server}
+                            onChange={(e) => setSettings({ ...settings, smtp: { ...settings.smtp, server: e.target.value } })}
+                            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                           />
                         </div>
                         <div className="space-y-2">
                           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Absender Name</label>
-                          <input 
-                            type="text" 
-                            value={settings.smtp.fromName} 
-                            onChange={(e) => setSettings({...settings, smtp: {...settings.smtp, fromName: e.target.value}})}
-                            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all" 
+                          <input
+                            type="text"
+                            value={settings.smtp.fromName}
+                            onChange={(e) => setSettings({ ...settings, smtp: { ...settings.smtp, fromName: e.target.value } })}
+                            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                           />
                         </div>
                         <div className="space-y-2">
                           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Absender E-Mail</label>
-                          <input 
-                            type="email" 
-                            value={settings.smtp.fromEmail} 
-                            onChange={(e) => setSettings({...settings, smtp: {...settings.smtp, fromEmail: e.target.value}})}
-                            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all" 
+                          <input
+                            type="email"
+                            value={settings.smtp.fromEmail}
+                            onChange={(e) => setSettings({ ...settings, smtp: { ...settings.smtp, fromEmail: e.target.value } })}
+                            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                           />
                         </div>
                       </div>
@@ -538,7 +537,7 @@ export default function SettingsPage() {
                 )}
 
                 <div className="mt-8 pt-6 border-t border-slate-100 flex justify-end">
-                  <button 
+                  <button
                     onClick={() => {
                       if (activeTab === 'profile') handleSaveProfile();
                       else if (activeTab === 'security') handleUpdatePassword();

@@ -6,16 +6,16 @@ import { useRouter, useParams } from 'next/navigation';
 import DashboardLayout from '@/components/admin/DashboardLayout';
 import CaseMessaging from '@/components/admin/CaseMessaging';
 import Link from 'next/link';
-import { 
-  ArrowLeft, 
-  Briefcase, 
-  User, 
-  Building2, 
-  Euro, 
-  Calendar, 
-  Clock, 
-  CheckCircle2, 
-  XCircle, 
+import {
+  ArrowLeft,
+  Briefcase,
+  User,
+  Building2,
+  Euro,
+  Calendar,
+  Clock,
+  CheckCircle2,
+  XCircle,
   AlertCircle,
   FileText,
   Activity as ActivityIcon,
@@ -34,7 +34,7 @@ import {
 } from 'lucide-react';
 
 export default function CaseDetailsPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const params = useParams();
   const [caseData, setCaseData] = useState<any>(null);
@@ -131,33 +131,35 @@ export default function CaseDetailsPage() {
   };
 
   useEffect(() => {
-    if (!session || !params.id) {
+    if (status === 'loading' || !params.id) {
       return;
     }
 
-    Promise.all([
-      fetch(`/api/admin/cases/${params.id}`).then(res => res.json()),
-      fetch(`/api/admin/activities?caseId=${params.id}`).then(res => res.json()),
-      fetch(`/api/admin/documents?caseId=${params.id}`).then(res => res.json()),
-    ])
-      .then(([caseRes, activitiesRes, documentsRes]) => {
-        if (caseRes.success) {
-          setCaseData(caseRes.data);
-          setEditData(caseRes.data);
-        }
-        if (activitiesRes.success) {
-          setActivities(activitiesRes.data);
-        }
-        if (documentsRes.success) {
-          setDocuments(documentsRes.data);
-        }
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Error fetching case details:', err);
-        setLoading(false);
-      });
-  }, [session, params.id]);
+    if (status === 'authenticated') {
+      Promise.all([
+        fetch(`/api/admin/cases/${params.id}`).then(res => res.json()),
+        fetch(`/api/admin/activities?caseId=${params.id}`).then(res => res.json()),
+        fetch(`/api/admin/documents?caseId=${params.id}`).then(res => res.json()),
+      ])
+        .then(([caseRes, activitiesRes, documentsRes]) => {
+          if (caseRes.success) {
+            setCaseData(caseRes.data);
+            setEditData(caseRes.data);
+          }
+          if (activitiesRes.success) {
+            setActivities(activitiesRes.data);
+          }
+          if (documentsRes.success) {
+            setDocuments(documentsRes.data);
+          }
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error('Error fetching case details:', err);
+          setLoading(false);
+        });
+    }
+  }, [status, params.id]);
 
   if (!session) return null;
 
@@ -214,7 +216,7 @@ export default function CaseDetailsPage() {
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-4">
-            <Link 
+            <Link
               href="/admin/cases"
               className="inline-flex items-center justify-center p-2 rounded-lg bg-white border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700 transition-all shadow-sm group"
             >
@@ -239,13 +241,13 @@ export default function CaseDetailsPage() {
           <div className="flex items-center gap-3">
             {isEditing ? (
               <>
-                <button 
+                <button
                   onClick={() => setIsEditing(false)}
                   className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 transition-all"
                 >
                   Abbrechen
                 </button>
-                <button 
+                <button
                   onClick={handleUpdateCase}
                   disabled={saving}
                   className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 transition-all disabled:opacity-50"
@@ -257,7 +259,7 @@ export default function CaseDetailsPage() {
             ) : (
               <>
                 <div className="relative">
-                  <button 
+                  <button
                     onClick={() => setShowActionsMenu(!showActionsMenu)}
                     className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 transition-all"
                   >
@@ -287,7 +289,7 @@ export default function CaseDetailsPage() {
                     </>
                   )}
                 </div>
-                <button 
+                <button
                   onClick={() => setIsEditing(true)}
                   className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 transition-all"
                 >
@@ -309,11 +311,10 @@ export default function CaseDetailsPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-6 py-4 text-sm font-bold transition-all border-b-2 -mb-px ${
-                activeTab === tab.id 
-                  ? 'border-emerald-600 text-emerald-600' 
+              className={`flex items-center gap-2 px-6 py-4 text-sm font-bold transition-all border-b-2 -mb-px ${activeTab === tab.id
+                  ? 'border-emerald-600 text-emerald-600'
                   : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
-              }`}
+                }`}
             >
               <tab.icon className="h-4 w-4" />
               {tab.label}
@@ -340,18 +341,18 @@ export default function CaseDetailsPage() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div className="space-y-2">
                           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Vorgangsnummer</label>
-                          <input 
-                            type="text" 
-                            value={editData.caseNumber} 
-                            onChange={(e) => setEditData({...editData, caseNumber: e.target.value})}
+                          <input
+                            type="text"
+                            value={editData.caseNumber}
+                            onChange={(e) => setEditData({ ...editData, caseNumber: e.target.value })}
                             className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                           />
                         </div>
                         <div className="space-y-2">
                           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Status</label>
-                          <select 
-                            value={editData.status} 
-                            onChange={(e) => setEditData({...editData, status: e.target.value})}
+                          <select
+                            value={editData.status}
+                            onChange={(e) => setEditData({ ...editData, status: e.target.value })}
                             className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all appearance-none"
                           >
                             <option value="open">Offen</option>
@@ -363,38 +364,38 @@ export default function CaseDetailsPage() {
                         </div>
                         <div className="space-y-2">
                           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Beantragte Summe (€)</label>
-                          <input 
-                            type="number" 
-                            value={editData.requestedAmount} 
-                            onChange={(e) => setEditData({...editData, requestedAmount: e.target.value})}
+                          <input
+                            type="number"
+                            value={editData.requestedAmount}
+                            onChange={(e) => setEditData({ ...editData, requestedAmount: e.target.value })}
                             className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                           />
                         </div>
                         <div className="space-y-2">
                           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Genehmigte Summe (€)</label>
-                          <input 
-                            type="number" 
-                            value={editData.approvedAmount || ''} 
-                            onChange={(e) => setEditData({...editData, approvedAmount: e.target.value})}
+                          <input
+                            type="number"
+                            value={editData.approvedAmount || ''}
+                            onChange={(e) => setEditData({ ...editData, approvedAmount: e.target.value })}
                             placeholder="Noch offen"
                             className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                           />
                         </div>
                         <div className="space-y-2">
                           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Laufzeit (Monate)</label>
-                          <input 
-                            type="number" 
-                            value={editData.duration || ''} 
-                            onChange={(e) => setEditData({...editData, duration: e.target.value})}
+                          <input
+                            type="number"
+                            value={editData.duration || ''}
+                            onChange={(e) => setEditData({ ...editData, duration: e.target.value })}
                             className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                           />
                         </div>
                         <div className="space-y-2">
                           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Bank / Partner</label>
-                          <input 
-                            type="text" 
-                            value={editData.bank || ''} 
-                            onChange={(e) => setEditData({...editData, bank: e.target.value})}
+                          <input
+                            type="text"
+                            value={editData.bank || ''}
+                            onChange={(e) => setEditData({ ...editData, bank: e.target.value })}
                             className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                           />
                         </div>
@@ -444,10 +445,10 @@ export default function CaseDetailsPage() {
                     <div>
                       <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Wiedervorlage</span>
                       {isEditing ? (
-                        <input 
-                          type="date" 
-                          value={editData.followUpDate ? new Date(editData.followUpDate).toISOString().split('T')[0] : ''} 
-                          onChange={(e) => setEditData({...editData, followUpDate: e.target.value})}
+                        <input
+                          type="date"
+                          value={editData.followUpDate ? new Date(editData.followUpDate).toISOString().split('T')[0] : ''}
+                          onChange={(e) => setEditData({ ...editData, followUpDate: e.target.value })}
                           className="w-full mt-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                         />
                       ) : (
@@ -684,7 +685,7 @@ export default function CaseDetailsPage() {
                             <span className="text-emerald-600 font-bold">Schritt {caseData.currentStep} von 4</span>
                           </div>
                           <div className="mt-2 h-2 bg-slate-100 rounded-full overflow-hidden">
-                            <div 
+                            <div
                               className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all"
                               style={{ width: `${(caseData.currentStep / 4) * 100}%` }}
                             />
@@ -721,7 +722,7 @@ export default function CaseDetailsPage() {
                         <span>{caseData.customer?.phone || 'Keine Nummer'}</span>
                       </div>
                     </div>
-                    <Link 
+                    <Link
                       href={`/admin/customers/${caseData.customerId}`}
                       className="mt-6 flex items-center justify-center gap-2 w-full py-2.5 bg-slate-50 hover:bg-slate-100 text-slate-700 text-sm font-bold rounded-xl transition-all"
                     >
@@ -752,7 +753,7 @@ export default function CaseDetailsPage() {
                   <ActivityIcon className="h-5 w-5 text-emerald-600" />
                   Aktivitätsverlauf
                 </h2>
-                <button 
+                <button
                   onClick={() => setShowActivityModal(true)}
                   className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition-all shadow-sm"
                 >
@@ -774,7 +775,7 @@ export default function CaseDetailsPage() {
                             <div className="flex items-center justify-between mb-2">
                               <div className="flex items-center gap-3">
                                 <h4 className="font-bold text-slate-900">{activity.subject}</h4>
-                                <button 
+                                <button
                                   onClick={() => handleDeleteActivity(activity.id)}
                                   className="p-1 text-slate-300 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                                   title="Aktivität löschen"
@@ -824,11 +825,10 @@ export default function CaseDetailsPage() {
                         <button
                           key={type.id}
                           onClick={() => setNewActivity({ ...newActivity, type: type.id })}
-                          className={`flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all ${
-                            newActivity.type === type.id 
-                              ? 'border-emerald-500 bg-emerald-50 text-emerald-700' 
+                          className={`flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all ${newActivity.type === type.id
+                              ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
                               : 'border-slate-100 hover:border-slate-200 text-slate-500'
-                          }`}
+                            }`}
                         >
                           <type.icon className="h-5 w-5" />
                           <span className="text-[10px] font-bold uppercase">{type.label}</span>
@@ -858,7 +858,7 @@ export default function CaseDetailsPage() {
                 </div>
                 <div className="px-8 py-6 bg-slate-50/50 border-t border-slate-100 flex justify-end gap-3">
                   <button onClick={() => setShowActivityModal(false)} className="px-6 py-2.5 text-sm font-bold text-slate-600 hover:bg-white rounded-xl transition-all">Abbrechen</button>
-                  <button 
+                  <button
                     onClick={handleCreateActivity}
                     disabled={!newActivity.subject}
                     className="px-8 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-bold hover:bg-emerald-500 shadow-lg shadow-emerald-600/20 transition-all disabled:opacity-50"
@@ -886,8 +886,8 @@ export default function CaseDetailsPage() {
                 {documents.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {documents.map((doc) => (
-                      <div 
-                        key={doc.id} 
+                      <div
+                        key={doc.id}
                         className="group flex flex-col p-4 rounded-2xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/30 transition-all cursor-pointer"
                       >
                         <div className="flex items-center justify-between mb-4">
@@ -895,22 +895,22 @@ export default function CaseDetailsPage() {
                             <FileText className="h-6 w-6" />
                           </div>
                           <div className="flex items-center gap-1">
-                            <button 
+                            <button
                               onClick={() => window.open(doc.fileUrl, '_blank')}
                               className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all"
                               title="Vorschau öffnen"
                             >
                               <Eye className="h-4 w-4" />
                             </button>
-                            <a 
-                              href={doc.fileUrl} 
+                            <a
+                              href={doc.fileUrl}
                               download
                               className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
                               title="Herunterladen"
                             >
                               <Download className="h-4 w-4" />
                             </a>
-                            <button 
+                            <button
                               onClick={() => handleDeleteDocument(doc.id)}
                               className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
                               title="Dokument löschen"

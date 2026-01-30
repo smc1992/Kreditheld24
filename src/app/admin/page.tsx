@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 
 export default function AdminDashboard() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [activities, setActivities] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,7 +30,9 @@ export default function AdminDashboard() {
   });
 
   useEffect(() => {
-    if (!session) {
+    if (status === 'loading') return;
+
+    if (status === 'unauthenticated') {
       router.push('/admin/login');
       return;
     }
@@ -48,7 +50,7 @@ export default function AdminDashboard() {
         console.error('Error fetching dashboard data:', err);
         setLoading(false);
       });
-  }, [session]);
+  }, [status]);
 
   if (!session) {
     return null;

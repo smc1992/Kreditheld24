@@ -3,13 +3,13 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/admin/DashboardLayout';
-import { 
-  Percent, 
-  Search, 
-  Filter, 
-  Building2, 
-  TrendingUp, 
-  TrendingDown, 
+import {
+  Percent,
+  Search,
+  Filter,
+  Building2,
+  TrendingUp,
+  TrendingDown,
   ArrowUpRight,
   Loader2,
   AlertCircle,
@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 
 export default function RatesPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [rates, setRates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -72,12 +72,13 @@ export default function RatesPage() {
   };
 
   useEffect(() => {
-    if (!session) return;
+    if (status === 'loading') return;
+    if (status === 'authenticated') {
+      fetchRates();
+    }
+  }, [status]);
 
-    fetchRates();
-  }, [session]);
-
-  const fetchRates : any = async () => {
+  const fetchRates: any = async () => {
     setLoading(true);
     try {
       const response = await fetch('/api/rates');
@@ -94,7 +95,7 @@ export default function RatesPage() {
 
   if (!session) return null;
 
-  const filteredRates = rates.filter(rate => 
+  const filteredRates = rates.filter(rate =>
     rate.bank.toLowerCase().includes(searchQuery.toLowerCase()) ||
     rate.kreditart.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -114,14 +115,14 @@ export default function RatesPage() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <button 
+            <button
               onClick={fetchRates}
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 transition-all"
             >
               <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
               Aktualisieren
             </button>
-            <button 
+            <button
               onClick={() => setShowAddModal(true)}
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 transition-all"
             >
@@ -319,7 +320,7 @@ export default function RatesPage() {
               </div>
               <div className="px-8 py-6 bg-slate-50/50 border-t border-slate-100 flex justify-end gap-3">
                 <button type="button" onClick={() => setShowAddModal(false)} className="px-6 py-2.5 text-sm font-bold text-slate-600 hover:bg-white rounded-xl transition-all">Abbrechen</button>
-                <button 
+                <button
                   type="submit"
                   disabled={loading}
                   className="px-8 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-bold hover:bg-emerald-500 shadow-lg shadow-emerald-600/20 transition-all disabled:opacity-50"
