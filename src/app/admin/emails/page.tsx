@@ -4,13 +4,14 @@ import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/admin/DashboardLayout';
 import EmailEditor from '@/components/admin/EmailEditor';
-import { 
-  Mail, 
-  Inbox, 
-  Send, 
-  Trash2, 
-  Search, 
-  Plus, 
+import SettingsModal from '@/components/admin/SettingsModal';
+import {
+  Mail,
+  Inbox,
+  Send,
+  Trash2,
+  Search,
+  Plus,
   ChevronRight,
   Clock,
   Filter,
@@ -21,7 +22,11 @@ import {
   Paperclip,
   CheckCircle2,
   AlertCircle,
-  X
+  X,
+  Settings,
+  Maximize2,
+  Minimize2,
+  CornerUpRight
 } from 'lucide-react';
 
 type MailFolder = 'inbox' | 'sent' | 'trash' | 'templates';
@@ -49,9 +54,11 @@ export default function EmailModule() {
   const [selectedMail, setSelectedMail] = useState<EmailItem | null>(null);
   const [showEditor, setShowEmailEditor] = useState(false);
   const [bulkMode, setBulkMode] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [templates, setTemplates] = useState<any[]>([]);
   const [loadingTemplates, setLoadingTemplates] = useState(false);
-  const [initialData, setInitialData] = useState<{subject: string, content: string} | undefined>(undefined);
+  const [initialData, setInitialData] = useState<{ subject: string, content: string } | undefined>(undefined);
 
   // Fallback für initiale Anzeige oder falls API noch leer ist
   const mockEmails: EmailItem[] = [
@@ -110,20 +117,41 @@ export default function EmailModule() {
 
   const handleSendEmail = async (emailData: any) => {
     try {
+      // Helper to convert file to base64
+      const toBase64 = (file: File) => new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = error => reject(error);
+      });
+
+      let processedAttachments: { filename: string; content: string }[] = [];
+      if (emailData.attachments && emailData.attachments.length > 0) {
+        processedAttachments = await Promise.all(emailData.attachments.map(async (file: File) => {
+          const base64Str = await toBase64(file);
+          // Split to get only the base64 data, removing "data:application/pdf;base64," etc.
+          const content = base64Str.split(',')[1];
+          return { filename: file.name, content };
+        }));
+      }
+
       const response = await fetch('/api/admin/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           to: emailData.to,
+          cc: emailData.cc,
+          bcc: emailData.bcc,
           type: 'custom',
           data: {
             subject: emailData.subject,
             message: emailData.content,
             advisorName: session?.user?.name || 'Kreditheld24 Team'
-          }
+          },
+          attachments: processedAttachments
         })
       });
-      
+
       const result = await response.json();
       if (result.success) {
         alert('E-Mail erfolgreich versendet!');
@@ -136,6 +164,39 @@ export default function EmailModule() {
     } catch (error) {
       console.error('Email error:', error);
       alert('Fehler beim Versenden der E-Mail');
+    }
+  };
+
+  const handleStar = async (email: EmailItem) => {
+    try {
+      const newStarred = !email.starred;
+      // Optimistic update
+      setEmails(emails.map(e => e.id === email.id ? { ...e, starred: newStarred } : e));
+      if (selectedMail?.id === email.id) {
+        setSelectedMail({ ...selectedMail, starred: newStarred });
+      }
+
+      await fetch(`/api/admin/emails/${email.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ starred: newStarred })
+      });
+    } catch (error) {
+      console.error('Error starring email:', error);
+    }
+  };
+
+  const handleTrash = async (email: EmailItem) => {
+    if (!confirm('E-Mail in den Papierkorb verschieben?')) return;
+    try {
+      await fetch(`/api/admin/emails/${email.id}`, {
+        method: 'DELETE',
+      });
+      // Remove from list
+      setEmails(emails.filter(e => e.id !== email.id));
+      setSelectedMail(null);
+    } catch (error) {
+      console.error('Error deleting email:', error);
     }
   };
 
@@ -164,13 +225,13 @@ export default function EmailModule() {
 
   if (!session) return null;
 
-  const filteredTemplates = templates.filter(t => 
-    t.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+  const filteredTemplates = templates.filter(t =>
+    t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     t.subject.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const filteredMails = emails.filter((m: EmailItem) => 
-    m.subject?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+  const filteredMails = emails.filter((m: EmailItem) =>
+    m.subject?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     m.recipient?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     m.sender?.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -190,6 +251,13 @@ export default function EmailModule() {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowSettings(true)}
+              className="p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-xl transition-all border border-slate-200 hover:border-slate-300"
+              title="Einstellungen / Signatur"
+            >
+              <Settings className="h-5 w-5" />
+            </button>
             <button
               onClick={() => {
                 setBulkMode(true);
@@ -217,9 +285,9 @@ export default function EmailModule() {
 
         {/* Email Interface */}
         <div className="flex-1 bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex">
-          
+
           {/* Sidebar Navigation */}
-          <div className="w-64 border-r border-slate-100 flex flex-col bg-slate-50/30">
+          <div className={`w-64 border-r border-slate-100 bg-slate-50/30 flex-col ${isFullscreen ? 'hidden' : 'flex'}`}>
             <nav className="p-4 space-y-1">
               {[
                 { id: 'inbox', name: 'Posteingang', icon: Inbox, count: 0 },
@@ -233,27 +301,24 @@ export default function EmailModule() {
                     setActiveFolder(item.id as MailFolder);
                     setSelectedMail(null);
                   }}
-                  className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${
-                    activeFolder === item.id 
-                      ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20' 
-                      : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'
-                  }`}
+                  className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeFolder === item.id
+                    ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20'
+                    : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <item.icon className="h-4 w-4" />
                     {item.name}
                   </div>
                   {item.id === 'sent' && emails.length > 0 && (
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full ${
-                      activeFolder === item.id ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-600'
-                    }`}>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full ${activeFolder === item.id ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-600'
+                      }`}>
                       {emails.length}
                     </span>
                   )}
                   {item.id === 'templates' && templates.length > 0 && (
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full ${
-                      activeFolder === item.id ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-600'
-                    }`}>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full ${activeFolder === item.id ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-600'
+                      }`}>
                       {templates.length}
                     </span>
                   )}
@@ -262,18 +327,12 @@ export default function EmailModule() {
             </nav>
 
             <div className="mt-auto p-6">
-              <div className="rounded-2xl bg-emerald-50 p-4 border border-emerald-100">
-                <p className="text-[10px] font-black text-emerald-700 uppercase tracking-widest mb-2">Speicherplatz</p>
-                <div className="h-1.5 w-full bg-emerald-200 rounded-full overflow-hidden">
-                  <div className="h-full w-1/4 bg-emerald-600 rounded-full" />
-                </div>
-                <p className="text-[10px] text-emerald-600 font-bold mt-2">2.4 GB von 10 GB genutzt</p>
-              </div>
+              {/* Storage widget removed */}
             </div>
           </div>
 
           {/* Mail List */}
-          <div className="w-96 border-r border-slate-100 flex flex-col">
+          <div className={`w-96 border-r border-slate-100 flex-col ${isFullscreen ? 'hidden' : 'flex'}`}>
             <div className="p-4 border-b border-slate-100">
               <div className="relative group">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
@@ -303,7 +362,7 @@ export default function EmailModule() {
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <button 
+                          <button
                             onClick={(e) => deleteTemplate(e, tpl.id)}
                             className="p-1 text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
                           >
@@ -325,9 +384,8 @@ export default function EmailModule() {
                     <div
                       key={mail.id}
                       onClick={() => setSelectedMail(mail)}
-                      className={`p-5 cursor-pointer transition-all hover:bg-slate-50 relative group ${
-                        selectedMail?.id === mail.id ? 'bg-emerald-50/50 border-l-4 border-emerald-500' : 'border-l-4 border-transparent'
-                      }`}
+                      className={`p-5 cursor-pointer transition-all hover:bg-slate-50 relative group ${selectedMail?.id === mail.id ? 'bg-emerald-50/50 border-l-4 border-emerald-500' : 'border-l-4 border-transparent'
+                        }`}
                     >
                       <div className="flex items-center justify-between mb-1">
                         <span className={`text-xs font-black uppercase tracking-wider ${mail.status === 'unread' ? 'text-emerald-600' : 'text-slate-400'}`}>
@@ -343,7 +401,7 @@ export default function EmailModule() {
                       <p className="text-xs text-slate-400 line-clamp-1 mt-1 font-medium">
                         {mail.preview}
                       </p>
-                      
+
                       <div className="mt-3 flex items-center gap-3">
                         {mail.hasAttachment && <Paperclip className="h-3 w-3 text-slate-300" />}
                         {mail.starred && <Star className="h-3 w-3 text-amber-400 fill-amber-400" />}
@@ -362,34 +420,68 @@ export default function EmailModule() {
             {selectedMail ? (
               <div className="flex flex-col h-full animate-in fade-in slide-in-from-right-4 duration-300">
                 {/* Mail Header */}
-                <div className="p-8 border-b border-slate-100 flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500 font-black text-xl border border-slate-200 shadow-sm">
+                <div className="p-6 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4">
+                  <div className="flex items-center gap-4 min-w-0 flex-1">
+                    <div className="h-12 w-12 shrink-0 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500 font-black text-xl border border-slate-200 shadow-sm">
                       {(selectedMail.sender || selectedMail.recipient)[0].toUpperCase()}
                     </div>
-                    <div>
-                      <h3 className="text-xl font-black text-slate-900 leading-tight">{selectedMail.subject}</h3>
-                      <div className="flex items-center gap-2 mt-1">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-xl font-black text-slate-900 leading-tight truncate pr-2">{selectedMail.subject}</h3>
+                      <div className="flex flex-wrap items-center gap-2 mt-1">
                         <span className="text-xs text-slate-400 font-bold">Von:</span>
-                        <span className="text-xs text-emerald-600 font-black tracking-tight">{selectedMail.sender || 'Kreditheld24'}</span>
+                        <span className="text-xs text-emerald-600 font-black tracking-tight truncate max-w-[200px]">{selectedMail.sender || 'Kreditheld24'}</span>
                         <span className="text-xs text-slate-400 font-bold ml-2">An:</span>
-                        <span className="text-xs text-slate-600 font-bold">{selectedMail.recipient}</span>
+                        <span className="text-xs text-slate-600 font-bold truncate max-w-[200px]">{selectedMail.recipient}</span>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button className="p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-xl transition-all border border-transparent hover:border-slate-200">
-                      <Star className={`h-5 w-5 ${selectedMail.starred ? 'fill-amber-400 text-amber-400' : ''}`} />
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      onClick={() => setIsFullscreen(!isFullscreen)}
+                      className="p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-xl transition-all border border-transparent hover:border-slate-200"
+                      title={isFullscreen ? 'Verkleinern' : 'Vollbild'}
+                    >
+                      {isFullscreen ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
                     </button>
-                    <button className="p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all border border-transparent hover:border-red-100">
+                    <button
+                      onClick={() => selectedMail && handleStar(selectedMail)}
+                      className="p-2.5 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-xl transition-all border border-transparent hover:border-slate-200"
+                    >
+                      <Star className={`h-5 w-5 ${selectedMail?.starred ? 'fill-amber-400 text-amber-400' : ''}`} />
+                    </button>
+                    <button
+                      onClick={() => selectedMail && handleTrash(selectedMail)}
+                      className="p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all border border-transparent hover:border-red-100"
+                    >
                       <Trash2 className="h-5 w-5" />
                     </button>
-                    <button 
+                    <button
+                      onClick={() => {
+                        const quote = `
+                          <br><br>
+                          ---------- Forwarded message ---------<br>
+                          From: ${selectedMail.sender || 'Unknown'}<br>
+                          Date: ${new Date(selectedMail.date).toLocaleString()}<br>
+                          Subject: ${selectedMail.subject}<br>
+                          To: ${selectedMail.recipient}<br>
+                          <br>
+                          ${selectedMail.htmlContent || selectedMail.textContent || ''}
+                        `;
+                        setInitialData({ subject: `Fwd: ${selectedMail.subject}`, content: quote });
+                        setBulkMode(false);
+                        setShowEmailEditor(true);
+                      }}
+                      className="flex items-center gap-2 px-4 py-2.5 bg-white text-slate-700 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-slate-50 transition-all border border-slate-200"
+                    >
+                      <CornerUpRight className="h-4 w-4" />
+                      Weiterleiten
+                    </button>
+                    <button
                       onClick={() => {
                         setInitialData({ subject: `Re: ${selectedMail.subject}`, content: '' });
                         setShowEmailEditor(true);
                       }}
-                      className="px-5 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg shadow-slate-900/20"
+                      className="px-5 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg shadow-slate-900/20 whitespace-nowrap"
                     >
                       Antworten
                     </button>
@@ -397,15 +489,15 @@ export default function EmailModule() {
                 </div>
 
                 {/* Mail Body */}
-                <div className="flex-1 overflow-y-auto p-12">
-                  <div className="max-w-3xl bg-slate-50/50 rounded-3xl p-10 border border-slate-100 shadow-sm">
+                <div className="flex-1 overflow-y-auto p-4 sm:p-8">
+                  <div className="max-w-none bg-slate-50/50 rounded-3xl p-6 border border-slate-100 shadow-sm">
                     <div className="flex items-center justify-between mb-8 pb-6 border-b border-slate-200/50">
                       <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Nachricht</span>
                       <span className="text-[10px] text-slate-400 font-bold">
                         {new Date(selectedMail.date).toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
-                    <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed font-medium">
+                    <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed font-medium break-words overflow-x-auto">
                       {selectedMail.htmlContent ? (
                         <div dangerouslySetInnerHTML={{ __html: selectedMail.htmlContent }} />
                       ) : (
@@ -430,7 +522,6 @@ export default function EmailModule() {
         </div>
       </div>
 
-      {/* Email Editor Integration */}
       {showEditor && (
         <EmailEditor
           onSend={handleSendEmail}
@@ -439,6 +530,12 @@ export default function EmailModule() {
           initialData={initialData}
         />
       )}
+
+      {/* Settings Modal */}
+      <SettingsModal
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+      />
     </DashboardLayout>
   );
 }

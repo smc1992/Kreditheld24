@@ -211,7 +211,7 @@ export default function KreditanfrageForm() {
 
   // Query-Parameter verwenden, um Formularfelder vorzufüllen (Kreditsumme, Laufzeit, Zweck, Rate, Kreditart)
   useEffect(() => {
-    const getParam = (name: string): string | null => searchParams.get(name)
+    const getParam = (name: string): string | null => searchParams?.get(name) ?? null
     const sum = getParam('kreditsumme') || getParam('amount')
     const term = getParam('laufzeit') || getParam('term')
     const rate = getParam('gewuenschteRate') || getParam('monthly') || getParam('rate')
@@ -434,9 +434,9 @@ export default function KreditanfrageForm() {
 
   // Handle URL parameters for email verification
   useEffect(() => {
-    const success = searchParams.get('success')
-    const error = searchParams.get('error')
-    const tokenFromUrl = searchParams.get('token')
+    const success = searchParams?.get('success')
+    const error = searchParams?.get('error')
+    const tokenFromUrl = searchParams?.get('token')
 
     if (success === 'email-verified' || success === 'already-verified') {
       setEmailVerified(true)

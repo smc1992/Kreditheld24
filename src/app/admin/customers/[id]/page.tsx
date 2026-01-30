@@ -48,6 +48,8 @@ export default function CustomerDetailPage() {
   const [showEmailEditor, setShowEmailEditor] = useState(false);
   const [emailType, setEmailType] = useState<'welcome' | 'case_update' | 'custom'>('custom');
   const [activeTab, setActiveTab] = useState<'overview' | 'notes' | 'activities'>('overview');
+  const [selectedEmail, setSelectedEmail] = useState<any>(null);
+  const [viewingEmail, setViewingEmail] = useState(false);
 
   const handleDeleteActivity = async (activityId: string) => {
     if (!confirm('Möchten Sie diese Aktivität wirklich löschen?')) return;
@@ -78,6 +80,24 @@ export default function CustomerDetailPage() {
       }
     } catch (error) {
       console.error('Error deleting document:', error);
+    }
+  };
+
+  const handleViewEmail = async (emailId: string) => {
+    if (!emailId) return;
+    setViewingEmail(true);
+    try {
+      const res = await fetch(`/api/admin/emails?id=${emailId}`);
+      const data = await res.json();
+      if (data.success) {
+        setSelectedEmail(data.data);
+      } else {
+        alert('E-Mail konnte nicht geladen werden.');
+        setViewingEmail(false);
+      }
+    } catch (error) {
+      console.error('Error fetching email:', error);
+      setViewingEmail(false);
     }
   };
 
@@ -623,6 +643,14 @@ export default function CustomerDetailPage() {
                       <div className="flex-1 pb-6 min-w-0">
                         <div className="flex items-center justify-between gap-4">
                           <p className="text-sm font-bold text-slate-800 truncate">{activity.subject}</p>
+                          {activity.type === 'email' && activity.emailId && (
+                            <button
+                              onClick={() => handleViewEmail(activity.emailId)}
+                              className="ml-2 px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-bold uppercase tracking-wider rounded-md hover:bg-emerald-200 transition-colors"
+                            >
+                              Anzeigen
+                            </button>
+                          )}
                           <button
                             onClick={() => handleDeleteActivity(activity.id)}
                             className="p-1.5 text-slate-300 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
@@ -646,6 +674,56 @@ export default function CustomerDetailPage() {
           )}
         </div>
       </div>
+      {/* Email View Modal */}
+      {viewingEmail && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+              <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <Mail className="h-5 w-5 text-emerald-600" />
+                E-Mail Details
+              </h3>
+              <button
+                onClick={() => { setViewingEmail(false); setSelectedEmail(null); }}
+                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-white rounded-lg transition-all"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {selectedEmail ? (
+              <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+                <div className="mb-8 space-y-4">
+                  <div className="flex items-baseline gap-4">
+                    <span className="text-xs font-bold text-slate-400 uppercase w-20">Betreff</span>
+                    <h1 className="text-xl font-bold text-slate-900">{selectedEmail.subject}</h1>
+                  </div>
+                  <div className="flex items-baseline gap-4">
+                    <span className="text-xs font-bold text-slate-400 uppercase w-20">Von</span>
+                    <span className="text-sm font-medium text-slate-700">{selectedEmail.from}</span>
+                  </div>
+                  <div className="flex items-baseline gap-4">
+                    <span className="text-xs font-bold text-slate-400 uppercase w-20">An</span>
+                    <span className="text-sm font-medium text-slate-700">{selectedEmail.to}</span>
+                  </div>
+                  <div className="flex items-baseline gap-4">
+                    <span className="text-xs font-bold text-slate-400 uppercase w-20">Datum</span>
+                    <span className="text-sm font-medium text-slate-700">{new Date(selectedEmail.date).toLocaleString()}</span>
+                  </div>
+                </div>
+
+                <div className="bg-slate-50 rounded-2xl p-8 border border-slate-100 prose prose-sm max-w-none text-slate-600">
+                  <div dangerouslySetInnerHTML={{ __html: selectedEmail.htmlContent || selectedEmail.textContent }} />
+                </div>
+              </div>
+            ) : (
+              <div className="flex-1 flex items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 }

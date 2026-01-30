@@ -146,6 +146,7 @@ export const crmActivities = pgTable('crm_activities', {
   id: uuid('id').primaryKey().default(sql`uuid_generate_v4()`),
   caseId: uuid('case_id').references(() => crmCases.id, { onDelete: 'cascade' }),
   customerId: uuid('customer_id').references(() => crmCustomers.id, { onDelete: 'cascade' }),
+  emailId: uuid('email_id').references(() => crmEmails.id, { onDelete: 'set null' }),
   type: varchar('type', { length: 50 }).notNull(),
   subject: varchar('subject', { length: 255 }).notNull(),
   description: text('description'),
@@ -155,6 +156,7 @@ export const crmActivities = pgTable('crm_activities', {
 }, (table) => ({
   caseIdx: index('idx_crm_activities_case').on(table.caseId),
   customerIdx: index('idx_crm_activities_customer').on(table.customerId),
+  emailIdx: index('idx_crm_activities_email').on(table.emailId),
   typeIdx: index('idx_crm_activities_type').on(table.type),
   dateIdx: index('idx_crm_activities_date').on(table.date),
 }));
@@ -222,6 +224,7 @@ export const crmSettings = pgTable('crm_settings', {
     fromName: 'Kreditheld24 Team',
     fromEmail: 'onboarding@resend.dev'
   }),
+  signature: text('signature'),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
@@ -237,8 +240,9 @@ export const crmEmails = pgTable('crm_emails', {
   subject: varchar('subject', { length: 512 }),
   htmlContent: text('html_content'),
   textContent: text('text_content'),
-  status: varchar('status', { length: 20 }).default('received'), // 'received', 'sent', 'failed'
+  status: varchar('status', { length: 20 }).default('received'), // 'received', 'sent', 'failed', 'trash'
   isRead: boolean('is_read').default(false),
+  starred: boolean('starred').default(false),
   hasAttachments: boolean('has_attachments').default(false),
   date: timestamp('date', { withTimezone: true }).defaultNow().notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
