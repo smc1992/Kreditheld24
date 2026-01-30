@@ -43,12 +43,15 @@ export async function GET(request: Request) {
       console.error('[Cron] Error fetching Baufinanzierung processes:', error)
     }
 
+    // Privatkredit sync temporarily disabled - GraphQL schema doesn't support listing all vorgaenge
+    /*
     try {
       privatkreditProcesses = await fetchPrivatkreditProcesses()
       console.log(`[Cron] Fetched ${privatkreditProcesses.length} Privatkredit processes`)
     } catch (error) {
       console.error('[Cron] Error fetching Privatkredit processes:', error)
     }
+    */
 
     // Extract customer data from processes
     const customerDataList: EuropaceCustomerData[] = []

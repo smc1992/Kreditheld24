@@ -37,12 +37,17 @@ export async function POST(request: Request) {
       // Continue with Privatkredit even if Baufi fails
     }
 
+    // Privatkredit sync temporarily disabled - GraphQL schema doesn't support listing all vorgaenge
+    // Only individual vorgaenge can be fetched by vorgangsnummer
+    // TODO: Enable when Europace provides a way to list all Privatkredit vorgaenge
+    /*
     try {
       privatkreditProcesses = await fetchPrivatkreditProcesses()
     } catch (error) {
       console.error('Error fetching Privatkredit processes:', error)
       // Continue even if Privatkredit fails
     }
+    */
 
     // Extract customer data from processes
     const customerDataList: EuropaceCustomerData[] = []
