@@ -210,11 +210,11 @@ export async function fetchBaufinanzierungProcesses(datenKontext: 'TEST_MODUS' |
   const scope = 'baufinanzierung:vorgang:lesen'
   const token = await getEuropaceAccessTokenWithScope(scope)
 
-  // Endpoint from Europace Postman Collection
+  // Endpoint from Europace Documentation (v3 API)
   // HAL-based API with pagination
   const endpoint = datenKontext === 'TEST_MODUS' 
-    ? 'https://api.europace2.de/v2/vorgaenge?datenKontext=TEST_MODUS'
-    : 'https://api.europace2.de/v2/vorgaenge'
+    ? 'https://api.europace2.de/v3/vorgaenge?datenKontext=TEST_MODUS'
+    : 'https://api.europace2.de/v3/vorgaenge'
 
   // Add partner and organization headers
   const headers: Record<string, string> = {
@@ -242,8 +242,8 @@ export async function fetchBaufinanzierungProcesses(datenKontext: 'TEST_MODUS' |
   }
 
   const data = await res.json()
-  // HAL response structure: { _embedded: { vorgaenge: [...] }, _links: {...} }
-  return data?._embedded?.vorgaenge || []
+  // v3 API response structure: { vorgaenge: [...] }
+  return data?.vorgaenge || []
 }
 
 // Fetch Privatkredit processes

@@ -35,10 +35,8 @@ export async function GET(request: Request) {
       console.log('Testing Baufinanzierung API...')
       
       const baufiEndpoints = [
-        { url: 'https://api.europace2.de/v2/vorgaenge?datenKontext=TEST_MODUS', mode: 'TEST_MODUS' },
-        { url: 'https://api.europace2.de/v2/vorgaenge?datenKontext=TEST_MODUS&limit=100', mode: 'TEST_MODUS_100' },
-        { url: 'https://api.europace2.de/v2/vorgaenge', mode: 'ECHT_GESCHAEFT' },
-        { url: 'https://api.europace2.de/v2/vorgaenge?limit=100', mode: 'ECHT_GESCHAEFT_100' },
+        { url: 'https://api.europace2.de/v3/vorgaenge?datenKontext=TEST_MODUS', mode: 'TEST_MODUS' },
+        { url: 'https://api.europace2.de/v3/vorgaenge', mode: 'ECHT_GESCHAEFT' },
       ]
 
       const allResults: any = { test: null, echt: null }
@@ -79,17 +77,18 @@ export async function GET(request: Request) {
           if (res.ok) {
             try {
               const data = JSON.parse(responseText)
-              const vorgaengeCount = data?._embedded?.vorgaenge?.length || 0
+              const vorgaengeCount = data?.vorgaenge?.length || 0
               
               // Log full response structure for debugging
               console.log(`✓ Baufinanzierung API (${mode}): ${vorgaengeCount} vorgaenge found`)
-              console.log(`Response structure:`, JSON.stringify(data, null, 2).substring(0, 500))
+              console.log(`Response structure:`, JSON.stringify(data, null, 2).substring(0, 1000))
               console.log(`Response headers:`, Object.fromEntries(res.headers.entries()))
               
-              // Store result with mode key
-              const modeKey = mode.toLowerCase().replace(/_/g, '_')
-              if (!allResults[modeKey]) {
-                allResults[modeKey] = data
+              // Store result
+              if (mode === 'TEST_MODUS') {
+                allResults.test = data
+              } else {
+                allResults.echt = data
               }
             } catch (e) {
               console.log(`Failed to parse response for ${mode}:`, e)
@@ -104,8 +103,8 @@ export async function GET(request: Request) {
       }
 
       // Set results based on which mode has data
-      const testVorgaenge = allResults.test?._embedded?.vorgaenge?.length || 0
-      const echtVorgaenge = allResults.echt?._embedded?.vorgaenge?.length || 0
+      const testVorgaenge = allResults.test?.vorgaenge?.length || 0
+      const echtVorgaenge = allResults.echt?.vorgaenge?.length || 0
       
       results.baufinanzierung.success = true
       results.baufinanzierung.data = {
@@ -113,7 +112,7 @@ export async function GET(request: Request) {
         echt_geschaeft: allResults.echt,
         summary: `TEST_MODUS: ${testVorgaenge} vorgaenge, ECHT_GESCHAEFT: ${echtVorgaenge} vorgaenge`
       }
-      results.baufinanzierung.endpoint = 'https://api.europace2.de/v2/vorgaenge (both modes tested)'
+      results.baufinanzierung.endpoint = 'https://api.europace2.de/v3/vorgaenge (both modes tested)'
     }
 
     // Test 3: Privatkredit API
