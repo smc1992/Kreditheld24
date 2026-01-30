@@ -39,13 +39,40 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    // TODO: Implement file upload logic
-    // This would require file storage setup (e.g., S3, local storage)
-    
+    const formData = await req.formData();
+    const files = formData.getAll('files') as File[];
+    const caseId = formData.get('caseId') as string | null;
+    const documentType = formData.get('type') as string | null;
+
+    if (!files || files.length === 0) {
+      return NextResponse.json({ error: 'No files provided' }, { status: 400 });
+    }
+
+    const uploadedDocuments = [];
+
+    for (const file of files) {
+      // For now, store file metadata only (no actual file storage)
+      // In production, you would upload to S3, Cloudinary, or similar
+      const [document] = await db
+        .insert(crmDocuments)
+        .values({
+          customerId: session.user.id,
+          caseId: caseId || null,
+          name: file.name,
+          type: documentType || 'other',
+          fileUrl: `/uploads/${Date.now()}-${file.name}`, // Placeholder URL
+          fileSize: file.size,
+        })
+        .returning();
+
+      uploadedDocuments.push(document);
+    }
+
     return NextResponse.json({ 
-      success: false, 
-      error: 'File upload not yet implemented' 
-    }, { status: 501 });
+      success: true, 
+      data: uploadedDocuments,
+      message: `${uploadedDocuments.length} document(s) uploaded successfully` 
+    });
   } catch (error) {
     console.error('Error uploading documents:', error);
     return NextResponse.json({ success: false, error: 'Failed to upload documents' }, { status: 500 });

@@ -4,17 +4,34 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import PortalLayout from '@/components/portal/PortalLayout';
-import { FileText, Download, Upload, Loader2, File, Calendar, Trash2 } from 'lucide-react';
+import { FileText, Download, Upload, Loader2, File, Calendar, Trash2, X, CheckCircle, AlertCircle } from 'lucide-react';
 
 interface Document {
   id: string;
-  fileName: string;
+  name: string;
+  type: string;
   fileSize: number;
-  fileType: string;
-  uploadedAt: string;
+  fileUrl: string;
+  createdAt: string;
   caseId?: string;
-  caseNumber?: string;
 }
+
+interface Case {
+  id: string;
+  caseNumber: string;
+  type: string;
+  status: string;
+}
+
+const DOCUMENT_CATEGORIES = [
+  { id: 'id_document', label: 'Personalausweis/Reisepass', required: true },
+  { id: 'income_proof', label: 'Einkommensnachweise (3 Monate)', required: true },
+  { id: 'bank_statements', label: 'Kontoauszüge (3 Monate)', required: true },
+  { id: 'employment_contract', label: 'Arbeitsvertrag', required: false },
+  { id: 'tax_return', label: 'Steuerbescheid', required: false },
+  { id: 'property_documents', label: 'Grundbuchauszug', required: false },
+  { id: 'other', label: 'Sonstige Unterlagen', required: false },
+];
 
 export default function DokumentePage() {
   const { data: session, status } = useSession();
@@ -81,12 +98,18 @@ export default function DokumentePage() {
     return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
   };
 
-  const getFileIcon = (fileType: string) => {
-    if (fileType.includes('pdf')) return '📄';
-    if (fileType.includes('image')) return '🖼️';
-    if (fileType.includes('word') || fileType.includes('document')) return '📝';
-    if (fileType.includes('excel') || fileType.includes('spreadsheet')) return '📊';
+  const getFileIcon = (type: string) => {
+    if (type.includes('pdf') || type === 'id_document') return '📄';
+    if (type.includes('image')) return '🖼️';
+    if (type.includes('income') || type === 'income_proof') return '💰';
+    if (type.includes('bank') || type === 'bank_statements') return '🏦';
+    if (type.includes('employment') || type === 'employment_contract') return '�';
     return '📎';
+  };
+
+  const getCategoryLabel = (type: string) => {
+    const category = DOCUMENT_CATEGORIES.find(cat => cat.id === type);
+    return category?.label || type;
   };
 
   if (loading) {
@@ -147,23 +170,21 @@ export default function DokumentePage() {
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-4 flex-1">
-                    <div className="text-4xl">{getFileIcon(doc.fileType)}</div>
+                    <div className="text-4xl">{getFileIcon(doc.type)}</div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-bold text-white mb-1">{doc.fileName}</h3>
+                      <h3 className="text-lg font-bold text-white mb-1">{doc.name}</h3>
                       <div className="flex items-center gap-4 text-sm text-slate-400">
+                        <span className="px-2 py-1 bg-blue-600/10 text-blue-400 rounded-lg text-xs font-bold">
+                          {getCategoryLabel(doc.type)}
+                        </span>
                         <span className="flex items-center gap-1">
                           <File className="h-3 w-3" />
                           {formatFileSize(doc.fileSize)}
                         </span>
                         <span className="flex items-center gap-1">
                           <Calendar className="h-3 w-3" />
-                          {new Date(doc.uploadedAt).toLocaleDateString('de-DE')}
+                          {new Date(doc.createdAt).toLocaleDateString('de-DE')}
                         </span>
-                        {doc.caseNumber && (
-                          <span className="px-2 py-1 bg-emerald-600/10 text-emerald-500 rounded-lg text-xs font-bold">
-                            {doc.caseNumber}
-                          </span>
-                        )}
                       </div>
                     </div>
                   </div>
