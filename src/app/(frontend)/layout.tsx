@@ -38,7 +38,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           rel="stylesheet"
         />
       </head>
-      <body className="antialiased bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+      <body className="antialiased" suppressHydrationWarning>
         <ThemeProvider>
           <Providers>
             <div className="min-h-screen flex flex-col">
