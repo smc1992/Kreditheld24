@@ -24,7 +24,18 @@ export async function GET() {
       .where(eq(crmDocuments.customerId, session.user.id))
       .orderBy(desc(crmDocuments.createdAt));
 
-    return NextResponse.json({ success: true, data: documents });
+    // Map database fields to camelCase for frontend
+    const mappedDocuments = documents.map(doc => ({
+      id: doc.id,
+      name: doc.name,
+      type: doc.type || 'other',
+      fileSize: doc.fileSize || 0,
+      fileUrl: doc.fileUrl,
+      createdAt: doc.createdAt,
+      caseId: doc.caseId || undefined,
+    }));
+
+    return NextResponse.json({ success: true, data: mappedDocuments });
   } catch (error) {
     console.error('Error fetching customer documents:', error);
     return NextResponse.json({ success: false, error: 'Failed to fetch documents' }, { status: 500 });
@@ -70,7 +81,16 @@ export async function POST(req: Request) {
         })
         .returning();
 
-      uploadedDocuments.push(document);
+      // Map to camelCase for frontend
+      uploadedDocuments.push({
+        id: document.id,
+        name: document.name,
+        type: document.type || 'other',
+        fileSize: document.fileSize || 0,
+        fileUrl: document.fileUrl,
+        createdAt: document.createdAt,
+        caseId: document.caseId || undefined,
+      });
     }
 
     return NextResponse.json({ 
