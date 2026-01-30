@@ -34,7 +34,7 @@ const DOCUMENT_CATEGORIES = [
 ];
 
 export default function DokumentePage() {
-  const { data: session, status } = useSession();
+  const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [cases, setCases] = useState<Case[]>([]);
@@ -49,14 +49,16 @@ export default function DokumentePage() {
   const [deleting, setDeleting] = useState<string | null>(null);
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
+    if (sessionStatus === 'loading') return;
+
+    if (sessionStatus === 'unauthenticated') {
       router.push('/portal/login');
-    } else if (status === 'authenticated' && session?.user?.role === 'admin') {
+    } else if (sessionStatus === 'authenticated' && session?.user?.role === 'admin') {
       router.push('/admin');
-    } else if (status === 'authenticated') {
+    } else if (sessionStatus === 'authenticated') {
       fetchData();
     }
-  }, [status, session, router]);
+  }, [sessionStatus, session, router]);
 
   const fetchData = async () => {
     try {
@@ -64,10 +66,10 @@ export default function DokumentePage() {
         fetch('/api/portal/documents'),
         fetch('/api/portal/cases'),
       ]);
-      
+
       const docsData = await docsRes.json();
       const casesData = await casesRes.json();
-      
+
       if (docsData.success) {
         setDocuments(docsData.data);
       }
@@ -99,11 +101,11 @@ export default function DokumentePage() {
 
     setUploading(true);
     const formData = new FormData();
-    
+
     for (let i = 0; i < selectedFiles.length; i++) {
       formData.append('files', selectedFiles[i]);
     }
-    
+
     if (selectedCase) formData.append('caseId', selectedCase);
     formData.append('type', selectedCategory);
 
@@ -325,7 +327,7 @@ export default function DokumentePage() {
             {cases.map(caseItem => {
               const caseDocuments = getDocumentsForCase(caseItem.id);
               const missingDocs = getMissingDocuments(caseItem.id);
-              
+
               return (
                 <div key={caseItem.id} className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-6">
                   <div className="flex items-center justify-between mb-4">

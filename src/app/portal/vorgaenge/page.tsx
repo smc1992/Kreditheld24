@@ -17,20 +17,22 @@ interface Case {
 }
 
 export default function VorgaengePage() {
-  const { data: session, status } = useSession();
+  const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
   const [cases, setCases] = useState<Case[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
+    if (sessionStatus === 'loading') return;
+
+    if (sessionStatus === 'unauthenticated') {
       router.push('/portal/login');
-    } else if (status === 'authenticated' && session?.user?.role === 'admin') {
+    } else if (sessionStatus === 'authenticated' && session?.user?.role === 'admin') {
       router.push('/admin');
-    } else if (status === 'authenticated') {
+    } else if (sessionStatus === 'authenticated') {
       fetchCases();
     }
-  }, [status, session, router]);
+  }, [sessionStatus, session, router]);
 
   const fetchCases = async () => {
     try {

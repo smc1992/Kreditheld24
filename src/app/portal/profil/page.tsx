@@ -19,7 +19,7 @@ interface CustomerProfile {
 }
 
 export default function ProfilPage() {
-  const { data: session, status } = useSession();
+  const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
   const [profile, setProfile] = useState<CustomerProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -44,14 +44,16 @@ export default function ProfilPage() {
   });
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
+    if (sessionStatus === 'loading') return;
+
+    if (sessionStatus === 'unauthenticated') {
       router.push('/portal/login');
-    } else if (status === 'authenticated' && session?.user?.role === 'admin') {
+    } else if (sessionStatus === 'authenticated' && session?.user?.role === 'admin') {
       router.push('/admin');
-    } else if (status === 'authenticated') {
+    } else if (sessionStatus === 'authenticated') {
       fetchProfile();
     }
-  }, [status, session, router]);
+  }, [sessionStatus, session, router]);
 
   const fetchProfile = async () => {
     try {
@@ -66,7 +68,7 @@ export default function ProfilPage() {
           phone: data.data.phone || '',
           address: data.data.address || '',
         });
-        
+
         // Parse address into separate fields for better UX
         if (data.data.address) {
           const addressParts = data.data.address.split(',').map((part: string) => part.trim());
@@ -76,7 +78,7 @@ export default function ProfilPage() {
           const postalAndCity = addressParts[1]?.split(' ') || [];
           const postalCode = postalAndCity[0] || '';
           const city = postalAndCity.slice(1).join(' ') || '';
-          
+
           setAddressFields({
             street,
             houseNumber,
@@ -99,7 +101,7 @@ export default function ProfilPage() {
       const combinedAddress = addressFields.street && addressFields.houseNumber
         ? `${addressFields.street} ${addressFields.houseNumber}, ${addressFields.postalCode} ${addressFields.city}`.trim()
         : '';
-      
+
       const res = await fetch('/api/portal/profile', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },

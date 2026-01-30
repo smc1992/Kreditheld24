@@ -8,13 +8,15 @@ import Link from 'next/link';
 import { FileText, Clock, CheckCircle, AlertCircle, Briefcase, ChevronRight } from 'lucide-react';
 
 export default function PortalDashboard() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [cases, setCases] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!session) {
+    if (status === 'loading') return;
+
+    if (status === 'unauthenticated') {
       router.push('/portal/login');
       return;
     }
@@ -22,7 +24,7 @@ export default function PortalDashboard() {
     // Mock data for now - will be replaced with API call
     setCases([]);
     setLoading(false);
-  }, [session, router]);
+  }, [status, router]);
 
   if (!session) {
     return null;
@@ -131,8 +133,8 @@ export default function PortalDashboard() {
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
                           <h3 className="text-lg font-semibold text-white">
-                            {c.formData && typeof c.formData === 'object' && 'kreditart' in c.formData 
-                              ? (c.formData as any).kreditart 
+                            {c.formData && typeof c.formData === 'object' && 'kreditart' in c.formData
+                              ? (c.formData as any).kreditart
                               : 'Kreditanfrage'}
                           </h3>
                           {getStatusBadge(c.status)}
