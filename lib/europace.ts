@@ -238,12 +238,43 @@ export async function fetchPrivatkreditProcesses(): Promise<EuropaceProcess[]> {
   const scope = 'privatkredit:vorgang:lesen'
   const token = await getEuropaceAccessTokenWithScope(scope)
 
-  // Endpoint from Europace Postman Collection (POST request with query)
+  // Endpoint from Europace Postman Collection (GraphQL API)
   const endpoint = 'https://www.europace2.de/kreditsmart/kex/vorgaenge'
 
-  // Query parameter is required - fetch all processes
-  const query = {
-    query: {}  // Empty query to fetch all
+  // GraphQL query to fetch all processes
+  // Note: This is a simplified query - may need adjustment based on actual schema
+  const graphqlQuery = {
+    query: `
+      query {
+        vorgaenge {
+          vorgangsnummer
+          antragsteller1 {
+            personendaten {
+              vorname
+              nachname
+              email
+              telefonnummer
+            }
+            wohnsituation {
+              anschrift {
+                strasse
+                hausnummer
+                plz
+                ort
+              }
+            }
+          }
+          antragsteller2 {
+            personendaten {
+              vorname
+              nachname
+              email
+              telefonnummer
+            }
+          }
+        }
+      }
+    `
   }
 
   const res = await fetch(endpoint, {
@@ -252,7 +283,7 @@ export async function fetchPrivatkreditProcesses(): Promise<EuropaceProcess[]> {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(query),
+    body: JSON.stringify(graphqlQuery),
     cache: 'no-store',
   })
 
@@ -262,7 +293,8 @@ export async function fetchPrivatkreditProcesses(): Promise<EuropaceProcess[]> {
   }
 
   const data = await res.json()
-  return Array.isArray(data) ? data : (data?.vorgaenge || data?.results || [])
+  // GraphQL response structure: { data: { vorgaenge: [...] } }
+  return data?.data?.vorgaenge || []
 }
 
 // Extract customer data from Europace process

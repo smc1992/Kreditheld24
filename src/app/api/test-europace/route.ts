@@ -90,13 +90,31 @@ export async function GET(request: Request) {
           const token = await getEuropaceAccessTokenWithScope('privatkredit:vorgang:lesen')
           console.log(`Trying endpoint: ${endpoint}`)
           
+          // GraphQL query for Privatkredit
+          const graphqlQuery = {
+            query: `
+              query {
+                vorgaenge {
+                  vorgangsnummer
+                  antragsteller1 {
+                    personendaten {
+                      vorname
+                      nachname
+                      email
+                    }
+                  }
+                }
+              }
+            `
+          }
+          
           const res = await fetch(endpoint, {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ query: {} }),
+            body: JSON.stringify(graphqlQuery),
             cache: 'no-store',
           })
 
