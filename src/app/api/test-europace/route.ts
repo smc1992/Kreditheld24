@@ -96,7 +96,7 @@ export async function GET(request: Request) {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({}),
+            body: JSON.stringify({ query: {} }),
             cache: 'no-store',
           })
 

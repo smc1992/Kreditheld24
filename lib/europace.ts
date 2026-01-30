@@ -211,6 +211,7 @@ export async function fetchBaufinanzierungProcesses(): Promise<EuropaceProcess[]
   const token = await getEuropaceAccessTokenWithScope(scope)
 
   // Endpoint from Europace Postman Collection
+  // HAL-based API with pagination
   const endpoint = 'https://api.europace2.de/v2/vorgaenge'
 
   const res = await fetch(endpoint, {
@@ -228,7 +229,8 @@ export async function fetchBaufinanzierungProcesses(): Promise<EuropaceProcess[]
   }
 
   const data = await res.json()
-  return Array.isArray(data) ? data : (data?.vorgaenge || [])
+  // HAL response structure: { _embedded: { vorgaenge: [...] }, _links: {...} }
+  return data?._embedded?.vorgaenge || []
 }
 
 // Fetch Privatkredit processes
@@ -236,8 +238,13 @@ export async function fetchPrivatkreditProcesses(): Promise<EuropaceProcess[]> {
   const scope = 'privatkredit:vorgang:lesen'
   const token = await getEuropaceAccessTokenWithScope(scope)
 
-  // Endpoint from Europace Postman Collection (POST request with empty body)
+  // Endpoint from Europace Postman Collection (POST request with query)
   const endpoint = 'https://www.europace2.de/kreditsmart/kex/vorgaenge'
+
+  // Query parameter is required - fetch all processes
+  const query = {
+    query: {}  // Empty query to fetch all
+  }
 
   const res = await fetch(endpoint, {
     method: 'POST',
@@ -245,7 +252,7 @@ export async function fetchPrivatkreditProcesses(): Promise<EuropaceProcess[]> {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({}),
+    body: JSON.stringify(query),
     cache: 'no-store',
   })
 
@@ -255,7 +262,7 @@ export async function fetchPrivatkreditProcesses(): Promise<EuropaceProcess[]> {
   }
 
   const data = await res.json()
-  return Array.isArray(data) ? data : (data?.vorgaenge || [])
+  return Array.isArray(data) ? data : (data?.vorgaenge || data?.results || [])
 }
 
 // Extract customer data from Europace process
