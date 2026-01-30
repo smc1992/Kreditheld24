@@ -327,7 +327,7 @@ export default function DokumentePage() {
         )}
 
         {/* Documents by Case */}
-        {cases.length > 0 ? (
+        {cases.length > 0 || documents.length > 0 ? (
           <div className="space-y-6">
             {cases.map(caseItem => {
               const caseDocuments = getDocumentsForCase(caseItem.id);
