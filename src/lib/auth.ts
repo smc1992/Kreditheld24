@@ -82,17 +82,53 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn: '/admin/login',
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.name = user.name;
       }
+      
+      // Refresh user data from database on update trigger or periodically
+      if (trigger === 'update' || !token.lastRefresh || Date.now() - (token.lastRefresh as number) > 60000) {
+        try {
+          if (token.role === 'customer') {
+            const customerUser = await db
+              .select()
+              .from(crmCustomers)
+              .where(eq(crmCustomers.id, token.id as string))
+              .limit(1);
+            
+            if (customerUser.length) {
+              token.name = `${customerUser[0].firstName} ${customerUser[0].lastName}`;
+              token.email = customerUser[0].email;
+            }
+          } else if (token.role === 'admin') {
+            const adminUser = await db
+              .select()
+              .from(adminUsers)
+              .where(eq(adminUsers.id, token.id as string))
+              .limit(1);
+            
+            if (adminUser.length) {
+              token.name = adminUser[0].name;
+              token.email = adminUser[0].email;
+            }
+          }
+          token.lastRefresh = Date.now();
+        } catch (error) {
+          console.error('Error refreshing user data:', error);
+        }
+      }
+      
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
       }
       return session;
     },

@@ -5,7 +5,6 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import PortalLayout from '@/components/portal/PortalLayout';
 import { User, Mail, Phone, MapPin, Save, Loader2, Lock, Calendar } from 'lucide-react';
-import { signIn } from 'next-auth/react';
 
 interface CustomerProfile {
   id: string;
@@ -22,7 +21,7 @@ interface CustomerProfile {
 }
 
 export default function ProfilPage() {
-  const { data: session, status, update } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [profile, setProfile] = useState<CustomerProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -87,17 +86,10 @@ export default function ProfilPage() {
       });
       const result = await res.json();
       if (result.success) {
-        // Update session with new name
-        await update({
-          ...session,
-          user: {
-            ...session?.user,
-            name: `${formData.firstName} ${formData.lastName}`,
-          },
-        });
         alert('Profil erfolgreich aktualisiert!');
-        // Reload to ensure all components get the updated session
-        window.location.reload();
+        // Reload page to fetch fresh session data from server
+        // This will update the header with the new name
+        window.location.href = '/portal/profil';
       } else {
         alert('Fehler: ' + result.error);
       }
