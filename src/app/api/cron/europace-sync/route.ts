@@ -37,8 +37,13 @@ export async function GET(request: Request) {
     let privatkreditProcesses: any[] = []
 
     try {
-      baufiProcesses = await fetchBaufinanzierungProcesses()
-      console.log(`[Cron] Fetched ${baufiProcesses.length} Baufinanzierung processes`)
+      // Fetch both TEST_MODUS and ECHT_GESCHAEFT
+      const [testProcesses, echtProcesses] = await Promise.all([
+        fetchBaufinanzierungProcesses('TEST_MODUS'),
+        fetchBaufinanzierungProcesses('ECHT_GESCHAEFT')
+      ])
+      baufiProcesses = [...testProcesses, ...echtProcesses]
+      console.log(`[Cron] Fetched ${baufiProcesses.length} Baufinanzierung processes (${testProcesses.length} test, ${echtProcesses.length} echt)`)
     } catch (error) {
       console.error('[Cron] Error fetching Baufinanzierung processes:', error)
     }

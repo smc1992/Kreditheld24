@@ -206,13 +206,15 @@ export type EuropaceCustomerData = {
 }
 
 // Fetch Baufinanzierung processes
-export async function fetchBaufinanzierungProcesses(): Promise<EuropaceProcess[]> {
+export async function fetchBaufinanzierungProcesses(datenKontext: 'TEST_MODUS' | 'ECHT_GESCHAEFT' = 'ECHT_GESCHAEFT'): Promise<EuropaceProcess[]> {
   const scope = 'baufinanzierung:vorgang:lesen'
   const token = await getEuropaceAccessTokenWithScope(scope)
 
   // Endpoint from Europace Postman Collection
   // HAL-based API with pagination
-  const endpoint = 'https://api.europace2.de/v2/vorgaenge'
+  const endpoint = datenKontext === 'TEST_MODUS' 
+    ? 'https://api.europace2.de/v2/vorgaenge?datenKontext=TEST_MODUS'
+    : 'https://api.europace2.de/v2/vorgaenge'
 
   const res = await fetch(endpoint, {
     method: 'GET',

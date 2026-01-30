@@ -26,15 +26,20 @@ export async function POST(request: Request) {
       customers: [] as any[],
     }
 
-    // Fetch processes from both APIs
+    // Fetch processes from both APIs and both modes (TEST_MODUS + ECHT_GESCHAEFT)
     let baufiProcesses: any[] = []
     let privatkreditProcesses: any[] = []
 
     try {
-      baufiProcesses = await fetchBaufinanzierungProcesses()
+      // Fetch both TEST_MODUS and ECHT_GESCHAEFT
+      const [testProcesses, echtProcesses] = await Promise.all([
+        fetchBaufinanzierungProcesses('TEST_MODUS'),
+        fetchBaufinanzierungProcesses('ECHT_GESCHAEFT')
+      ])
+      baufiProcesses = [...testProcesses, ...echtProcesses]
     } catch (error) {
       console.error('Error fetching Baufinanzierung processes:', error)
-      // Continue with Privatkredit even if Baufi fails
+      // Continue even if Baufi fails
     }
 
     // Privatkredit sync temporarily disabled - GraphQL schema doesn't support listing all vorgaenge
