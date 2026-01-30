@@ -14,8 +14,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/admin/login');
+    } else if (status === 'authenticated' && session?.user?.role === 'customer') {
+      // Redirect customers to portal
+      router.push('/portal');
     }
-  }, [status, router]);
+  }, [status, session, router]);
 
   if (status === 'loading') {
     return (

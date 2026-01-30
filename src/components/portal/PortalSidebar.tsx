@@ -14,9 +14,9 @@ import { signOut } from 'next-auth/react';
 
 const navigation = [
   { name: 'Dashboard', href: '/portal', icon: LayoutDashboard },
-  { name: 'Meine Vorgänge', href: '/portal/cases', icon: Briefcase },
-  { name: 'Dokumente', href: '/portal/documents', icon: FileText },
-  { name: 'Profil', href: '/portal/profile', icon: User },
+  { name: 'Meine Vorgänge', href: '/portal/vorgaenge', icon: Briefcase },
+  { name: 'Dokumente', href: '/portal/dokumente', icon: FileText },
+  { name: 'Profil', href: '/portal/profil', icon: User },
 ];
 
 export default function PortalSidebar() {
