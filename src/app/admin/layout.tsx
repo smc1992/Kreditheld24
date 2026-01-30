@@ -21,16 +21,12 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="de" className={clsx(GeistSans.variable, GeistMono.variable)} suppressHydrationWarning>
-      <body className="antialiased" suppressHydrationWarning>
-        <ThemeProvider>
-          <SessionProvider>
-            <AdminThemeProvider>
-              {children}
-            </AdminThemeProvider>
-          </SessionProvider>
-        </ThemeProvider>
-      </body>
-    </html>
+    <ThemeProvider>
+      <SessionProvider>
+        <AdminThemeProvider>
+          {children}
+        </AdminThemeProvider>
+      </SessionProvider>
+    </ThemeProvider>
   );
 }

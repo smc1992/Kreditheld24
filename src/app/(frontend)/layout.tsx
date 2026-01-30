@@ -19,39 +19,19 @@ export const dynamic = 'force-dynamic'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://kreditheld24.de'
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      className={clsx(GeistSans.variable, GeistMono.variable)}
-      lang="de"
-      suppressHydrationWarning
-    >
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
-          rel="stylesheet"
-        />
-        <link
-          href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="antialiased" suppressHydrationWarning>
-        <ThemeProvider>
-          <Providers>
-            <div className="min-h-screen flex flex-col">
-              <Header />
-              <Breadcrumb />
-              <main className="flex-1">{children}</main>
-              <Footer />
-              <CookieBanner />
-            </div>
-          </Providers>
-        </ThemeProvider>
-      </body>
-    </html>
+    <ThemeProvider>
+      <Providers>
+        <div className="min-h-screen flex flex-col">
+          <Header />
+          <Breadcrumb />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <CookieBanner />
+        </div>
+      </Providers>
+    </ThemeProvider>
   )
 }
 

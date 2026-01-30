@@ -20,14 +20,10 @@ export default function PortalLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="de" className={clsx(GeistSans.variable, GeistMono.variable)} suppressHydrationWarning>
-      <body className="antialiased" suppressHydrationWarning>
-        <ThemeProvider>
-          <SessionProvider>
-            {children}
-          </SessionProvider>
-        </ThemeProvider>
-      </body>
-    </html>
+    <ThemeProvider>
+      <SessionProvider>
+        {children}
+      </SessionProvider>
+    </ThemeProvider>
   );
 }
