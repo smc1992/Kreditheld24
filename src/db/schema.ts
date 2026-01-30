@@ -171,6 +171,7 @@ export const crmDocuments = pgTable('crm_documents', {
   fileUrl: text('file_url').notNull(),
   fileSize: integer('file_size'),
   uploadedBy: uuid('uploaded_by').references(() => adminUsers.id),
+  isDeletedByCustomer: boolean('is_deleted_by_customer').default(false),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => ({
   caseIdx: index('idx_crm_documents_case').on(table.caseId),

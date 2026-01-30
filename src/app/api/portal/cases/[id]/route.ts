@@ -29,7 +29,10 @@ export async function GET(
 
     // Fetch documents for this case
     const documents = await db.query.crmDocuments.findMany({
-      where: eq(crmDocuments.caseId, id),
+      where: and(
+        eq(crmDocuments.caseId, caseId),
+        eq(crmDocuments.isDeletedByCustomer, false)
+      ),
       orderBy: [desc(crmDocuments.createdAt)],
     });
 

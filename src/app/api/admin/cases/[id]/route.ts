@@ -69,7 +69,16 @@ export async function PUT(
     const updatedCase = await db
       .update(crmCases)
       .set({
-        ...body,
+        caseNumber: body.caseNumber,
+        advisorName: body.advisorName,
+        advisorNumber: body.advisorNumber,
+        requestedAmount: body.requestedAmount,
+        approvedAmount: body.approvedAmount,
+        bank: body.bank,
+        duration: body.duration ? parseInt(body.duration) : null,
+        status: body.status,
+        formData: body.formData,
+        currentStep: body.currentStep,
         followUpDate: body.followUpDate ? new Date(body.followUpDate) : null,
         updatedAt: new Date(),
       })

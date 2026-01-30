@@ -32,8 +32,52 @@ export default function CasesPage() {
   const [cases, setCases] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCases, setTotalCases] = useState(0);
+  const itemsPerPage = 20;
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
+
+  const fetchCases = async (page: number, search: string) => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: itemsPerPage.toString(),
+        search: search
+      });
+
+      const res = await fetch(`/api/admin/cases?${params.toString()}`);
+      const data = await res.json();
+
+      if (data.success) {
+        const formattedCases = data.data.map((item: any) => ({
+          ...item.case,
+          customer: item.customer
+        }));
+        setCases(formattedCases);
+        if (data.pagination) {
+          setTotalPages(data.pagination.totalPages);
+          setTotalCases(data.pagination.total);
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching cases:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+      setCurrentPage(1);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -43,28 +87,14 @@ export default function CasesPage() {
       return;
     }
 
-    fetch('/api/admin/cases')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          const formattedCases = data.data.map((item: any) => ({
-            ...item.case,
-            customer: item.customer
-          }));
-          setCases(formattedCases);
-        }
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Error fetching cases:', err);
-        setLoading(false);
-      });
-  }, [status]);
+    fetchCases(currentPage, debouncedSearch);
+  }, [status, currentPage, debouncedSearch]);
 
   if (!session) return null;
 
   const getStatusConfig = (status: string) => {
     switch (status) {
+      case 'draft': return { label: 'Entwurf', color: 'text-slate-600', bg: 'bg-slate-100', border: 'border-slate-200', icon: Briefcase };
       case 'open': return { label: 'Offen', color: 'text-blue-700', bg: 'bg-blue-50', border: 'border-blue-100', icon: Clock };
       case 'in_progress': return { label: 'In Bearbeitung', color: 'text-amber-700', bg: 'bg-amber-50', border: 'border-amber-100', icon: Activity };
       case 'approved': return { label: 'Genehmigt', color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-100', icon: CheckCircle2 };
@@ -74,11 +104,8 @@ export default function CasesPage() {
     }
   };
 
-  const filteredCases = cases.filter(c =>
-    c.caseNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    `${c.customer?.firstName} ${c.customer?.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    c.bank?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Server-side filtered
+  const filteredCases = cases;
 
   return (
     <DashboardLayout>
@@ -295,6 +322,29 @@ export default function CasesPage() {
                 )}
               </tbody>
             </table>
+          </div>
+        </div>
+
+        {/* Pagination */}
+        <div className="px-6 py-4 bg-white border border-slate-200 rounded-xl flex items-center justify-between shadow-sm">
+          <p className="text-xs text-slate-500">
+            Zeige <span className="font-semibold">{Math.min(totalCases, (currentPage - 1) * itemsPerPage + 1)}-{Math.min(totalCases, currentPage * itemsPerPage)}</span> von <span className="font-semibold">{totalCases}</span> Vorgängen
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1 || loading}
+              className="px-3 py-1 bg-white border border-slate-200 rounded-lg text-xs font-medium text-slate-700 hover:bg-slate-50 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Zurück
+            </button>
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage >= totalPages || loading}
+              className="px-3 py-1 bg-white border border-slate-200 rounded-lg text-xs font-medium text-slate-700 hover:bg-slate-50 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Weiter
+            </button>
           </div>
         </div>
       </div>

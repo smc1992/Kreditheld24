@@ -45,6 +45,8 @@ export async function POST(request: NextRequest) {
       customerId = newCustomer.id;
     }
 
+    const isVerified = existingCustomers.length > 0 && !!existingCustomers[0].emailVerified;
+
     // 2. CRM Integration: Case finden oder erstellen (Status 'draft')
     let caseId: string;
     const existingDraftCases = await db.select().from(crmCases).where(
@@ -61,7 +63,8 @@ export async function POST(request: NextRequest) {
         .set({
           formData: formData,
           currentStep: 1,
-          updatedAt: new Date()
+          updatedAt: new Date(),
+          status: isVerified ? 'open' : 'draft'
         })
         .where(eq(crmCases.id, caseId));
     } else {
@@ -69,7 +72,7 @@ export async function POST(request: NextRequest) {
       const [newCase] = await db.insert(crmCases).values({
         customerId,
         caseNumber,
-        status: 'draft',
+        status: isVerified ? 'open' : 'draft',
         formData: formData,
         currentStep: 1,
         requestedAmount: formData.kreditsumme ? formData.kreditsumme.toString() : null,
@@ -92,21 +95,22 @@ export async function POST(request: NextRequest) {
     const baseUrl = envBaseUrl || originFromHeaders || request.nextUrl?.origin || (process.env.NODE_ENV === 'production' ? fallbackProd : fallbackDev)
     const verificationUrl = `${baseUrl}/api/verify-email/${token}`
 
-    // Email senden via Resend
+    // E-Mail senden (Verifizierung oder Eingangsbestätigung)
     console.log('Attempting to send email via Resend to:', email);
 
-    try {
-      const data = await resend.emails.send({
+    if (isVerified) {
+      // Bestätigungs-E-Mail (bereits verifiziert)
+      await resend.emails.send({
         from: FROM_EMAIL,
         to: email,
-        subject: 'E-Mail-Bestätigung für Ihre Kreditanfrage - Kreditheld24',
+        subject: 'Eingangsbestätigung Ihrer Kreditanfrage - Kreditheld24',
         html: `
           <!DOCTYPE html>
           <html>
           <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>E-Mail-Bestätigung - Kreditheld24</title>
+            <title>Eingangsbestätigung - Kreditheld24</title>
           </head>
           <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
@@ -117,29 +121,19 @@ export async function POST(request: NextRequest) {
             <div style="background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px; border: 1px solid #e9ecef;">
               <h2 style="color: #059669; margin-top: 0;">Hallo ${formData.vorname || 'Kunde'},</h2>
               
-              <p>vielen Dank für Ihr Interesse an unseren Kreditangeboten!</p>
+              <p>vielen Dank für Ihre Kreditanfrage!</p>
               
-              <p>Um Ihre Kreditanfrage zu vervollständigen, bestätigen Sie bitte Ihre E-Mail-Adresse durch einen Klick auf den folgenden Button:</p>
+              <p>Wir haben Ihren Antrag erhalten und werden ihn schnellstmöglich prüfen. Da Ihre E-Mail-Adresse bereits verifiziert ist, müssen Sie nichts weiter tun.</p>
               
               <div style="text-align: center; margin: 30px 0;">
-                <a href="${verificationUrl}" 
+                <a href="${baseUrl}/portal/cases/${caseId}" 
                    style="background: #10b981; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; font-size: 16px;">
-                  E-Mail-Adresse bestätigen
+                  Zum Kundenportal
                 </a>
               </div>
   
               <p style="font-size: 14px; color: #666;">
-                Nach dem Klick auf den Bestätigungsbutton werden Sie automatisch zu unserem Dokumenten-Upload weitergeleitet.
-                Dort können Sie die erforderlichen Unterlagen sicher hochladen, um Ihre Anfrage abzuschließen.
-              </p>
-              
-              <p style="font-size: 14px; color: #666; border-top: 1px solid #e9ecef; padding-top: 20px; margin-top: 30px;">
-                <strong>Warum diese Bestätigung?</strong><br>
-                Die E-Mail-Bestätigung stellt sicher, dass wir Ihnen wichtige Informationen zu Ihrer Kreditanfrage zuverlässig zusenden können.
-              </p>
-              
-              <p style="font-size: 14px; color: #666;">
-                Falls Sie diese E-Mail nicht angefordert haben, können Sie sie einfach ignorieren.
+                Im Kundenportal können Sie den Status Ihrer Anfrage einsehen und weitere Unterlagen hochladen.
               </p>
               
               <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e9ecef; font-size: 14px; color: #666;">
@@ -152,18 +146,78 @@ export async function POST(request: NextRequest) {
           </html>
         `
       });
+    } else {
+      // Verifizierungs-E-Mail (Standard)
+      try {
+        const data = await resend.emails.send({
+          from: FROM_EMAIL,
+          to: email,
+          subject: 'E-Mail-Bestätigung für Ihre Kreditanfrage - Kreditheld24',
+          html: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>E-Mail-Bestätigung - Kreditheld24</title>
+            </head>
+            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+              <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+                <h1 style="color: white; margin: 0; font-size: 28px;">Kreditheld24</h1>
+                <p style="color: #e6fffa; margin: 10px 0 0 0; font-size: 16px;">Ihr Partner für günstige Kredite</p>
+              </div>
+              
+              <div style="background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px; border: 1px solid #e9ecef;">
+                <h2 style="color: #059669; margin-top: 0;">Hallo ${formData.vorname || 'Kunde'},</h2>
+                
+                <p>vielen Dank für Ihr Interesse an unseren Kreditangeboten!</p>
+                
+                <p>Um Ihre Kreditanfrage zu vervollständigen, bestätigen Sie bitte Ihre E-Mail-Adresse durch einen Klick auf den folgenden Button:</p>
+                
+                <div style="text-align: center; margin: 30px 0;">
+                  <a href="${verificationUrl}" 
+                     style="background: #10b981; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; font-size: 16px;">
+                    E-Mail-Adresse bestätigen
+                  </a>
+                </div>
+    
+                <p style="font-size: 14px; color: #666;">
+                  Nach dem Klick auf den Bestätigungsbutton werden Sie automatisch zu unserem Dokumenten-Upload weitergeleitet.
+                  Dort können Sie die erforderlichen Unterlagen sicher hochladen, um Ihre Anfrage abzuschließen.
+                </p>
+                
+                <p style="font-size: 14px; color: #666; border-top: 1px solid #e9ecef; padding-top: 20px; margin-top: 30px;">
+                  <strong>Warum diese Bestätigung?</strong><br>
+                  Die E-Mail-Bestätigung stellt sicher, dass wir Ihnen wichtige Informationen zu Ihrer Kreditanfrage zuverlässig zusenden können.
+                </p>
+                
+                <p style="font-size: 14px; color: #666;">
+                  Falls Sie diese E-Mail nicht angefordert haben, können Sie sie einfach ignorieren.
+                </p>
+                
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e9ecef; font-size: 14px; color: #666;">
+                  E-Mail: info@kreditheld24.de<br>
+                  Web: www.kreditheld24.de<br>
+                  <span style="color: #ccc; font-size: 10px;">Gesendet: ${new Date().toLocaleString('de-DE')}</span></p>
+                </div>
+              </div>
+            </body>
+            </html>
+          `
+        });
 
-      console.log('Email sent successfully via Resend. ID:', data.data?.id);
-    } catch (emailError) {
-      console.error('CRITICAL ERROR sending email via Resend:', emailError);
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'E-Mail konnte nicht gesendet werden.',
-          details: (emailError as Error).message
-        },
-        { status: 500 }
-      );
+        console.log('Email sent successfully via Resend. ID:', data.data?.id);
+      } catch (emailError) {
+        console.error('CRITICAL ERROR sending email via Resend:', emailError);
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'E-Mail konnte nicht gesendet werden.',
+            details: (emailError as Error).message
+          },
+          { status: 500 }
+        );
+      }
     }
 
     // Token in temporärem Store speichern (Redis oder FS)
@@ -176,6 +230,7 @@ export async function POST(request: NextRequest) {
       verificationUrl,
       emailSent: true,
       caseId,
+      verified: isVerified, // Return verified status to frontend
       message: 'Bestätigungs-E-Mail wurde gesendet'
     })
 

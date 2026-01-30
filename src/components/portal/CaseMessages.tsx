@@ -78,13 +78,13 @@ export default function CaseMessages({ caseId }: CaseMessagesProps) {
   };
 
   return (
-    <Card>
+    <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 text-slate-200">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <MessageSquare className="w-5 h-5" />
+        <CardTitle className="flex items-center gap-2 text-white">
+          <MessageSquare className="w-5 h-5 text-emerald-500" />
           Nachrichten
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-slate-400">
           Kommunizieren Sie direkt mit unserem Team zu Ihrer Anfrage.
         </CardDescription>
       </CardHeader>
@@ -96,7 +96,7 @@ export default function CaseMessages({ caseId }: CaseMessagesProps) {
         ) : (
           <>
             {/* Messages List */}
-            <div className="space-y-4 mb-4 max-h-96 overflow-y-auto">
+            <div className="space-y-4 mb-4 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
               {messages.length > 0 ? (
                 messages.map((msg) => (
                   <div
@@ -104,11 +104,10 @@ export default function CaseMessages({ caseId }: CaseMessagesProps) {
                     className={`flex ${msg.senderType === 'customer' ? 'justify-end' : 'justify-start'}`}
                   >
                     <div
-                      className={`max-w-[80%] rounded-lg p-3 ${
-                        msg.senderType === 'customer'
+                      className={`max-w-[80%] rounded-lg p-3 ${msg.senderType === 'customer'
                           ? 'bg-emerald-600 text-white'
-                          : 'bg-gray-100 text-gray-900'
-                      }`}
+                          : 'bg-slate-700 text-white border border-slate-600'
+                        }`}
                     >
                       <p className="text-xs font-medium mb-1 opacity-75">
                         {msg.senderName}
@@ -127,7 +126,7 @@ export default function CaseMessages({ caseId }: CaseMessagesProps) {
                   </div>
                 ))
               ) : (
-                <p className="text-sm text-gray-500 text-center py-8">
+                <p className="text-sm text-slate-500 text-center py-8">
                   Noch keine Nachrichten. Schreiben Sie uns, wenn Sie Fragen haben!
                 </p>
               )}
@@ -140,14 +139,14 @@ export default function CaseMessages({ caseId }: CaseMessagesProps) {
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Ihre Nachricht..."
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
+                className="flex-1 px-3 py-2 bg-slate-900 border border-slate-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none placeholder:text-slate-500"
                 rows={2}
                 disabled={sending}
               />
               <Button
                 type="submit"
                 disabled={!newMessage.trim() || sending}
-                className="bg-emerald-600 hover:bg-emerald-700"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white"
               >
                 {sending ? (
                   <Loader2 className="w-4 h-4 animate-spin" />

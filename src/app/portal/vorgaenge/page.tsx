@@ -10,7 +10,7 @@ interface Case {
   id: string;
   caseNumber: string;
   type: string;
-  amount: number;
+  requestedAmount?: string | number;
   status: string;
   createdAt: string;
   updatedAt: string;
@@ -157,7 +157,7 @@ export default function VorgaengePage() {
                   <div>
                     <p className="text-xs text-slate-500 mb-1">Betrag</p>
                     <p className="text-sm font-bold text-white">
-                      {new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(caseItem.amount)}
+                      {new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(Number(caseItem.requestedAmount || 0))}
                     </p>
                   </div>
                   <div>
@@ -173,6 +173,6 @@ export default function VorgaengePage() {
           </div>
         )}
       </div>
-    </PortalLayout>
+    </PortalLayout >
   );
 }

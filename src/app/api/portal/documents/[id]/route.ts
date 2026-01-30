@@ -33,19 +33,12 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
-    // Delete file from filesystem
-    try {
-      const filePath = path.join(process.cwd(), 'public', document.fileUrl);
-      await unlink(filePath);
-    } catch (fileError) {
-      console.error('Error deleting file:', fileError);
-      // Continue even if file deletion fails
-    }
+    // Soft Delete: Mark as deleted by customer but keep record and file
+    await db.update(crmDocuments)
+      .set({ isDeletedByCustomer: true })
+      .where(eq(crmDocuments.id, documentId));
 
-    // Delete document record from database
-    await db.delete(crmDocuments).where(eq(crmDocuments.id, documentId));
-
-    return NextResponse.json({ success: true, message: 'Dokument erfolgreich gelöscht.' });
+    return NextResponse.json({ success: true, message: 'Dokument erfolgreich entfernt.' });
   } catch (error) {
     console.error('Document deletion error:', error);
     return NextResponse.json(

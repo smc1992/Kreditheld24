@@ -254,3 +254,66 @@ export async function sendNewMessageNotification({ to, firstName, caseNumber, me
     return { success: false, error };
   }
 }
+
+interface InviteUserParams {
+  to: string;
+  firstName: string;
+  inviteUrl: string;
+}
+
+export async function sendInviteEmail({ to, firstName, inviteUrl }: InviteUserParams) {
+  try {
+    const client = getResendClient();
+    if (!client) {
+      console.error('Resend client not initialized (missing API key)');
+      return { success: false, error: 'Resend API key missing' };
+    }
+
+    await client.emails.send({
+      from: fromEmail,
+      to,
+      subject: 'Einladung zu Kreditheld24',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <style>
+              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+              .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+              .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
+              .button { display: inline-block; background: #10b981; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+              .footer { text-align: center; margin-top: 20px; color: #6b7280; font-size: 14px; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1>Willkommen bei Kreditheld24</h1>
+              </div>
+              <div class="content">
+                <p>Hallo ${firstName},</p>
+                <p>Sie wurden von einem Administrator zu Kreditheld24 eingeladen.</p>
+                <p>Bitte klicken Sie auf den Button unten, um Ihr Konto zu aktivieren und Ihr Passwort festzulegen.</p>
+                <p style="text-align: center;">
+                  <a href="${inviteUrl}" class="button">Konto aktivieren</a>
+                </p>
+                <p>Oder kopieren Sie diesen Link in Ihren Browser:</p>
+                <p style="word-break: break-all; color: #6b7280; font-size: 14px;">${inviteUrl}</p>
+                <p>Dieser Link ist 24 Stunden gültig.</p>
+              </div>
+              <div class="footer">
+                <p>© ${new Date().getFullYear()} Kreditheld24. Alle Rechte vorbehalten.</p>
+              </div>
+            </div>
+          </body>
+        </html>
+      `,
+    });
+    return { success: true };
+  } catch (error) {
+    console.error('Invite email send error:', error);
+    return { success: false, error };
+  }
+}

@@ -29,7 +29,9 @@ import {
   X,
   Eye,
   Trash2,
-  Edit
+  Edit,
+  Lock,
+  Save
 } from 'lucide-react';
 
 export default function CustomerDetailPage() {
@@ -50,6 +52,9 @@ export default function CustomerDetailPage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'notes' | 'activities'>('overview');
   const [selectedEmail, setSelectedEmail] = useState<any>(null);
   const [viewingEmail, setViewingEmail] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [changingPassword, setChangingPassword] = useState(false);
 
   const handleDeleteActivity = async (activityId: string) => {
     if (!confirm('Möchten Sie diese Aktivität wirklich löschen?')) return;
@@ -138,6 +143,37 @@ export default function CustomerDetailPage() {
         });
     }
   }, [status, params?.id]);
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!params?.id) return;
+    if (newPassword.length < 8) {
+      alert('Passwort muss mindestens 8 Zeichen lang sein.');
+      return;
+    }
+
+    setChangingPassword(true);
+    try {
+      const response = await fetch(`/api/admin/customers/${params.id}/password`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: newPassword }),
+      });
+      const result = await response.json();
+      if (result.success) {
+        alert('Passwort erfolgreich geändert!');
+        setShowPasswordModal(false);
+        setNewPassword('');
+      } else {
+        alert('Fehler: ' + (result.error || 'Unbekannter Fehler'));
+      }
+    } catch (error) {
+      console.error('Password change error:', error);
+      alert('Fehler beim Ändern des Passworts.');
+    } finally {
+      setChangingPassword(false);
+    }
+  };
 
   const handleSaveNotes = async () => {
     if (!params?.id) return;
@@ -340,6 +376,13 @@ export default function CustomerDetailPage() {
               <Edit className="h-4 w-4" />
               Bearbeiten
             </Link>
+            <button
+              onClick={() => setShowPasswordModal(true)}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-orange-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-orange-500 transition-all"
+            >
+              <Lock className="h-4 w-4" />
+              Passwort
+            </button>
             <button
               onClick={() => {
                 setEmailType('custom');
@@ -721,6 +764,71 @@ export default function CustomerDetailPage() {
                 <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Password Change Modal */}
+      {showPasswordModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-10 w-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-600">
+                  <Lock className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900">Passwort ändern</h3>
+                  <p className="text-sm text-slate-500">Setzen Sie ein neues Passwort für {customer.firstName} {customer.lastName}.</p>
+                </div>
+              </div>
+
+              <form onSubmit={handleChangePassword}>
+                <div className="space-y-4">
+                  <div>
+                    <label htmlFor="new-password" className="block text-sm font-medium text-slate-700 mb-1">Neues Passwort *</label>
+                    <input
+                      id="new-password"
+                      type="password"
+                      required
+                      minLength={8}
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
+                      placeholder="Mind. 8 Zeichen"
+                    />
+                  </div>
+
+                  <div className="flex gap-3 justify-end pt-4 border-t border-slate-100 mt-4">
+                    <button
+                      type="button"
+                      onClick={() => setShowPasswordModal(false)}
+                      className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg"
+                      disabled={changingPassword}
+                    >
+                      Abbrechen
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={changingPassword || newPassword.length < 8}
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-lg hover:bg-orange-500 disabled:opacity-50"
+                    >
+                      {changingPassword ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Speichere...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="h-4 w-4" />
+                          Passwort setzen
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}

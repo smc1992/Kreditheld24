@@ -21,7 +21,10 @@ export async function GET() {
     const documents = await db
       .select()
       .from(crmDocuments)
-      .where(eq(crmDocuments.customerId, session.user.id))
+      .where(and(
+        eq(crmDocuments.customerId, session.user.id),
+        eq(crmDocuments.isDeletedByCustomer, false)
+      ))
       .orderBy(desc(crmDocuments.createdAt));
 
     // Map database fields to camelCase for frontend
@@ -67,7 +70,7 @@ export async function POST(req: Request) {
     for (const file of files) {
       // Save file to disk
       const fileUrl = await saveFile(file);
-      
+
       // Save metadata to database
       const [document] = await db
         .insert(crmDocuments)
@@ -93,10 +96,10 @@ export async function POST(req: Request) {
       });
     }
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       data: uploadedDocuments,
-      message: `${uploadedDocuments.length} document(s) uploaded successfully` 
+      message: `${uploadedDocuments.length} document(s) uploaded successfully`
     });
   } catch (error) {
     console.error('Error uploading documents:', error);

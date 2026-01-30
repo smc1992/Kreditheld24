@@ -490,6 +490,14 @@ export default function KreditanfrageForm() {
 
       if (response.ok) {
         const data = await response.json()
+        if (data?.verified) {
+          setEmailVerified(true)
+          if (data?.caseId) setCaseId(data.caseId)
+          if (data?.token) setVerificationToken(data.token)
+          setCurrentStep(5)
+          return
+        }
+
         if (data?.token) {
           setVerificationToken(data.token)
         }

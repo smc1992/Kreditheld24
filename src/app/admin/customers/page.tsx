@@ -21,7 +21,8 @@ import {
   Send,
   Trash2,
   RefreshCw,
-  Upload
+  Upload,
+  UserPlus
 } from 'lucide-react';
 import EmailEditor from '@/components/admin/EmailEditor';
 
@@ -40,6 +41,14 @@ export default function CustomersPage() {
   const [showImportModal, setShowImportModal] = useState(false);
   const [importId, setImportId] = useState('');
   const [importing, setImporting] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [inviteData, setInviteData] = useState({ email: '', firstName: '', lastName: '' });
+  const [inviting, setInviting] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCustomers, setTotalCustomers] = useState(0);
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const itemsPerPage = 20;
 
   const handleEuropaceSync = async () => {
     setSyncing(true);
@@ -100,15 +109,59 @@ export default function CustomersPage() {
     }
   };
 
-  const refreshCustomers = async () => {
+  /* Invite Handler */
+  const handleInvite = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setInviting(true);
     try {
-      const customersRes = await fetch('/api/admin/customers', { cache: 'no-store' });
+      const response = await fetch('/api/admin/invite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(inviteData)
+      });
+      const result = await response.json();
+
+      if (response.ok) {
+        alert('Einladung erfolgreich versendet!');
+        setShowInviteModal(false);
+        setInviteData({ email: '', firstName: '', lastName: '' });
+        refreshCustomers();
+      } else {
+        alert('Fehler: ' + (result.error || 'Ein unbekannter Fehler ist aufgetreten.'));
+      }
+    } catch (error) {
+      console.error('Invite error:', error);
+      alert('Fehler beim Versenden der Einladung.');
+    } finally {
+      setInviting(false);
+    }
+  };
+
+  const refreshCustomers = async () => {
+    fetchCustomers(currentPage, debouncedSearch);
+  };
+
+  const fetchCustomers = async (page: number, search: string) => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: itemsPerPage.toString(),
+        search: search
+      });
+      const customersRes = await fetch(`/api/admin/customers?${params.toString()}`, { cache: 'no-store' });
       const customersData = await customersRes.json();
       if (customersData.success) {
         setCustomers(customersData.data);
+        if (customersData.pagination) {
+          setTotalPages(customersData.pagination.totalPages);
+          setTotalCustomers(customersData.pagination.total);
+        }
       }
     } catch (err) {
       console.error('Error refreshing customers:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -132,6 +185,17 @@ export default function CustomersPage() {
     }
   };
 
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+      setCurrentPage(1); // Reset page on search change
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Fetch customers when page or debounced search changes
   useEffect(() => {
     if (status === 'loading') return;
 
@@ -140,26 +204,14 @@ export default function CustomersPage() {
       return;
     }
 
-    fetch('/api/admin/customers', { cache: 'no-store' })
-      .then(res => res.json())
-      .then(data => {
-        console.log('Fetched customers:', data);
-        if (data.success) {
-          setCustomers(data.data);
-        }
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Error fetching customers:', err);
-        setLoading(false);
-      });
-  }, [status]);
+    fetchCustomers(currentPage, debouncedSearch);
+  }, [status, currentPage, debouncedSearch]);
 
   const toggleSelectAll = () => {
-    if (selectedCustomers.length === filteredCustomers.length) {
+    if (selectedCustomers.length === customers.length) {
       setSelectedCustomers([]);
     } else {
-      setSelectedCustomers(filteredCustomers.map(c => c.id));
+      setSelectedCustomers(customers.map(c => c.id));
     }
   };
 
@@ -183,12 +235,11 @@ export default function CustomersPage() {
     setSelectedCustomers([]);
   };
 
+
   if (!session) return null;
 
-  const filteredCustomers = customers.filter(c =>
-    `${c.firstName} ${c.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    c.email?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // No client-side filtering anymore
+  // No client-side pagination anymore
 
   return (
     <DashboardLayout>
@@ -232,6 +283,13 @@ export default function CustomersPage() {
             <button className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 transition-all">
               <Download className="h-4 w-4" />
               Export
+            </button>
+            <button
+              onClick={() => setShowInviteModal(true)}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 transition-all"
+            >
+              <UserPlus className="h-4 w-4" />
+              Einladen
             </button>
             <Link
               href="/admin/customers/new"
@@ -351,6 +409,96 @@ export default function CustomersPage() {
           </div>
         )}
 
+        {/* Invite User Modal */}
+        {showInviteModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+              <div className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-10 w-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+                    <UserPlus className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-slate-900">Benutzer einladen</h3>
+                    <p className="text-sm text-slate-500">Senden Sie eine Einladung per E-Mail.</p>
+                  </div>
+                </div>
+
+                <form onSubmit={handleInvite}>
+                  <div className="space-y-4">
+                    <div>
+                      <label htmlFor="invite-email" className="block text-sm font-medium text-slate-700 mb-1">E-Mail-Adresse *</label>
+                      <input
+                        id="invite-email"
+                        type="email"
+                        required
+                        value={inviteData.email}
+                        onChange={(e) => setInviteData({ ...inviteData, email: e.target.value })}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                        placeholder="kunden@email.de"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="invite-firstname" className="block text-sm font-medium text-slate-700 mb-1">Vorname *</label>
+                        <input
+                          id="invite-firstname"
+                          type="text"
+                          required
+                          value={inviteData.firstName}
+                          onChange={(e) => setInviteData({ ...inviteData, firstName: e.target.value })}
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                          placeholder="Max"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="invite-lastname" className="block text-sm font-medium text-slate-700 mb-1">Nachname *</label>
+                        <input
+                          id="invite-lastname"
+                          type="text"
+                          required
+                          value={inviteData.lastName}
+                          onChange={(e) => setInviteData({ ...inviteData, lastName: e.target.value })}
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                          placeholder="Mustermann"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3 justify-end pt-4 border-t border-slate-100 mt-4">
+                      <button
+                        type="button"
+                        onClick={() => setShowInviteModal(false)}
+                        className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg"
+                        disabled={inviting}
+                      >
+                        Abbrechen
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={inviting || !inviteData.email || !inviteData.firstName || !inviteData.lastName}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-500 disabled:opacity-50"
+                      >
+                        {inviting ? (
+                          <>
+                            <RefreshCw className="h-4 w-4 animate-spin" />
+                            Sende...
+                          </>
+                        ) : (
+                          <>
+                            <Send className="h-4 w-4" />
+                            Einladung senden
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Filters & Search */}
         <div className="flex flex-col sm:flex-row gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
           <div className="relative flex-1">
@@ -380,7 +528,7 @@ export default function CustomersPage() {
                       onClick={toggleSelectAll}
                       className="text-slate-400 hover:text-emerald-600 transition-colors"
                     >
-                      {selectedCustomers.length === filteredCustomers.length && filteredCustomers.length > 0 ? (
+                      {selectedCustomers.length === customers.length && customers.length > 0 ? (
                         <CheckSquare className="h-5 w-5 text-emerald-600" />
                       ) : (
                         <Square className="h-5 w-5" />
@@ -403,8 +551,8 @@ export default function CustomersPage() {
                       </td>
                     </tr>
                   ))
-                ) : filteredCustomers.length > 0 ? (
-                  filteredCustomers.map((customer) => (
+                ) : customers.length > 0 ? (
+                  customers.map((customer) => (
                     <tr
                       key={customer.id}
                       className={`hover:bg-slate-50/50 transition-colors group ${selectedCustomers.includes(customer.id) ? 'bg-emerald-50/30' : ''}`}
@@ -557,13 +705,21 @@ export default function CustomersPage() {
           {/* Pagination (Visual only for now) */}
           <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
             <p className="text-xs text-slate-500">
-              Zeige <span className="font-semibold">{filteredCustomers.length}</span> von <span className="font-semibold">{customers.length}</span> Kunden
+              Zeige <span className="font-semibold">{Math.min(totalCustomers, (currentPage - 1) * itemsPerPage + 1)}-{Math.min(totalCustomers, currentPage * itemsPerPage)}</span> von <span className="font-semibold">{totalCustomers}</span> Kunden
             </p>
             <div className="flex gap-2">
-              <button disabled className="px-3 py-1 border border-slate-200 rounded text-xs font-medium text-slate-400 disabled:opacity-50">
+              <button
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1 || loading}
+                className="px-3 py-1 bg-white border border-slate-200 rounded text-xs font-medium text-slate-700 hover:bg-slate-50 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 Zurück
               </button>
-              <button disabled className="px-3 py-1 bg-white border border-slate-200 rounded text-xs font-medium text-slate-700 hover:bg-slate-50 transition-all shadow-sm">
+              <button
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage >= totalPages || loading}
+                className="px-3 py-1 bg-white border border-slate-200 rounded text-xs font-medium text-slate-700 hover:bg-slate-50 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 Weiter
               </button>
             </div>

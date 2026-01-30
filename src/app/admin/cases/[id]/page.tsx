@@ -209,6 +209,7 @@ export default function CaseDetailsPage() {
 
   const getStatusConfig = (status: string) => {
     switch (status) {
+      case 'draft': return { label: 'Entwurf', color: 'text-slate-600', bg: 'bg-slate-100', border: 'border-slate-200', icon: Briefcase };
       case 'open': return { label: 'Offen', color: 'text-blue-700', bg: 'bg-blue-50', border: 'border-blue-100', icon: Clock };
       case 'in_progress': return { label: 'In Bearbeitung', color: 'text-amber-700', bg: 'bg-amber-50', border: 'border-amber-100', icon: ActivityIcon };
       case 'approved': return { label: 'Genehmigt', color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-100', icon: CheckCircle2 };
