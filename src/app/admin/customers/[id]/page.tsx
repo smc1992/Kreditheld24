@@ -6,15 +6,15 @@ import { useRouter, useParams } from 'next/navigation';
 import DashboardLayout from '@/components/admin/DashboardLayout';
 import EmailEditor from '@/components/admin/EmailEditor';
 import Link from 'next/link';
-import { 
-  ArrowLeft, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  User, 
-  Briefcase, 
-  Calendar, 
-  Plus, 
+import {
+  ArrowLeft,
+  Mail,
+  Phone,
+  MapPin,
+  User,
+  Briefcase,
+  Calendar,
+  Plus,
   ChevronRight,
   Globe,
   Heart,
@@ -82,7 +82,7 @@ export default function CustomerDetailPage() {
   };
 
   useEffect(() => {
-    if (!session || !params.id) {
+    if (!session || !params?.id) {
       return;
     }
 
@@ -115,9 +115,10 @@ export default function CustomerDetailPage() {
         console.error('Error fetching customer details:', err);
         setLoading(false);
       });
-  }, [session, params.id]);
+  }, [session, params?.id]);
 
   const handleSaveNotes = async () => {
+    if (!params?.id) return;
     setSavingNotes(true);
     try {
       const response = await fetch(`/api/admin/customers/${params.id}/notes`, {
@@ -138,12 +139,12 @@ export default function CustomerDetailPage() {
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file || !params?.id) return;
 
     setUploadingDoc(true);
     try {
       const mockFileUrl = `/uploads/${file.name}`;
-      
+
       const response = await fetch(`/api/admin/customers/${params.id}/documents`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -191,13 +192,15 @@ export default function CustomerDetailPage() {
       });
 
       const result = await response.json();
-      
+
       if (result.success) {
         alert('E-Mail erfolgreich versendet!');
         setShowEmailEditor(false);
         // Refresh activities
-        const actRes = await fetch(`/api/admin/activities?customerId=${params.id}`).then(res => res.json());
-        if (actRes.success) setActivities(actRes.data);
+        if (params?.id) {
+          const actRes = await fetch(`/api/admin/activities?customerId=${params.id}`).then(res => res.json());
+          if (actRes.success) setActivities(actRes.data);
+        }
       } else {
         alert('Fehler beim Versenden: ' + (result.error || 'Unbekannter Fehler'));
       }
@@ -206,6 +209,53 @@ export default function CustomerDetailPage() {
       alert('Fehler beim Versenden der E-Mail');
     } finally {
       setSendingEmail(false);
+    }
+  };
+
+  const [creatingCase, setCreatingCase] = useState(false);
+
+  const handleCreateEuropaceCase = async () => {
+    const isLive = confirm(`ACHTUNG: Möchten Sie für ${customer.firstName} ${customer.lastName} einen ECHTEN Privatkredit-Vorgang bei Starpool/Europace anlegen? (Klicken Sie Abbrechen für Test-Modus)`);
+
+    // If they clicked OK, isLive is true -> Live/Echtgeschäft
+    // If they clicked Cancel, we ask if they want a Test case
+    let confirmed = isLive;
+    let liveMode = true;
+
+    if (!isLive) {
+      if (confirm(`Soll stattdessen ein TEST-Vorgang angelegt werden?`)) {
+        confirmed = true;
+        liveMode = false;
+      }
+    }
+
+    if (!confirmed) return;
+
+    setCreatingCase(true);
+    try {
+      const response = await fetch('/api/admin/europace/create-case', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customerId: customer.id,
+          live: liveMode
+        }),
+      });
+      const result = await response.json();
+
+      if (result.success) {
+        alert(`Vorgang erfolgreich angelegt (${liveMode ? 'ECHT' : 'TEST'})! Vorgangsnummer: ${result.vorgangsNummer}`);
+        // Refresh cases/customer data
+        // For now, we reload the page or fetch details again
+        window.location.reload();
+      } else {
+        alert('Fehler beim Anlegen: ' + result.error);
+      }
+    } catch (error) {
+      console.error('Error creating case:', error);
+      alert('Ein Fehler ist aufgetreten.');
+    } finally {
+      setCreatingCase(false);
     }
   };
 
@@ -241,7 +291,7 @@ export default function CustomerDetailPage() {
         {/* Navigation & Actions */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-4">
-            <Link 
+            <Link
               href="/admin/customers"
               className="inline-flex items-center justify-center p-2 rounded-lg bg-white border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700 transition-all shadow-sm group"
             >
@@ -279,6 +329,14 @@ export default function CustomerDetailPage() {
               <Send className="h-4 w-4" />
               E-Mail schreiben
             </button>
+            <button
+              onClick={handleCreateEuropaceCase}
+              disabled={creatingCase}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {creatingCase ? <Loader2 className="h-4 w-4 animate-spin" /> : <Briefcase className="h-4 w-4" />}
+              Privatkredit anlegen
+            </button>
             <Link
               href={`/admin/cases/new?customerId=${params?.id}`}
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 transition-all"
@@ -310,11 +368,10 @@ export default function CustomerDetailPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-6 py-4 text-sm font-bold transition-all border-b-2 -mb-px ${
-                activeTab === tab.id 
-                  ? 'border-emerald-600 text-emerald-600' 
+              className={`flex items-center gap-2 px-6 py-4 text-sm font-bold transition-all border-b-2 -mb-px ${activeTab === tab.id
+                  ? 'border-emerald-600 text-emerald-600'
                   : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
-              }`}
+                }`}
             >
               <tab.icon className="h-4 w-4" />
               {tab.label}
@@ -328,7 +385,7 @@ export default function CustomerDetailPage() {
               {/* Main Column */}
               <div className="lg:col-span-2 space-y-6">
                 {/* Notes Summary Card */}
-                <div 
+                <div
                   onClick={() => setActiveTab('notes')}
                   className="bg-emerald-600 rounded-3xl p-8 shadow-2xl shadow-emerald-600/20 text-white relative overflow-hidden group cursor-pointer hover:bg-emerald-500 transition-all"
                 >
@@ -521,7 +578,7 @@ export default function CustomerDetailPage() {
                             </div>
                           </div>
                           <div className="flex items-center gap-1">
-                            <button 
+                            <button
                               onClick={() => window.open(doc.fileUrl, '_blank')}
                               className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all"
                               title="Vorschau öffnen"
@@ -531,7 +588,7 @@ export default function CustomerDetailPage() {
                             <a href={doc.fileUrl} download className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all" title="Herunterladen">
                               <Download className="h-4 w-4" />
                             </a>
-                            <button 
+                            <button
                               onClick={() => handleDeleteDocument(doc.id)}
                               className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
                               title="Löschen"
@@ -564,7 +621,7 @@ export default function CustomerDetailPage() {
                       <div className="flex-1 pb-6 min-w-0">
                         <div className="flex items-center justify-between gap-4">
                           <p className="text-sm font-bold text-slate-800 truncate">{activity.subject}</p>
-                          <button 
+                          <button
                             onClick={() => handleDeleteActivity(activity.id)}
                             className="p-1.5 text-slate-300 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
                             title="Löschen"

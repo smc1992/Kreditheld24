@@ -86,6 +86,8 @@ export const adminUsers = pgTable('admin_users', {
 // CRM Customers Table
 export const crmCustomers = pgTable('crm_customers', {
   id: uuid('id').primaryKey().default(sql`uuid_generate_v4()`),
+  salutation: varchar('salutation', { length: 20 }), // HERR, FRAU
+  title: varchar('title', { length: 50 }), // Dr., Prof., etc.
   firstName: varchar('first_name', { length: 255 }).notNull(),
   lastName: varchar('last_name', { length: 255 }).notNull(),
   address: text('address'),
