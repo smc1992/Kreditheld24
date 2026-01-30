@@ -68,7 +68,13 @@ export default function DokumentePage() {
       const docsData = await docsRes.json();
       const casesData = await casesRes.json();
       
-      if (docsData.success) setDocuments(docsData.data);
+      console.log('Fetched documents:', docsData);
+      console.log('Fetched cases:', casesData);
+      
+      if (docsData.success) {
+        console.log('Setting documents:', docsData.data);
+        setDocuments(docsData.data);
+      }
       if (casesData.success) setCases(casesData.data);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -111,13 +117,16 @@ export default function DokumentePage() {
         body: formData,
       });
       const data = await res.json();
+      console.log('Upload response:', data);
       if (data.success) {
         alert(`${data.data.length} Dokument(e) erfolgreich hochgeladen!`);
         setShowUploadDialog(false);
         setSelectedFiles(null);
         setSelectedCase('');
         setSelectedCategory('');
-        fetchData();
+        console.log('Calling fetchData after upload...');
+        await fetchData();
+        console.log('Documents after fetch:', documents);
       } else {
         alert('Fehler: ' + data.error);
       }
