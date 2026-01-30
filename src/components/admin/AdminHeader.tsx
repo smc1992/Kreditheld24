@@ -6,12 +6,12 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-export default function AdminHeader({ 
-  onMenuClick 
-}: { 
-  onMenuClick?: () => void 
+export default function AdminHeader({
+  onMenuClick
+}: {
+  onMenuClick?: () => void
 }) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<{ customers: any[], cases: any[] }>({ customers: [], cases: [] });
@@ -36,13 +36,13 @@ export default function AdminHeader({
   }, []);
 
   useEffect(() => {
-    if (session) {
+    if (status === 'authenticated') {
       fetchNotifications();
       // Poll for new notifications every 60 seconds
       const interval = setInterval(fetchNotifications, 60000);
       return () => clearInterval(interval);
     }
-  }, [session]);
+  }, [status]);
 
   const fetchNotifications = async () => {
     try {
@@ -89,14 +89,14 @@ export default function AdminHeader({
     <header className="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-slate-200 bg-white/80 px-6 backdrop-blur-sm transition-all">
       <div className="flex items-center gap-4">
         {onMenuClick && (
-          <button 
+          <button
             onClick={onMenuClick}
             className="rounded-md p-2 text-slate-500 hover:bg-slate-100 lg:hidden"
           >
             <Menu className="h-5 w-5" />
           </button>
         )}
-        
+
         {/* Search Bar */}
         <div className="hidden md:flex items-center flex-1 max-w-md ml-4 relative" ref={searchRef}>
           <div className="relative w-full group">
@@ -110,7 +110,7 @@ export default function AdminHeader({
               onFocus={() => searchQuery.length >= 2 && setShowResults(true)}
             />
             {searchQuery && (
-              <button 
+              <button
                 onClick={() => setSearchQuery('')}
                 className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-200 transition-all"
               >
@@ -194,7 +194,7 @@ export default function AdminHeader({
       <div className="flex items-center gap-4">
         {/* Notifications */}
         <div className="relative" ref={notificationRef}>
-          <button 
+          <button
             onClick={() => setShowNotifications(!showNotifications)}
             className="relative rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"
           >
@@ -273,7 +273,7 @@ export default function AdminHeader({
                   </div>
                 )}
               </div>
-              <Link 
+              <Link
                 href="/admin/activities"
                 onClick={() => setShowNotifications(false)}
                 className="block p-3 text-center text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-emerald-600 border-t border-slate-100 transition-colors"
