@@ -216,12 +216,23 @@ export async function fetchBaufinanzierungProcesses(datenKontext: 'TEST_MODUS' |
     ? 'https://api.europace2.de/v2/vorgaenge?datenKontext=TEST_MODUS'
     : 'https://api.europace2.de/v2/vorgaenge'
 
+  // Add partner and organization headers
+  const headers: Record<string, string> = {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json',
+  }
+  
+  if (process.env.EUROPACE_PERSON_ID) {
+    headers['X-Partner-ID'] = process.env.EUROPACE_PERSON_ID
+  }
+  
+  if (process.env.EUROPACE_ORG_ID) {
+    headers['X-Organisationseinheit'] = process.env.EUROPACE_ORG_ID
+  }
+
   const res = await fetch(endpoint, {
     method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
+    headers,
     cache: 'no-store',
   })
 

@@ -36,7 +36,9 @@ export async function GET(request: Request) {
       
       const baufiEndpoints = [
         { url: 'https://api.europace2.de/v2/vorgaenge?datenKontext=TEST_MODUS', mode: 'TEST_MODUS' },
+        { url: 'https://api.europace2.de/v2/vorgaenge?datenKontext=TEST_MODUS&limit=100', mode: 'TEST_MODUS_100' },
         { url: 'https://api.europace2.de/v2/vorgaenge', mode: 'ECHT_GESCHAEFT' },
+        { url: 'https://api.europace2.de/v2/vorgaenge?limit=100', mode: 'ECHT_GESCHAEFT_100' },
       ]
 
       const allResults: any = { test: null, echt: null }
@@ -46,12 +48,29 @@ export async function GET(request: Request) {
           const token = await getEuropaceAccessTokenWithScope('baufinanzierung:vorgang:lesen')
           console.log(`Trying endpoint: ${endpoint} (${mode})`)
           
+          // Add X-Partner-ID and X-Organisationseinheit headers
+          const headers: Record<string, string> = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'X-TraceId': `test-${Date.now()}`,
+          }
+          
+          if (process.env.EUROPACE_PERSON_ID) {
+            headers['X-Partner-ID'] = process.env.EUROPACE_PERSON_ID
+          }
+          
+          if (process.env.EUROPACE_ORG_ID) {
+            headers['X-Organisationseinheit'] = process.env.EUROPACE_ORG_ID
+          }
+          
+          console.log(`Using headers:`, { 
+            'X-Partner-ID': headers['X-Partner-ID'],
+            'X-Organisationseinheit': headers['X-Organisationseinheit']
+          })
+          
           const res = await fetch(endpoint, {
             method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
+            headers,
             cache: 'no-store',
           })
 
@@ -60,14 +79,24 @@ export async function GET(request: Request) {
           if (res.ok) {
             try {
               const data = JSON.parse(responseText)
-              allResults[mode === 'TEST_MODUS' ? 'test' : 'echt'] = data
               const vorgaengeCount = data?._embedded?.vorgaenge?.length || 0
+              
+              // Log full response structure for debugging
               console.log(`✓ Baufinanzierung API (${mode}): ${vorgaengeCount} vorgaenge found`)
+              console.log(`Response structure:`, JSON.stringify(data, null, 2).substring(0, 500))
+              console.log(`Response headers:`, Object.fromEntries(res.headers.entries()))
+              
+              // Store result with mode key
+              const modeKey = mode.toLowerCase().replace(/_/g, '_')
+              if (!allResults[modeKey]) {
+                allResults[modeKey] = data
+              }
             } catch (e) {
-              allResults[mode === 'TEST_MODUS' ? 'test' : 'echt'] = responseText
+              console.log(`Failed to parse response for ${mode}:`, e)
             }
           } else {
             console.log(`✗ Baufinanzierung API (${mode}) failed: ${res.status}`)
+            console.log(`Error response:`, responseText.substring(0, 200))
           }
         } catch (error) {
           console.log(`✗ Error trying ${endpoint}:`, error)
