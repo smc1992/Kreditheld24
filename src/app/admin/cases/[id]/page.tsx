@@ -922,8 +922,19 @@ export default function CaseDetailsPage() {
                         <div className="font-bold text-slate-900 text-sm truncate" title={doc.name}>
                           {doc.name}
                         </div>
-                        <div className="text-xs text-slate-500 mt-1">
-                          {doc.fileSize ? `${(doc.fileSize / 1024).toFixed(0)} KB` : 'Unbekannt'} • PDF
+                        <div className="flex items-center justify-between mt-2">
+                          <div className="text-xs text-slate-500">
+                            {doc.fileSize ? `${(doc.fileSize / 1024).toFixed(0)} KB` : 'Unbekannt'}
+                          </div>
+                          {doc.customerId && !doc.uploadedBy && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-bold rounded-full">
+                              <User className="h-3 w-3" />
+                              Kunde
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-xs text-slate-400 mt-1">
+                          {new Date(doc.createdAt).toLocaleDateString('de-DE', { day: '2-digit', month: 'short', year: 'numeric' })}
                         </div>
                       </div>
                     ))}
