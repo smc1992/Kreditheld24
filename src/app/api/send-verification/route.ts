@@ -22,7 +22,7 @@ const transporter = nodemailer.createTransport({
 export async function POST(request: NextRequest) {
   try {
     const { email, formData } = await request.json()
-    
+
     if (!email) {
       return NextResponse.json(
         { error: 'E-Mail-Adresse ist erforderlich' },
@@ -33,14 +33,14 @@ export async function POST(request: NextRequest) {
     // 1. CRM Integration: Kunde finden oder erstellen
     let customerId: string;
     const existingCustomers = await db.select().from(crmCustomers).where(eq(crmCustomers.email, email.toLowerCase()));
-    
+
     if (existingCustomers.length > 0) {
       customerId = existingCustomers[0].id;
       // Namen ggf. aktualisieren falls noch leer
       if (!existingCustomers[0].firstName || !existingCustomers[0].lastName) {
         await db.update(crmCustomers)
-          .set({ 
-            firstName: formData.vorname || existingCustomers[0].firstName, 
+          .set({
+            firstName: formData.vorname || existingCustomers[0].firstName,
             lastName: formData.nachname || existingCustomers[0].lastName,
             phone: formData.telefon || existingCustomers[0].phone,
             updatedAt: new Date()
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
       caseId = existingDraftCases[0].id;
       // Case-Daten aktualisieren
       await db.update(crmCases)
-        .set({ 
+        .set({
           formData: formData,
           currentStep: 1,
           updatedAt: new Date()
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
 
     // Verification Token generieren
     const token = crypto.randomBytes(32).toString('hex')
-    
+
     // Verification Link erstellen – robust gegen Proxies und mit ENV-Override
     const envBaseUrl = process.env.VERIFICATION_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL || process.env.BASE_URL
     const xfProto = request.headers.get('x-forwarded-proto') || undefined
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
     const fallbackDev = 'http://localhost:3000'
     const baseUrl = envBaseUrl || originFromHeaders || request.nextUrl?.origin || (process.env.NODE_ENV === 'production' ? fallbackProd : fallbackDev)
     const verificationUrl = `${baseUrl}/api/verify-email/${token}`
-    
+
     // Email-Inhalt
     const mailOptions = {
       from: {
@@ -182,18 +182,18 @@ export async function POST(request: NextRequest) {
     // Token in temporärem Store speichern (Redis oder FS)
     // Wir speichern die caseId mit, um sie später wiederherzustellen
     await storeVerificationToken(token, email, { ...formData, caseId })
-    
-    return NextResponse.json({ 
-      success: true, 
+
+    return NextResponse.json({
+      success: true,
       token,
       verificationUrl,
       emailSent,
       caseId,
-      message: emailSent 
-        ? 'Bestätigungs-E-Mail wurde gesendet' 
+      message: emailSent
+        ? 'Bestätigungs-E-Mail wurde gesendet'
         : 'Entwicklungsmodus: Direkter Bestätigungslink verfügbar'
     })
-    
+
   } catch (error) {
     console.error('Fehler beim Senden der Bestätigungs-E-Mail:', error)
     return NextResponse.json(

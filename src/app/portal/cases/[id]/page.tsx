@@ -6,12 +6,12 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import CaseMessages from '@/components/portal/CaseMessages';
-import { 
-  ArrowLeft, 
-  FileText, 
-  Upload, 
-  CheckCircle, 
-  Clock, 
+import {
+  ArrowLeft,
+  FileText,
+  Upload,
+  CheckCircle,
+  Clock,
   AlertCircle,
   Loader2,
   Trash2,
@@ -119,18 +119,24 @@ export default function PortalCaseDetailPage() {
         </Link>
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            {caseData.formData?.kreditart || 'Kreditanfrage'}
+            {{
+              'ratenkredit': 'Ratenkredit',
+              'autokredit': 'Autokredit',
+              'umschuldung': 'Umschuldungskredit',
+              'sofortkredit': 'Sofortkredit',
+              'selbststaendige': 'Kredit für Selbstständige',
+              'freie_verwendung': 'Freie Verwendung'
+            }[caseData.formData?.kreditart as string] || caseData.formData?.kreditart || 'Kreditanfrage'}
           </h1>
           <p className="text-gray-500 text-sm">
             Vorgangsnummer: {caseData.caseNumber}
           </p>
         </div>
         <div className="ml-auto">
-          <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-            caseData.status === 'open' ? 'bg-blue-100 text-blue-800' :
-            caseData.status === 'approved' ? 'bg-green-100 text-green-800' :
-            'bg-gray-100 text-gray-800'
-          }`}>
+          <span className={`px-3 py-1 rounded-full text-sm font-medium ${caseData.status === 'open' ? 'bg-blue-100 text-blue-800' :
+              caseData.status === 'approved' ? 'bg-green-100 text-green-800' :
+                'bg-gray-100 text-gray-800'
+            }`}>
             {caseData.status === 'open' ? 'In Bearbeitung' : caseData.status}
           </span>
         </div>
@@ -187,9 +193,9 @@ export default function PortalCaseDetailPage() {
                         <span className="text-xs text-green-600 flex items-center gap-1 bg-green-50 px-2 py-1 rounded">
                           <CheckCircle className="w-3 h-3" /> Empfangen
                         </span>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => handleDeleteDocument(doc.id)}
                           className="text-gray-400 hover:text-red-600"
                         >

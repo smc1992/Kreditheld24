@@ -17,13 +17,13 @@ interface FormData {
   staatsangehoerigkeit: string
   email: string
   telefon: string
-  
+
   // Adresse
   strasse: string
   hausnummer: string
   plz: string
   ort: string
-  
+
   // Kreditwunsch
   produktKategorie: 'privatkredit' | 'baufinanzierung'
   kreditart: string
@@ -34,22 +34,22 @@ interface FormData {
   baufinanzierungArt: string
   kaufpreisBaukosten: string
   eigenkapital: string
-  
+
   // Einkommen
   beschaeftigungsverhaeltnis: string
   nettoEinkommen: string
   beschaeftigtSeit: string
-  
+
   // Ausgaben
   miete: string
   sonstigeAusgaben: string
   bestehendeDarlehen: string
-  
+
   // Zusätzliche Informationen
   bemerkungen: string
   datenschutz: boolean
   newsletter: boolean
-  
+
   // Dokumenten-Upload
   gehaltsabrechnung1: File | null
   gehaltsabrechnung2: File | null
@@ -113,7 +113,7 @@ const initialFormData: FormData = {
   bemerkungen: '',
   datenschutz: false,
   newsletter: false,
-  
+
   // Dokumenten-Upload
   gehaltsabrechnung1: null,
   gehaltsabrechnung2: null,
@@ -156,7 +156,7 @@ export default function KreditanfrageForm() {
   const [urlMessage, setUrlMessage] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
   const [caseId, setCaseId] = useState<string | null>(null)
   const [europaceCaseUrl, setEuropaceCaseUrl] = useState<string | null>(null)
-  
+
   // Persistenz-Schlüssel
   const STORAGE_KEY = 'kh24_kreditanfrage_form_v1'
   const STORAGE_META_KEY = 'kh24_kreditanfrage_meta_v1'
@@ -275,7 +275,7 @@ export default function KreditanfrageForm() {
 
   const uploadFileToCrm = async (file: File, fieldName: string) => {
     if (!caseId) return
-    
+
     const uploadData = new FormData()
     uploadData.append('file', file)
     uploadData.append('caseId', caseId)
@@ -338,7 +338,7 @@ export default function KreditanfrageForm() {
         ...prev,
         [name]: file
       }) as FormData)
-      
+
       // Sofortiger Upload ins CRM
       if (caseId) {
         uploadFileToCrm(file, name)
@@ -368,7 +368,7 @@ export default function KreditanfrageForm() {
   const handleAdditionalFilesAdd = (newFiles: FileList | File[]) => {
     const incoming = Array.from(newFiles)
       .filter(f => isAllowedFile(f) && f.size <= 5 * 1024 * 1024)
-    
+
     setFormData(prev => {
       const merged = [...prev.additionalDocuments]
       for (const f of incoming) {
@@ -397,8 +397,8 @@ export default function KreditanfrageForm() {
   const requiresKontoauszug = true
   // Dynamische Pflichtdokumente basierend auf Beschäftigungsverhältnis
   const isSelbststaendig = (formData.beschaeftigungsverhaeltnis || '').toLowerCase() === 'selbstständig' || (formData.beschaeftigungsverhaeltnis || '').toLowerCase() === 'selbststaendig'
-  const requiredDocKeys = isSelbststaendig 
-    ? ['steuerbescheid1', 'steuerbescheid2', 'steuerbescheid3'] 
+  const requiredDocKeys = isSelbststaendig
+    ? ['steuerbescheid1', 'steuerbescheid2', 'steuerbescheid3']
     : ['gehaltsabrechnung1', 'gehaltsabrechnung2', 'gehaltsabrechnung3']
   const requiredSelectedCount = requiredDocKeys.filter((key) => (formData as any)[key]).length + (formData.kontoauszug ? 1 : 0)
   const requiredTotal = requiredDocKeys.length + (requiresKontoauszug ? 1 : 0)
@@ -437,7 +437,7 @@ export default function KreditanfrageForm() {
     const success = searchParams.get('success')
     const error = searchParams.get('error')
     const tokenFromUrl = searchParams.get('token')
-    
+
     if (success === 'email-verified' || success === 'already-verified') {
       setEmailVerified(true)
       setCurrentStep(5)
@@ -445,19 +445,19 @@ export default function KreditanfrageForm() {
       // Falls Token vorhanden: gespeicherte Formulardaten vom Server laden und zusammenführen
       if (tokenFromUrl) {
         setVerificationToken(tokenFromUrl)
-        ;(async () => {
-          try {
-            const resp = await fetch(`/api/check-verification/${tokenFromUrl}`)
-            if (resp.ok) {
-              const data = await resp.json()
-              if (data?.formData) {
-                setFormData(prev => ({ ...prev, ...data.formData }))
+          ; (async () => {
+            try {
+              const resp = await fetch(`/api/check-verification/${tokenFromUrl}`)
+              if (resp.ok) {
+                const data = await resp.json()
+                if (data?.formData) {
+                  setFormData(prev => ({ ...prev, ...data.formData }))
+                }
               }
+            } catch (e) {
+              console.warn('Konnte gespeicherte Formulardaten nicht laden:', e)
             }
-          } catch (e) {
-            console.warn('Konnte gespeicherte Formulardaten nicht laden:', e)
-          }
-        })()
+          })()
       }
     } else if (error) {
       let errorMessage = 'Ein Fehler ist aufgetreten.'
@@ -487,7 +487,7 @@ export default function KreditanfrageForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email, formData })
       })
-      
+
       if (response.ok) {
         const data = await response.json()
         if (data?.token) {
@@ -525,7 +525,7 @@ export default function KreditanfrageForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     // Sicherheit: E-Mail muss verifiziert sein, bevor die Anfrage gesendet wird
     if (!emailVerified) {
       setSubmitStatus('error')
@@ -534,7 +534,7 @@ export default function KreditanfrageForm() {
     }
 
     setIsSubmitting(true)
-    
+
     try {
       // FormData mit Feldern und Dateien erstellen
       const payload = new FormData()
@@ -608,7 +608,7 @@ export default function KreditanfrageForm() {
       try {
         localStorage.removeItem(STORAGE_KEY)
         localStorage.removeItem(STORAGE_META_KEY)
-      } catch {}
+      } catch { }
       setFormData(initialFormData)
       setCurrentStep(1)
       setEmailVerificationSent(false)
@@ -626,7 +626,7 @@ export default function KreditanfrageForm() {
     if (currentStep < totalSteps) {
       const next = currentStep + 1
       setCurrentStep(next)
-      
+
       // CRM Integration: Zwischenspeichern
       if (caseId) {
         try {
@@ -701,9 +701,9 @@ export default function KreditanfrageForm() {
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Progress Indicator */}
       <div className="mb-8">
-        <ProgressIndicator 
-          steps={kreditanfrageSteps} 
-          currentStep={currentStep - 1} 
+        <ProgressIndicator
+          steps={kreditanfrageSteps}
+          currentStep={currentStep - 1}
         />
       </div>
 
@@ -736,7 +736,7 @@ export default function KreditanfrageForm() {
             <h3 className="text-xl font-semibold text-gray-900">Persönliche Daten</h3>
             <p className="text-sm text-gray-600 mt-1">Bitte geben Sie Ihre persönlichen Informationen ein</p>
           </div>
-          
+
           <div className="grid md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Anrede *</label>
@@ -786,9 +786,8 @@ export default function KreditanfrageForm() {
                 value={formData.geburtsdatum}
                 onChange={handleInputChange}
                 max={new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split('T')[0]}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
-                  isUnder18 ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-green-500'
-                }`}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${isUnder18 ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-green-500'
+                  }`}
               />
               {isUnder18 && (
                 <p className="text-red-600 text-sm mt-1">
@@ -884,7 +883,7 @@ export default function KreditanfrageForm() {
       {currentStep === 2 && (
         <div className="space-y-6">
           <h3 className="text-xl font-semibold text-gray-900 mb-6">Adresse</h3>
-          
+
           <div className="grid md:grid-cols-4 gap-4">
             <div className="md:col-span-3">
               <label className="block text-sm font-medium text-gray-700 mb-2">Straße *</label>
@@ -959,7 +958,7 @@ export default function KreditanfrageForm() {
               Baufinanzierung
             </Button>
           </div>
-          
+
           {formData.produktKategorie === 'privatkredit' ? (
             <>
               <div>
@@ -977,6 +976,7 @@ export default function KreditanfrageForm() {
                   <option value="umschuldung">Umschuldungskredit</option>
                   <option value="sofortkredit">Sofortkredit</option>
                   <option value="selbststaendige">Kredit für Selbstständige</option>
+                  <option value="freie_verwendung">Freie Verwendung</option>
                 </select>
               </div>
 
@@ -993,6 +993,7 @@ export default function KreditanfrageForm() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                 >
                   <option value="">Bitte wählen</option>
+                  <option value="freie_verwendung">Freie Verwendung</option>
                   <option value="auto">Autokauf</option>
                   <option value="umschuldung">Umschuldung</option>
                   <option value="renovierung">Renovierung/Modernisierung</option>
@@ -1315,7 +1316,7 @@ export default function KreditanfrageForm() {
       {currentStep === 4 && (
         <div className="space-y-6">
           <h3 className="text-xl font-semibold text-gray-900 mb-6">E-Mail-Bestätigung erforderlich</h3>
-          
+
           {!emailVerificationSent ? (
             <div className="text-center space-y-6">
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
@@ -1330,7 +1331,7 @@ export default function KreditanfrageForm() {
                 </p>
                 <p className="font-semibold text-blue-900 text-lg">{formData.email}</p>
               </div>
-              
+
               <button
                 onClick={sendEmailVerification}
                 className="bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-8 rounded-lg shadow-md transition-all"
@@ -1346,33 +1347,33 @@ export default function KreditanfrageForm() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 </div>
-              <h4 className="text-lg font-semibold text-green-900 mb-2">E-Mail wurde gesendet!</h4>
-              <p className="text-green-800 mb-4">
-                Wir haben eine Bestätigungs-E-Mail an <strong>{formData.email}</strong> gesendet.
-              </p>
-              <p className="text-green-700 text-sm mb-6">
-                Bitte prüfen Sie Ihr E-Mail-Postfach und klicken Sie auf den Bestätigungslink.
-                Die Seite wird automatisch aktualisiert, sobald Sie Ihre E-Mail bestätigt haben.
-              </p>
-              {verificationUrl && (
-                <div className="text-sm text-gray-700 mb-4">
-                  <p className="mb-2">Falls die E-Mail nicht ankommt, können Sie direkt bestätigen.</p>
-                  <a
-                    href={verificationUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-green-600 hover:text-green-700 underline"
-                  >
-                    Link zur E-Mail-Bestätigung öffnen
-                  </a>
-                </div>
-              )}
-                
+                <h4 className="text-lg font-semibold text-green-900 mb-2">E-Mail wurde gesendet!</h4>
+                <p className="text-green-800 mb-4">
+                  Wir haben eine Bestätigungs-E-Mail an <strong>{formData.email}</strong> gesendet.
+                </p>
+                <p className="text-green-700 text-sm mb-6">
+                  Bitte prüfen Sie Ihr E-Mail-Postfach und klicken Sie auf den Bestätigungslink.
+                  Die Seite wird automatisch aktualisiert, sobald Sie Ihre E-Mail bestätigt haben.
+                </p>
+                {verificationUrl && (
+                  <div className="text-sm text-gray-700 mb-4">
+                    <p className="mb-2">Falls die E-Mail nicht ankommt, können Sie direkt bestätigen.</p>
+                    <a
+                      href={verificationUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-600 hover:text-green-700 underline"
+                    >
+                      Link zur E-Mail-Bestätigung öffnen
+                    </a>
+                  </div>
+                )}
+
                 <div className="flex items-center justify-center space-x-2 mb-4">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600"></div>
                   <span className="text-green-700 text-sm">Warten auf Bestätigung...</span>
                 </div>
-                
+
                 <button
                   onClick={checkEmailVerification}
                   className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-lg transition-all"
@@ -1380,7 +1381,7 @@ export default function KreditanfrageForm() {
                   Status prüfen
                 </button>
               </div>
-              
+
               <div className="text-sm text-gray-600">
                 <p>E-Mail nicht erhalten?</p>
                 <button
@@ -1404,7 +1405,7 @@ export default function KreditanfrageForm() {
         <div className="space-y-6">
           <h3 className="text-xl font-semibold text-gray-900 mb-6">Dokumenten-Checkliste</h3>
           {/* Beschäftigungsverhältnis wird in Schritt 1 abgefragt */}
-          
+
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
             <div className="flex items-start">
               <svg className="w-5 h-5 text-blue-600 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -1430,7 +1431,7 @@ export default function KreditanfrageForm() {
             </div>
 
             {/* Validierungshinweis: Zeigt klar, welche Pflichtdokumente fehlen */}
-            
+
 
             {/* Checkliste der erforderlichen Unterlagen */}
             <div className="bg-green-50 border border-green-200 rounded-lg p-4">
@@ -1530,7 +1531,7 @@ export default function KreditanfrageForm() {
                 )}
               </ul>
             </div>
-            
+
             {isSelbststaendig ? (
               <div className="grid md:grid-cols-3 gap-6">
                 <DragDropFileUpload
@@ -1695,7 +1696,7 @@ export default function KreditanfrageForm() {
               <div>
                 <h4 className="font-medium text-gray-900 mb-1">Datenschutz & Sicherheit</h4>
                 <p className="text-sm text-gray-600">
-                  Ihre Dokumente werden verschlüsselt übertragen und gemäß DSGVO verarbeitet. 
+                  Ihre Dokumente werden verschlüsselt übertragen und gemäß DSGVO verarbeitet.
                   Nach Abschluss der Kreditprüfung werden alle Dokumente sicher gelöscht oder archiviert.
                 </p>
               </div>
@@ -1724,14 +1725,14 @@ export default function KreditanfrageForm() {
             <div className="mt-8 pt-6 border-t border-emerald-100 bg-emerald-50 p-6 rounded-xl">
               <h4 className="text-lg font-bold text-emerald-900 mb-2">Kundenkonto erstellen</h4>
               <p className="text-sm text-emerald-800 mb-4">
-                Erstellen Sie ein Passwort, um später auf Ihre Anfrage zugreifen zu können. 
+                Erstellen Sie ein Passwort, um später auf Ihre Anfrage zugreifen zu können.
                 Ihr Benutzername ist Ihre E-Mail-Adresse: <strong>{formData.email}</strong>
               </p>
-              
+
               {accountCreationError && (
-                 <div className="bg-red-50 text-red-600 text-sm p-3 rounded-md mb-4 border border-red-100">
-                   {accountCreationError}
-                 </div>
+                <div className="bg-red-50 text-red-600 text-sm p-3 rounded-md mb-4 border border-red-100">
+                  {accountCreationError}
+                </div>
               )}
 
               <div className="space-y-4 max-w-md">
@@ -1786,7 +1787,7 @@ export default function KreditanfrageForm() {
               </div>
               <h4 className="text-lg font-bold text-green-900 mb-2">Konto erfolgreich erstellt!</h4>
               <p className="text-sm text-green-800 mb-4">
-                Sie können sich nun jederzeit im <a href="/portal/login" target="_blank" className="underline font-bold">Kundenportal</a> anmelden, 
+                Sie können sich nun jederzeit im <a href="/portal/login" target="_blank" className="underline font-bold">Kundenportal</a> anmelden,
                 um den Status einzusehen oder Dokumente nachzureichen.
               </p>
               <Button
@@ -1815,7 +1816,7 @@ export default function KreditanfrageForm() {
             </Button>
           )}
         </div>
-        
+
         <div>
           {currentStep < totalSteps ? (
             currentStep === 3 ? (
@@ -1870,15 +1871,13 @@ export default function KreditanfrageForm() {
       )}
 
       {urlMessage && (
-        <div className={`border px-4 py-3 rounded mt-4 ${
-          urlMessage.type === 'success' 
-            ? 'bg-green-100 border-green-400 text-green-700' 
+        <div className={`border px-4 py-3 rounded mt-4 ${urlMessage.type === 'success'
+            ? 'bg-green-100 border-green-400 text-green-700'
             : 'bg-red-100 border-red-400 text-red-700'
-        }`}>
+          }`}>
           <div className="flex items-center">
-            <svg className={`w-5 h-5 mr-2 ${
-              urlMessage.type === 'success' ? 'text-green-600' : 'text-red-600'
-            }`} fill="currentColor" viewBox="0 0 20 20">
+            <svg className={`w-5 h-5 mr-2 ${urlMessage.type === 'success' ? 'text-green-600' : 'text-red-600'
+              }`} fill="currentColor" viewBox="0 0 20 20">
               {urlMessage.type === 'success' ? (
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               ) : (

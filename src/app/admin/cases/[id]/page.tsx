@@ -505,7 +505,16 @@ export default function CaseDetailsPage() {
                             <>
                               <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
                                 <span className="text-[10px] font-bold text-slate-400 uppercase">Kreditart</span>
-                                <p className="text-sm font-semibold text-slate-900 mt-0.5">{caseData.formData.kreditart || '-'}</p>
+                                <p className="text-sm font-semibold text-slate-900 mt-0.5">
+                                  {{
+                                    'ratenkredit': 'Ratenkredit',
+                                    'autokredit': 'Autokredit',
+                                    'umschuldung': 'Umschuldungskredit',
+                                    'sofortkredit': 'Sofortkredit',
+                                    'selbststaendige': 'Kredit für Selbstständige',
+                                    'freie_verwendung': 'Freie Verwendung'
+                                  }[caseData.formData.kreditart as string] || caseData.formData.kreditart || '-'}
+                                </p>
                               </div>
                               <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
                                 <span className="text-[10px] font-bold text-slate-400 uppercase">Kreditsumme</span>
@@ -519,7 +528,14 @@ export default function CaseDetailsPage() {
                           )}
                           <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
                             <span className="text-[10px] font-bold text-slate-400 uppercase">Verwendungszweck</span>
-                            <p className="text-sm font-semibold text-slate-900 mt-0.5">{caseData.formData.verwendungszweck || '-'}</p>
+                            <p className="text-sm font-semibold text-slate-900 mt-0.5">
+                              {{
+                                'auto': 'Autokauf',
+                                'umschuldung': 'Umschuldung',
+                                'renovierung': 'Renovierung/Modernisierung',
+                                'freie_verwendung': 'Freie Verwendung'
+                              }[caseData.formData.verwendungszweck as string] || caseData.formData.verwendungszweck || '-'}
+                            </p>
                           </div>
                           {caseData.formData.gewuenschteRate && (
                             <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">

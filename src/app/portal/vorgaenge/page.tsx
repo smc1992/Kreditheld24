@@ -135,7 +135,16 @@ export default function VorgaengePage() {
                     </div>
                     <div>
                       <h3 className="text-lg font-bold text-white">{caseItem.caseNumber}</h3>
-                      <p className="text-sm text-slate-400">{caseItem.type}</p>
+                      <p className="text-sm text-slate-400">
+                        {{
+                          'ratenkredit': 'Ratenkredit',
+                          'autokredit': 'Autokredit',
+                          'umschuldung': 'Umschuldungskredit',
+                          'sofortkredit': 'Sofortkredit',
+                          'selbststaendige': 'Kredit für Selbstständige',
+                          'freie_verwendung': 'Freie Verwendung'
+                        }[caseItem.type] || caseItem.type}
+                      </p>
                     </div>
                   </div>
                   <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold ${getStatusColor(caseItem.status)}`}>
