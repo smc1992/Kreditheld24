@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import PortalLayout from '@/components/portal/PortalLayout';
 import { User, Mail, Phone, MapPin, Save, Loader2, Lock, Calendar } from 'lucide-react';
+import { signOut, signIn } from 'next-auth/react';
 
 interface CustomerProfile {
   id: string;
@@ -87,9 +88,8 @@ export default function ProfilPage() {
       const result = await res.json();
       if (result.success) {
         alert('Profil erfolgreich aktualisiert!');
-        // Reload page to fetch fresh session data from server
-        // This will update the header with the new name
-        window.location.href = '/portal/profil';
+        // Force immediate session refresh by reloading with cache bypass
+        window.location.reload();
       } else {
         alert('Fehler: ' + result.error);
       }
