@@ -5,6 +5,7 @@ import { db, chatSessions, chatMessages, crmCustomers } from '@/db';
 import { eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
 import { NextRequest } from 'next/server';
+import { findRelevantContent } from '@/lib/rag';
 
 // Initialize OpenAI
 const openai = new OpenAI({
@@ -57,7 +58,6 @@ export async function POST(req: NextRequest) {
         // Update session last active
         await db.update(chatSessions).set({ lastMessageAt: new Date() }).where(eq(chatSessions.id, sessionId));
 
-        import { findRelevantContent } from '@/lib/rag';
 
         // 2. RAG retrieval
         const contextDocs = await findRelevantContent(lastUserMsg.content);
