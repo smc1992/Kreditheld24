@@ -57,12 +57,20 @@ export async function POST(req: NextRequest) {
         // Update session last active
         await db.update(chatSessions).set({ lastMessageAt: new Date() }).where(eq(chatSessions.id, sessionId));
 
-        // 2. RAG retrieval (Simple Placeholder for now)
-        // In V2: Embed lastUserMsg.content -> search knowledgeBase -> append to system prompt
+        import { findRelevantContent } from '@/lib/rag';
+
+        // 2. RAG retrieval
+        const contextDocs = await findRelevantContent(lastUserMsg.content);
+        const contextText = contextDocs.map(doc => doc.content).join('\n\n');
+
         const systemPrompt = `Du bist der hilfreiche KI-Assistent von Kreditheld24.
     Antworte freundlich, professionell und auf Deutsch.
     Deine Aufgabe ist es, Kunden bei Kreditfragen zu unterstützen.
-    Wenn du etwas nicht weißt, sage, dass du einen menschlichen Kollegen hinzuziehst.
+    
+    Hintergrundwissen (Nutze dies für deine Antwort):
+    ${contextText}
+    
+    Wenn keine relevanten Informationen oben stehen, nutze dein allgemeines Wissen, aber erfinde keine Fakten zu Kreditheld24.
     `;
 
         // 3. OpenAI Call
