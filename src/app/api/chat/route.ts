@@ -19,7 +19,7 @@ export const runtime = 'nodejs'; // Use Node.js for DB compatibility
 export async function POST(req: NextRequest) {
     try {
         const { messages } = await req.json();
-        const cookieStore = cookies();
+        const cookieStore = await cookies();
         let sessionId = cookieStore.get('chat_session_id')?.value;
 
         // 1. Session Management
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
 
         // 4. Stream Response & Save AI Message on finish
         const stream = OpenAIStream(response, {
-            onCompletion: async (completion) => {
+            onCompletion: async (completion: string) => {
                 // Save AI response to DB
                 if (sessionId) {
                     await db.insert(chatMessages).values({
