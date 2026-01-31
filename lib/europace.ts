@@ -402,3 +402,47 @@ export function extractCustomerFromProcess(process: EuropaceProcess, source: 'ba
     return null
   }
 }
+
+export async function fetchBaufinanzierungProcesses(datenkontext: 'TEST_MODUS' | 'ECHT_GESCHAEFT' = 'TEST_MODUS'): Promise<EuropaceProcess[]> {
+  // Scope for listing processes
+  const scope = 'baufinanzierung:vorgang:lesen'
+
+  // Endpoint for searching/listing cases
+  // Docs: https://docs.api.europace.de/baufinanzierung/vorgang/apis/vorgang-search-api/
+  // We use the search endpoint to get latest cases
+  const baseUrl = 'https://baufinanzierung.api.europace.de/v2/vorgaenge'
+
+  // In ECHT_GESCHAEFT, we might need a specific header or just the scope?
+  // Typically Europace distinguishes via keys/scope.
+  // But the SEARCH API often returns everything visible to the token.
+
+  try {
+    const token = await getEuropaceAccessTokenWithScope(scope)
+
+    const res = await fetch(`${baseUrl}?limit=100`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      cache: 'no-store'
+    })
+
+    if (!res.ok) {
+      console.error(`Europace List Error (${datenkontext}):`, res.status, res.statusText)
+      return []
+    }
+
+    const data = await res.json()
+    // API returns { vorgaenge: [ { vorgangsNummer: "...", ... } ] } or list?
+    // Common Europace pattern is embedded list.
+    // Let's assume data is the list or data.vorgaenge
+
+    const items = Array.isArray(data) ? data : (data.vorgaenge || data.items || [])
+
+    return items as EuropaceProcess[]
+  } catch (error) {
+    console.error(`Error fetching baufi processes (${datenkontext})`, error)
+    return []
+  }
+}
