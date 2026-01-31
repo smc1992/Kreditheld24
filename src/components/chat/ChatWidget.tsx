@@ -2,6 +2,7 @@
 'use client';
 
 import { useChat } from 'ai/react';
+import { type Message } from 'ai';
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,7 +23,7 @@ export default function ChatWidget() {
     const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
         api: '/api/chat',
         // initialMessages: [], // Could load history later
-        onError: (err) => {
+        onError: (err: Error) => {
             console.error('Chat error:', err);
         }
     });
@@ -67,7 +68,7 @@ export default function ChatWidget() {
                             </div>
                         )}
 
-                        {messages.map((m) => (
+                        {messages.map((m: Message) => (
                             <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                 <div className={`
                   max-w-[80%] rounded-2xl px-3 py-2 text-sm shadow-sm

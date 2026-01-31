@@ -309,8 +309,8 @@ export const vector = customType<{ data: number[] }>({
   toDriver(value: number[]) {
     return JSON.stringify(value);
   },
-  fromDriver(value: string) {
-    return JSON.parse(value);
+  fromDriver(value: unknown) {
+    return JSON.parse(value as string);
   },
 });
 
