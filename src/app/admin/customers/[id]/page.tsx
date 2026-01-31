@@ -576,7 +576,19 @@ export default function CustomerDetailPage() {
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="text-[10px] font-bold text-slate-400 uppercase">Adresse</p>
-                        <p className="text-sm font-bold text-slate-900 leading-relaxed whitespace-pre-wrap">{customer.address || '-'}</p>
+                        <p className="text-sm font-bold text-slate-900 leading-relaxed whitespace-pre-wrap">
+                          {customer.street || customer.city ? (
+                            <>
+                              {customer.street && <span className="block">{customer.street}</span>}
+                              {(customer.zipCode || customer.city) && (
+                                <span className="block">{customer.zipCode} {customer.city}</span>
+                              )}
+                              {customer.country && <span className="block text-slate-500 font-normal">{customer.country}</span>}
+                            </>
+                          ) : (
+                            customer.address || '-'
+                          )}
+                        </p>
                       </div>
                     </div>
                   </div>
