@@ -23,7 +23,7 @@ export default function EditCustomerPage() {
     city: '',
     zipCode: '',
     country: 'Deutschland',
-    dateOfBirth: '',
+    birthDate: '',
     nationality: '',
     maritalStatus: '',
     numberOfChildren: 0,
@@ -52,7 +52,7 @@ export default function EditCustomerPage() {
             city: customer.city || '',
             zipCode: customer.zipCode || '',
             country: customer.country || 'Deutschland',
-            dateOfBirth: customer.dateOfBirth ? new Date(customer.dateOfBirth).toISOString().split('T')[0] : '',
+            birthDate: customer.birthDate ? new Date(customer.birthDate).toISOString().split('T')[0] : '',
             nationality: customer.nationality || '',
             maritalStatus: customer.maritalStatus || '',
             numberOfChildren: customer.numberOfChildren || 0,
@@ -123,7 +123,7 @@ export default function EditCustomerPage() {
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4">
-          <Link 
+          <Link
             href={`/admin/customers/${params?.id}`}
             className="inline-flex items-center justify-center p-2 rounded-lg bg-white border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700 transition-all shadow-sm group"
           >
@@ -212,14 +212,14 @@ export default function EditCustomerPage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="dateOfBirth" className="block text-sm font-medium text-slate-700 mb-1">
+                  <label htmlFor="birthDate" className="block text-sm font-medium text-slate-700 mb-1">
                     Geburtsdatum
                   </label>
                   <input
                     type="date"
-                    id="dateOfBirth"
-                    name="dateOfBirth"
-                    value={formData.dateOfBirth}
+                    id="birthDate"
+                    name="birthDate"
+                    value={formData.birthDate}
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   />

@@ -52,7 +52,7 @@ export async function PUT(
       .update(crmCustomers)
       .set({
         ...body,
-        dateOfBirth: body.dateOfBirth ? new Date(body.dateOfBirth) : null,
+        birthDate: body.birthDate ? new Date(body.birthDate) : null,
         updatedAt: new Date(),
       })
       .where(eq(crmCustomers.id, customerId))
@@ -95,7 +95,7 @@ export async function PATCH(
     if (body.city !== undefined) updateData.city = body.city;
     if (body.zipCode !== undefined) updateData.zipCode = body.zipCode;
     if (body.country !== undefined) updateData.country = body.country;
-    if (body.dateOfBirth !== undefined) updateData.dateOfBirth = body.dateOfBirth ? new Date(body.dateOfBirth) : null;
+    if (body.birthDate !== undefined) updateData.birthDate = body.birthDate ? new Date(body.birthDate) : null;
     if (body.nationality !== undefined) updateData.nationality = body.nationality;
     if (body.maritalStatus !== undefined) updateData.maritalStatus = body.maritalStatus;
     if (body.numberOfChildren !== undefined) updateData.numberOfChildren = body.numberOfChildren;
