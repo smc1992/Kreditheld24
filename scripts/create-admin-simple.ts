@@ -1,7 +1,8 @@
+import 'dotenv/config';
 import postgres from 'postgres';
 import bcrypt from 'bcryptjs';
 
-const DATABASE_URL = 'postgres://postgres:H8oqIFRMBMU5904WuCHNxw6vNqHhfacpX8AbgLv9z2ULekRoz9MjT3WGelLMHURV@217.160.138.202:5432/postgres?sslmode=require';
+const DATABASE_URL = process.env.POSTGRES_URL!;
 
 async function createAdmin() {
   const email = process.argv[2] || 'admin@kreditheld24.de';
@@ -25,7 +26,7 @@ async function createAdmin() {
     console.log('👤 Name:', result[0].name);
     console.log('🔑 Password:', password);
     console.log('\n⚠️  Please change the password after first login!');
-    
+
     await sql.end();
     process.exit(0);
   } catch (error: any) {
