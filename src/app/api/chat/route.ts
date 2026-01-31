@@ -11,7 +11,7 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY || '',
 });
 
-export const runtime = 'edge'; // Use Edge for streaming performance (check drizzle compat first, otherwise nodejs)
+export const runtime = 'nodejs'; // Use Node.js for DB compatibility
 // Note: Drizzle PostgresJS usually works in Node. If Edge fails, remove this.
 // Postgres.js is NOT Edge compatible usually. Node is safer for now.
 // export const runtime = 'nodejs'; 
