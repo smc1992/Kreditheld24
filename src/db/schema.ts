@@ -296,3 +296,72 @@ export type NewEmailTemplate = typeof emailTemplates.$inferInsert;
 
 export type CrmSetting = typeof crmSettings.$inferSelect;
 export type NewCrmSetting = typeof crmSettings.$inferInsert;
+
+// --- Chatbot & RAG Schema ---
+
+// Custom Vector Type for pgvector
+import { customType } from 'drizzle-orm/pg-core';
+
+export const vector = customType<{ data: number[] }>({
+  dataType() {
+    return 'vector(1536)';
+  },
+  toDriver(value: number[]) {
+    return JSON.stringify(value);
+  },
+  fromDriver(value: string) {
+    return JSON.parse(value);
+  },
+});
+
+// Chat Sessions
+export const chatSessions = pgTable('chat_sessions', {
+  id: uuid('id').primaryKey().default(sql`uuid_generate_v4()`),
+  customerId: uuid('customer_id').references(() => crmCustomers.id, { onDelete: 'cascade' }),
+  status: varchar('status', { length: 50 }).default('open').notNull(), // 'open', 'closed', 'archived'
+  aiEnabled: boolean('ai_enabled').default(true).notNull(),
+  lastMessageAt: timestamp('last_message_at', { withTimezone: true }).defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  customerIdx: index('idx_chat_sessions_customer').on(table.customerId),
+  statusIdx: index('idx_chat_sessions_status').on(table.status),
+  lastMessageIdx: index('idx_chat_sessions_last_message').on(table.lastMessageAt),
+}));
+
+// Chat Messages
+export const chatMessages = pgTable('chat_messages', {
+  id: uuid('id').primaryKey().default(sql`uuid_generate_v4()`),
+  sessionId: uuid('session_id').references(() => chatSessions.id, { onDelete: 'cascade' }).notNull(),
+  sender: varchar('sender', { length: 20 }).notNull(), // 'user', 'admin', 'ai'
+  content: text('content').notNull(),
+  metadata: jsonb('metadata'), // e.g. tokens used, related sources
+  isRead: boolean('is_read').default(false),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  sessionIdx: index('idx_chat_messages_session').on(table.sessionId),
+  createdAtIdx: index('idx_chat_messages_created_at').on(table.createdAt),
+}));
+
+// Knowledge Base (RAG)
+export const knowledgeBase = pgTable('knowledge_base', {
+  id: uuid('id').primaryKey().default(sql`uuid_generate_v4()`),
+  content: text('content').notNull(),
+  source: varchar('source', { length: 255 }), // e.g. "manual", "faq.pdf", "chat_history"
+  embedding: vector('embedding'), // vector(1536)
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  // Note: HNSW index creation is usually done via raw sql in migration because drizzle support varies
+  sourceIdx: index('idx_knowledge_base_source').on(table.source),
+}));
+
+// Types
+export type ChatSession = typeof chatSessions.$inferSelect;
+export type NewChatSession = typeof chatSessions.$inferInsert;
+
+export type ChatMessage = typeof chatMessages.$inferSelect;
+export type NewChatMessage = typeof chatMessages.$inferInsert;
+
+export type KnowledgeBaseItem = typeof knowledgeBase.$inferSelect;
+export type NewKnowledgeBaseItem = typeof knowledgeBase.$inferInsert;

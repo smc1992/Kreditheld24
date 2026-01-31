@@ -4,6 +4,8 @@ import { GeistSans } from 'geist/font/sans'
 import React from 'react'
 import { clsx } from 'clsx'
 
+import ChatWidget from '@/components/chat/ChatWidget';
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
@@ -17,7 +19,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <ChatWidget />
+      </body>
     </html>
   )
 }
