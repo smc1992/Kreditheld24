@@ -101,7 +101,10 @@ export async function POST(req: NextRequest) {
 
     } catch (error) {
         console.error('Chat API Error:', error);
-        return new Response(JSON.stringify({ error: 'Failed to process chat' }), {
+        return new Response(JSON.stringify({
+            error: 'Failed to process chat',
+            details: error instanceof Error ? error.message : String(error)
+        }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' }
         });
