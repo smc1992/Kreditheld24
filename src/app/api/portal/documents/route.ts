@@ -68,8 +68,8 @@ export async function POST(req: Request) {
     const uploadedDocuments = [];
 
     for (const file of files) {
-      // Save file to disk
-      const fileUrl = await saveFile(file);
+      // Save file to disk in portal subfolder
+      const fileUrl = await saveFile(file, 'portal');
 
       // Save metadata to database
       const [document] = await db

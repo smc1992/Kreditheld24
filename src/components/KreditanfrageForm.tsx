@@ -156,6 +156,7 @@ export default function KreditanfrageForm() {
   const [urlMessage, setUrlMessage] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
   const [caseId, setCaseId] = useState<string | null>(null)
   const [europaceCaseUrl, setEuropaceCaseUrl] = useState<string | null>(null)
+  const [uploadErrors, setUploadErrors] = useState<Record<string, string>>({})
 
   // Persistenz-Schlüssel
   const STORAGE_KEY = 'kh24_kreditanfrage_form_v1'
@@ -285,12 +286,30 @@ export default function KreditanfrageForm() {
     }
 
     try {
-      await fetch('/api/kreditanfrage/upload', {
+      setUploadErrors(prev => {
+        const copy = { ...prev };
+        delete copy[fieldName];
+        return copy;
+      });
+
+      const res = await fetch('/api/kreditanfrage/upload', {
         method: 'POST',
         body: uploadData
       })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setUploadErrors(prev => ({
+          ...prev,
+          [fieldName]: data.error || 'Upload fehlgeschlagen'
+        }));
+      }
     } catch (error) {
       console.warn('Sofortiger Upload fehlgeschlagen:', error)
+      setUploadErrors(prev => ({
+        ...prev,
+        [fieldName]: 'Netzwerkfehler beim Upload'
+      }));
     }
   }
 
@@ -1457,6 +1476,26 @@ export default function KreditanfrageForm() {
             </div>
 
             {/* Validierungshinweis: Zeigt klar, welche Pflichtdokumente fehlen */}
+            {Object.keys(uploadErrors).length > 0 && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm mb-6">
+                <div className="flex items-start">
+                  <svg className="w-5 h-5 text-red-600 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <h4 className="font-bold mb-1">Fehler beim Datei-Upload:</h4>
+                    <ul className="list-disc list-inside space-y-1">
+                      {Object.entries(uploadErrors).map(([field, error]) => (
+                        <li key={field}>
+                          <strong>{field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:</strong> {error}
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="mt-2 text-xs">Bitte versuchen Sie, die betroffenen Dateien erneut auszuwählen.</p>
+                  </div>
+                </div>
+              </div>
+            )}
 
 
             {/* Checkliste der erforderlichen Unterlagen */}
