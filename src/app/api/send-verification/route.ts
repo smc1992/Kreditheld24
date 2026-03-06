@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
 
     const fromAddress = {
       name: 'Kreditheld24',
-      address: process.env.SMTP_USER || 'info@kreditheld24.de'
+      address: process.env.EMAIL_FROM || 'info@kreditheld24.de'
     }
 
     if (isVerified) {

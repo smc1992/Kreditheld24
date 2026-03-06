@@ -42,20 +42,20 @@ export async function POST(request: NextRequest) {
     // Relevante Felder extrahieren
     const fields = [
       // Persönlich
-      'anrede','vorname','nachname','geburtsdatum','geburtsort','familienstand','staatsangehoerigkeit','telefon','email',
+      'anrede', 'vorname', 'nachname', 'geburtsdatum', 'geburtsort', 'familienstand', 'staatsangehoerigkeit', 'telefon', 'email',
       // Adresse
-      'strasse','hausnummer','plz','ort',
+      'strasse', 'hausnummer', 'plz', 'ort',
       // Kreditwunsch
-      'produktKategorie','kreditart','kreditsumme','laufzeit','gewuenschteRate','verwendungszweck',
-      'baufinanzierungArt','kaufpreisBaukosten','eigenkapital',
+      'produktKategorie', 'kreditart', 'kreditsumme', 'laufzeit', 'gewuenschteRate', 'verwendungszweck',
+      'baufinanzierungArt', 'kaufpreisBaukosten', 'eigenkapital',
       // Sonstiges
-      'bemerkungen','datenschutz','newsletter','beschaeftigungsverhaeltnis',
+      'bemerkungen', 'datenschutz', 'newsletter', 'beschaeftigungsverhaeltnis',
       // Flags
-      'hatBestehendeKredite','hatBaufinanzierung',
+      'hatBestehendeKredite', 'hatBaufinanzierung',
       // Objektdaten
-      'objektart','baujahr','grundstuecksgroesse','wohnflaeche','kaufpreis','modernisierungen'
+      'objektart', 'baujahr', 'grundstuecksgroesse', 'wohnflaeche', 'kaufpreis', 'modernisierungen'
     ]
-    const data: Record<string,string> = {}
+    const data: Record<string, string> = {}
     for (const key of fields) {
       const val = form.get(key)
       data[key] = toString(val)
@@ -192,7 +192,7 @@ export async function POST(request: NextRequest) {
           <p>
             <strong>Kategorie:</strong> ${data.produktKategorie === 'baufinanzierung' ? 'Baufinanzierung' : 'Privatkredit'}<br/>
             ${data.produktKategorie === 'baufinanzierung'
-              ? `
+        ? `
                 <strong>Art der Baufinanzierung:</strong> ${data.baufinanzierungArt}<br/>
                 <strong>Kaufpreis/Baukosten:</strong> ${data.kaufpreisBaukosten} €<br/>
                 <strong>Eigenkapital:</strong> ${data.eigenkapital} €
@@ -203,14 +203,14 @@ export async function POST(request: NextRequest) {
                 ${data.kaufpreis ? `<br/><strong>Kaufpreis:</strong> ${data.kaufpreis} €` : ''}
                 ${data.modernisierungen ? `<br/><strong>Letzte Modernisierungen:</strong> ${data.modernisierungen}` : ''}
               `
-              : `
+        : `
                 <strong>Kreditart:</strong> ${data.kreditart}<br/>
                 <strong>Kreditsumme:</strong> ${data.kreditsumme} €<br/>
                 <strong>Laufzeit:</strong> ${data.laufzeit} Monate<br/>
                 <strong>Gewünschte Rate:</strong> ${data.gewuenschteRate} €<br/>
                 <strong>Verwendungszweck:</strong> ${data.verwendungszweck}
               `
-            }
+      }
           </p>
 
           
@@ -239,7 +239,7 @@ export async function POST(request: NextRequest) {
     const mailOptions = {
       from: {
         name: 'Kreditheld24',
-        address: process.env.SMTP_USER || 'info@kreditheld24.de'
+        address: process.env.EMAIL_FROM || 'info@kreditheld24.de'
       },
       to: 'info@kreditheld24.de',
       replyTo: email,
@@ -296,7 +296,7 @@ export async function POST(request: NextRequest) {
       const verificationData = await getVerificationData(verificationToken);
       if (verificationData?.formData?.caseId) {
         const caseId = verificationData.formData.caseId as string;
-        
+
         // Kundendaten im CRM aktualisieren
         const existingCustomer = await db.select().from(crmCustomers).where(eq(crmCustomers.email, email.toLowerCase()));
         if (existingCustomer.length > 0) {
