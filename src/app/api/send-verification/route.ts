@@ -3,7 +3,7 @@ import crypto from 'crypto'
 import { storeVerificationToken } from '../../../lib/verification'
 import { db, crmCustomers, crmCases } from '@/db'
 import { eq, and } from 'drizzle-orm'
-import { resend, FROM_EMAIL } from '../../../lib/resend'
+import nodemailer from 'nodemailer'
 
 export const runtime = 'nodejs'
 
@@ -98,10 +98,28 @@ export async function POST(request: NextRequest) {
     // E-Mail senden (Verifizierung oder Eingangsbestätigung)
     console.log('Attempting to send email via Resend to:', email);
 
+    // SMTP-Transporter konfigurieren
+    const smtpPort = parseInt(process.env.SMTP_PORT || '587', 10)
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || 'smtp.strato.de',
+      port: smtpPort,
+      secure: smtpPort === 465, // SSL nur bei 465
+      auth: {
+        user: process.env.SMTP_USER || 'info@kreditheld24.de',
+        pass: process.env.SMTP_PASS || process.env.EMAIL_PASSWORD
+      },
+      tls: { rejectUnauthorized: false }
+    })
+
+    const fromAddress = {
+      name: 'Kreditheld24',
+      address: process.env.SMTP_USER || 'info@kreditheld24.de'
+    }
+
     if (isVerified) {
       // Bestätigungs-E-Mail (bereits verifiziert)
-      await resend.emails.send({
-        from: FROM_EMAIL,
+      await transporter.sendMail({
+        from: fromAddress,
         to: email,
         subject: 'Eingangsbestätigung Ihrer Kreditanfrage - Kreditheld24',
         html: `
@@ -149,8 +167,8 @@ export async function POST(request: NextRequest) {
     } else {
       // Verifizierungs-E-Mail (Standard)
       try {
-        const data = await resend.emails.send({
-          from: FROM_EMAIL,
+        const data = await transporter.sendMail({
+          from: fromAddress,
           to: email,
           subject: 'E-Mail-Bestätigung für Ihre Kreditanfrage - Kreditheld24',
           html: `
@@ -206,7 +224,7 @@ export async function POST(request: NextRequest) {
           `
         });
 
-        console.log('Email sent successfully via Resend. ID:', data.data?.id);
+        console.log('Email sent successfully via SMTP. ID:', data.messageId);
       } catch (emailError) {
         console.error('CRITICAL ERROR sending email via Resend:', emailError);
         return NextResponse.json(
