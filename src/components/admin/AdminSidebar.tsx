@@ -11,7 +11,8 @@ import {
   LogOut,
   ChevronRight,
   Mail,
-  MessageSquare
+  MessageSquare,
+  BookOpen
 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 
@@ -21,6 +22,7 @@ const navigation = [
   { name: 'Vorgänge', href: '/admin/cases', icon: Briefcase },
   { name: 'Nachrichten', href: '/admin/messages', icon: MessageSquare },
   { name: 'E-Mails', href: '/admin/emails', icon: Mail },
+  { name: 'Knowledge Base', href: '/admin/knowledge', icon: BookOpen },
   { name: 'Zinssätze', href: '/admin/rates', icon: Percent },
   { name: 'Einstellungen', href: '/admin/settings', icon: Settings },
 ];
