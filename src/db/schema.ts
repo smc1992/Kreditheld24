@@ -236,6 +236,14 @@ export const crmSettings = pgTable('crm_settings', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
+// Admin Settings (generic key-value store for chatbot config, etc.)
+export const adminSettings = pgTable('admin_settings', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  key: varchar('key', { length: 100 }).notNull().unique(),
+  value: jsonb('value').notNull().default({}),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
 // Emails Table (Real Inbox/Outbox storage)
 export const crmEmails = pgTable('crm_emails', {
   id: uuid('id').primaryKey().default(sql`uuid_generate_v4()`),
