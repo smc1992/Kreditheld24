@@ -1,17 +1,15 @@
 import { NextResponse } from 'next/server'
 import { db, crmCustomers } from '@/db'
-import { eq } from 'drizzle-orm'
+import { eq, or } from 'drizzle-orm'
 import {
   fetchBaufinanzierungProcesses,
   fetchBaufinanzierungProcessDetails,
-  fetchPrivatkreditProcesses,
   extractCustomerFromProcess,
   type EuropaceCustomerData,
-} from '../../../../../lib/europace'
-import bcrypt from 'bcryptjs'
+} from '@/lib/europace'
 
-// This route will be called by Vercel Cron
-// Add to vercel.json: { "crons": [{ "path": "/api/cron/europace-sync", "schedule": "0 * * * *" }] }
+// Cron-triggered Europace sync
+// Schedule: hourly or on-demand from admin dashboard
 export async function GET(request: Request) {
   try {
     // Verify cron secret to prevent unauthorized access
@@ -22,7 +20,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    console.log('[Cron] Starting Europace customer sync...')
+    console.log('[Europace Sync] Starting customer sync...')
 
     const results = {
       total: 0,
@@ -30,131 +28,151 @@ export async function GET(request: Request) {
       updated: 0,
       skipped: 0,
       errors: 0,
+      customers: [] as string[],
       timestamp: new Date().toISOString(),
     }
 
-    // Fetch processes from both APIs
-    let baufiProcesses: any[] = []
-    let privatkreditProcesses: any[] = []
-
+    // Fetch ECHT_GESCHAEFT processes
+    let processes: any[] = []
     try {
-      // Fetch both TEST_MODUS and ECHT_GESCHAEFT
-      const [testProcesses, echtProcesses] = await Promise.all([
-        fetchBaufinanzierungProcesses('TEST_MODUS'),
-        fetchBaufinanzierungProcesses('ECHT_GESCHAEFT')
-      ])
-      baufiProcesses = [...testProcesses, ...echtProcesses]
-      console.log(`[Cron] Fetched ${baufiProcesses.length} Baufinanzierung processes (${testProcesses.length} test, ${echtProcesses.length} echt)`)
+      processes = await fetchBaufinanzierungProcesses('ECHT_GESCHAEFT', 200)
+      console.log(`[Europace Sync] Fetched ${processes.length} processes`)
     } catch (error) {
-      console.error('[Cron] Error fetching Baufinanzierung processes:', error)
+      console.error('[Europace Sync] Error fetching processes:', error)
+      return NextResponse.json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to fetch processes'
+      }, { status: 500 })
     }
 
-    // Privatkredit sync temporarily disabled - GraphQL schema doesn't support listing all vorgaenge
-    /*
-    try {
-      privatkreditProcesses = await fetchPrivatkreditProcesses()
-      console.log(`[Cron] Fetched ${privatkreditProcesses.length} Privatkredit processes`)
-    } catch (error) {
-      console.error('[Cron] Error fetching Privatkredit processes:', error)
-    }
-    */
-
-    // Extract customer data from processes
+    // Extract customer data from each process
     const customerDataList: EuropaceCustomerData[] = []
 
-    // Baufinanzierung: List endpoint only returns metadata, need to fetch details for each process
-    for (const processMeta of baufiProcesses) {
-      if (processMeta.vorgangsNummer) {
-        try {
-          const fullProcess = await fetchBaufinanzierungProcessDetails(processMeta.vorgangsNummer)
-          const customerData = extractCustomerFromProcess(fullProcess, 'baufinanzierung')
-          if (customerData) {
-            customerDataList.push(customerData)
-          }
-        } catch (err) {
-          console.error(`[Cron] Error fetching details for process ${processMeta.vorgangsNummer}:`, err)
-          // Continue with next process
-        }
-      }
-    }
+    for (const processMeta of processes) {
+      if (!processMeta.vorgangsNummer) continue
 
-    for (const process of privatkreditProcesses) {
-      const customerData = extractCustomerFromProcess(process, 'privatkredit')
-      if (customerData) {
-        customerDataList.push(customerData)
-      }
-    }
-
-    results.total = customerDataList.length
-    console.log(`[Cron] Extracted ${results.total} customers from processes`)
-
-    // Process each customer
-    for (const customerData of customerDataList) {
       try {
-        if (!customerData.email) {
-          results.skipped++
-          continue
-        }
-
-        // Check if customer already exists by email
-        const existingCustomer = await db
-          .select()
-          .from(crmCustomers)
-          .where(eq(crmCustomers.email, customerData.email))
-          .limit(1)
-
-        if (existingCustomer.length > 0) {
-          // Update existing customer
-          await db
-            .update(crmCustomers)
-            .set({
-              firstName: customerData.firstName || existingCustomer[0].firstName,
-              lastName: customerData.lastName || existingCustomer[0].lastName,
-              phone: customerData.phone || existingCustomer[0].phone,
-              address: customerData.address || existingCustomer[0].address,
-              europaceId: customerData.vorgangsNummer || existingCustomer[0].europaceId,
-            })
-            .where(eq(crmCustomers.id, existingCustomer[0].id))
-
-          results.updated++
-        } else {
-          // Create new customer
-          const hashedPassword = await bcrypt.hash(Math.random().toString(36).slice(-8), 10)
-
-          await db
-            .insert(crmCustomers)
-            .values({
-              email: customerData.email,
-              passwordHash: hashedPassword,
-              firstName: customerData.firstName || '',
-              lastName: customerData.lastName || '',
-              phone: customerData.phone || '',
-              address: customerData.address || '',
-              europaceId: customerData.vorgangsNummer,
-              emailVerified: false,
-            })
-
-          results.created++
-        }
-      } catch (error) {
-        console.error('[Cron] Error processing customer:', customerData.email, error)
+        const fullProcess = await fetchBaufinanzierungProcessDetails(processMeta.vorgangsNummer)
+        const customers = extractCustomerFromProcess(fullProcess, 'baufinanzierung')
+        customerDataList.push(...customers)
+      } catch (err) {
+        console.error(`[Europace Sync] Error for ${processMeta.vorgangsNummer}:`, err)
         results.errors++
       }
     }
 
-    console.log('[Cron] Sync completed:', results)
+    results.total = customerDataList.length
+    console.log(`[Europace Sync] Extracted ${results.total} customers from ${processes.length} processes`)
+
+    // Upsert each customer into CRM
+    for (const c of customerDataList) {
+      try {
+        // Skip customers without name
+        if (!c.firstName && !c.lastName) {
+          results.skipped++
+          continue
+        }
+
+        // Find existing customer by email or europaceId+name
+        let existing = null
+
+        if (c.email) {
+          const [found] = await db
+            .select()
+            .from(crmCustomers)
+            .where(eq(crmCustomers.email, c.email))
+            .limit(1)
+          existing = found || null
+        }
+
+        // Also try to match by europaceId
+        if (!existing && c.vorgangsNummer) {
+          const [found] = await db
+            .select()
+            .from(crmCustomers)
+            .where(eq(crmCustomers.europaceId, c.vorgangsNummer))
+            .limit(1)
+          existing = found || null
+        }
+
+        const updateData = {
+          firstName: c.firstName || undefined,
+          lastName: c.lastName || undefined,
+          email: c.email || undefined,
+          phone: c.phone || undefined,
+          salutation: c.salutation || undefined,
+          address: c.address || undefined,
+          street: c.street || undefined,
+          city: c.city || undefined,
+          zipCode: c.zipCode || undefined,
+          birthDate: c.birthDate ? new Date(c.birthDate) : undefined,
+          maritalStatus: c.maritalStatus || undefined,
+          nationality: c.nationality || undefined,
+          occupation: c.occupation || undefined,
+          monthlyIncome: c.monthlyIncome?.toString() || undefined,
+          europaceId: c.vorgangsNummer,
+          updatedAt: new Date(),
+        }
+
+        // Remove undefined values
+        const cleanData = Object.fromEntries(
+          Object.entries(updateData).filter(([, v]) => v !== undefined)
+        )
+
+        if (existing) {
+          // Update existing - only fill empty fields, don't overwrite existing data
+          const mergedData: Record<string, any> = {}
+          for (const [key, value] of Object.entries(cleanData)) {
+            const existingValue = (existing as any)[key]
+            // Only update if the existing field is empty/null
+            if (!existingValue || existingValue === '' || key === 'europaceId' || key === 'updatedAt') {
+              mergedData[key] = value
+            }
+          }
+
+          if (Object.keys(mergedData).length > 0) {
+            await db
+              .update(crmCustomers)
+              .set(mergedData)
+              .where(eq(crmCustomers.id, existing.id))
+          }
+
+          results.updated++
+          results.customers.push(`✏️ ${c.firstName} ${c.lastName} (${c.vorgangsNummer})`)
+        } else {
+          // Create new customer
+          await db
+            .insert(crmCustomers)
+            .values({
+              ...(cleanData as any),
+              firstName: c.firstName || '',
+              lastName: c.lastName || '',
+              isActiveUser: false,
+              emailVerified: false,
+            })
+
+          results.created++
+          results.customers.push(`✅ ${c.firstName} ${c.lastName} (${c.vorgangsNummer})`)
+        }
+      } catch (error) {
+        console.error('[Europace Sync] Error processing customer:', c.firstName, c.lastName, error)
+        results.errors++
+      }
+    }
+
+    console.log('[Europace Sync] Completed:', results)
 
     return NextResponse.json({
       success: true,
-      message: `Cron sync completed: ${results.created} created, ${results.updated} updated, ${results.skipped} skipped, ${results.errors} errors`,
+      message: `Sync: ${results.created} neu, ${results.updated} aktualisiert, ${results.skipped} übersprungen, ${results.errors} Fehler`,
       results,
     })
   } catch (error) {
-    console.error('[Cron] Europace sync error:', error)
+    console.error('[Europace Sync] Fatal error:', error)
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Cron sync failed',
+        error: error instanceof Error ? error.message : 'Sync failed',
       },
       { status: 500 }
     )

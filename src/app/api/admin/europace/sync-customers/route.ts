@@ -5,28 +5,15 @@ import { eq } from 'drizzle-orm'
 import {
   fetchBaufinanzierungProcesses,
   fetchBaufinanzierungProcessDetails,
-  fetchPrivatkreditProcessDetails,
   extractCustomerFromProcess,
   type EuropaceCustomerData,
-} from '../../../../../../lib/europace'
-import bcrypt from 'bcryptjs'
+} from '@/lib/europace'
 
 export async function POST(request: Request) {
   try {
     const session = await auth()
     if (!session || session.user.role !== 'admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    // Parse body for optional privatkreditIds
-    let privatkreditIds: string[] = []
-    try {
-      const body = await request.json()
-      if (body && Array.isArray(body.privatkreditIds)) {
-        privatkreditIds = body.privatkreditIds
-      }
-    } catch (e) {
-      // Body might be empty, ignore
     }
 
     const results = {
@@ -38,136 +25,143 @@ export async function POST(request: Request) {
       customers: [] as any[],
     }
 
-    // Fetch processes from both APIs and both modes (TEST_MODUS + ECHT_GESCHAEFT)
-    let baufiProcesses: any[] = []
-    
+    // Fetch ECHT_GESCHAEFT processes
+    let processes: any[] = []
     try {
-      // Fetch both TEST_MODUS and ECHT_GESCHAEFT
-      const [testProcesses, echtProcesses] = await Promise.all([
-        fetchBaufinanzierungProcesses('TEST_MODUS'),
-        fetchBaufinanzierungProcesses('ECHT_GESCHAEFT')
-      ])
-      baufiProcesses = [...testProcesses, ...echtProcesses]
+      processes = await fetchBaufinanzierungProcesses('ECHT_GESCHAEFT', 200)
     } catch (error) {
-      console.error('Error fetching Baufinanzierung processes:', error)
-      // Continue even if Baufi fails
+      console.error('[Admin Sync] Error fetching processes:', error)
+      return NextResponse.json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Fehler beim Abrufen der Vorgänge'
+      }, { status: 500 })
     }
 
-    // Extract customer data from processes
+    // Extract customer data from each process
     const customerDataList: EuropaceCustomerData[] = []
 
-    // Baufinanzierung: List endpoint only returns metadata, need to fetch details for each process
-    for (const processMeta of baufiProcesses) {
-      if (processMeta.vorgangsNummer) {
-        try {
-          const fullProcess = await fetchBaufinanzierungProcessDetails(processMeta.vorgangsNummer)
-          const customerData = extractCustomerFromProcess(fullProcess, 'baufinanzierung')
-          if (customerData) {
-            customerDataList.push(customerData)
-          }
-        } catch (err) {
-          console.error(`Error fetching details for process ${processMeta.vorgangsNummer}:`, err)
-          // Continue with next process
-        }
-      }
-    }
+    for (const processMeta of processes) {
+      if (!processMeta.vorgangsNummer) continue
 
-    // Privatkredit: Fetch specific IDs if provided (API does not support listing)
-    for (const id of privatkreditIds) {
       try {
-        const process = await fetchPrivatkreditProcessDetails(id)
-        const customerData = extractCustomerFromProcess(process, 'privatkredit')
-        if (customerData) {
-          customerDataList.push(customerData)
-        }
+        const fullProcess = await fetchBaufinanzierungProcessDetails(processMeta.vorgangsNummer)
+        const customers = extractCustomerFromProcess(fullProcess, 'baufinanzierung')
+        customerDataList.push(...customers)
       } catch (err) {
-        console.error(`Error fetching Privatkredit details for ID ${id}:`, err)
+        console.error(`[Admin Sync] Error for ${processMeta.vorgangsNummer}:`, err)
         results.errors++
       }
     }
 
     results.total = customerDataList.length
 
-    // Process each customer
-    for (const customerData of customerDataList) {
+    // Upsert each customer
+    for (const c of customerDataList) {
       try {
-        if (!customerData.email) {
+        if (!c.firstName && !c.lastName) {
           results.skipped++
           continue
         }
 
-        // Check if customer already exists by email
-        const existingCustomer = await db
-          .select()
-          .from(crmCustomers)
-          .where(eq(crmCustomers.email, customerData.email))
-          .limit(1)
+        // Find existing by email or europaceId
+        let existing = null
 
-        if (existingCustomer.length > 0) {
-          // Update existing customer
-          const updated = await db
-            .update(crmCustomers)
-            .set({
-              firstName: customerData.firstName || existingCustomer[0].firstName,
-              lastName: customerData.lastName || existingCustomer[0].lastName,
-              phone: customerData.phone || existingCustomer[0].phone,
-              address: customerData.address || existingCustomer[0].address,
-              europaceId: customerData.vorgangsNummer || existingCustomer[0].europaceId,
-            })
-            .where(eq(crmCustomers.id, existingCustomer[0].id))
-            .returning()
+        if (c.email) {
+          const [found] = await db
+            .select()
+            .from(crmCustomers)
+            .where(eq(crmCustomers.email, c.email))
+            .limit(1)
+          existing = found || null
+        }
+
+        if (!existing && c.vorgangsNummer) {
+          const [found] = await db
+            .select()
+            .from(crmCustomers)
+            .where(eq(crmCustomers.europaceId, c.vorgangsNummer))
+            .limit(1)
+          existing = found || null
+        }
+
+        const updateData: Record<string, any> = {
+          firstName: c.firstName || undefined,
+          lastName: c.lastName || undefined,
+          email: c.email || undefined,
+          phone: c.phone || undefined,
+          salutation: c.salutation || undefined,
+          address: c.address || undefined,
+          street: c.street || undefined,
+          city: c.city || undefined,
+          zipCode: c.zipCode || undefined,
+          birthDate: c.birthDate ? new Date(c.birthDate) : undefined,
+          maritalStatus: c.maritalStatus || undefined,
+          nationality: c.nationality || undefined,
+          occupation: c.occupation || undefined,
+          monthlyIncome: c.monthlyIncome?.toString() || undefined,
+          europaceId: c.vorgangsNummer,
+          updatedAt: new Date(),
+        }
+
+        // Remove undefined
+        const cleanData = Object.fromEntries(
+          Object.entries(updateData).filter(([, v]) => v !== undefined)
+        )
+
+        if (existing) {
+          // Update: only fill empty fields
+          const mergedData: Record<string, any> = {}
+          for (const [key, value] of Object.entries(cleanData)) {
+            const existingValue = (existing as any)[key]
+            if (!existingValue || existingValue === '' || key === 'europaceId' || key === 'updatedAt') {
+              mergedData[key] = value
+            }
+          }
+
+          if (Object.keys(mergedData).length > 0) {
+            await db.update(crmCustomers).set(mergedData).where(eq(crmCustomers.id, existing.id))
+          }
 
           results.updated++
           results.customers.push({
             action: 'updated',
-            email: customerData.email,
-            name: `${customerData.firstName} ${customerData.lastName}`,
-            source: customerData.source,
+            name: `${c.firstName} ${c.lastName}`,
+            email: c.email || '-',
+            vorgang: c.vorgangsNummer,
           })
         } else {
-          // Create new customer
-          const hashedPassword = await bcrypt.hash(Math.random().toString(36).slice(-8), 10)
-
-          const newCustomer = await db
-            .insert(crmCustomers)
-            .values({
-              email: customerData.email,
-              passwordHash: hashedPassword,
-              firstName: customerData.firstName || '',
-              lastName: customerData.lastName || '',
-              phone: customerData.phone || '',
-              address: customerData.address || '',
-              europaceId: customerData.vorgangsNummer,
-              emailVerified: false,
-            })
-            .returning()
+          // Create new
+          await db.insert(crmCustomers).values({
+            ...(cleanData as any),
+            firstName: c.firstName || '',
+            lastName: c.lastName || '',
+            isActiveUser: false,
+            emailVerified: false,
+          })
 
           results.created++
           results.customers.push({
             action: 'created',
-            email: customerData.email,
-            name: `${customerData.firstName} ${customerData.lastName}`,
-            source: customerData.source,
+            name: `${c.firstName} ${c.lastName}`,
+            email: c.email || '-',
+            vorgang: c.vorgangsNummer,
           })
         }
       } catch (error) {
-        console.error('Error processing customer:', customerData.email, error)
+        console.error('[Admin Sync] Error:', c.firstName, c.lastName, error)
         results.errors++
       }
     }
 
     return NextResponse.json({
       success: true,
-      message: `Synchronisation abgeschlossen: ${results.created} erstellt, ${results.updated} aktualisiert, ${results.skipped} übersprungen, ${results.errors} Fehler`,
+      message: `Sync: ${results.created} neu, ${results.updated} aktualisiert, ${results.skipped} übersprungen, ${results.errors} Fehler`,
       results,
     })
   } catch (error) {
-    console.error('Europace sync error:', error)
+    console.error('[Admin Sync] Fatal:', error)
     return NextResponse.json(
-      {
-        success: false,
-        error: error instanceof Error ? error.message : 'Synchronisation fehlgeschlagen',
-      },
+      { success: false, error: error instanceof Error ? error.message : 'Sync fehlgeschlagen' },
       { status: 500 }
     )
   }

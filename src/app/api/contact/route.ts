@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
-import { createKundenangabenCase } from '../../../../lib/europace'
+import { createKundenangabenCase } from '@/lib/europace'
 
 export const runtime = 'nodejs'
 
@@ -163,7 +163,13 @@ export async function POST(req: NextRequest) {
           },
         }
 
-        const created = await createKundenangabenCase(payload, datenkontext as any)
+        const created = await createKundenangabenCase({
+          vorname: data.firstname,
+          nachname: data.lastname,
+          email: data.email,
+          telefon: data.phone,
+          datenkontext: datenkontext as 'TEST_MODUS' | 'ECHT_GESCHAEFT',
+        })
         europaceForwarded = true
         europaceInfo = { vorgangsNummer: created.vorgangsNummer, openUrl: created.openUrl }
       } catch (apiErr) {

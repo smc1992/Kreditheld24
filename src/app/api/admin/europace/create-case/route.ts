@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { db, crmCustomers } from '@/db'
 import { eq } from 'drizzle-orm'
-import { createPrivatkreditCase, type EuropaceCustomerData } from '../../../../../../lib/europace'
+import { createKundenangabenCase } from '@/lib/europace'
 
 export async function POST(request: Request) {
   try {
@@ -19,63 +19,49 @@ export async function POST(request: Request) {
     }
 
     // Fetch customer data
-    const customers = await db
+    const [customer] = await db
       .select()
       .from(crmCustomers)
       .where(eq(crmCustomers.id, customerId))
       .limit(1)
 
-    if (customers.length === 0) {
+    if (!customer) {
       return NextResponse.json({ error: 'Customer not found' }, { status: 404 })
     }
 
-    const customer = customers[0]
+    // Determine environment
+    const isLive = body.live === true || process.env.EUROPACE_ENV === 'PRODUCTION'
+    const datenKontext = isLive ? 'ECHT_GESCHAEFT' : 'TEST_MODUS'
 
-    if (!customer.email) {
-      return NextResponse.json({ error: 'Kunde hat keine E-Mail-Adresse. Diese ist für Europace erforderlich.' }, { status: 400 })
-    }
+    console.log(`Creating Europace case for ${customer.firstName} ${customer.lastName} in ${datenKontext}...`)
 
-    // Map to EuropaceCustomerData
-    const customerData: EuropaceCustomerData = {
-      salutation: customer.salutation || undefined,
-      title: customer.title || undefined,
-      firstName: customer.firstName,
-      lastName: customer.lastName,
-      email: customer.email,
-      phone: customer.phone || undefined,
-      address: customer.address || undefined,
-      birthDate: customer.birthDate ? new Date(customer.birthDate) : undefined,
-      birthPlace: customer.birthPlace || undefined,
-      maritalStatus: customer.maritalStatus || undefined,
-      childrenCount: customer.childrenCount || 0,
-      nationality: customer.nationality || undefined,
-      source: 'privatkredit'
-    }
+    const result = await createKundenangabenCase({
+      vorname: customer.firstName,
+      nachname: customer.lastName,
+      email: customer.email || undefined,
+      telefon: customer.phone || undefined,
+      strasse: customer.street || undefined,
+      plz: customer.zipCode || undefined,
+      ort: customer.city || undefined,
+      geburtsdatum: customer.birthDate ? new Date(customer.birthDate).toISOString().split('T')[0] : undefined,
+      datenkontext: datenKontext as 'TEST_MODUS' | 'ECHT_GESCHAEFT',
+    })
 
-    // Create case in Europace
-    // Determine environment: Default to TEST_MODUS unless explicitly set to ECHT_GESCHAEFT
-    // The user requested live environment support. 
-    // We check for a flag in the body 'live' or process.env.EUROPACE_ENV
-    const isLive = body.live === true || process.env.EUROPACE_ENV === 'PRODUCTION';
-    const datenKontext = isLive ? 'ECHT_GESCHAEFT' : 'TEST_MODUS';
-
-    console.log(`Creating Europace case for customer ${customerId} in ${datenKontext} mode...`);
-
-    const vorgangsNummer = await createPrivatkreditCase(customerData, datenKontext)
-
-    // Store the vorgangsNummer in the customer record
-    // Always update if we got a new number, or logic as preferred.
-    // User requirement: "die api gibt die response der vorgangs id die müssten wir auch in unserem system speichern"
+    // Store the vorgangsNummer
     await db
       .update(crmCustomers)
-      .set({ europaceId: vorgangsNummer })
+      .set({ europaceId: result.vorgangsNummer, updatedAt: new Date() })
       .where(eq(crmCustomers.id, customerId))
 
-    return NextResponse.json({ success: true, vorgangsNummer })
+    return NextResponse.json({
+      success: true,
+      vorgangsNummer: result.vorgangsNummer,
+      openUrl: result.openUrl,
+    })
   } catch (error) {
     console.error('Error creating Europace case:', error)
     return NextResponse.json(
-      { success: false, error: error instanceof Error ? error.message : 'Unknown error' },
+      { success: false, error: error instanceof Error ? error.message : 'Fehler bei Europace-Erstellung' },
       { status: 500 }
     )
   }
