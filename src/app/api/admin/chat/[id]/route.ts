@@ -2,12 +2,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { db, chatSessions, chatMessages, crmCustomers } from '@/db';
-import { eq, asc, desc } from 'drizzle-orm';
+import { eq, asc } from 'drizzle-orm';
 
 // GET /api/admin/chat/[id] - Get session details and messages
 export async function GET(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await auth();
@@ -15,30 +15,23 @@ export async function GET(
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { id } = params;
+        const { id } = await params;
 
-        // 1. Fetch Session Info
-        const chatSession = await db.query.chatSessions.findFirst({
-            where: eq(chatSessions.id, id),
-            with: {
-                // We can't easily join crmCustomers in query builder 'with' if relation isn't defined in schema relations
-                // So we might fetch customer separately or use raw join in previous route.
-                // For detail view, fetching customer separate is fine or we add relations to schema.
-                // Let's assume we fetch customer manually if needs detailed info.
-            }
-        });
+        // 1. Fetch Session
+        const [chatSession] = await db.select().from(chatSessions).where(eq(chatSessions.id, id)).limit(1);
 
         if (!chatSession) {
             return NextResponse.json({ error: 'Session not found' }, { status: 404 });
         }
 
+        // 2. Fetch Customer
         let customer = null;
         if (chatSession.customerId) {
-            const customerData = await db.select().from(crmCustomers).where(eq(crmCustomers.id, chatSession.customerId));
-            customer = customerData[0] || null;
+            const [c] = await db.select().from(crmCustomers).where(eq(crmCustomers.id, chatSession.customerId)).limit(1);
+            customer = c || null;
         }
 
-        // 2. Fetch Messages
+        // 3. Fetch Messages
         const messages = await db.select()
             .from(chatMessages)
             .where(eq(chatMessages.sessionId, id))
@@ -59,7 +52,7 @@ export async function GET(
 // POST /api/admin/chat/[id] - Send a message (as admin)
 export async function POST(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await auth();
@@ -67,7 +60,7 @@ export async function POST(
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { id } = params;
+        const { id } = await params;
         const body = await request.json();
         const { content } = body;
 
@@ -75,19 +68,19 @@ export async function POST(
             return NextResponse.json({ error: 'Content is required' }, { status: 400 });
         }
 
-        // Insert Message
+        // Insert Admin Message
         const [newMessage] = await db.insert(chatMessages).values({
             sessionId: id,
             sender: 'admin',
             content: content,
-            isRead: true, // Admin reads their own message
+            isRead: true,
         }).returning();
 
         // Update Session LastMessageAt
         await db.update(chatSessions)
             .set({
                 lastMessageAt: new Date(),
-                // Optionally: status logic?
+                updatedAt: new Date(),
             })
             .where(eq(chatSessions.id, id));
 
@@ -102,7 +95,7 @@ export async function POST(
 // PATCH /api/admin/chat/[id] - Update session (Toggle AI, Close, etc.)
 export async function PATCH(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await auth();
@@ -110,7 +103,7 @@ export async function PATCH(
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { id } = params;
+        const { id } = await params;
         const body = await request.json();
         const { aiEnabled, status } = body;
 
