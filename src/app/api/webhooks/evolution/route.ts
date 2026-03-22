@@ -26,6 +26,9 @@ export async function POST(request: NextRequest) {
       case 'messages.update':
         await handleMessageUpdate(body);
         break;
+      case 'messages.set':
+        await handleMessagesSync(body);
+        break;
       case 'contacts.set':
       case 'contacts.upsert':
       case 'contacts.update':
@@ -455,4 +458,84 @@ async function handleChatsSync(payload: any) {
       console.error('[Evolution Webhook] Error processing chat:', err);
     }
   }
+}
+
+async function handleMessagesSync(payload: any) {
+  const data = payload.data;
+  const messages = Array.isArray(data) ? data : (data?.messages || []);
+
+  console.log(`[Evolution Webhook] Messages sync: ${messages.length} messages`);
+
+  let count = 0;
+  for (const msg of messages) {
+    try {
+      const remoteJid = msg.key?.remoteJid;
+      if (!remoteJid || remoteJid.endsWith('@g.us') || remoteJid === 'status@broadcast') continue;
+
+      const messageId = msg.key?.id;
+      if (!messageId) continue;
+
+      // Upsert conversation to get ID
+      let conversationId: string;
+      const existingConv = await db.select({ id: whatsappConversations.id })
+        .from(whatsappConversations)
+        .where(eq(whatsappConversations.remoteJid, remoteJid))
+        .limit(1);
+
+      if (existingConv.length > 0) {
+        conversationId = existingConv[0].id;
+      } else {
+        const [newConv] = await db.insert(whatsappConversations).values({
+          remoteJid,
+          phoneNumber: cleanPhoneNumber(remoteJid),
+          unreadCount: 0,
+          isArchived: false,
+          aiEnabled: false,
+        }).returning({ id: whatsappConversations.id });
+        conversationId = newConv.id;
+      }
+
+      // Check if message exists
+      const existingMsg = await db.select({ id: whatsappMessages.id })
+        .from(whatsappMessages)
+        .where(eq(whatsappMessages.messageId, messageId))
+        .limit(1);
+
+      if (existingMsg.length === 0) {
+        const extracted = extractMessageContent(msg);
+        
+        const timestamp = msg.messageTimestamp 
+          ? new Date(typeof msg.messageTimestamp === 'number' ? msg.messageTimestamp * 1000 : parseInt(msg.messageTimestamp) * 1000)
+          : new Date();
+
+        await db.insert(whatsappMessages).values({
+          conversationId,
+          messageId,
+          remoteJid,
+          sender: msg.key?.fromMe ? 'admin' : 'customer',
+          content: extracted.content,
+          messageType: extracted.messageType,
+          mediaUrl: extracted.mediaUrl,
+          mediaMimeType: extracted.mediaMimeType,
+          mediaFileName: extracted.mediaFileName,
+          isFromMe: msg.key?.fromMe || false,
+          isRead: true, // Mark old messages as read
+          timestamp,
+        });
+        count++;
+
+        // Update conversation lastMessageAt if newer
+        await db.update(whatsappConversations)
+          .set({
+            lastMessageAt: timestamp,
+            lastMessagePreview: extracted.content ? extracted.content.substring(0, 200) : '',
+            updatedAt: new Date(),
+          })
+          .where(sql`${whatsappConversations.id} = ${conversationId} AND (${whatsappConversations.lastMessageAt} IS NULL OR ${whatsappConversations.lastMessageAt} < ${timestamp})`);
+      }
+    } catch (err) {
+      // Ignore individual errors during bulk sync
+    }
+  }
+  console.log(`[Evolution Webhook] Successfully imported ${count} historical messages`);
 }
