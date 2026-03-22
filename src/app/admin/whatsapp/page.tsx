@@ -30,7 +30,11 @@ import {
   LogOut,
   Trash2,
   AlertTriangle,
+  Megaphone,
+  Bell,
+  BellOff,
 } from 'lucide-react';
+import Link from 'next/link';
 
 interface Conversation {
   id: string;
@@ -79,6 +83,8 @@ export default function WhatsAppPage() {
   const [showStatus, setShowStatus] = useState(false);
   const [disconnecting, setDisconnecting] = useState(false);
   const [clearing, setClearing] = useState(false);
+  const [notifPermission, setNotifPermission] = useState<NotificationPermission>('default');
+  const prevTotalUnread = useRef<number>(0);
   const [templates, setTemplates] = useState<Array<{id: string; name: string; content: string; category: string | null}>>([]);
   const [showTemplates, setShowTemplates] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -91,6 +97,20 @@ export default function WhatsAppPage() {
       if (d.success) setTemplates(d.templates);
     }).catch(() => {});
   }, []);
+
+  // Request notification permission on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      setNotifPermission(Notification.permission);
+    }
+  }, []);
+
+  const requestNotifPermission = async () => {
+    if ('Notification' in window) {
+      const perm = await Notification.requestPermission();
+      setNotifPermission(perm);
+    }
+  };
 
   // Fetch connection status
   const fetchStatus = useCallback(async () => {
@@ -113,6 +133,22 @@ export default function WhatsAppPage() {
       const res = await fetch(`/api/admin/whatsapp/conversations?search=${encodeURIComponent(search)}`);
       const data = await res.json();
       if (data.success) {
+        // Check for new unread messages and send notification
+        const newTotal = data.totalUnread || 0;
+        if (newTotal > prevTotalUnread.current && prevTotalUnread.current >= 0 && notifPermission === 'granted') {
+          const diff = newTotal - prevTotalUnread.current;
+          // Find the conversation with new messages
+          const updatedConvs = data.data as Conversation[];
+          const newMsgConv = updatedConvs.find((c: Conversation) => c.unreadCount > 0);
+          if (newMsgConv && document.hidden) {
+            new Notification('Neue WhatsApp-Nachricht', {
+              body: `${newMsgConv.pushName || 'Unbekannt'}: ${newMsgConv.lastMessagePreview || 'Neue Nachricht'}`,
+              icon: '/icon-192x192.png',
+              tag: 'whatsapp-' + newMsgConv.id,
+            });
+          }
+        }
+        prevTotalUnread.current = newTotal;
         setConversations(data.data);
       }
     } catch (err) {
@@ -292,6 +328,26 @@ export default function WhatsAppPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {/* Notification Toggle */}
+            <button
+              onClick={requestNotifPermission}
+              title={notifPermission === 'granted' ? 'Benachrichtigungen aktiv' : 'Benachrichtigungen aktivieren'}
+              className={`p-2 rounded-lg transition-all ${
+                notifPermission === 'granted'
+                  ? 'text-emerald-600 bg-emerald-50'
+                  : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              {notifPermission === 'granted' ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
+            </button>
+            {/* Broadcast Link */}
+            <Link
+              href="/admin/whatsapp/broadcast"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-violet-50 text-violet-700 border border-violet-200 rounded-lg text-xs font-semibold hover:bg-violet-100 transition-all"
+            >
+              <Megaphone className="h-3 w-3" />
+              Broadcast
+            </Link>
             {/* Connection Status */}
             <button
               onClick={() => { setShowStatus(!showStatus); fetchStatus(); }}
