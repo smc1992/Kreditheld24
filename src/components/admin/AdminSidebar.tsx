@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Mail,
   MessageSquare,
+  MessageCircle,
   BookOpen
 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
@@ -22,6 +23,7 @@ const navigation = [
   { name: 'Kunden', href: '/admin/customers', icon: Users },
   { name: 'Vorgänge', href: '/admin/cases', icon: Briefcase },
   { name: 'Nachrichten', href: '/admin/messages', icon: MessageSquare, badgeKey: 'messages' as const },
+  { name: 'WhatsApp', href: '/admin/whatsapp', icon: MessageCircle, badgeKey: 'whatsapp' as const },
   { name: 'E-Mails', href: '/admin/emails', icon: Mail },
   { name: 'Knowledge Base', href: '/admin/knowledge', icon: BookOpen },
   { name: 'Zinssätze', href: '/admin/rates', icon: Percent },

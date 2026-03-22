@@ -373,3 +373,58 @@ export type NewChatMessage = typeof chatMessages.$inferInsert;
 
 export type KnowledgeBaseItem = typeof knowledgeBase.$inferSelect;
 export type NewKnowledgeBaseItem = typeof knowledgeBase.$inferInsert;
+
+// ============================================
+// WhatsApp / Evolution API Integration
+// ============================================
+
+// WhatsApp Conversations (one per contact/phone number)
+export const whatsappConversations = pgTable('whatsapp_conversations', {
+  id: uuid('id').primaryKey().default(sql`uuid_generate_v4()`),
+  remoteJid: varchar('remote_jid', { length: 100 }).notNull().unique(), // e.g. "491701234567@s.whatsapp.net"
+  pushName: varchar('push_name', { length: 255 }), // WhatsApp display name
+  phoneNumber: varchar('phone_number', { length: 50 }), // cleaned phone number
+  profilePicUrl: text('profile_pic_url'),
+  customerId: uuid('customer_id').references(() => crmCustomers.id, { onDelete: 'set null' }), // link to CRM customer
+  unreadCount: integer('unread_count').default(0),
+  lastMessageAt: timestamp('last_message_at', { withTimezone: true }),
+  lastMessagePreview: text('last_message_preview'),
+  isArchived: boolean('is_archived').default(false),
+  aiEnabled: boolean('ai_enabled').default(true), // KI auto-reply toggle
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  remoteJidIdx: index('idx_wa_conv_remote_jid').on(table.remoteJid),
+  customerIdx: index('idx_wa_conv_customer').on(table.customerId),
+  lastMsgIdx: index('idx_wa_conv_last_msg').on(table.lastMessageAt),
+}));
+
+// WhatsApp Messages
+export const whatsappMessages = pgTable('whatsapp_messages', {
+  id: uuid('id').primaryKey().default(sql`uuid_generate_v4()`),
+  conversationId: uuid('conversation_id').references(() => whatsappConversations.id, { onDelete: 'cascade' }).notNull(),
+  messageId: varchar('message_id', { length: 255 }).unique(), // Evolution API message ID
+  remoteJid: varchar('remote_jid', { length: 100 }).notNull(),
+  sender: varchar('sender', { length: 20 }).notNull(), // 'customer', 'admin', 'ai'
+  content: text('content'), // text content
+  messageType: varchar('message_type', { length: 30 }).default('text'), // 'text', 'image', 'audio', 'video', 'document', 'sticker'
+  mediaUrl: text('media_url'), // URL to media file if applicable
+  mediaMimeType: varchar('media_mime_type', { length: 100 }),
+  mediaFileName: varchar('media_file_name', { length: 255 }),
+  isFromMe: boolean('is_from_me').default(false),
+  isRead: boolean('is_read').default(false),
+  metadata: jsonb('metadata'), // raw Evolution API payload or extras
+  timestamp: timestamp('timestamp', { withTimezone: true }).defaultNow().notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  convIdx: index('idx_wa_msg_conversation').on(table.conversationId),
+  remoteJidIdx: index('idx_wa_msg_remote_jid').on(table.remoteJid),
+  timestampIdx: index('idx_wa_msg_timestamp').on(table.timestamp),
+  messageIdIdx: index('idx_wa_msg_message_id').on(table.messageId),
+}));
+
+// Types
+export type WhatsAppConversation = typeof whatsappConversations.$inferSelect;
+export type NewWhatsAppConversation = typeof whatsappConversations.$inferInsert;
+export type WhatsAppMessage = typeof whatsappMessages.$inferSelect;
+export type NewWhatsAppMessage = typeof whatsappMessages.$inferInsert;
