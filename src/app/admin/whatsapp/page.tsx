@@ -27,6 +27,9 @@ import {
   Mic,
   MapPin,
   Video,
+  LogOut,
+  Trash2,
+  AlertTriangle,
 } from 'lucide-react';
 
 interface Conversation {
@@ -74,6 +77,8 @@ export default function WhatsAppPage() {
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [instanceInfo, setInstanceInfo] = useState<any>(null);
   const [showStatus, setShowStatus] = useState(false);
+  const [disconnecting, setDisconnecting] = useState(false);
+  const [clearing, setClearing] = useState(false);
   const [templates, setTemplates] = useState<Array<{id: string; name: string; content: string; category: string | null}>>([]);
   const [showTemplates, setShowTemplates] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -346,6 +351,99 @@ export default function WhatsAppPage() {
                   )}
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* Connected Status Panel (shows when status is open and clicked) */}
+        {showStatus && connectionStatus === 'open' && (
+          <div className="mb-4 bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                  <Wifi className="h-5 w-5 text-emerald-600" />
+                  WhatsApp verbunden
+                </h2>
+                {instanceInfo && (
+                  <p className="text-sm text-slate-500 mt-1">
+                    {instanceInfo.profileName || instanceInfo.name}
+                    {instanceInfo.number && <span className="ml-2 text-slate-400">+{instanceInfo.number}</span>}
+                  </p>
+                )}
+              </div>
+              <button
+                onClick={() => setShowStatus(false)}
+                className="p-1 text-slate-400 hover:text-slate-600"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              {/* Disconnect Button */}
+              <button
+                onClick={async () => {
+                  if (!confirm('WhatsApp-Verbindung wirklich trennen? Du musst den QR-Code erneut scannen, um wieder zu verbinden.')) return;
+                  setDisconnecting(true);
+                  try {
+                    const res = await fetch('/api/admin/whatsapp/status', { method: 'POST' });
+                    const data = await res.json();
+                    if (data.success) {
+                      setConnectionStatus('close');
+                      setShowStatus(false);
+                      alert('WhatsApp wurde getrennt.');
+                      fetchStatus();
+                    } else {
+                      alert('Fehler: ' + (data.error || 'Unbekannt'));
+                    }
+                  } catch (err) { alert('Verbindungsfehler'); }
+                  setDisconnecting(false);
+                }}
+                disabled={disconnecting}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl text-sm font-semibold hover:bg-amber-100 transition-all disabled:opacity-50"
+              >
+                {disconnecting ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogOut className="h-4 w-4" />}
+                Verbindung trennen
+              </button>
+
+              {/* Clear All Data Button */}
+              <button
+                onClick={async () => {
+                  const confirmed = confirm(
+                    '⚠️ ACHTUNG: Alle WhatsApp-Daten löschen?\n\n'
+                    + 'Das umfasst:\n'
+                    + '• Alle Unterhaltungen\n'
+                    + '• Alle Nachrichten\n'
+                    + '• Alle Automations-Logs\n\n'
+                    + 'Diese Aktion kann nicht rückgängig gemacht werden!'
+                  );
+                  if (!confirmed) return;
+
+                  const doubleConfirm = confirm('Bist du wirklich sicher? Alle WhatsApp-Daten werden unwiderruflich gelöscht.');
+                  if (!doubleConfirm) return;
+
+                  setClearing(true);
+                  try {
+                    const res = await fetch('/api/admin/whatsapp/status?clearLogs=true', { method: 'DELETE' });
+                    const data = await res.json();
+                    if (data.success) {
+                      setConversations([]);
+                      setMessages([]);
+                      setSelectedConv(null);
+                      alert(`Gelöscht: ${data.deleted.messages} Nachrichten, ${data.deleted.conversations} Unterhaltungen, ${data.deleted.logs} Logs`);
+                      fetchConversations();
+                    } else {
+                      alert('Fehler: ' + (data.error || 'Unbekannt'));
+                    }
+                  } catch (err) { alert('Verbindungsfehler'); }
+                  setClearing(false);
+                }}
+                disabled={clearing}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-700 border border-red-200 rounded-xl text-sm font-semibold hover:bg-red-100 transition-all disabled:opacity-50"
+              >
+                {clearing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                Alle Daten löschen
+              </button>
             </div>
           </div>
         )}
