@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import DashboardLayout from '@/components/admin/DashboardLayout';
+import EmojiPicker from '@/components/chat/EmojiPicker';
 import Link from 'next/link';
 import {
     ArrowLeft,
@@ -635,6 +636,15 @@ export default function ChatDetailClient({ session: initialSession }: { session:
                                 >
                                     {uploading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Paperclip className="h-5 w-5" />}
                                 </button>
+
+                                {/* Emoji Picker */}
+                                <EmojiPicker
+                                    onEmojiSelect={(emoji) => {
+                                        setNewMessage(prev => prev + emoji);
+                                        textareaRef.current?.focus();
+                                    }}
+                                    position="top"
+                                />
 
                                 <div className="flex-1">
                                     <textarea

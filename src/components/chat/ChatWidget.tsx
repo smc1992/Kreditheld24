@@ -9,6 +9,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Input } from '@/components/ui/input';
 import { MessageSquare, X, Send, Bot, User, Loader2, MinusCircle, Shield } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import EmojiPicker from '@/components/chat/EmojiPicker';
 
 interface PollMessage {
     id: string;
@@ -196,12 +197,24 @@ export default function ChatWidget() {
                     </CardContent>
 
                     <CardFooter className="p-3 bg-white border-t">
-                        <form onSubmit={handleSubmit} className="flex w-full gap-2">
+                        <form onSubmit={handleSubmit} className="flex w-full gap-2 items-center">
+                            <EmojiPicker
+                                onEmojiSelect={(emoji) => {
+                                    const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set;
+                                    const inputEl = document.querySelector<HTMLInputElement>('.chat-widget-input');
+                                    if (inputEl && nativeInputValueSetter) {
+                                        nativeInputValueSetter.call(inputEl, input + emoji);
+                                        inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+                                        inputEl.focus();
+                                    }
+                                }}
+                                position="top"
+                            />
                             <Input
                                 value={input}
                                 onChange={handleInputChange}
                                 placeholder="Nachricht schreiben..."
-                                className="flex-1 focus-visible:ring-emerald-500"
+                                className="flex-1 focus-visible:ring-emerald-500 chat-widget-input"
                             />
                             <Button type="submit" size="icon" disabled={isLoading || !input.trim()} className="bg-emerald-600 hover:bg-emerald-700">
                                 <Send className="w-4 h-4" />
