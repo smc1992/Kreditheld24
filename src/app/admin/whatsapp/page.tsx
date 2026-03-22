@@ -198,6 +198,29 @@ export default function WhatsAppPage() {
     }
   };
 
+  const handleToggleAI = async () => {
+    if (!selectedConv) return;
+    const newValue = !selectedConv.aiEnabled;
+
+    // Optimistic update
+    setSelectedConv({ ...selectedConv, aiEnabled: newValue });
+    setConversations(prev =>
+      prev.map(c => c.id === selectedConv.id ? { ...c, aiEnabled: newValue } : c)
+    );
+
+    try {
+      await fetch(`/api/admin/whatsapp/conversations/${selectedConv.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ aiEnabled: newValue }),
+      });
+    } catch (err) {
+      console.error('Error toggling AI:', err);
+      // Revert on error
+      setSelectedConv({ ...selectedConv, aiEnabled: !newValue });
+    }
+  };
+
   const getDisplayName = (conv: Conversation) => {
     if (conv.customerFirstName && conv.customerLastName) {
       return `${conv.customerFirstName} ${conv.customerLastName}`;
@@ -431,11 +454,18 @@ export default function WhatsAppPage() {
                     </p>
                   </div>
                   <div className="flex items-center gap-1">
-                    {selectedConv.aiEnabled && (
-                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-violet-50 text-violet-600 rounded-md text-[10px] font-bold">
-                        <Bot className="h-3 w-3" /> KI
-                      </span>
-                    )}
+                    <button
+                      onClick={handleToggleAI}
+                      className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all ${
+                        selectedConv.aiEnabled
+                          ? 'bg-violet-50 text-violet-600 hover:bg-violet-100 border border-violet-200'
+                          : 'bg-slate-100 text-slate-400 hover:bg-slate-200 border border-slate-200'
+                      }`}
+                      title={selectedConv.aiEnabled ? 'KI-Assistent deaktivieren' : 'KI-Assistent aktivieren'}
+                    >
+                      <Bot className="h-3.5 w-3.5" />
+                      {selectedConv.aiEnabled ? 'KI An' : 'KI Aus'}
+                    </button>
                   </div>
                 </div>
 

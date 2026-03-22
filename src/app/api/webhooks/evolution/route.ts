@@ -2,6 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db, whatsappConversations, whatsappMessages } from '@/db';
 import { eq, sql } from 'drizzle-orm';
 import { cleanPhoneNumber } from '@/lib/evolution';
+import {
+  generateKIReply,
+  detectCreditIntent,
+  createCreditCaseFromWhatsApp,
+  handleDocumentFromWhatsApp,
+} from '@/lib/whatsapp-automation';
 
 export const dynamic = 'force-dynamic';
 
@@ -124,6 +130,43 @@ async function handleMessageUpsert(payload: any) {
         .where(eq(whatsappConversations.id, conversation.id));
 
       console.log(`[Evolution Webhook] Message saved: ${messageType} from ${isFromMe ? 'me' : phoneNumber}`);
+
+      // ============================================
+      // AUTOMATION TRIGGERS (only for incoming customer messages)
+      // ============================================
+      if (!isFromMe) {
+        // 1. Handle incoming documents → forward to CRM
+        if (['image', 'document', 'video'].includes(messageType) && messageId) {
+          handleDocumentFromWhatsApp(
+            conversation.id,
+            remoteJid,
+            messageId,
+            mediaUrl || null,
+            mediaMimeType || null,
+            mediaFileName || null,
+            messageType,
+          ).catch(err => console.error('[Evolution Webhook] Doc forwarding error:', err));
+        }
+
+        // 2. Check for credit application intent
+        if (content && detectCreditIntent(content)) {
+          console.log(`[Evolution Webhook] Credit intent detected from ${phoneNumber}`);
+          createCreditCaseFromWhatsApp(
+            conversation.id,
+            remoteJid,
+            phoneNumber,
+            pushName,
+          ).catch(err => console.error('[Evolution Webhook] Credit automation error:', err));
+        }
+        // 3. KI Auto-Reply (if AI enabled and it's a text message, and no credit intent already handled)
+        else if (content && conversation.aiEnabled) {
+          generateKIReply(
+            conversation.id,
+            content,
+            remoteJid,
+          ).catch(err => console.error('[Evolution Webhook] KI reply error:', err));
+        }
+      }
 
     } catch (err) {
       console.error('[Evolution Webhook] Error processing message:', err);
