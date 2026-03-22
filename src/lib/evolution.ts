@@ -127,6 +127,20 @@ export async function fetchMessages(remoteJid: string, count: number = 50) {
   });
 }
 
+export async function fetchAllContacts() {
+  return evolutionFetch(`/chat/findContacts/${INSTANCE_NAME}`, {
+    method: 'POST',
+    body: JSON.stringify({}),
+  });
+}
+
+export async function fetchAllChats() {
+  return evolutionFetch(`/chat/findChats/${INSTANCE_NAME}`, {
+    method: 'POST',
+    body: JSON.stringify({}),
+  });
+}
+
 // ============================================
 // Helpers
 // ============================================

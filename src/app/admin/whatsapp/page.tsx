@@ -33,6 +33,7 @@ import {
   Megaphone,
   Bell,
   BellOff,
+  Download,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -83,6 +84,7 @@ export default function WhatsAppPage() {
   const [showStatus, setShowStatus] = useState(false);
   const [disconnecting, setDisconnecting] = useState(false);
   const [clearing, setClearing] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [notifPermission, setNotifPermission] = useState<NotificationPermission>('default');
   const prevTotalUnread = useRef<number>(0);
   const [templates, setTemplates] = useState<Array<{id: string; name: string; content: string; category: string | null}>>([]);
@@ -436,6 +438,30 @@ export default function WhatsAppPage() {
             </div>
 
             <div className="flex flex-wrap gap-3">
+              {/* Sync / Import Button */}
+              <button
+                onClick={async () => {
+                  if (!confirm('Alle WhatsApp-Kontakte und Chatverlauf importieren? Das kann etwas dauern.')) return;
+                  setSyncing(true);
+                  try {
+                    const res = await fetch('/api/admin/whatsapp/sync', { method: 'POST' });
+                    const data = await res.json();
+                    if (data.success) {
+                      alert(`Import abgeschlossen:\n• ${data.imported.contacts} neue Kontakte\n• ${data.imported.messages} Nachrichten\n• ${data.imported.skipped} übersprungen (Gruppen)`);
+                      fetchConversations();
+                    } else {
+                      alert('Fehler: ' + (data.error || 'Unbekannt'));
+                    }
+                  } catch (err) { alert('Verbindungsfehler'); }
+                  setSyncing(false);
+                }}
+                disabled={syncing}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 border border-blue-200 rounded-xl text-sm font-semibold hover:bg-blue-100 transition-all disabled:opacity-50"
+              >
+                {syncing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+                {syncing ? 'Wird importiert...' : 'Kontakte & Verlauf importieren'}
+              </button>
+
               {/* Disconnect Button */}
               <button
                 onClick={async () => {
