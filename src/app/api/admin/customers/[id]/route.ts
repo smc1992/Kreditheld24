@@ -101,6 +101,7 @@ export async function PATCH(
     if (body.numberOfChildren !== undefined) updateData.numberOfChildren = body.numberOfChildren;
     if (body.occupation !== undefined) updateData.occupation = body.occupation;
     if (body.employer !== undefined) updateData.employer = body.employer;
+    if (body.employedSince !== undefined) updateData.employedSince = body.employedSince;
     if (body.monthlyIncome !== undefined) updateData.monthlyIncome = body.monthlyIncome;
     if (body.notes !== undefined) updateData.notes = body.notes;
 

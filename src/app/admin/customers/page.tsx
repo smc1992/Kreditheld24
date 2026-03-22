@@ -601,9 +601,21 @@ export default function CustomersPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
-                          Aktiv
-                        </span>
+                        <div className="flex flex-col gap-1">
+                          <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10 w-fit">
+                            Aktiv
+                          </span>
+                          {customer.maritalStatus && (
+                            <span className="inline-flex items-center rounded-full bg-purple-50 px-2 py-1 text-[10px] font-medium text-purple-700 ring-1 ring-inset ring-purple-600/10 w-fit">
+                              {customer.maritalStatus}
+                            </span>
+                          )}
+                          {customer.occupation && (
+                            <span className="inline-flex items-center rounded-full bg-amber-50 px-2 py-1 text-[10px] font-medium text-amber-700 ring-1 ring-inset ring-amber-600/10 w-fit truncate max-w-[120px]" title={customer.occupation}>
+                              {customer.occupation}
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2 text-xs text-slate-600">

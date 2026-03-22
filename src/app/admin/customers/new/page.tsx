@@ -36,6 +36,10 @@ export default function NewCustomerPage() {
     maritalStatus: '',
     childrenCount: 0,
     nationality: '',
+    occupation: '',
+    employer: '',
+    employedSince: '',
+    monthlyIncome: '',
   });
 
   if (!session) return null;
@@ -190,6 +194,52 @@ export default function NewCustomerPage() {
                   value={formData.nationality}
                   onChange={(e) => setFormData({ ...formData, nationality: e.target.value })}
                   placeholder="z.B. Deutsch"
+                />
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="occupation" className="text-sm font-semibold text-slate-700">Beruf / Beschäftigung</label>
+                <input
+                  id="occupation"
+                  type="text"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                  value={formData.occupation}
+                  onChange={(e) => setFormData({ ...formData, occupation: e.target.value })}
+                  placeholder="z.B. Angestellter"
+                />
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="employer" className="text-sm font-semibold text-slate-700">Arbeitgeber</label>
+                <input
+                  id="employer"
+                  type="text"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                  value={formData.employer}
+                  onChange={(e) => setFormData({ ...formData, employer: e.target.value })}
+                  placeholder="z.B. Muster GmbH"
+                />
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="employedSince" className="text-sm font-semibold text-slate-700">Beschäftigt seit</label>
+                <input
+                  id="employedSince"
+                  type="text"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                  value={formData.employedSince}
+                  onChange={(e) => setFormData({ ...formData, employedSince: e.target.value })}
+                  placeholder="z.B. 01/2020 oder 2020-01"
+                />
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="monthlyIncome" className="text-sm font-semibold text-slate-700">Monatl. Nettoeinkommen (€)</label>
+                <input
+                  id="monthlyIncome"
+                  type="number"
+                  min="0"
+                  step="1"
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                  value={formData.monthlyIncome}
+                  onChange={(e) => setFormData({ ...formData, monthlyIncome: e.target.value })}
+                  placeholder="z.B. 2500"
                 />
               </div>
             </div>

@@ -481,7 +481,7 @@ export default function CustomerDetailPage() {
                     </h2>
                   </div>
                   <div className="p-6">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-8">
                       <div className="flex flex-col gap-1">
                         <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Vorname</span>
                         <span className="text-sm font-medium text-slate-900">{customer.firstName}</span>
@@ -497,12 +497,45 @@ export default function CustomerDetailPage() {
                           {customer.birthDate ? new Date(customer.birthDate).toLocaleDateString('de-DE') : '-'}
                         </div>
                       </div>
+                      
                       <div className="flex flex-col gap-1">
                         <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Staatsangehörigkeit</span>
                         <div className="flex items-center gap-2 text-sm font-medium text-slate-900">
                           <Globe className="h-4 w-4 text-slate-400" />
                           {customer.nationality || '-'}
                         </div>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Familienstand</span>
+                        <div className="flex items-center gap-2 text-sm font-medium text-slate-900">
+                          <Heart className="h-4 w-4 text-slate-400" />
+                          {customer.maritalStatus || '-'}
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Beschäftigungsart</span>
+                        <div className="flex items-center gap-2 text-sm font-medium text-slate-900">
+                          <Briefcase className="h-4 w-4 text-slate-400" />
+                          {customer.occupation || '-'}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-1">
+                        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Arbeitgeber</span>
+                        <span className="text-sm font-medium text-slate-900">{customer.employer || '-'}</span>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Beschäftigt seit</span>
+                        <div className="flex items-center gap-2 text-sm font-medium text-slate-900">
+                          <Clock className="h-4 w-4 text-slate-400" />
+                          {customer.employedSince ? (customer.employedSince.length === 7 ? `${customer.employedSince.substring(5, 7)}/${customer.employedSince.substring(0, 4)}` : new Date(customer.employedSince).toLocaleDateString('de-DE')) : '-'}
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Monatl. Nettoeinkommen</span>
+                        <span className="text-sm font-bold text-emerald-600">
+                          {customer.monthlyIncome ? `${parseFloat(customer.monthlyIncome).toLocaleString('de-DE')} €` : '-'}
+                        </span>
                       </div>
                     </div>
                   </div>

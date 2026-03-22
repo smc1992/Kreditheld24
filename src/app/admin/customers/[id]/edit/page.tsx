@@ -29,6 +29,7 @@ export default function EditCustomerPage() {
     numberOfChildren: 0,
     occupation: '',
     employer: '',
+    employedSince: '',
     monthlyIncome: '',
     notes: '',
   });
@@ -58,6 +59,7 @@ export default function EditCustomerPage() {
             numberOfChildren: customer.numberOfChildren || 0,
             occupation: customer.occupation || '',
             employer: customer.employer || '',
+            employedSince: customer.employedSince ? (customer.employedSince.length === 7 ? customer.employedSince : new Date(customer.employedSince).toISOString().split('T')[0]) : '',
             monthlyIncome: customer.monthlyIncome || '',
             notes: customer.notes || '',
           });
@@ -307,19 +309,14 @@ export default function EditCustomerPage() {
                   <label htmlFor="maritalStatus" className="block text-sm font-medium text-slate-700 mb-1">
                     Familienstand
                   </label>
-                  <select
+                  <input
+                    type="text"
                     id="maritalStatus"
                     name="maritalStatus"
                     value={formData.maritalStatus}
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                  >
-                    <option value="">Bitte wählen</option>
-                    <option value="single">Ledig</option>
-                    <option value="married">Verheiratet</option>
-                    <option value="divorced">Geschieden</option>
-                    <option value="widowed">Verwitwet</option>
-                  </select>
+                  />
                 </div>
                 <div>
                   <label htmlFor="numberOfChildren" className="block text-sm font-medium text-slate-700 mb-1">
@@ -358,6 +355,20 @@ export default function EditCustomerPage() {
                     name="employer"
                     value={formData.employer}
                     onChange={handleChange}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="employedSince" className="block text-sm font-medium text-slate-700 mb-1">
+                    Beschäftigt seit
+                  </label>
+                  <input
+                    type="text"
+                    id="employedSince"
+                    name="employedSince"
+                    value={formData.employedSince}
+                    onChange={handleChange}
+                    placeholder="z.B. 2020-01 oder 01/2020"
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   />
                 </div>
