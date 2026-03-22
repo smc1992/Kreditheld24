@@ -13,20 +13,41 @@ import {
   PlusCircle,
   ArrowUpRight,
   TrendingUp,
+  TrendingDown,
   Activity,
   Percent,
-  ChevronRight
+  ChevronRight,
+  CalendarClock,
+  AlertCircle
 } from 'lucide-react';
+
+interface DashboardStats {
+  customers: number;
+  cases: number;
+  activities: number;
+  customersTrend: number;
+  casesTrend: number;
+  customersLast30: number;
+  casesLast30: number;
+  followUpsToday: number;
+  followUpsWeek: number;
+}
 
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [activities, setActivities] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<DashboardStats>({
     customers: 0,
     cases: 0,
-    activities: 0
+    activities: 0,
+    customersTrend: 0,
+    casesTrend: 0,
+    customersLast30: 0,
+    casesLast30: 0,
+    followUpsToday: 0,
+    followUpsWeek: 0,
   });
 
   useEffect(() => {
@@ -56,12 +77,18 @@ export default function AdminDashboard() {
     return null;
   }
 
+  const formatTrend = (value: number) => {
+    const prefix = value > 0 ? '+' : '';
+    return `${prefix}${value}%`;
+  };
+
   const statCards = [
     {
       name: 'Gesamtkunden',
       value: stats.customers,
-      change: '+12.5%',
-      trend: 'up',
+      change: formatTrend(stats.customersTrend),
+      subtitle: `${stats.customersLast30} neue (30 Tage)`,
+      trend: stats.customersTrend >= 0 ? 'up' : 'down',
       icon: Users,
       color: 'text-blue-600',
       bg: 'bg-blue-50',
@@ -71,8 +98,9 @@ export default function AdminDashboard() {
     {
       name: 'Aktive Vorgänge',
       value: stats.cases,
-      change: '+4.3%',
-      trend: 'up',
+      change: formatTrend(stats.casesTrend),
+      subtitle: `${stats.casesLast30} neue (30 Tage)`,
+      trend: stats.casesTrend >= 0 ? 'up' : 'down',
       icon: Briefcase,
       color: 'text-emerald-600',
       bg: 'bg-emerald-50',
@@ -83,6 +111,7 @@ export default function AdminDashboard() {
       name: 'Zinssätze',
       value: 'Live',
       change: 'Aktuell',
+      subtitle: 'Tagesaktuelle Konditionen',
       trend: 'neutral',
       icon: Percent,
       color: 'text-amber-600',
@@ -92,13 +121,14 @@ export default function AdminDashboard() {
     },
     {
       name: 'Wiedervorlagen',
-      value: 0,
-      change: 'Heute',
-      trend: 'neutral',
-      icon: Clock,
-      color: 'text-purple-600',
-      bg: 'bg-purple-50',
-      border: 'border-purple-100',
+      value: stats.followUpsToday,
+      change: stats.followUpsToday > 0 ? 'Fällig' : 'Keine',
+      subtitle: `${stats.followUpsWeek} diese Woche`,
+      trend: stats.followUpsToday > 0 ? 'urgent' : 'neutral',
+      icon: stats.followUpsToday > 0 ? AlertCircle : CalendarClock,
+      color: stats.followUpsToday > 0 ? 'text-red-600' : 'text-purple-600',
+      bg: stats.followUpsToday > 0 ? 'bg-red-50' : 'bg-purple-50',
+      border: stats.followUpsToday > 0 ? 'border-red-100' : 'border-purple-100',
       href: '/admin/cases',
     },
   ];
@@ -152,6 +182,18 @@ export default function AdminDashboard() {
                     {stat.change}
                   </div>
                 )}
+                {stat.trend === 'down' && (
+                  <div className="flex items-center gap-1 rounded-full bg-red-50 px-2.5 py-1 text-xs font-bold text-red-700 border border-red-100">
+                    <TrendingDown className="h-3 w-3" />
+                    {stat.change}
+                  </div>
+                )}
+                {stat.trend === 'urgent' && (
+                  <div className="flex items-center gap-1 rounded-full bg-red-50 px-2.5 py-1 text-xs font-bold text-red-700 border border-red-100 animate-pulse">
+                    <AlertCircle className="h-3 w-3" />
+                    {stat.change}
+                  </div>
+                )}
                 {stat.trend === 'neutral' && (
                   <div className="flex items-center gap-1 rounded-full bg-slate-50 px-2.5 py-1 text-xs font-bold text-slate-600 border border-slate-100">
                     {stat.change}
@@ -167,6 +209,9 @@ export default function AdminDashboard() {
                     {stat.value}
                   </p>
                 </div>
+                <p className="text-xs text-slate-400 mt-1">
+                  {stat.subtitle}
+                </p>
               </div>
               <div className="absolute bottom-0 right-0 p-3 opacity-0 transition-all group-hover:opacity-100 translate-x-2 group-hover:translate-x-0">
                 <ArrowUpRight className="h-5 w-5 text-emerald-500" />
@@ -235,6 +280,37 @@ export default function AdminDashboard() {
 
           {/* Sidebar / Quick Actions */}
           <div className="space-y-6">
+            {/* Follow-ups Warning */}
+            {stats.followUpsWeek > 0 && (
+              <div className="rounded-3xl bg-gradient-to-br from-amber-50 to-orange-50 p-8 shadow-sm border border-amber-200 relative overflow-hidden">
+                <div className="relative z-10">
+                  <div className="h-10 w-10 rounded-xl bg-amber-500 flex items-center justify-center mb-4 shadow-lg shadow-amber-500/20">
+                    <CalendarClock className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-amber-900">Wiedervorlagen</h3>
+                  <div className="mt-3 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-amber-700">Heute fällig:</span>
+                      <span className={`text-lg font-black ${stats.followUpsToday > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+                        {stats.followUpsToday}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-amber-700">Diese Woche:</span>
+                      <span className="text-lg font-black text-amber-900">{stats.followUpsWeek}</span>
+                    </div>
+                  </div>
+                  <Link
+                    href="/admin/cases"
+                    className="mt-4 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-amber-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-amber-700 transition-all shadow-md"
+                  >
+                    Vorgänge anzeigen
+                    <ArrowUpRight className="h-4 w-4" />
+                  </Link>
+                </div>
+              </div>
+            )}
+
             <div className="rounded-3xl bg-slate-900 p-8 shadow-2xl shadow-slate-900/20 text-white relative overflow-hidden group">
               <div className="relative z-10">
                 <div className="h-10 w-10 rounded-xl bg-emerald-500 flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/20">
@@ -244,9 +320,9 @@ export default function AdminDashboard() {
                 <p className="mt-3 text-slate-400 text-sm leading-relaxed">
                   Nutzen Sie die Suchfunktion im Header, um Kunden oder Vorgangsnummern blitzschnell zu finden.
                 </p>
-                <button className="mt-6 w-full rounded-xl bg-white/10 px-4 py-3 text-sm font-bold hover:bg-white/20 transition-all border border-white/10">
-                  Mehr erfahren
-                </button>
+                <Link href="/admin/knowledge" className="mt-6 w-full inline-flex items-center justify-center rounded-xl bg-white/10 px-4 py-3 text-sm font-bold hover:bg-white/20 transition-all border border-white/10">
+                  Knowledge Base öffnen
+                </Link>
               </div>
               <div className="absolute -bottom-10 -right-10 h-40 w-40 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all duration-700" />
             </div>
