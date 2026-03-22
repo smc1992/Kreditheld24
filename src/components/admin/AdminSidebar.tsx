@@ -14,7 +14,8 @@ import {
   Mail,
   MessageSquare,
   MessageCircle,
-  BookOpen
+  BookOpen,
+  Bot,
 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 
@@ -24,6 +25,7 @@ const navigation = [
   { name: 'Vorgänge', href: '/admin/cases', icon: Briefcase },
   { name: 'Nachrichten', href: '/admin/messages', icon: MessageSquare, badgeKey: 'messages' as const },
   { name: 'WhatsApp', href: '/admin/whatsapp', icon: MessageCircle, badgeKey: 'whatsapp' as const },
+  { name: 'WA Automation', href: '/admin/whatsapp/settings', icon: Bot },
   { name: 'E-Mails', href: '/admin/emails', icon: Mail },
   { name: 'Knowledge Base', href: '/admin/knowledge', icon: BookOpen },
   { name: 'Zinssätze', href: '/admin/rates', icon: Percent },
@@ -33,16 +35,20 @@ const navigation = [
 export default function AdminSidebar() {
   const pathname = usePathname();
   const [unreadCount, setUnreadCount] = useState(0);
+  const [waUnreadCount, setWaUnreadCount] = useState(0);
 
   // Poll unread messages every 15 seconds
   useEffect(() => {
     const fetchUnread = async () => {
       try {
-        const res = await fetch('/api/admin/chat/unread', { cache: 'no-store' });
-        const data = await res.json();
-        if (data.success) {
-          setUnreadCount(data.unreadCount);
-        }
+        const [chatRes, waRes] = await Promise.all([
+          fetch('/api/admin/chat/unread', { cache: 'no-store' }),
+          fetch('/api/admin/whatsapp/conversations?countOnly=true', { cache: 'no-store' }),
+        ]);
+        const chatData = await chatRes.json();
+        if (chatData.success) setUnreadCount(chatData.unreadCount);
+        const waData = await waRes.json();
+        if (waData.success && waData.totalUnread !== undefined) setWaUnreadCount(waData.totalUnread);
       } catch (err) {
         // silently ignore polling errors
       }
@@ -73,8 +79,10 @@ export default function AdminSidebar() {
           Menu
         </div>
         {navigation.map((item) => {
-          const isActive = pathname === item.href || (item.href !== '/admin' && pathname?.startsWith(item.href));
-          const showBadge = item.badgeKey === 'messages' && unreadCount > 0;
+          const isActive = pathname === item.href || (item.href !== '/admin' && item.href !== '/admin/whatsapp' && pathname?.startsWith(item.href))
+            || (item.href === '/admin/whatsapp' && pathname === '/admin/whatsapp');
+          const badgeCount = item.badgeKey === 'messages' ? unreadCount : item.badgeKey === 'whatsapp' ? waUnreadCount : 0;
+          const showBadge = badgeCount > 0;
 
           return (
             <Link
@@ -95,9 +103,9 @@ export default function AdminSidebar() {
                   <span className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-black ${
                     isActive
                       ? 'bg-white text-emerald-700'
-                      : 'bg-red-500 text-white animate-pulse'
+                      : item.badgeKey === 'whatsapp' ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white animate-pulse'
                   }`}>
-                    {unreadCount > 99 ? '99+' : unreadCount}
+                    {badgeCount > 99 ? '99+' : badgeCount}
                   </span>
                 )}
                 {isActive && <ChevronRight className="h-4 w-4 opacity-50" />}

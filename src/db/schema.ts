@@ -428,3 +428,42 @@ export type WhatsAppConversation = typeof whatsappConversations.$inferSelect;
 export type NewWhatsAppConversation = typeof whatsappConversations.$inferInsert;
 export type WhatsAppMessage = typeof whatsappMessages.$inferSelect;
 export type NewWhatsAppMessage = typeof whatsappMessages.$inferInsert;
+
+// WhatsApp Automation Logs
+export const whatsappAutomationLogs = pgTable('whatsapp_automation_logs', {
+  id: uuid('id').primaryKey().default(sql`uuid_generate_v4()`),
+  type: varchar('type', { length: 30 }).notNull(), // 'ki_reply', 'credit_detection', 'doc_forward', 'error'
+  conversationId: uuid('conversation_id').references(() => whatsappConversations.id, { onDelete: 'set null' }),
+  remoteJid: varchar('remote_jid', { length: 100 }),
+  success: boolean('success').default(true),
+  details: text('details'), // human-readable description
+  metadata: jsonb('metadata'), // extra data (extracted credit info, file names, error stack, etc.)
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  typeIdx: index('idx_wa_log_type').on(table.type),
+  createdAtIdx: index('idx_wa_log_created_at').on(table.createdAt),
+  convIdx: index('idx_wa_log_conv').on(table.conversationId),
+}));
+
+// WhatsApp Settings (singleton-style, key-value)
+export const whatsappSettings = pgTable('whatsapp_settings', {
+  id: uuid('id').primaryKey().default(sql`uuid_generate_v4()`),
+  key: varchar('key', { length: 100 }).notNull().unique(), // e.g. 'system_prompt', 'model', 'credit_keywords', 'global_ai_enabled'
+  value: text('value').notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+// WhatsApp Quick Reply Templates
+export const whatsappTemplates = pgTable('whatsapp_templates', {
+  id: uuid('id').primaryKey().default(sql`uuid_generate_v4()`),
+  name: varchar('name', { length: 100 }).notNull(),
+  category: varchar('category', { length: 50 }), // 'begrüßung', 'unterlagen', 'termin', 'allgemein'
+  content: text('content').notNull(),
+  sortOrder: integer('sort_order').default(0),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export type WhatsAppAutomationLog = typeof whatsappAutomationLogs.$inferSelect;
+export type WhatsAppSetting = typeof whatsappSettings.$inferSelect;
+export type WhatsAppTemplate = typeof whatsappTemplates.$inferSelect;

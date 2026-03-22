@@ -74,9 +74,18 @@ export default function WhatsAppPage() {
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [instanceInfo, setInstanceInfo] = useState<any>(null);
   const [showStatus, setShowStatus] = useState(false);
+  const [templates, setTemplates] = useState<Array<{id: string; name: string; content: string; category: string | null}>>([]);
+  const [showTemplates, setShowTemplates] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const pollRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Load templates
+  useEffect(() => {
+    fetch('/api/admin/whatsapp/templates').then(r => r.json()).then(d => {
+      if (d.success) setTemplates(d.templates);
+    }).catch(() => {});
+  }, []);
 
   // Fetch connection status
   const fetchStatus = useCallback(async () => {
@@ -534,7 +543,30 @@ export default function WhatsAppPage() {
                 </div>
 
                 {/* Message Input */}
-                <div className="px-4 py-3 border-t border-slate-100 bg-white">
+                <div className="px-4 py-3 border-t border-slate-100 bg-white relative">
+                  {/* Template Picker Dropdown */}
+                  {showTemplates && templates.length > 0 && (
+                    <div className="absolute bottom-full left-4 right-4 mb-2 bg-white rounded-xl border border-slate-200 shadow-xl max-h-60 overflow-y-auto z-10">
+                      <div className="p-2 border-b border-slate-100">
+                        <span className="text-xs font-bold text-slate-500 px-2">Schnellantworten</span>
+                      </div>
+                      {templates.map(tpl => (
+                        <button
+                          key={tpl.id}
+                          onClick={() => {
+                            setNewMessage(tpl.content);
+                            setShowTemplates(false);
+                            inputRef.current?.focus();
+                          }}
+                          className="w-full text-left px-4 py-2.5 hover:bg-emerald-50 transition-all"
+                        >
+                          <span className="text-sm font-semibold text-slate-700">{tpl.name}</span>
+                          {tpl.category && <span className="ml-2 text-[10px] text-slate-400">{tpl.category}</span>}
+                          <p className="text-xs text-slate-400 truncate mt-0.5">{tpl.content.substring(0, 80)}...</p>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                   <form
                     onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}
                     className="flex items-center gap-2"
@@ -542,6 +574,16 @@ export default function WhatsAppPage() {
                     <button type="button" className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all">
                       <Smile className="h-5 w-5" />
                     </button>
+                    {templates.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setShowTemplates(!showTemplates)}
+                        className={`p-2 rounded-lg transition-all ${showTemplates ? 'text-emerald-600 bg-emerald-50' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'}`}
+                        title="Schnellantworten"
+                      >
+                        <FileText className="h-5 w-5" />
+                      </button>
+                    )}
                     <input
                       ref={inputRef}
                       type="text"
@@ -550,6 +592,7 @@ export default function WhatsAppPage() {
                       placeholder="Nachricht schreiben..."
                       className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                       disabled={connectionStatus !== 'open'}
+                      onFocus={() => setShowTemplates(false)}
                     />
                     <button
                       type="submit"

@@ -4,7 +4,7 @@
  */
 
 import OpenAI from 'openai';
-import { db, crmCustomers, crmCases, crmDocuments, crmActivities, whatsappConversations, whatsappMessages } from '@/db';
+import { db, crmCustomers, crmCases, crmDocuments, crmActivities, whatsappConversations, whatsappMessages, whatsappAutomationLogs, whatsappSettings } from '@/db';
 import { eq, ilike, or, sql } from 'drizzle-orm';
 import { findRelevantContent } from '@/lib/rag';
 import { sendTextMessage, cleanPhoneNumber, INSTANCE_NAME, EVOLUTION_API_URL, EVOLUTION_API_KEY } from '@/lib/evolution';
@@ -17,10 +17,45 @@ const openai = new OpenAI({
 });
 
 // ============================================
-// KI Auto-Reply
+// Automation Logging Helper
 // ============================================
 
-const SYSTEM_PROMPT = `Du bist der KI-Assistent von Kreditheld24, einem führenden Kreditvermittler in Deutschland.
+async function logAutomation(
+  type: 'ki_reply' | 'credit_detection' | 'doc_forward' | 'error',
+  conversationId: string | null,
+  remoteJid: string | null,
+  success: boolean,
+  details: string,
+  metadata?: Record<string, any>,
+) {
+  try {
+    await db.insert(whatsappAutomationLogs).values({
+      type,
+      conversationId,
+      remoteJid,
+      success,
+      details,
+      metadata: metadata || null,
+    });
+  } catch (e) {
+    console.error('[WhatsApp Log] Failed to log automation:', e);
+  }
+}
+
+// ============================================
+// Dynamic Settings Loader
+// ============================================
+
+async function loadSetting(key: string, defaultValue: string): Promise<string> {
+  try {
+    const rows = await db.select().from(whatsappSettings).where(eq(whatsappSettings.key, key)).limit(1);
+    return rows.length > 0 ? rows[0].value : defaultValue;
+  } catch {
+    return defaultValue;
+  }
+}
+
+const DEFAULT_SYSTEM_PROMPT = `Du bist der KI-Assistent von Kreditheld24, einem führenden Kreditvermittler in Deutschland.
 Du antwortest professionell, freundlich und auf Deutsch über WhatsApp.
 
 Deine Aufgaben:
@@ -41,12 +76,21 @@ Hintergrundwissen aus unserer Wissensdatenbank:
 
 Wenn keine relevanten Informationen verfügbar sind, antworte anhand deines allgemeinen Wissens über den deutschen Kreditmarkt.`;
 
+// ============================================
+// KI Auto-Reply
+// ============================================
+
 export async function generateKIReply(
   conversationId: string,
   customerMessage: string,
   remoteJid: string
 ): Promise<string | null> {
   try {
+    // Load dynamic settings
+    const systemPromptTemplate = await loadSetting('system_prompt', DEFAULT_SYSTEM_PROMPT);
+    const model = await loadSetting('model', 'gpt-4o-mini');
+    const temperature = parseFloat(await loadSetting('temperature', '0.7'));
+
     // 1. Get conversation history (last 10 messages for context)
     const recentMessages = await db
       .select({ sender: whatsappMessages.sender, content: whatsappMessages.content })
@@ -62,7 +106,7 @@ export async function generateKIReply(
       : 'Keine spezifischen Informationen in der Wissensdatenbank gefunden.';
 
     // 3. Build messages array
-    const systemPrompt = SYSTEM_PROMPT.replace('{CONTEXT}', contextText);
+    const systemPrompt = systemPromptTemplate.replace('{CONTEXT}', contextText);
 
     const chatHistory = recentMessages.reverse().map(msg => ({
       role: (msg.sender === 'customer' ? 'user' : 'assistant') as 'user' | 'assistant',
@@ -76,8 +120,8 @@ export async function generateKIReply(
 
     // 4. Generate AI response
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      temperature: 0.7,
+      model: model as any,
+      temperature,
       max_tokens: 500,
       messages: [
         { role: 'system', content: systemPrompt },
@@ -114,10 +158,12 @@ export async function generateKIReply(
       .where(eq(whatsappConversations.id, conversationId));
 
     console.log(`[WhatsApp KI] AI reply sent to ${remoteJid}`);
+    await logAutomation('ki_reply', conversationId, remoteJid, true, `KI-Antwort gesendet (${aiReply.length} Zeichen)`, { model, messagePreview: aiReply.substring(0, 100) });
     return aiReply;
 
   } catch (error) {
     console.error('[WhatsApp KI] Error generating reply:', error);
+    await logAutomation('ki_reply', conversationId, remoteJid, false, `Fehler: ${error instanceof Error ? error.message : String(error)}`);
     return null;
   }
 }
@@ -126,7 +172,7 @@ export async function generateKIReply(
 // Credit Application Detection & Automation
 // ============================================
 
-const CREDIT_KEYWORDS = [
+const DEFAULT_CREDIT_KEYWORDS = [
   'kredit', 'darlehen', 'finanzierung', 'baufinanzierung', 'umschuldung',
   'ratenkredit', 'autokredit', 'immobilienkredit', 'hypothek',
   'kreditanfrage', 'kredit beantragen', 'kredit aufnehmen',
@@ -136,9 +182,15 @@ const CREDIT_KEYWORDS = [
   'finanzieren', 'kreditberatung', 'beratungstermin',
 ];
 
-export function detectCreditIntent(message: string): boolean {
+export async function detectCreditIntent(message: string): Promise<boolean> {
   const lowerMsg = message.toLowerCase();
-  return CREDIT_KEYWORDS.some(kw => lowerMsg.includes(kw));
+  // Load dynamic keywords
+  let keywords = DEFAULT_CREDIT_KEYWORDS;
+  try {
+    const saved = await loadSetting('credit_keywords', '');
+    if (saved) keywords = JSON.parse(saved);
+  } catch {}
+  return keywords.some(kw => lowerMsg.includes(kw));
 }
 
 interface ExtractedCreditData {
@@ -279,10 +331,12 @@ export async function createCreditCaseFromWhatsApp(
     });
 
     console.log(`[WhatsApp Automation] Created case ${newCase.id} for customer ${customer.id}`);
+    await logAutomation('credit_detection', conversationId, remoteJid, true, `Kreditanfrage erkannt. Case ${caseNumber} erstellt.`, { caseId: newCase.id, caseNumber, creditData });
     return newCase.id;
 
   } catch (error) {
     console.error('[WhatsApp Automation] Error creating credit case:', error);
+    await logAutomation('credit_detection', conversationId, remoteJid, false, `Fehler: ${error instanceof Error ? error.message : String(error)}`);
     return null;
   }
 }
@@ -396,10 +450,12 @@ export async function handleDocumentFromWhatsApp(
     });
 
     console.log(`[WhatsApp Doc] Document ${fileName} linked to customer ${customerId}${caseId ? ` / case ${caseId}` : ''}`);
+    await logAutomation('doc_forward', conversationId, remoteJid, true, `Dokument "${fileName}" gespeichert und mit Kunde verknüpft.`, { fileName, fileSize: buffer.length, customerId, caseId });
     return true;
 
   } catch (error) {
     console.error('[WhatsApp Doc] Error handling document:', error);
+    await logAutomation('doc_forward', conversationId, remoteJid, false, `Fehler: ${error instanceof Error ? error.message : String(error)}`, { mediaFileName });
     return false;
   }
 }

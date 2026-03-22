@@ -149,7 +149,7 @@ async function handleMessageUpsert(payload: any) {
         }
 
         // 2. Check for credit application intent
-        if (content && detectCreditIntent(content)) {
+        if (content && await detectCreditIntent(content)) {
           console.log(`[Evolution Webhook] Credit intent detected from ${phoneNumber}`);
           createCreditCaseFromWhatsApp(
             conversation.id,

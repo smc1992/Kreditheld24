@@ -31,7 +31,9 @@ import {
   Trash2,
   Edit,
   Lock,
-  Save
+  Save,
+  MessageCircle,
+  Bot,
 } from 'lucide-react';
 
 export default function CustomerDetailPage() {
@@ -49,12 +51,34 @@ export default function CustomerDetailPage() {
   const [sendingEmail, setSendingEmail] = useState(false);
   const [showEmailEditor, setShowEmailEditor] = useState(false);
   const [emailType, setEmailType] = useState<'welcome' | 'case_update' | 'custom'>('custom');
-  const [activeTab, setActiveTab] = useState<'overview' | 'notes' | 'activities'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'notes' | 'activities' | 'whatsapp'>('overview');
   const [selectedEmail, setSelectedEmail] = useState<any>(null);
   const [viewingEmail, setViewingEmail] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [changingPassword, setChangingPassword] = useState(false);
+  const [waMessages, setWaMessages] = useState<any[]>([]);
+  const [waConversation, setWaConversation] = useState<any>(null);
+  const [waMessage, setWaMessage] = useState('');
+  const [waSending, setWaSending] = useState(false);
+  const [waLoading, setWaLoading] = useState(false);
+
+  // Fetch WhatsApp data when tab is selected
+  useEffect(() => {
+    if (activeTab !== 'whatsapp' || !params.id) return;
+    setWaLoading(true);
+    fetch(`/api/admin/customers/${params.id}/whatsapp`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          setWaConversation(data.conversation);
+          setWaMessages(data.messages || []);
+        }
+      })
+      .catch(console.error)
+      .finally(() => setWaLoading(false));
+  }, [activeTab, params.id]);
+
 
   const handleDeleteActivity = async (activityId: string) => {
     if (!confirm('Möchten Sie diese Aktivität wirklich löschen?')) return;
@@ -428,6 +452,7 @@ export default function CustomerDetailPage() {
           {[
             { id: 'overview', label: 'Übersicht', icon: User },
             { id: 'notes', label: 'Notizen & Dokumente', icon: FileText },
+            { id: 'whatsapp', label: 'WhatsApp', icon: MessageCircle },
             { id: 'activities', label: 'Aktivitäten', icon: Clock },
           ].map((tab) => (
             <button
@@ -714,6 +739,110 @@ export default function CustomerDetailPage() {
                   </div>
                 </div>
               </div>
+            </div>
+          )}
+
+          {activeTab === 'whatsapp' && (
+            <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden max-w-3xl">
+              <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-emerald-50 rounded-xl">
+                    <MessageCircle className="h-5 w-5 text-emerald-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">WhatsApp Chat</h3>
+                    <p className="text-xs text-slate-400">
+                      {waConversation ? `Verbunden mit +${waConversation.phoneNumber || waConversation.remoteJid}` : 'Lade...'}
+                    </p>
+                  </div>
+                </div>
+                {waConversation && (
+                  <Link
+                    href="/admin/whatsapp"
+                    className="text-xs font-semibold text-emerald-600 hover:text-emerald-500"
+                  >
+                    Im Chat öffnen →
+                  </Link>
+                )}
+              </div>
+
+              {waLoading ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="h-6 w-6 animate-spin text-emerald-600" />
+                </div>
+              ) : !waConversation ? (
+                <div className="p-12 text-center">
+                  <MessageCircle className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+                  <p className="text-sm font-semibold text-slate-700 mb-1">Kein WhatsApp-Chat</p>
+                  <p className="text-xs text-slate-400">Dieser Kunde hat noch keine WhatsApp-Konversation.</p>
+                </div>
+              ) : (
+                <>
+                  {/* Messages */}
+                  <div className="max-h-96 overflow-y-auto px-4 py-4 space-y-2 bg-[#efeae2]">
+                    {waMessages.length === 0 ? (
+                      <p className="text-xs text-slate-500 text-center bg-white/80 rounded-lg px-4 py-2">Keine Nachrichten</p>
+                    ) : (
+                      waMessages.map((msg: any) => (
+                        <div key={msg.id} className={`flex ${msg.isFromMe ? 'justify-end' : 'justify-start'}`}>
+                          <div className={`max-w-[75%] rounded-xl px-3 py-2 shadow-sm ${
+                            msg.isFromMe
+                              ? msg.sender === 'ai' ? 'bg-violet-100 text-violet-900' : 'bg-[#d9fdd3] text-slate-800'
+                              : 'bg-white text-slate-800'
+                          }`}>
+                            {msg.sender === 'ai' && (
+                              <div className="flex items-center gap-1 mb-1">
+                                <Bot className="h-3 w-3 text-violet-500" />
+                                <span className="text-[10px] font-bold text-violet-500">KI</span>
+                              </div>
+                            )}
+                            <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                            <span className="text-[10px] text-slate-400 float-right mt-1 ml-3">
+                              {new Date(msg.timestamp).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  {/* Send */}
+                  <div className="p-4 border-t border-slate-100">
+                    <form onSubmit={async (e) => {
+                      e.preventDefault();
+                      if (!waMessage.trim() || waSending) return;
+                      setWaSending(true);
+                      try {
+                        const res = await fetch(`/api/admin/customers/${params.id}/whatsapp`, {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ text: waMessage }),
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                          setWaMessages(prev => [...prev, data.message]);
+                          setWaMessage('');
+                        }
+                      } catch (err) { console.error(err); }
+                      setWaSending(false);
+                    }} className="flex gap-2">
+                      <input
+                        type="text"
+                        value={waMessage}
+                        onChange={(e) => setWaMessage(e.target.value)}
+                        placeholder="WhatsApp-Nachricht schreiben..."
+                        className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      />
+                      <button
+                        type="submit"
+                        disabled={!waMessage.trim() || waSending}
+                        className="p-2.5 bg-emerald-600 text-white rounded-xl hover:bg-emerald-500 disabled:opacity-50 transition-all"
+                      >
+                        {waSending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                      </button>
+                    </form>
+                  </div>
+                </>
+              )}
             </div>
           )}
 
