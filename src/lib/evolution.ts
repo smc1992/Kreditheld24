@@ -5,7 +5,7 @@
 
 const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL || 'https://evolution.kreditheld24.de';
 const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY || '';
-const INSTANCE_NAME = process.env.EVOLUTION_INSTANCE_NAME || 'kreditheld24';
+const INSTANCE_NAME = process.env.EVOLUTION_INSTANCE_NAME || 'kreditheld24_crm';
 
 interface EvolutionResponse {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
