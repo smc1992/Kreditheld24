@@ -26,6 +26,16 @@ export async function POST(request: NextRequest) {
       case 'messages.update':
         await handleMessageUpdate(body);
         break;
+      case 'contacts.set':
+      case 'contacts.upsert':
+      case 'contacts.update':
+        await handleContactsSync(body);
+        break;
+      case 'chats.set':
+      case 'chats.upsert':
+      case 'chats.update':
+        await handleChatsSync(body);
+        break;
       case 'connection.update':
         console.log('[Evolution Webhook] Connection update:', JSON.stringify(body.data));
         break;
@@ -363,4 +373,86 @@ function extractMessageContent(message: any): {
   }
 
   return { content: '[Nicht unterstützter Nachrichtentyp]', messageType: 'unknown', mediaUrl: null, mediaMimeType: null, mediaFileName: null };
+}
+
+// ============================================
+// Contact & Chat Sync Handlers
+// ============================================
+
+async function handleContactsSync(payload: any) {
+  const data = payload.data;
+  const contacts = Array.isArray(data) ? data : [];
+  
+  console.log(`[Evolution Webhook] Contacts sync: ${contacts.length} contacts`);
+
+  for (const contact of contacts) {
+    try {
+      const remoteJid = contact.id || contact.remoteJid || contact.jid;
+      if (!remoteJid || remoteJid.endsWith('@g.us') || remoteJid === 'status@broadcast') continue;
+
+      const pushName = contact.pushName || contact.name || contact.verifiedName || contact.notify || null;
+      const phoneNumber = cleanPhoneNumber(remoteJid);
+
+      // Upsert conversation
+      const existing = await db.select({ id: whatsappConversations.id })
+        .from(whatsappConversations)
+        .where(eq(whatsappConversations.remoteJid, remoteJid))
+        .limit(1);
+
+      if (existing.length === 0) {
+        await db.insert(whatsappConversations).values({
+          remoteJid,
+          pushName,
+          phoneNumber,
+          profilePicUrl: contact.profilePictureUrl || null,
+          unreadCount: 0,
+          isArchived: false,
+          aiEnabled: false,
+        });
+        console.log(`[Evolution Webhook] Created conversation for ${pushName || phoneNumber}`);
+      } else if (pushName) {
+        await db.update(whatsappConversations)
+          .set({ pushName, updatedAt: new Date() })
+          .where(eq(whatsappConversations.id, existing[0].id));
+      }
+    } catch (err) {
+      console.error('[Evolution Webhook] Error processing contact:', err);
+    }
+  }
+}
+
+async function handleChatsSync(payload: any) {
+  const data = payload.data;
+  const chats = Array.isArray(data) ? data : [];
+
+  console.log(`[Evolution Webhook] Chats sync: ${chats.length} chats`);
+
+  for (const chat of chats) {
+    try {
+      const remoteJid = chat.id || chat.remoteJid || chat.jid || chat.chatId;
+      if (!remoteJid || remoteJid.endsWith('@g.us') || remoteJid === 'status@broadcast') continue;
+
+      const phoneNumber = cleanPhoneNumber(remoteJid);
+      const pushName = chat.name || chat.pushName || null;
+
+      const existing = await db.select({ id: whatsappConversations.id })
+        .from(whatsappConversations)
+        .where(eq(whatsappConversations.remoteJid, remoteJid))
+        .limit(1);
+
+      if (existing.length === 0) {
+        await db.insert(whatsappConversations).values({
+          remoteJid,
+          pushName,
+          phoneNumber,
+          unreadCount: chat.unreadCount || 0,
+          isArchived: false,
+          aiEnabled: false,
+        });
+        console.log(`[Evolution Webhook] Created conversation from chat: ${pushName || phoneNumber}`);
+      }
+    } catch (err) {
+      console.error('[Evolution Webhook] Error processing chat:', err);
+    }
+  }
 }

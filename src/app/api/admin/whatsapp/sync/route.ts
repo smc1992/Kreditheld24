@@ -7,6 +7,23 @@ import { fetchAllContacts, fetchAllChats, fetchMessages, cleanPhoneNumber, isGro
 export const dynamic = 'force-dynamic';
 export const maxDuration = 120; // Allow up to 2 minutes
 
+// Helper: extract array from any response format
+function extractArray(result: any): any[] {
+  if (Array.isArray(result)) return result;
+  if (result && typeof result === 'object') {
+    // Try common wrapper keys
+    for (const key of ['data', 'contacts', 'chats', 'messages', 'result', 'results']) {
+      if (Array.isArray(result[key])) return result[key];
+    }
+    // If the object has numeric keys or is iterable, try Object.values
+    const values = Object.values(result);
+    if (values.length > 0 && values.every(v => typeof v === 'object' && v !== null)) {
+      return values as any[];
+    }
+  }
+  return [];
+}
+
 // POST /api/admin/whatsapp/sync - Import all WhatsApp contacts & message history
 export async function POST() {
   try {
@@ -26,49 +43,65 @@ export async function POST() {
     let chats: any[] = [];
     try {
       const chatsResult = await fetchAllChats();
-      chats = Array.isArray(chatsResult) ? chatsResult : [];
-      console.log(`[WhatsApp Sync] Found ${chats.length} chats`);
+      console.log('[WhatsApp Sync] Raw chats response type:', typeof chatsResult, 'isArray:', Array.isArray(chatsResult));
+      if (chatsResult && typeof chatsResult === 'object') {
+        console.log('[WhatsApp Sync] Chats response keys:', Object.keys(chatsResult).slice(0, 10));
+      }
+      chats = extractArray(chatsResult);
+      console.log(`[WhatsApp Sync] Extracted ${chats.length} chats`);
+      if (chats.length > 0) {
+        console.log('[WhatsApp Sync] Sample chat:', JSON.stringify(chats[0]).substring(0, 300));
+      }
     } catch (err) {
       console.error('[WhatsApp Sync] Error fetching chats:', err);
-      // Fallback: try contacts
+      errors.push(`Chats fetch error: ${err instanceof Error ? err.message : 'Unknown'}`);
     }
 
     // Step 2: Fetch all contacts
     let contacts: any[] = [];
     try {
       const contactsResult = await fetchAllContacts();
-      contacts = Array.isArray(contactsResult) ? contactsResult : [];
-      console.log(`[WhatsApp Sync] Found ${contacts.length} contacts`);
+      console.log('[WhatsApp Sync] Raw contacts response type:', typeof contactsResult, 'isArray:', Array.isArray(contactsResult));
+      if (contactsResult && typeof contactsResult === 'object') {
+        console.log('[WhatsApp Sync] Contacts response keys:', Object.keys(contactsResult).slice(0, 10));
+      }
+      contacts = extractArray(contactsResult);
+      console.log(`[WhatsApp Sync] Extracted ${contacts.length} contacts`);
+      if (contacts.length > 0) {
+        console.log('[WhatsApp Sync] Sample contact:', JSON.stringify(contacts[0]).substring(0, 300));
+      }
     } catch (err) {
       console.error('[WhatsApp Sync] Error fetching contacts:', err);
+      errors.push(`Contacts fetch error: ${err instanceof Error ? err.message : 'Unknown'}`);
     }
 
     // Build a contact map for name lookups
     const contactMap = new Map<string, string>();
     for (const contact of contacts) {
-      const jid = contact.id || contact.remoteJid;
-      const name = contact.pushName || contact.name || contact.verifiedName || null;
+      const jid = contact.id || contact.remoteJid || contact.jid || contact.wid;
+      const name = contact.pushName || contact.name || contact.verifiedName || contact.notify || contact.short || null;
       if (jid && name) contactMap.set(jid, name);
     }
 
-    // Step 3: Process each chat - create conversations and import messages
+    // Step 3: Collect all JIDs from chats and contacts
     const allJids = new Set<string>();
 
-    // From chats
     for (const chat of chats) {
-      const jid = chat.id || chat.remoteJid;
+      const jid = chat.id || chat.remoteJid || chat.jid || chat.chatId || chat.wid;
       if (jid) allJids.add(jid);
     }
 
-    // From contacts (add any that aren't already in chats)
     for (const contact of contacts) {
-      const jid = contact.id || contact.remoteJid;
+      const jid = contact.id || contact.remoteJid || contact.jid || contact.wid;
       if (jid) allJids.add(jid);
     }
 
+    console.log(`[WhatsApp Sync] Total unique JIDs to process: ${allJids.size}`);
+
+    // Step 4: Process each JID
     for (const remoteJid of allJids) {
       // Skip group chats and status broadcasts
-      if (isGroupJid(remoteJid) || remoteJid === 'status@broadcast') {
+      if (isGroupJid(remoteJid) || remoteJid === 'status@broadcast' || remoteJid.includes('newsletter')) {
         skipped++;
         continue;
       }
@@ -87,7 +120,6 @@ export async function POST() {
 
         if (existing.length > 0) {
           conversationId = existing[0].id;
-          // Update name if we have a better one
           if (pushName) {
             await db.update(whatsappConversations)
               .set({ pushName, updatedAt: new Date() })
@@ -114,28 +146,29 @@ export async function POST() {
           contactsImported++;
         }
 
-        // Step 4: Import recent messages for this conversation
+        // Step 5: Import recent messages
         try {
-          const messagesResult = await fetchMessages(remoteJid, 30); // Last 30 messages
-          const msgs = Array.isArray(messagesResult) ? messagesResult : [];
+          const messagesResult = await fetchMessages(remoteJid, 30);
+          const msgs = extractArray(messagesResult);
 
           for (const msg of msgs) {
-            const messageId = msg.key?.id;
+            const messageId = msg.key?.id || msg.id;
             if (!messageId) continue;
 
-            // Check if message already exists
+            // Check for duplicate
             const existingMsg = await db.select({ id: whatsappMessages.id })
               .from(whatsappMessages)
               .where(eq(whatsappMessages.messageId, messageId))
               .limit(1);
 
-            if (existingMsg.length > 0) continue; // Skip duplicates
+            if (existingMsg.length > 0) continue;
 
             const content = msg.message?.conversation
               || msg.message?.extendedTextMessage?.text
               || msg.message?.imageMessage?.caption
               || msg.message?.videoMessage?.caption
               || msg.message?.documentMessage?.fileName
+              || msg.body // Some API versions use this
               || null;
 
             const messageType = msg.message?.imageMessage ? 'image'
@@ -143,22 +176,25 @@ export async function POST() {
               : msg.message?.audioMessage ? 'audio'
               : msg.message?.documentMessage ? 'document'
               : msg.message?.stickerMessage ? 'sticker'
-              : 'text';
+              : msg.messageType || 'text';
 
-            const timestamp = msg.messageTimestamp
-              ? new Date(typeof msg.messageTimestamp === 'number'
-                  ? msg.messageTimestamp * 1000
-                  : parseInt(msg.messageTimestamp) * 1000)
+            const tsRaw = msg.messageTimestamp || msg.timestamp || msg.t;
+            const timestamp = tsRaw
+              ? new Date(typeof tsRaw === 'number'
+                  ? (tsRaw > 1e12 ? tsRaw : tsRaw * 1000)
+                  : parseInt(tsRaw) * 1000)
               : new Date();
+
+            const isFromMe = msg.key?.fromMe ?? msg.fromMe ?? false;
 
             await db.insert(whatsappMessages).values({
               conversationId,
               messageId,
               remoteJid,
-              sender: msg.key?.fromMe ? 'admin' : 'customer',
+              sender: isFromMe ? 'admin' : 'customer',
               content: content || (messageType !== 'text' ? `[${messageType}]` : null),
               messageType,
-              isFromMe: msg.key?.fromMe || false,
+              isFromMe,
               isRead: true,
               timestamp,
             });
@@ -171,12 +207,13 @@ export async function POST() {
             const lastMsg = msgs[msgs.length - 1];
             const lastContent = lastMsg.message?.conversation
               || lastMsg.message?.extendedTextMessage?.text
-              || `[${lastMsg.message?.imageMessage ? 'Bild' : 'Medien'}]`
+              || lastMsg.body
               || '';
-            const lastTs = lastMsg.messageTimestamp
-              ? new Date(typeof lastMsg.messageTimestamp === 'number'
-                  ? lastMsg.messageTimestamp * 1000
-                  : parseInt(lastMsg.messageTimestamp) * 1000)
+            const lastTsRaw = lastMsg.messageTimestamp || lastMsg.timestamp || lastMsg.t;
+            const lastTs = lastTsRaw
+              ? new Date(typeof lastTsRaw === 'number'
+                  ? (lastTsRaw > 1e12 ? lastTsRaw : lastTsRaw * 1000)
+                  : parseInt(lastTsRaw) * 1000)
               : new Date();
 
             await db.update(whatsappConversations)
@@ -188,11 +225,10 @@ export async function POST() {
               .where(eq(whatsappConversations.id, conversationId));
           }
         } catch (msgErr) {
-          // Don't fail the whole sync if message import fails for one contact
           console.error(`[WhatsApp Sync] Error importing messages for ${remoteJid}:`, msgErr);
         }
 
-        // Small delay to avoid rate limiting
+        // Rate limiting
         await new Promise(r => setTimeout(r, 200));
       } catch (err) {
         const errMsg = err instanceof Error ? err.message : 'Unknown error';
@@ -212,9 +248,14 @@ export async function POST() {
         skipped,
       },
       errors: errors.length > 0 ? errors.slice(0, 10) : undefined,
+      debug: {
+        chatsFromApi: chats.length,
+        contactsFromApi: contacts.length,
+        uniqueJids: allJids.size,
+      },
     });
   } catch (error) {
     console.error('[WhatsApp Sync] Fatal error:', error);
-    return NextResponse.json({ error: 'Sync fehlgeschlagen' }, { status: 500 });
+    return NextResponse.json({ error: 'Sync fehlgeschlagen', details: error instanceof Error ? error.message : 'Unknown' }, { status: 500 });
   }
 }
