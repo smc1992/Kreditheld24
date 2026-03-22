@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { db, chatSessions, chatMessages, crmCustomers } from '@/db';
-import { eq, desc, sql } from 'drizzle-orm';
+import { eq, desc, sql, and } from 'drizzle-orm';
 
 export async function GET(request: NextRequest) {
     try {
@@ -28,13 +28,24 @@ export async function GET(request: NextRequest) {
             .leftJoin(crmCustomers, eq(chatSessions.customerId, crmCustomers.id))
             .orderBy(desc(chatSessions.lastMessageAt));
 
-        // For each session, fetch the actual last message content (optional, can be optimized)
+        // For each session, fetch last message and unread count
         const sessionsWithLastMsg = await Promise.all(sessions.map(async (s) => {
             const lastMsg = await db.select()
                 .from(chatMessages)
                 .where(eq(chatMessages.sessionId, s.id))
                 .orderBy(desc(chatMessages.createdAt))
                 .limit(1);
+
+            // Count unread user messages
+            const [unread] = await db.select({ count: sql<number>`count(*)::int` })
+                .from(chatMessages)
+                .where(
+                    and(
+                        eq(chatMessages.sessionId, s.id),
+                        eq(chatMessages.sender, 'user'),
+                        eq(chatMessages.isRead, false)
+                    )
+                );
 
             return {
                 ...s,
@@ -43,7 +54,7 @@ export async function GET(request: NextRequest) {
                     sender: lastMsg[0].sender,
                     createdAt: lastMsg[0].createdAt
                 } : null,
-                unreadCount: 0 // Placeholder, requires count query
+                unreadCount: unread?.count || 0
             };
         }));
 

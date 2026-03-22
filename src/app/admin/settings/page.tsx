@@ -17,7 +17,10 @@ import {
   Globe,
   Palette,
   AlertCircle,
-  CheckCircle2
+  CheckCircle2,
+  Bot,
+  Plus,
+  Trash2
 } from 'lucide-react';
 
 export default function SettingsPage() {
@@ -43,6 +46,14 @@ export default function SettingsPage() {
       fromEmail: ''
     }
   });
+  const [chatbotConfig, setChatbotConfig] = useState({
+    systemPrompt: '',
+    model: 'gpt-3.5-turbo',
+    temperature: 0.7,
+    quickReplies: [] as string[],
+    escalationMinutes: 10,
+  });
+  const [newQuickReply, setNewQuickReply] = useState('');
   const [saving, setSaving] = useState(false);
   const [profileData, setProfileData] = useState({
     name: '',
@@ -61,8 +72,42 @@ export default function SettingsPage() {
         email: session.user.email || ''
       });
       fetchSettings();
+      fetchChatbotConfig();
     }
   }, [status]);
+
+  const fetchChatbotConfig = async () => {
+    try {
+      const res = await fetch('/api/admin/settings/chatbot');
+      const data = await res.json();
+      if (data.success && data.config) {
+        setChatbotConfig(data.config);
+      }
+    } catch (error) {
+      console.error('Error fetching chatbot config:', error);
+    }
+  };
+
+  const handleSaveChatbot = async () => {
+    setSaving(true);
+    try {
+      const res = await fetch('/api/admin/settings/chatbot', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(chatbotConfig),
+      });
+      const result = await res.json();
+      if (result.success) {
+        alert('Chatbot-Einstellungen gespeichert!');
+      } else {
+        alert('Fehler: ' + result.error);
+      }
+    } catch (error) {
+      alert('Fehler beim Speichern');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const fetchSettings = async () => {
     setLoading(true);
@@ -200,6 +245,7 @@ export default function SettingsPage() {
             {[
               { id: 'profile', label: 'Profil', icon: User },
               { id: 'security', label: 'Sicherheit', icon: Shield },
+              { id: 'chatbot', label: 'Chatbot / KI', icon: Bot },
               { id: 'notifications', label: 'Benachrichtigungen', icon: Bell },
               { id: 'system', label: 'System', icon: Database },
               { id: 'appearance', label: 'Erscheinungsbild', icon: Palette },
@@ -225,6 +271,7 @@ export default function SettingsPage() {
                 <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
                   {activeTab === 'profile' && 'Profil-Einstellungen'}
                   {activeTab === 'security' && 'Sicherheit & Passwort'}
+                  {activeTab === 'chatbot' && 'Chatbot & KI-Konfiguration'}
                   {activeTab === 'notifications' && 'Benachrichtigungs-Präferenzen'}
                   {activeTab === 'system' && 'System-Konfiguration'}
                   {activeTab === 'appearance' && 'Design & Interface'}
@@ -317,6 +364,139 @@ export default function SettingsPage() {
                       <p className="text-xs text-amber-700 leading-relaxed">
                         Das Passwort muss mindestens 8 Zeichen lang sein und sollte Sonderzeichen sowie Zahlen enthalten, um die Sicherheit zu gewährleisten.
                       </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Chatbot Tab */}
+                {activeTab === 'chatbot' && (
+                  <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
+                    {/* System Prompt */}
+                    <div className="space-y-3">
+                      <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        <Bot className="h-4 w-4 text-emerald-600" />
+                        System-Prompt (KI-Persönlichkeit)
+                      </h3>
+                      <p className="text-xs text-slate-500">Definieren Sie das Verhalten und den Charakter des KI-Assistenten.</p>
+                      <textarea
+                        value={chatbotConfig.systemPrompt}
+                        onChange={(e) => setChatbotConfig({ ...chatbotConfig, systemPrompt: e.target.value })}
+                        rows={6}
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all resize-y font-mono"
+                        placeholder="Du bist der hilfreiche KI-Assistent von Kreditheld24..."
+                      />
+                    </div>
+
+                    {/* Model & Temperature */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">KI-Modell</label>
+                        <select
+                          value={chatbotConfig.model}
+                          onChange={(e) => setChatbotConfig({ ...chatbotConfig, model: e.target.value })}
+                          className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+                        >
+                          <option value="gpt-3.5-turbo">GPT-3.5 Turbo (schnell, günstig)</option>
+                          <option value="gpt-4">GPT-4 (hohe Qualität)</option>
+                          <option value="gpt-4o">GPT-4o (schnell + qualitativ)</option>
+                          <option value="gpt-4o-mini">GPT-4o Mini (günstig + gut)</option>
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Temperatur: {chatbotConfig.temperature}</label>
+                        <input
+                          type="range"
+                          min="0"
+                          max="1"
+                          step="0.1"
+                          value={chatbotConfig.temperature}
+                          onChange={(e) => setChatbotConfig({ ...chatbotConfig, temperature: parseFloat(e.target.value) })}
+                          className="w-full accent-emerald-600"
+                        />
+                        <div className="flex justify-between text-[10px] text-slate-400">
+                          <span>Präzise</span>
+                          <span>Kreativ</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Quick Replies */}
+                    <div className="space-y-3">
+                      <h3 className="text-sm font-bold text-slate-900">Schnellantworten</h3>
+                      <p className="text-xs text-slate-500">Vordefinierte Antwort-Vorlagen für den Admin-Chat.</p>
+                      <div className="space-y-2">
+                        {chatbotConfig.quickReplies.map((reply, index) => (
+                          <div key={index} className="flex items-center gap-2">
+                            <input
+                              type="text"
+                              value={reply}
+                              onChange={(e) => {
+                                const updated = [...chatbotConfig.quickReplies];
+                                updated[index] = e.target.value;
+                                setChatbotConfig({ ...chatbotConfig, quickReplies: updated });
+                              }}
+                              className="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+                            />
+                            <button
+                              onClick={() => {
+                                const updated = chatbotConfig.quickReplies.filter((_, i) => i !== index);
+                                setChatbotConfig({ ...chatbotConfig, quickReplies: updated });
+                              }}
+                              className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        ))}
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            value={newQuickReply}
+                            onChange={(e) => setNewQuickReply(e.target.value)}
+                            placeholder="Neue Schnellantwort hinzufügen..."
+                            className="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' && newQuickReply.trim()) {
+                                setChatbotConfig({ ...chatbotConfig, quickReplies: [...chatbotConfig.quickReplies, newQuickReply.trim()] });
+                                setNewQuickReply('');
+                              }
+                            }}
+                          />
+                          <button
+                            onClick={() => {
+                              if (newQuickReply.trim()) {
+                                setChatbotConfig({ ...chatbotConfig, quickReplies: [...chatbotConfig.quickReplies, newQuickReply.trim()] });
+                                setNewQuickReply('');
+                              }
+                            }}
+                            className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                          >
+                            <Plus className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Escalation */}
+                    <div className="space-y-3">
+                      <h3 className="text-sm font-bold text-slate-900">Eskalation</h3>
+                      <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl">
+                        <div className="flex-1">
+                          <p className="text-sm font-bold text-slate-700">Warnung nach</p>
+                          <p className="text-xs text-slate-500">Zeige Warnung wenn Kunde länger wartet</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="number"
+                            min="1"
+                            max="120"
+                            value={chatbotConfig.escalationMinutes}
+                            onChange={(e) => setChatbotConfig({ ...chatbotConfig, escalationMinutes: parseInt(e.target.value) || 10 })}
+                            className="w-20 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-center focus:ring-2 focus:ring-emerald-500 outline-none"
+                          />
+                          <span className="text-sm text-slate-500">Min.</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -541,6 +721,7 @@ export default function SettingsPage() {
                     onClick={() => {
                       if (activeTab === 'profile') handleSaveProfile();
                       else if (activeTab === 'security') handleUpdatePassword();
+                      else if (activeTab === 'chatbot') handleSaveChatbot();
                       else handleSaveSettings();
                     }}
                     disabled={saving}

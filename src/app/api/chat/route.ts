@@ -2,7 +2,7 @@
 import { OpenAIStream, StreamingTextResponse } from 'ai';
 import OpenAI from 'openai';
 import { db, chatSessions, chatMessages, crmCustomers } from '@/db';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { cookies } from 'next/headers';
 import { NextRequest } from 'next/server';
 import { findRelevantContent } from '@/lib/rag';
@@ -67,24 +67,43 @@ export async function POST(req: NextRequest) {
             return new Response(handoverMessage, { headers });
         }
 
-        // 2. RAG retrieval
+        // 2. Load chatbot config from settings
+        let chatbotConfig = {
+            systemPrompt: `Du bist der hilfreiche KI-Assistent von Kreditheld24.
+Antworte freundlich, professionell und auf Deutsch.
+Deine Aufgabe ist es, Kunden bei Kreditfragen zu unterstützen.`,
+            model: 'gpt-3.5-turbo',
+            temperature: 0.7,
+        };
+
+        try {
+            const configResult = await db.execute(sql`
+                SELECT value FROM admin_settings WHERE key = 'chatbot_config' LIMIT 1
+            `);
+            const savedConfig = (configResult as any).rows?.[0]?.value;
+            if (savedConfig) {
+                chatbotConfig = { ...chatbotConfig, ...savedConfig };
+            }
+        } catch (e) {
+            // Use defaults if admin_settings table doesn't exist yet
+        }
+
+        // 3. RAG retrieval
         const contextDocs = await findRelevantContent(lastUserMsg.content);
         const contextText = contextDocs.map(doc => doc.content).join('\n\n');
 
-        const systemPrompt = `Du bist der hilfreiche KI-Assistent von Kreditheld24.
-    Antworte freundlich, professionell und auf Deutsch.
-    Deine Aufgabe ist es, Kunden bei Kreditfragen zu unterstützen.
-    
-    Hintergrundwissen (Nutze dies für deine Antwort):
-    ${contextText}
-    
-    Wenn keine relevanten Informationen oben stehen, nutze dein allgemeines Wissen, aber erfinde keine Fakten zu Kreditheld24.
-    `;
+        const systemPrompt = `${chatbotConfig.systemPrompt}
 
-        // 3. OpenAI Call
+Hintergrundwissen (Nutze dies für deine Antwort):
+${contextText}
+
+Wenn keine relevanten Informationen oben stehen, nutze dein allgemeines Wissen, aber erfinde keine Fakten zu Kreditheld24.`;
+
+        // 4. OpenAI Call
         const response = await openai.chat.completions.create({
-            model: 'gpt-3.5-turbo',
+            model: chatbotConfig.model as any,
             stream: true,
+            temperature: chatbotConfig.temperature,
             messages: [
                 { role: 'system', content: systemPrompt },
                 ...messages

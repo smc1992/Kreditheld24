@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { 
   LayoutDashboard, 
   Users, 
@@ -20,7 +21,7 @@ const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'Kunden', href: '/admin/customers', icon: Users },
   { name: 'Vorgänge', href: '/admin/cases', icon: Briefcase },
-  { name: 'Nachrichten', href: '/admin/messages', icon: MessageSquare },
+  { name: 'Nachrichten', href: '/admin/messages', icon: MessageSquare, badgeKey: 'messages' as const },
   { name: 'E-Mails', href: '/admin/emails', icon: Mail },
   { name: 'Knowledge Base', href: '/admin/knowledge', icon: BookOpen },
   { name: 'Zinssätze', href: '/admin/rates', icon: Percent },
@@ -29,6 +30,26 @@ const navigation = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // Poll unread messages every 15 seconds
+  useEffect(() => {
+    const fetchUnread = async () => {
+      try {
+        const res = await fetch('/api/admin/chat/unread', { cache: 'no-store' });
+        const data = await res.json();
+        if (data.success) {
+          setUnreadCount(data.unreadCount);
+        }
+      } catch (err) {
+        // silently ignore polling errors
+      }
+    };
+
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 15000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="flex h-full w-64 flex-col bg-slate-900 text-white">
@@ -51,6 +72,8 @@ export default function AdminSidebar() {
         </div>
         {navigation.map((item) => {
           const isActive = pathname === item.href || (item.href !== '/admin' && pathname?.startsWith(item.href));
+          const showBadge = item.badgeKey === 'messages' && unreadCount > 0;
+
           return (
             <Link
               key={item.name}
@@ -65,7 +88,18 @@ export default function AdminSidebar() {
                 <item.icon className={`h-5 w-5 ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-white'}`} />
                 {item.name}
               </div>
-              {isActive && <ChevronRight className="h-4 w-4 opacity-50" />}
+              <div className="flex items-center gap-2">
+                {showBadge && (
+                  <span className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-black ${
+                    isActive
+                      ? 'bg-white text-emerald-700'
+                      : 'bg-red-500 text-white animate-pulse'
+                  }`}>
+                    {unreadCount > 99 ? '99+' : unreadCount}
+                  </span>
+                )}
+                {isActive && <ChevronRight className="h-4 w-4 opacity-50" />}
+              </div>
             </Link>
           );
         })}
