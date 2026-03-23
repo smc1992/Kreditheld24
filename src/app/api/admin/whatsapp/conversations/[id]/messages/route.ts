@@ -61,7 +61,7 @@ export async function GET(
   }
 }
 
-// POST /api/admin/whatsapp/conversations/[id]/messages - Send a message
+// POST /api/admin/whatsapp/conversations/[id]/messages - Send a message (text or media)
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -73,12 +73,7 @@ export async function POST(
     }
 
     const { id } = await params;
-    const body = await request.json();
-    const { text } = body;
-
-    if (!text?.trim()) {
-      return NextResponse.json({ error: 'Message text is required' }, { status: 400 });
-    }
+    const contentType = request.headers.get('content-type') || '';
 
     // Get conversation
     const conversation = await db
@@ -92,6 +87,88 @@ export async function POST(
     }
 
     const conv = conversation[0];
+
+    // Handle multipart form data (file upload)
+    if (contentType.includes('multipart/form-data')) {
+      const formData = await request.formData();
+      const file = formData.get('file') as File | null;
+      const caption = (formData.get('caption') as string) || '';
+
+      if (!file) {
+        return NextResponse.json({ error: 'File is required' }, { status: 400 });
+      }
+
+      // Convert file to base64
+      const bytes = await file.arrayBuffer();
+      const base64 = Buffer.from(bytes).toString('base64');
+      const mimeType = file.type || 'application/octet-stream';
+
+      // Determine media type
+      let mediaType: 'image' | 'video' | 'audio' | 'document' = 'document';
+      if (mimeType.startsWith('image/')) mediaType = 'image';
+      else if (mimeType.startsWith('video/')) mediaType = 'video';
+      else if (mimeType.startsWith('audio/')) mediaType = 'audio';
+
+      // Send via Evolution API
+      const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL || 'https://evolution.kreditheld24.de';
+      const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY || '';
+      const INSTANCE_NAME = process.env.EVOLUTION_INSTANCE_NAME || 'kreditheld24';
+      const phoneNumber = conv.remoteJid.replace('@s.whatsapp.net', '');
+
+      const result = await fetch(`${EVOLUTION_API_URL}/message/sendMedia/${INSTANCE_NAME}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': EVOLUTION_API_KEY,
+        },
+        body: JSON.stringify({
+          number: phoneNumber,
+          mediatype: mediaType,
+          mimetype: mimeType,
+          caption: caption,
+          fileName: file.name,
+          media: `data:${mimeType};base64,${base64}`,
+        }),
+      });
+
+      const resultData = await result.json();
+      const messageId = resultData?.key?.id || null;
+
+      // Save to our DB
+      const newMsg = await db.insert(whatsappMessages).values({
+        conversationId: id,
+        messageId,
+        remoteJid: conv.remoteJid,
+        sender: 'admin',
+        content: caption || file.name,
+        messageType: mediaType,
+        mediaUrl: null,
+        mediaMimeType: mimeType,
+        mediaFileName: file.name,
+        isFromMe: true,
+        isRead: true,
+        timestamp: new Date(),
+      }).returning();
+
+      // Update conversation
+      await db.update(whatsappConversations)
+        .set({
+          lastMessageAt: new Date(),
+          lastMessagePreview: caption || `[${mediaType}] ${file.name}`,
+          updatedAt: new Date(),
+        })
+        .where(eq(whatsappConversations.id, id));
+
+      return NextResponse.json({ success: true, data: newMsg[0] });
+    }
+
+    // Handle JSON text message
+    const body = await request.json();
+    const { text } = body;
+
+    if (!text?.trim()) {
+      return NextResponse.json({ error: 'Message text is required' }, { status: 400 });
+    }
 
     // Send via Evolution API
     const result = await sendTextMessage(conv.remoteJid, text);

@@ -92,8 +92,10 @@ export default function WhatsAppPage() {
   const [showTemplates, setShowTemplates] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showContactInfo, setShowContactInfo] = useState(false);
+  const [uploadingFile, setUploadingFile] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const pollRef = useRef<NodeJS.Timeout | null>(null);
 
   // Load templates
@@ -251,6 +253,82 @@ export default function WhatsAppPage() {
       setSending(false);
       inputRef.current?.focus();
     }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !selectedConv) return;
+    // Reset file input
+    e.target.value = '';
+
+    setUploadingFile(true);
+    const caption = newMessage.trim();
+    setNewMessage('');
+
+    // Optimistic push
+    const mediaType = file.type.startsWith('image/') ? 'image'
+      : file.type.startsWith('video/') ? 'video'
+      : file.type.startsWith('audio/') ? 'audio'
+      : 'document';
+
+    const optimisticMsg: Message = {
+      id: `temp-file-${Date.now()}`,
+      conversationId: selectedConv.id,
+      messageId: null,
+      remoteJid: selectedConv.remoteJid,
+      sender: 'admin',
+      content: caption || file.name,
+      messageType: mediaType,
+      mediaUrl: null,
+      isFromMe: true,
+      isRead: true,
+      timestamp: new Date().toISOString(),
+    };
+    setMessages(prev => [...prev, optimisticMsg]);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      if (caption) formData.append('caption', caption);
+
+      const res = await fetch(`/api/admin/whatsapp/conversations/${selectedConv.id}/messages`, {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.success) {
+        setMessages(prev => prev.map(m => m.id === optimisticMsg.id ? data.data : m));
+      }
+    } catch (err) {
+      console.error('Error uploading file:', err);
+    } finally {
+      setUploadingFile(false);
+      inputRef.current?.focus();
+    }
+  };
+
+  // Helper to render message content with clickable links
+  const renderMessageContent = (text: string) => {
+    const urlRegex = /(https?:\/\/[^\s<>"']+)/gi;
+    const parts = text.split(urlRegex);
+    return parts.map((part, i) => {
+      if (urlRegex.test(part)) {
+        // Reset lastIndex since we're reusing the regex
+        urlRegex.lastIndex = 0;
+        return (
+          <a
+            key={i}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 underline hover:text-blue-800 break-all"
+          >
+            {part}
+          </a>
+        );
+      }
+      return <span key={i}>{part}</span>;
+    });
   };
 
   const handleToggleAI = async () => {
@@ -872,9 +950,9 @@ export default function WhatsAppPage() {
                             </div>
                           )}
 
-                          {/* Text Content (show for text messages or as caption for media) */}
+                          {/* Text Content with clickable links */}
                           {msg.content && msg.messageType !== 'document' && (
-                            <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>
+                            <p className="text-sm whitespace-pre-wrap break-words">{renderMessageContent(msg.content)}</p>
                           )}
 
                           {/* Timestamp */}
@@ -920,6 +998,14 @@ export default function WhatsAppPage() {
                       ))}
                     </div>
                   )}
+                  {/* Hidden file input */}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    className="hidden"
+                    accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,.zip"
+                    onChange={handleFileUpload}
+                  />
                   <form
                     onSubmit={(e) => { e.preventDefault(); handleSendMessage(); setShowEmojiPicker(false); }}
                     className="flex items-center gap-2"
@@ -947,6 +1033,19 @@ export default function WhatsAppPage() {
                         </div>
                       )}
                     </div>
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={connectionStatus !== 'open' || uploadingFile}
+                      className="p-2 rounded-lg transition-all text-slate-400 hover:text-slate-600 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                      title="Datei anhängen"
+                    >
+                      {uploadingFile ? (
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                      ) : (
+                        <Paperclip className="h-5 w-5" />
+                      )}
+                    </button>
                     {templates.length > 0 && (
                       <button
                         type="button"
@@ -969,7 +1068,7 @@ export default function WhatsAppPage() {
                     />
                     <button
                       type="submit"
-                      disabled={!newMessage.trim() || sending || connectionStatus !== 'open'}
+                      disabled={(!newMessage.trim() && !uploadingFile) || sending || connectionStatus !== 'open'}
                       className="p-2.5 bg-emerald-600 text-white rounded-xl hover:bg-emerald-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-600/20"
                     >
                       {sending ? (
