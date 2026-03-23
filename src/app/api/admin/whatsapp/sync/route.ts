@@ -7,13 +7,20 @@ import { fetchAllContacts, fetchAllChats, fetchMessages, cleanPhoneNumber, isGro
 export const dynamic = 'force-dynamic';
 export const maxDuration = 120; // Allow up to 2 minutes
 
-// Helper: extract array from any response format
+// Helper: extract array from any response format (handles nested structures)
 function extractArray(result: any): any[] {
   if (Array.isArray(result)) return result;
   if (result && typeof result === 'object') {
-    // Try common wrapper keys
-    for (const key of ['data', 'contacts', 'chats', 'messages', 'result', 'results']) {
-      if (Array.isArray(result[key])) return result[key];
+    // Try common wrapper keys (including nested like {messages: {records: [...]}})
+    for (const key of ['data', 'contacts', 'chats', 'messages', 'result', 'results', 'records']) {
+      const val = result[key];
+      if (Array.isArray(val)) return val;
+      // Check one level deeper for nested structures like {messages: {records: [...]}}
+      if (val && typeof val === 'object' && !Array.isArray(val)) {
+        for (const subKey of ['records', 'data', 'messages', 'items', 'results']) {
+          if (Array.isArray(val[subKey])) return val[subKey];
+        }
+      }
     }
     // If the object has numeric keys or is iterable, try Object.values
     const values = Object.values(result);

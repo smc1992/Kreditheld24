@@ -462,7 +462,17 @@ async function handleChatsSync(payload: any) {
 
 async function handleMessagesSync(payload: any) {
   const data = payload.data;
-  const messages = Array.isArray(data) ? data : (data?.messages || []);
+  // Handle various formats: direct array, {messages: [...]}, {messages: {records: [...]}}
+  let messages: any[] = [];
+  if (Array.isArray(data)) {
+    messages = data;
+  } else if (data?.messages) {
+    if (Array.isArray(data.messages)) {
+      messages = data.messages;
+    } else if (data.messages?.records && Array.isArray(data.messages.records)) {
+      messages = data.messages.records;
+    }
+  }
 
   console.log(`[Evolution Webhook] Messages sync: ${messages.length} messages`);
 
