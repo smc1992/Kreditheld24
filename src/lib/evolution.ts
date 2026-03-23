@@ -146,7 +146,7 @@ export async function fetchAllChats() {
 // ============================================
 
 export function cleanPhoneNumber(jid: string): string {
-  return jid.replace('@s.whatsapp.net', '').replace('@g.us', '');
+  return jid.replace('@s.whatsapp.net', '').replace('@g.us', '').replace('@lid', '');
 }
 
 export function formatPhoneForDisplay(phone: string): string {

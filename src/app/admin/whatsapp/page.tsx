@@ -391,11 +391,13 @@ export default function WhatsAppPage() {
 
   const formatPhone = (phone: string) => {
     if (!phone) return 'Unbekannt';
+    // Strip JID suffixes that might still be in the data
+    const clean = phone.replace('@s.whatsapp.net', '').replace('@lid', '').replace('@g.us', '');
     // Format German numbers nicely: +49 170 585 3625
-    if (phone.startsWith('49') && phone.length >= 11) {
-      return `+49 ${phone.slice(2, 5)} ${phone.slice(5, 8)} ${phone.slice(8)}`;
+    if (clean.startsWith('49') && clean.length >= 11) {
+      return `+49 ${clean.slice(2, 5)} ${clean.slice(5, 8)} ${clean.slice(8)}`;
     }
-    return `+${phone}`;
+    return `+${clean}`;
   };
 
   const getDisplayName = (conv: Conversation) => {
@@ -817,7 +819,7 @@ export default function WhatsAppPage() {
                         <h2 className="text-xl font-bold text-slate-900">{getDisplayName(selectedConv)}</h2>
                         <p className="text-sm text-slate-500 mt-1 flex items-center gap-1">
                           <Phone className="h-4 w-4" />
-                          {selectedConv.phoneNumber ? `+${selectedConv.phoneNumber}` : selectedConv.remoteJid}
+                          {formatPhone(selectedConv.phoneNumber || selectedConv.remoteJid || '')}
                         </p>
                       </div>
 
