@@ -148,7 +148,7 @@ export async function POST() {
 
         // Step 5: Import recent messages
         try {
-          const messagesResult = await fetchMessages(remoteJid, 30);
+          const messagesResult = await fetchMessages(remoteJid, 100);
           const msgs = extractArray(messagesResult);
 
           for (const msg of msgs) {
