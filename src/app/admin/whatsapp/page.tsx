@@ -34,6 +34,7 @@ import {
   Bell,
   BellOff,
   Download,
+  UserPlus,
 } from 'lucide-react';
 import Link from 'next/link';
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
@@ -93,6 +94,9 @@ export default function WhatsAppPage() {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showContactInfo, setShowContactInfo] = useState(false);
   const [uploadingFile, setUploadingFile] = useState(false);
+  const [showCreateCustomer, setShowCreateCustomer] = useState(false);
+  const [creatingCustomer, setCreatingCustomer] = useState(false);
+  const [newCustomerForm, setNewCustomerForm] = useState({ firstName: '', lastName: '', email: '' });
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -844,14 +848,97 @@ export default function WhatsAppPage() {
                             </Link>
                           </div>
                         ) : (
-                          <div className="text-center p-4">
-                            <p className="text-sm text-slate-500 mb-3">Dieser Chat ist noch keinem CRM-Kunden zugeordnet.</p>
-                            <Link
-                              href="/admin/whatsapp/settings?tab=matching"
-                              className="inline-flex items-center justify-center w-full py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-semibold rounded-xl text-sm border border-indigo-200 transition-all"
-                            >
-                              Jetzt verknüpfen
-                            </Link>
+                          <div className="p-4">
+                            <p className="text-sm text-slate-500 mb-3 text-center">Dieser Chat ist noch keinem CRM-Kunden zugeordnet.</p>
+                            
+                            {showCreateCustomer ? (
+                              <div className="space-y-3">
+                                <div className="grid grid-cols-2 gap-2">
+                                  <input
+                                    type="text"
+                                    placeholder="Vorname *"
+                                    value={newCustomerForm.firstName}
+                                    onChange={e => setNewCustomerForm(prev => ({ ...prev, firstName: e.target.value }))}
+                                    className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                                  />
+                                  <input
+                                    type="text"
+                                    placeholder="Nachname *"
+                                    value={newCustomerForm.lastName}
+                                    onChange={e => setNewCustomerForm(prev => ({ ...prev, lastName: e.target.value }))}
+                                    className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                                  />
+                                </div>
+                                <input
+                                  type="email"
+                                  placeholder="E-Mail (optional)"
+                                  value={newCustomerForm.email}
+                                  onChange={e => setNewCustomerForm(prev => ({ ...prev, email: e.target.value }))}
+                                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                                />
+                                <p className="text-xs text-slate-400">Telefon: {formatPhone(selectedConv.phoneNumber || '')} (automatisch)</p>
+                                <div className="flex gap-2">
+                                  <button
+                                    onClick={async () => {
+                                      if (!newCustomerForm.firstName.trim() || !newCustomerForm.lastName.trim()) return;
+                                      setCreatingCustomer(true);
+                                      try {
+                                        const res = await fetch('/api/admin/whatsapp/create-customer', {
+                                          method: 'POST',
+                                          headers: { 'Content-Type': 'application/json' },
+                                          body: JSON.stringify({
+                                            firstName: newCustomerForm.firstName.trim(),
+                                            lastName: newCustomerForm.lastName.trim(),
+                                            email: newCustomerForm.email.trim() || undefined,
+                                            phone: selectedConv.phoneNumber,
+                                            conversationId: selectedConv.id,
+                                          }),
+                                        });
+                                        const data = await res.json();
+                                        if (data.success) {
+                                          // Update local state
+                                          setSelectedConv({ ...selectedConv, customerId: data.customerId, customerFirstName: newCustomerForm.firstName.trim(), customerLastName: newCustomerForm.lastName.trim() });
+                                          setConversations(prev => prev.map(c => c.id === selectedConv.id ? { ...c, customerId: data.customerId, customerFirstName: newCustomerForm.firstName.trim(), customerLastName: newCustomerForm.lastName.trim() } : c));
+                                          setShowCreateCustomer(false);
+                                          setNewCustomerForm({ firstName: '', lastName: '', email: '' });
+                                        } else {
+                                          alert(data.error || 'Fehler beim Anlegen');
+                                        }
+                                      } catch {
+                                        alert('Fehler beim Anlegen des Kunden');
+                                      } finally {
+                                        setCreatingCustomer(false);
+                                      }
+                                    }}
+                                    disabled={creatingCustomer || !newCustomerForm.firstName.trim() || !newCustomerForm.lastName.trim()}
+                                    className="flex-1 py-2 bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-300 text-white font-semibold rounded-lg text-sm transition-all"
+                                  >
+                                    {creatingCustomer ? 'Wird angelegt...' : 'Anlegen'}
+                                  </button>
+                                  <button
+                                    onClick={() => { setShowCreateCustomer(false); setNewCustomerForm({ firstName: '', lastName: '', email: '' }); }}
+                                    className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold rounded-lg text-sm transition-all"
+                                  >
+                                    Abbrechen
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="space-y-2">
+                                <button
+                                  onClick={() => setShowCreateCustomer(true)}
+                                  className="w-full py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 font-semibold rounded-xl text-sm border border-emerald-200 transition-all flex items-center justify-center gap-2"
+                                >
+                                  <UserPlus className="h-4 w-4" /> Neuen Kunden anlegen
+                                </button>
+                                <Link
+                                  href="/admin/whatsapp/settings?tab=matching"
+                                  className="w-full inline-flex items-center justify-center py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-semibold rounded-xl text-sm border border-indigo-200 transition-all"
+                                >
+                                  Bestehenden Kunden verknüpfen
+                                </Link>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
