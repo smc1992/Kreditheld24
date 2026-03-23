@@ -209,7 +209,7 @@ export async function POST() {
             messagesImported++;
           }
 
-          // Update conversation with last message info
+          // Update conversation with last message info and pushName from messages
           if (msgs.length > 0) {
             const lastMsg = msgs[msgs.length - 1];
             const lastContent = lastMsg.message?.conversation
@@ -223,10 +223,17 @@ export async function POST() {
                   : parseInt(lastTsRaw) * 1000)
               : new Date();
 
+            // Extract pushName from the most recent incoming message (this is where WA stores the contact's display name)
+            const msgPushName = msgs
+              .filter((m: any) => !m.key?.fromMe && m.pushName && m.pushName !== remoteJid.replace('@s.whatsapp.net', ''))
+              .pop()?.pushName || null;
+
             await db.update(whatsappConversations)
               .set({
                 lastMessageAt: lastTs,
                 lastMessagePreview: typeof lastContent === 'string' ? lastContent.substring(0, 200) : '',
+                // Update pushName from message data if not already set from contacts
+                ...(msgPushName ? { pushName: msgPushName } : {}),
                 updatedAt: new Date(),
               })
               .where(eq(whatsappConversations.id, conversationId));
