@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, whatsappConversations, whatsappMessages } from '@/db';
 import { eq, sql } from 'drizzle-orm';
-import { cleanPhoneNumber } from '@/lib/evolution';
+import { cleanPhoneNumber, EVOLUTION_API_URL, EVOLUTION_API_KEY, INSTANCE_NAME } from '@/lib/evolution';
 import {
   generateKIReply,
   detectCreditIntent,
@@ -144,6 +144,13 @@ async function handleMessageUpsert(payload: any) {
 
       console.log(`[Evolution Webhook] Message saved: ${messageType} from ${isFromMe ? 'me' : phoneNumber}`);
 
+      // Eagerly download media before WhatsApp URLs expire
+      if (messageType !== 'text' && messageId) {
+        eagerDownloadMedia(messageId).catch(err => 
+          console.error(`[Evolution Webhook] Media download failed for ${messageId}:`, err)
+        );
+      }
+
       // ============================================
       // AUTOMATION TRIGGERS (only for incoming customer messages)
       // ============================================
@@ -252,6 +259,58 @@ async function handleSentMessage(payload: any) {
       updatedAt: new Date(),
     })
     .where(eq(whatsappConversations.id, conversation.id));
+}
+
+// ============================================
+// Eager Media Download
+// ============================================
+
+/**
+ * Immediately download media from Evolution API and store as base64 data URI.
+ * WhatsApp media URLs expire within hours, so we must cache them right away.
+ */
+async function eagerDownloadMedia(messageId: string) {
+  try {
+    const response = await fetch(
+      `${EVOLUTION_API_URL}/chat/getBase64FromMediaMessage/${INSTANCE_NAME}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': EVOLUTION_API_KEY,
+        },
+        body: JSON.stringify({
+          message: { key: { id: messageId } },
+          convertToMp4: false,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      console.log(`[Media Download] Evolution API returned ${response.status} for ${messageId}`);
+      return;
+    }
+
+    const data = await response.json();
+    const base64 = data?.base64;
+    const mimetype = data?.mimetype || 'application/octet-stream';
+
+    if (!base64) {
+      console.log(`[Media Download] No base64 data returned for ${messageId}`);
+      return;
+    }
+
+    // Store as data URI in mediaUrl column
+    const dataUri = base64.startsWith('data:') ? base64 : `data:${mimetype};base64,${base64}`;
+
+    await db.update(whatsappMessages)
+      .set({ mediaUrl: dataUri })
+      .where(eq(whatsappMessages.messageId, messageId));
+
+    console.log(`[Media Download] Cached media for message ${messageId} (${mimetype})`);
+  } catch (err: any) {
+    console.error(`[Media Download] Error for ${messageId}:`, err?.message || err);
+  }
 }
 
 // ============================================
