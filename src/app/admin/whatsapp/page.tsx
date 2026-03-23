@@ -393,10 +393,39 @@ export default function WhatsAppPage() {
     if (!phone) return 'Unbekannt';
     // Strip JID suffixes that might still be in the data
     const clean = phone.replace('@s.whatsapp.net', '').replace('@lid', '').replace('@g.us', '');
-    // Format German numbers nicely: +49 170 585 3625
-    if (clean.startsWith('49') && clean.length >= 11) {
-      return `+49 ${clean.slice(2, 5)} ${clean.slice(5, 8)} ${clean.slice(8)}`;
+    if (!clean) return 'Unbekannt';
+    
+    // Country-specific formatting
+    const formats: [string, number, string][] = [
+      // [prefix, prefixLen, groupPattern] - pattern: digits per group separated by space
+      ['49', 2, '3,3,*'],   // DE: +49 170 585 3625
+      ['43', 2, '3,3,*'],   // AT: +43 660 123 4567
+      ['41', 2, '2,3,*'],   // CH: +41 79 123 4567
+      ['44', 2, '4,*'],     // UK: +44 7911 123456
+      ['33', 2, '1,2,2,2,*'], // FR: +33 6 12 34 56 78
+      ['39', 2, '3,*'],     // IT: +39 312 1234567
+      ['34', 2, '3,3,*'],   // ES: +34 612 345 678
+      ['90', 2, '3,3,*'],   // TR: +90 532 123 4567
+      ['1', 1, '3,3,*'],    // US/CA: +1 555 123 4567
+      ['20', 2, '3,3,*'],   // EG: +20 100 123 4567
+    ];
+
+    for (const [prefix, prefixLen, pattern] of formats) {
+      if (clean.startsWith(prefix) && clean.length >= prefixLen + 4) {
+        const rest = clean.slice(prefixLen);
+        const groups = pattern.split(',');
+        const parts: string[] = [`+${clean.slice(0, prefixLen)}`];
+        let pos = 0;
+        for (const g of groups) {
+          if (g === '*') { parts.push(rest.slice(pos)); break; }
+          const len = parseInt(g);
+          parts.push(rest.slice(pos, pos + len));
+          pos += len;
+        }
+        return parts.join(' ');
+      }
     }
+    // Generic: just add + prefix
     return `+${clean}`;
   };
 
