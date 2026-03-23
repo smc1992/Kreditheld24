@@ -97,6 +97,7 @@ export default function WhatsAppPage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const pollRef = useRef<NodeJS.Timeout | null>(null);
+  const isPlayingAudio = useRef(false);
 
   // Load templates
   useEffect(() => {
@@ -166,18 +167,27 @@ export default function WhatsAppPage() {
   }, [search]);
 
   // Fetch messages for selected conversation
-  const fetchMessages = useCallback(async (convId: string) => {
-    setLoadingMessages(true);
+  const fetchMessages = useCallback(async (convId: string, isPolling = false) => {
+    if (!isPolling) setLoadingMessages(true);
     try {
       const res = await fetch(`/api/admin/whatsapp/conversations/${convId}/messages`);
       const data = await res.json();
       if (data.success) {
-        setMessages(data.messages);
+        if (isPolling && isPlayingAudio.current) {
+          // During audio playback: only append truly new messages to avoid re-rendering existing audio elements
+          setMessages(prev => {
+            const existingIds = new Set(prev.map(m => m.id));
+            const newMsgs = (data.messages as Message[]).filter(m => !existingIds.has(m.id));
+            return newMsgs.length > 0 ? [...prev, ...newMsgs] : prev;
+          });
+        } else {
+          setMessages(data.messages);
+        }
       }
     } catch (err) {
       console.error('Error fetching messages:', err);
     } finally {
-      setLoadingMessages(false);
+      if (!isPolling) setLoadingMessages(false);
     }
   }, []);
 
@@ -190,7 +200,7 @@ export default function WhatsAppPage() {
     pollRef.current = setInterval(() => {
       fetchConversations();
       if (selectedConv) {
-        fetchMessages(selectedConv.id);
+        fetchMessages(selectedConv.id, true);
       }
     }, 5000);
 
@@ -199,10 +209,31 @@ export default function WhatsAppPage() {
     };
   }, [session, fetchConversations, fetchMessages, fetchStatus, selectedConv]);
 
-  // Scroll to bottom when messages change
+  // Scroll to bottom when messages change (skip during audio playback)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (!isPlayingAudio.current) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   }, [messages]);
+
+  // Track audio playback globally to prevent polling from destroying audio elements
+  useEffect(() => {
+    const handlePlay = () => { isPlayingAudio.current = true; };
+    const handlePauseOrEnd = () => {
+      // Check if any audio element is still playing
+      const audios = document.querySelectorAll('audio');
+      const anyPlaying = Array.from(audios).some(a => !a.paused);
+      isPlayingAudio.current = anyPlaying;
+    };
+    document.addEventListener('play', handlePlay, true);
+    document.addEventListener('pause', handlePauseOrEnd, true);
+    document.addEventListener('ended', handlePauseOrEnd, true);
+    return () => {
+      document.removeEventListener('play', handlePlay, true);
+      document.removeEventListener('pause', handlePauseOrEnd, true);
+      document.removeEventListener('ended', handlePauseOrEnd, true);
+    };
+  }, []);
 
   const handleSelectConversation = (conv: Conversation) => {
     setSelectedConv(conv);
