@@ -395,23 +395,25 @@ export default function WhatsAppPage() {
     const clean = phone.replace('@s.whatsapp.net', '').replace('@lid', '').replace('@g.us', '');
     if (!clean) return 'Unbekannt';
     
-    // Country-specific formatting
-    const formats: [string, number, string][] = [
-      // [prefix, prefixLen, groupPattern] - pattern: digits per group separated by space
-      ['49', 2, '3,3,*'],   // DE: +49 170 585 3625
-      ['43', 2, '3,3,*'],   // AT: +43 660 123 4567
-      ['41', 2, '2,3,*'],   // CH: +41 79 123 4567
-      ['44', 2, '4,*'],     // UK: +44 7911 123456
-      ['33', 2, '1,2,2,2,*'], // FR: +33 6 12 34 56 78
-      ['39', 2, '3,*'],     // IT: +39 312 1234567
-      ['34', 2, '3,3,*'],   // ES: +34 612 345 678
-      ['90', 2, '3,3,*'],   // TR: +90 532 123 4567
-      ['1', 1, '3,3,*'],    // US/CA: +1 555 123 4567
-      ['20', 2, '3,3,*'],   // EG: +20 100 123 4567
+    // E.164 max is 15 digits. If longer, it's likely a @lid internal ID — don't format
+    if (clean.length > 15) return clean;
+
+    // Country-specific formatting: [prefix, prefixLen, maxTotalLen, groupPattern]
+    const formats: [string, number, number, string][] = [
+      ['49', 2, 14, '3,3,*'],     // DE: +49 170 585 3625
+      ['43', 2, 13, '3,3,*'],     // AT: +43 660 123 4567
+      ['41', 2, 12, '2,3,*'],     // CH: +41 79 123 4567
+      ['44', 2, 13, '4,*'],       // UK: +44 7911 123456
+      ['33', 2, 12, '1,2,2,2,*'], // FR: +33 6 12 34 56 78
+      ['39', 2, 13, '3,*'],       // IT: +39 312 1234567
+      ['34', 2, 12, '3,3,*'],     // ES: +34 612 345 678
+      ['90', 2, 12, '3,3,*'],     // TR: +90 532 123 4567
+      ['1', 1, 11, '3,3,*'],      // US/CA: +1 555 123 4567
+      ['20', 2, 13, '3,3,*'],     // EG: +20 100 123 4567
     ];
 
-    for (const [prefix, prefixLen, pattern] of formats) {
-      if (clean.startsWith(prefix) && clean.length >= prefixLen + 4) {
+    for (const [prefix, prefixLen, maxLen, pattern] of formats) {
+      if (clean.startsWith(prefix) && clean.length >= prefixLen + 4 && clean.length <= maxLen) {
         const rest = clean.slice(prefixLen);
         const groups = pattern.split(',');
         const parts: string[] = [`+${clean.slice(0, prefixLen)}`];
