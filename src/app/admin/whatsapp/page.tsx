@@ -36,6 +36,7 @@ import {
   Download,
 } from 'lucide-react';
 import Link from 'next/link';
+import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 
 interface Conversation {
   id: string;
@@ -89,6 +90,8 @@ export default function WhatsAppPage() {
   const prevTotalUnread = useRef<number>(0);
   const [templates, setTemplates] = useState<Array<{id: string; name: string; content: string; category: string | null}>>([]);
   const [showTemplates, setShowTemplates] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showContactInfo, setShowContactInfo] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const pollRef = useRef<NodeJS.Timeout | null>(null);
@@ -617,32 +620,39 @@ export default function WhatsAppPage() {
           </div>
 
           {/* Chat Area */}
-          <div className={`flex-1 flex flex-col ${!selectedConv ? 'hidden md:flex' : 'flex'}`}>
+          <div className={`flex-1 flex flex-col relative overflow-hidden ${!selectedConv ? 'hidden md:flex' : 'flex'}`}>
             {selectedConv ? (
               <>
                 {/* Chat Header */}
-                <div className="px-4 py-3 border-b border-slate-100 flex items-center gap-3 bg-white">
-                  <button
-                    onClick={() => setSelectedConv(null)}
-                    className="md:hidden p-1 hover:bg-slate-100 rounded-lg transition-all"
-                  >
-                    <ArrowLeft className="h-5 w-5 text-slate-500" />
-                  </button>
-                  {selectedConv.profilePicUrl ? (
-                    <img src={selectedConv.profilePicUrl} className="w-10 h-10 rounded-full object-cover" alt="" />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center text-white font-bold text-sm">
-                      {getInitials(selectedConv)}
-                    </div>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-bold text-slate-900 truncate">{getDisplayName(selectedConv)}</h3>
-                    <p className="text-xs text-slate-400 flex items-center gap-1">
-                      <Phone className="h-3 w-3" />
-                      {selectedConv.phoneNumber ? `+${selectedConv.phoneNumber}` : selectedConv.remoteJid}
-                    </p>
+                <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between bg-white z-10">
+                  <div className="flex items-center gap-3 w-full md:w-auto overflow-hidden">
+                    <button
+                      onClick={() => setSelectedConv(null)}
+                      className="md:hidden p-1 hover:bg-slate-100 rounded-lg transition-all"
+                    >
+                      <ArrowLeft className="h-5 w-5 text-slate-500" />
+                    </button>
+                    <button 
+                      onClick={() => setShowContactInfo(!showContactInfo)}
+                      className="flex items-center gap-3 hover:bg-slate-50 p-1 -m-1 rounded-lg transition-all text-left flex-1 min-w-0"
+                    >
+                      {selectedConv.profilePicUrl ? (
+                        <img src={selectedConv.profilePicUrl} className="w-10 h-10 rounded-full object-cover flex-shrink-0" alt="" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                          {getInitials(selectedConv)}
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-sm font-bold text-slate-900 truncate">{getDisplayName(selectedConv)}</h3>
+                        <p className="text-xs text-slate-400 flex items-center gap-1 truncate">
+                          <Phone className="h-3 w-3 flex-shrink-0" />
+                          <span className="truncate">{selectedConv.phoneNumber ? `+${selectedConv.phoneNumber}` : selectedConv.remoteJid}</span>
+                        </p>
+                      </div>
+                    </button>
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1 flex-shrink-0">
                     <button
                       onClick={handleToggleAI}
                       className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all ${
@@ -657,6 +667,93 @@ export default function WhatsAppPage() {
                     </button>
                   </div>
                 </div>
+
+                {/* Contact Info Overlay */}
+                {showContactInfo && (
+                  <div className="absolute inset-y-0 right-0 z-20 bg-white flex flex-col w-full md:w-80 border-l border-slate-100 shadow-xl transition-all h-full">
+                    {/* Header */}
+                    <div className="px-4 py-3 bg-slate-50 flex items-center gap-4">
+                      <button onClick={() => setShowContactInfo(false)} className="p-1 hover:bg-slate-200 rounded-lg transition-all">
+                        <ArrowLeft className="h-5 w-5 text-slate-600" />
+                      </button>
+                      <h2 className="text-sm font-bold text-slate-800">Kontaktinfo</h2>
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1 overflow-y-auto bg-slate-50">
+                      <div className="bg-white py-6 flex flex-col items-center justify-center shadow-sm">
+                        {selectedConv.profilePicUrl ? (
+                          <img src={selectedConv.profilePicUrl} className="w-40 h-40 rounded-full object-cover mb-4 border-4 border-slate-50 shadow-md" alt="" />
+                        ) : (
+                          <div className="w-40 h-40 rounded-full bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center text-white font-bold text-5xl mb-4 border-4 border-slate-50 shadow-md">
+                            {getInitials(selectedConv)}
+                          </div>
+                        )}
+                        <h2 className="text-xl font-bold text-slate-900">{getDisplayName(selectedConv)}</h2>
+                        <p className="text-sm text-slate-500 mt-1 flex items-center gap-1">
+                          <Phone className="h-4 w-4" />
+                          {selectedConv.phoneNumber ? `+${selectedConv.phoneNumber}` : selectedConv.remoteJid}
+                        </p>
+                      </div>
+
+                      {/* CRM Actions */}
+                      <div className="mt-4 bg-white py-4 px-6 shadow-sm">
+                        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">CRM Verknüpfung</h3>
+                        
+                        {selectedConv.customerId ? (
+                          <div className="flex flex-col gap-3">
+                            <div className="flex items-center justify-between p-3 bg-emerald-50 rounded-xl border border-emerald-100">
+                              <div className="flex items-center gap-3">
+                                <div className="p-2 bg-emerald-100 rounded-lg">
+                                  <User className="h-5 w-5 text-emerald-600" />
+                                </div>
+                                <div className="min-w-0">
+                                  <p className="text-sm font-bold text-slate-800 truncate">
+                                    {selectedConv.customerFirstName} {selectedConv.customerLastName}
+                                  </p>
+                                  <p className="text-xs text-slate-500">Verknüpfter Kunde</p>
+                                </div>
+                              </div>
+                            </div>
+                            <Link
+                              href={`/admin/customers/${selectedConv.customerId}`}
+                              className="w-full text-center py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition-all"
+                            >
+                              Kundenprofil öffnen
+                            </Link>
+                          </div>
+                        ) : (
+                          <div className="text-center p-4">
+                            <p className="text-sm text-slate-500 mb-3">Dieser Chat ist noch keinem CRM-Kunden zugeordnet.</p>
+                            <Link
+                              href="/admin/whatsapp/settings?tab=matching"
+                              className="inline-flex items-center justify-center w-full py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-semibold rounded-xl text-sm border border-indigo-200 transition-all"
+                            >
+                              Jetzt verknüpfen
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* AI Settings */}
+                      <div className="mt-4 bg-white py-4 px-6 shadow-sm mb-8">
+                        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Chat-Einstellungen</h3>
+                        <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
+                          <div>
+                            <p className="text-sm font-bold text-slate-800 flex items-center gap-1.5"><Bot className="h-4 w-4" /> KI-Assistent</p>
+                            <p className="text-xs text-slate-500">Automatische Antworten erlauben</p>
+                          </div>
+                          <button
+                            onClick={handleToggleAI}
+                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${selectedConv.aiEnabled ? 'bg-violet-500' : 'bg-slate-300'}`}
+                          >
+                            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${selectedConv.aiEnabled ? 'translate-x-6' : 'translate-x-1'}`} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Messages */}
                 <div className="flex-1 overflow-y-auto px-4 py-4 space-y-2 bg-[#efeae2]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cdefs%3E%3Cpattern id=\'p\' width=\'40\' height=\'40\' patternUnits=\'userSpaceOnUse\'%3E%3Ccircle cx=\'20\' cy=\'20\' r=\'1\' fill=\'%23d5cfb8\' opacity=\'0.3\'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width=\'100\' height=\'100\' fill=\'url(%23p)\'/%3E%3C/svg%3E")' }}>
@@ -748,12 +845,32 @@ export default function WhatsAppPage() {
                     </div>
                   )}
                   <form
-                    onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}
+                    onSubmit={(e) => { e.preventDefault(); handleSendMessage(); setShowEmojiPicker(false); }}
                     className="flex items-center gap-2"
                   >
-                    <button type="button" className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all">
-                      <Smile className="h-5 w-5" />
-                    </button>
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                        className={`p-2 rounded-lg transition-all ${showEmojiPicker ? 'text-emerald-600 bg-emerald-50' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'}`}
+                        title="Emojis"
+                      >
+                        <Smile className="h-5 w-5" />
+                      </button>
+                      
+                      {showEmojiPicker && (
+                        <div className="absolute bottom-full left-0 mb-2 z-20 shadow-xl rounded-xl overflow-hidden border border-slate-200">
+                          <EmojiPicker 
+                            onEmojiClick={(emojiData: EmojiClickData) => {
+                              setNewMessage((prev) => prev + emojiData.emoji);
+                            }}
+                            width={320}
+                            height={400}
+                            lazyLoadEmojis={true}
+                          />
+                        </div>
+                      )}
+                    </div>
                     {templates.length > 0 && (
                       <button
                         type="button"
@@ -772,7 +889,7 @@ export default function WhatsAppPage() {
                       placeholder="Nachricht schreiben..."
                       className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                       disabled={connectionStatus !== 'open'}
-                      onFocus={() => setShowTemplates(false)}
+                      onFocus={() => { setShowTemplates(false); setShowEmojiPicker(false); }}
                     />
                     <button
                       type="submit"
