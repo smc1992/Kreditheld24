@@ -803,7 +803,7 @@ export default function WhatsAppPage() {
                         <h3 className="text-sm font-bold text-slate-900 truncate">{getDisplayName(selectedConv)}</h3>
                         <p className="text-xs text-slate-400 flex items-center gap-1 truncate">
                           <Phone className="h-3 w-3 flex-shrink-0" />
-                          <span className="truncate">{selectedConv.phoneNumber ? `+${selectedConv.phoneNumber}` : selectedConv.remoteJid}</span>
+                          <span className="truncate">{formatPhone(selectedConv.phoneNumber || selectedConv.remoteJid || '')}</span>
                         </p>
                       </div>
                     </button>
