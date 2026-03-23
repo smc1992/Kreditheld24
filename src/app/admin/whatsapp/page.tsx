@@ -385,11 +385,23 @@ export default function WhatsAppPage() {
     }
   };
 
+  const formatPhone = (phone: string) => {
+    if (!phone) return 'Unbekannt';
+    // Format German numbers nicely: +49 170 585 3625
+    if (phone.startsWith('49') && phone.length >= 11) {
+      return `+49 ${phone.slice(2, 5)} ${phone.slice(5, 8)} ${phone.slice(8)}`;
+    }
+    return `+${phone}`;
+  };
+
   const getDisplayName = (conv: Conversation) => {
     if (conv.customerFirstName && conv.customerLastName) {
       return `${conv.customerFirstName} ${conv.customerLastName}`;
     }
-    return conv.pushName || conv.phoneNumber || 'Unbekannt';
+    if (conv.pushName && conv.pushName !== conv.phoneNumber && conv.pushName !== 'Você') {
+      return conv.pushName;
+    }
+    return conv.phoneNumber ? formatPhone(conv.phoneNumber) : 'Unbekannt';
   };
 
   const getInitials = (conv: Conversation) => {
