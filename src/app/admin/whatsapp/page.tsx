@@ -788,16 +788,92 @@ export default function WhatsAppPage() {
                             </div>
                           )}
 
-                          {/* Message type icon */}
-                          {msg.messageType !== 'text' && (
+                          {/* Message type icon (only for non-renderable types) */}
+                          {!['text', 'audio', 'image', 'video'].includes(msg.messageType) && msg.messageType !== 'text' && (
                             <div className="flex items-center gap-1 text-slate-400 mb-1">
                               {getMessageTypeIcon(msg.messageType)}
                               <span className="text-[10px] uppercase">{msg.messageType}</span>
                             </div>
                           )}
 
-                          {/* Content */}
-                          {msg.content && (
+                          {/* Audio Player */}
+                          {msg.messageType === 'audio' && msg.messageId && (
+                            <div className="flex items-center gap-2 min-w-[200px]">
+                              <div className="flex items-center gap-1 text-slate-400 mb-0.5">
+                                <Mic className="h-3.5 w-3.5" />
+                              </div>
+                              <audio 
+                                controls 
+                                preload="none"
+                                className="h-8 w-full max-w-[240px]"
+                                style={{ filter: 'sepia(20%) saturate(70%) grayscale(1) contrast(99%) invert(12%)' }}
+                              >
+                                <source src={`/api/admin/whatsapp/media?messageId=${msg.messageId}`} type="audio/ogg" />
+                                Audio nicht verfügbar
+                              </audio>
+                            </div>
+                          )}
+
+                          {/* Image */}
+                          {msg.messageType === 'image' && msg.messageId && (
+                            <div className="mb-1">
+                              <img 
+                                src={`/api/admin/whatsapp/media?messageId=${msg.messageId}`} 
+                                alt="Bild"
+                                className="max-w-full rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                                style={{ maxHeight: '300px' }}
+                                loading="lazy"
+                                onClick={() => window.open(`/api/admin/whatsapp/media?messageId=${msg.messageId}`, '_blank')}
+                              />
+                            </div>
+                          )}
+
+                          {/* Video */}
+                          {msg.messageType === 'video' && msg.messageId && (
+                            <div className="mb-1">
+                              <video 
+                                controls 
+                                preload="none"
+                                className="max-w-full rounded-lg"
+                                style={{ maxHeight: '300px' }}
+                              >
+                                <source src={`/api/admin/whatsapp/media?messageId=${msg.messageId}`} />
+                                Video nicht verfügbar
+                              </video>
+                            </div>
+                          )}
+
+                          {/* Document */}
+                          {msg.messageType === 'document' && msg.messageId && (
+                            <a 
+                              href={`/api/admin/whatsapp/media?messageId=${msg.messageId}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-2 p-2 bg-slate-50/50 rounded-lg hover:bg-slate-100/50 transition-all mb-1"
+                            >
+                              <FileText className="h-8 w-8 text-slate-400 flex-shrink-0" />
+                              <div className="min-w-0 flex-1">
+                                <p className="text-xs font-medium text-slate-600 truncate">{msg.content || 'Dokument'}</p>
+                                <p className="text-[10px] text-slate-400">Zum Herunterladen klicken</p>
+                              </div>
+                              <Download className="h-4 w-4 text-slate-400 flex-shrink-0" />
+                            </a>
+                          )}
+
+                          {/* Sticker */}
+                          {msg.messageType === 'sticker' && msg.messageId && (
+                            <div className="mb-1">
+                              <img 
+                                src={`/api/admin/whatsapp/media?messageId=${msg.messageId}`} 
+                                alt="Sticker"
+                                className="w-32 h-32 object-contain"
+                                loading="lazy"
+                              />
+                            </div>
+                          )}
+
+                          {/* Text Content (show for text messages or as caption for media) */}
+                          {msg.content && msg.messageType !== 'document' && (
                             <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>
                           )}
 
