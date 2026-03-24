@@ -117,53 +117,10 @@ export async function POST(request: NextRequest) {
     }
 
     if (isVerified) {
-      // Bestätigungs-E-Mail (bereits verifiziert)
-      await transporter.sendMail({
-        from: fromAddress,
-        to: email,
-        subject: 'Eingangsbestätigung Ihrer Kreditanfrage - Kreditheld24',
-        html: `
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Eingangsbestätigung - Kreditheld24</title>
-          </head>
-          <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-              <h1 style="color: white; margin: 0; font-size: 28px;">Kreditheld24</h1>
-              <p style="color: #e6fffa; margin: 10px 0 0 0; font-size: 16px;">Ihr Partner für günstige Kredite</p>
-            </div>
-            
-            <div style="background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px; border: 1px solid #e9ecef;">
-              <h2 style="color: #059669; margin-top: 0;">Hallo ${formData.vorname || 'Kunde'},</h2>
-              
-              <p>vielen Dank für Ihre Kreditanfrage!</p>
-              
-              <p>Wir haben Ihren Antrag erhalten und werden ihn schnellstmöglich prüfen. Da Ihre E-Mail-Adresse bereits verifiziert ist, müssen Sie nichts weiter tun.</p>
-              
-              <div style="text-align: center; margin: 30px 0;">
-                <a href="${baseUrl}/portal/cases/${caseId}" 
-                   style="background: #10b981; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; font-size: 16px;">
-                  Zum Kundenportal
-                </a>
-              </div>
-  
-              <p style="font-size: 14px; color: #666;">
-                Im Kundenportal können Sie den Status Ihrer Anfrage einsehen und weitere Unterlagen hochladen.
-              </p>
-              
-              <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e9ecef; font-size: 14px; color: #666;">
-                E-Mail: info@kreditheld24.de<br>
-                Web: www.kreditheld24.de<br>
-                <span style="color: #ccc; font-size: 10px;">Gesendet: ${new Date().toLocaleString('de-DE')}</span></p>
-              </div>
-            </div>
-          </body>
-          </html>
-        `
-      });
+      // E-Mail ist bereits verifiziert – KEINE E-Mail senden.
+      // Die Eingangsbestätigung wird erst nach dem tatsächlichen Absenden der Anfrage versandt.
+      // Der Kunde wird direkt zum Dokumenten-Upload weitergeleitet.
+      console.log(`[Verification] E-Mail ${email} bereits verifiziert, überspringe zum Upload.`);
     } else {
       // Verifizierungs-E-Mail (Standard)
       try {
