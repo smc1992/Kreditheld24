@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
 
     // Serverseitige Minimal-Validierung (spiegelt die wichtigsten Regeln)
     const missing: string[] = []
-    const isSelbststaendig = (data.beschaeftigungsverhaeltnis || '').toLowerCase() === 'selbstständig' || (data.beschaeftigungsverhaeltnis || '').toLowerCase() === 'selbststaendig'
+    const isSelbststaendig = (data.beschaeftigungsverhaeltnis || '').toLowerCase().includes('selbstständig') || (data.beschaeftigungsverhaeltnis || '').toLowerCase().includes('selbststaendig')
     const getFile = (name: string) => form.get(name) as File | null
     if (isSelbststaendig) {
       if (!getFile('steuerbescheid1')) missing.push('Steuerbescheid Jahr 1')
@@ -149,7 +149,14 @@ export async function POST(request: NextRequest) {
       if (!getFile('gehaltsabrechnung3')) missing.push('Gehaltsabrechnung 3')
     }
     if (!getFile('kontoauszug')) missing.push('Kontoauszug letzter Monat')
-    if ((data.staatsangehoerigkeit || '').toLowerCase() !== 'deutsch' && !getFile('meldebescheinigung')) missing.push('Meldebescheinigung')
+    
+    // Hardening check for German citizenship
+    const staatsangehoerigkeit = (data.staatsangehoerigkeit || '').toLowerCase().trim();
+    const isGerman = staatsangehoerigkeit === 'deutsch' || staatsangehoerigkeit === 'deutschland' || staatsangehoerigkeit === 'de';
+    if (!isGerman && !getFile('meldebescheinigung')) {
+      missing.push('Meldebescheinigung')
+    }
+    
     const hasBestehendeKredite = (data.hatBestehendeKredite || '').toLowerCase() === 'true'
     const hasBaufinanzierung = (data.hatBaufinanzierung || '').toLowerCase() === 'true'
     if (hasBestehendeKredite && !getFile('bestehendeKredite')) missing.push('Nachweis bestehende Kredite')
@@ -161,7 +168,8 @@ export async function POST(request: NextRequest) {
     }
 
     if (missing.length > 0) {
-      return NextResponse.json({ error: 'Fehlende Dokumente', missing }, { status: 400 })
+      console.warn('[Kreditanfrage] Dokumente fehlen beim initialen Submit (Upload erfolgt ggf. später):', missing)
+      // Wir blockieren die Anfrage NICHT mehr, da die Dateien oft erst später oder im Kundenportal hochgeladen werden!
     }
 
     // HTML-E-Mail-Inhalt

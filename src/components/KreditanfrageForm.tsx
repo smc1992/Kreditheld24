@@ -1996,16 +1996,18 @@ export default function KreditanfrageForm() {
             currentStep === 3 ? (
               <Button
                 type="button"
-                onClick={() => {
+                onClick={async () => {
                   if (isStepValid(currentStep)) {
-                    sendEmailVerification()
+                    setIsSubmitting(true)
+                    await sendEmailVerification()
+                    setIsSubmitting(false)
                     setCurrentStep(5) // Direkt zum Dokumenten-Upload springen!
                   }
                 }}
-                disabled={!isStepValid(currentStep)}
+                disabled={!isStepValid(currentStep) || isSubmitting}
                 className="bg-green-600 hover:bg-green-700 px-6 py-2"
               >
-                Daten bestätigen
+                {isSubmitting ? 'Wird verarbeitet...' : 'Daten bestätigen'}
               </Button>
             ) : currentStep === 4 ? (
               <Button
