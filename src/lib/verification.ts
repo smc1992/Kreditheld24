@@ -9,7 +9,8 @@ import { eq, and, gt } from 'drizzle-orm'
 export async function storeVerificationToken(
   token: string,
   email: string,
-  formData: Record<string, unknown>
+  formData: Record<string, unknown>,
+  alreadyVerified: boolean = false
 ) {
   // Falls bereits ein unverified Token für diese E-Mail existiert, löschen wir ihn
   // um Duplikate zu vermeiden
@@ -33,7 +34,7 @@ export async function storeVerificationToken(
     token,
     email: email.toLowerCase(),
     formData,
-    verified: false,
+    verified: alreadyVerified,
     expiresAt,
   })
 }

@@ -195,9 +195,9 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Token in temporärem Store speichern (Redis oder FS)
-    // Wir speichern die caseId mit, um sie später wiederherzustellen
-    await storeVerificationToken(token, email, { ...formData, caseId })
+    // Token in der Datenbank speichern (PostgreSQL – überlebt Redeployments)
+    // Bei bereits verifizierten Kunden den Token direkt als verified markieren
+    await storeVerificationToken(token, email, { ...formData, caseId }, isVerified)
 
     return NextResponse.json({
       success: true,
