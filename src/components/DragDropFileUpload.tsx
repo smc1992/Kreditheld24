@@ -87,7 +87,11 @@ export default function DragDropFileUpload({
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e)
+    if (e.target.files && e.target.files.length > 0) {
+      onChange(e)
+      // Clear input so the exact same file can be selected again if the upload failed previously
+      e.target.value = ''
+    }
   }
 
   const handleRemove = (e: React.MouseEvent) => {

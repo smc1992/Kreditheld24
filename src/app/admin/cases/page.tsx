@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/admin/DashboardLayout';
 import Link from 'next/link';
+import ConfirmModal from '@/components/admin/ConfirmModal';
 import {
   Briefcase,
   Plus,
@@ -41,22 +42,97 @@ export default function CasesPage() {
   const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
   const [selectedCases, setSelectedCases] = useState<string[]>([]);
 
-  const handleBulkDelete = async () => {
+  // Modal state
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    confirmText: string;
+    variant: 'danger' | 'warning';
+    onConfirm: () => Promise<void>;
+  }>({ isOpen: false, title: '', message: '', confirmText: '', variant: 'danger', onConfirm: async () => {} });
+  const [modalLoading, setModalLoading] = useState(false);
+
+  const closeModal = () => {
+    setConfirmModal(prev => ({ ...prev, isOpen: false }));
+    setModalLoading(false);
+  };
+
+  const handleBulkDelete = () => {
     if (!selectedCases.length) return;
-    if (confirm(`${selectedCases.length} Vorgänge wirklich unwiderruflich löschen?`)) {
-      try {
-        await fetch('/api/admin/cases/bulk', {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ids: selectedCases })
-        });
-        setCases(cases.filter(c => !selectedCases.includes(c.id)));
-        setSelectedCases([]);
-        setTotalCases(prev => prev - selectedCases.length);
-      } catch (err) {
-        console.error('Error in bulk delete:', err);
+    setConfirmModal({
+      isOpen: true,
+      title: `${selectedCases.length} Vorgänge löschen`,
+      message: `Möchten Sie ${selectedCases.length} ausgewählte Vorgänge wirklich unwiderruflich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`,
+      confirmText: `${selectedCases.length} Löschen`,
+      variant: 'danger',
+      onConfirm: async () => {
+        setModalLoading(true);
+        try {
+          await fetch('/api/admin/cases/bulk', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ids: selectedCases })
+          });
+          setCases(prev => prev.filter(c => !selectedCases.includes(c.id)));
+          setTotalCases(prev => prev - selectedCases.length);
+          setSelectedCases([]);
+        } catch (err) {
+          console.error('Error in bulk delete:', err);
+        } finally {
+          closeModal();
+        }
       }
-    }
+    });
+  };
+
+  const handleSingleDelete = (caseId: string, caseNumber: string) => {
+    setActiveMenu(null);
+    setConfirmModal({
+      isOpen: true,
+      title: 'Vorgang löschen',
+      message: `Möchten Sie den Vorgang ${caseNumber} wirklich unwiderruflich löschen? Alle zugehörigen Dokumente und Aktivitäten werden ebenfalls entfernt.`,
+      confirmText: 'Löschen',
+      variant: 'danger',
+      onConfirm: async () => {
+        setModalLoading(true);
+        try {
+          await fetch(`/api/admin/cases/${caseId}`, { method: 'DELETE' });
+          setCases(prev => prev.filter(c => c.id !== caseId));
+          setTotalCases(prev => prev - 1);
+        } catch (err) {
+          console.error('Error deleting case:', err);
+        } finally {
+          closeModal();
+        }
+      }
+    });
+  };
+
+  const handleArchive = (caseId: string, caseNumber: string) => {
+    setActiveMenu(null);
+    setConfirmModal({
+      isOpen: true,
+      title: 'Vorgang archivieren',
+      message: `Möchten Sie den Vorgang ${caseNumber} archivieren? Der Vorgang wird als "Geschlossen" markiert.`,
+      confirmText: 'Archivieren',
+      variant: 'warning',
+      onConfirm: async () => {
+        setModalLoading(true);
+        try {
+          await fetch(`/api/admin/cases/${caseId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: 'closed' })
+          });
+          setCases(prev => prev.map(c => c.id === caseId ? { ...c, status: 'closed' } : c));
+        } catch (err) {
+          console.error('Error archiving case:', err);
+        } finally {
+          closeModal();
+        }
+      }
+    });
   };
 
   const fetchCases = async (page: number, search: string) => {
@@ -328,32 +404,14 @@ export default function CasesPage() {
                                       </button>
                                       <div className="h-px bg-slate-100 my-1" />
                                       <button
-                                        onClick={async () => {
-                                          if (confirm('Vorgang wirklich archivieren?')) {
-                                            await fetch(`/api/admin/cases/${caseItem.id}`, {
-                                              method: 'PATCH',
-                                              headers: { 'Content-Type': 'application/json' },
-                                              body: JSON.stringify({ status: 'closed' })
-                                            });
-                                            router.refresh();
-                                          }
-                                          setActiveMenu(null);
-                                        }}
+                                        onClick={() => handleArchive(caseItem.id, caseItem.caseNumber)}
                                         className="flex w-full items-center gap-2 px-4 py-2 text-sm text-amber-600 hover:bg-amber-50 font-medium"
                                       >
                                         <XCircle className="h-4 w-4" />
                                         Archivieren
                                       </button>
                                       <button
-                                        onClick={async () => {
-                                          if (confirm('Vorgang wirklich unwiderruflich löschen?')) {
-                                            await fetch(`/api/admin/cases/${caseItem.id}`, {
-                                              method: 'DELETE'
-                                            });
-                                            setCases(cases.filter(c => c.id !== caseItem.id));
-                                          }
-                                          setActiveMenu(null);
-                                        }}
+                                        onClick={() => handleSingleDelete(caseItem.id, caseItem.caseNumber)}
                                         className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium"
                                       >
                                         <Trash2 className="h-4 w-4" />
@@ -403,6 +461,18 @@ export default function CasesPage() {
             </button>
           </div>
         </div>
+
+        {/* Confirm Modal */}
+        <ConfirmModal
+          isOpen={confirmModal.isOpen}
+          title={confirmModal.title}
+          message={confirmModal.message}
+          confirmText={confirmModal.confirmText}
+          variant={confirmModal.variant}
+          onConfirm={confirmModal.onConfirm}
+          onCancel={closeModal}
+          isLoading={modalLoading}
+        />
       </div>
     </DashboardLayout>
   );
