@@ -39,6 +39,25 @@ export default function CasesPage() {
   const itemsPerPage = 20;
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [menuPos, setMenuPos] = useState({ top: 0, right: 0 });
+  const [selectedCases, setSelectedCases] = useState<string[]>([]);
+
+  const handleBulkDelete = async () => {
+    if (!selectedCases.length) return;
+    if (confirm(`${selectedCases.length} Vorgänge wirklich unwiderruflich löschen?`)) {
+      try {
+        await fetch('/api/admin/cases/bulk', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ids: selectedCases })
+        });
+        setCases(cases.filter(c => !selectedCases.includes(c.id)));
+        setSelectedCases([]);
+        setTotalCases(prev => prev - selectedCases.length);
+      } catch (err) {
+        console.error('Error in bulk delete:', err);
+      }
+    }
+  };
 
   const fetchCases = async (page: number, search: string) => {
     setLoading(true);
@@ -146,6 +165,15 @@ export default function CasesPage() {
             <Filter className="h-4 w-4 text-slate-400" />
             Status
           </button>
+          {selectedCases.length > 0 && (
+            <button
+              onClick={handleBulkDelete}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-200 rounded-lg text-sm font-medium text-red-700 hover:bg-red-100 transition-all"
+            >
+              <Trash2 className="h-4 w-4" />
+              {selectedCases.length} Löschen
+            </button>
+          )}
         </div>
 
         {/* Cases Table */}
@@ -154,6 +182,20 @@ export default function CasesPage() {
             <table className="w-full border-collapse text-left text-sm">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200">
+                  <th className="px-6 py-4 w-12 text-center border-r border-slate-200/50">
+                    <input
+                      type="checkbox"
+                      className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-600 cursor-pointer"
+                      checked={filteredCases.length > 0 && selectedCases.length === filteredCases.length}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedCases(filteredCases.map(c => c.id));
+                        } else {
+                          setSelectedCases([]);
+                        }
+                      }}
+                    />
+                  </th>
                   <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Vorgang & Datum</th>
                   <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Kunde</th>
                   <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Finanzierung</th>
@@ -166,7 +208,7 @@ export default function CasesPage() {
                 {loading ? (
                   Array.from({ length: 5 }).map((_, i) => (
                     <tr key={i} className="animate-pulse">
-                      <td colSpan={6} className="px-6 py-4">
+                      <td colSpan={7} className="px-6 py-4">
                         <div className="h-12 bg-slate-50 rounded-lg"></div>
                       </td>
                     </tr>
@@ -176,6 +218,20 @@ export default function CasesPage() {
                     const status = getStatusConfig(caseItem.status);
                     return (
                       <tr key={caseItem.id} className="hover:bg-slate-50/50 transition-colors group">
+                        <td className="px-6 py-4 w-12 text-center border-r border-slate-200/50">
+                          <input
+                            type="checkbox"
+                            checked={selectedCases.includes(caseItem.id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedCases([...selectedCases, caseItem.id]);
+                              } else {
+                                setSelectedCases(selectedCases.filter(id => id !== caseItem.id));
+                              }
+                            }}
+                            className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-600 cursor-pointer"
+                          />
+                        </td>
                         <td className="px-6 py-4 text-slate-900">
                           <div className="flex items-center gap-3">
                             <div className="h-9 w-9 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-100">
@@ -315,7 +371,7 @@ export default function CasesPage() {
                   })
                 ) : (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
+                    <td colSpan={7} className="px-6 py-12 text-center text-slate-500">
                       Keine Vorgänge gefunden.
                     </td>
                   </tr>

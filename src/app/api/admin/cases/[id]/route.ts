@@ -23,7 +23,6 @@ export async function GET(
       .from(crmCases)
       .leftJoin(crmCustomers, eq(crmCases.customerId, crmCustomers.id))
       .where(eq(crmCases.id, caseId))
-      .where(eq(crmCases.id, params.id))
       .limit(1);
 
     if (result.length === 0) {
@@ -47,7 +46,7 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -56,10 +55,11 @@ export async function PUT(
     }
 
     const body = await request.json();
+    const { id: caseId } = await params;
 
     // Hole den aktuellen Stand für das Log
     const currentCase = await db.query.crmCases.findFirst({
-      where: eq(crmCases.id, params.id)
+      where: eq(crmCases.id, caseId)
     });
 
     if (!currentCase) {
@@ -82,7 +82,7 @@ export async function PUT(
         followUpDate: body.followUpDate ? new Date(body.followUpDate) : null,
         updatedAt: new Date(),
       })
-      .where(eq(crmCases.id, params.id))
+      .where(eq(crmCases.id, caseId))
       .returning();
 
     // Automatische Aktivität loggen bei wichtigen Änderungen
@@ -97,7 +97,7 @@ export async function PUT(
     if (changes.length > 0) {
       try {
         await db.insert(crmActivities).values({
-          caseId: params.id,
+          caseId: caseId,
           customerId: currentCase.customerId,
           type: 'system',
           subject: 'Vorgang bearbeitet',
@@ -122,7 +122,7 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -130,7 +130,8 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    await db.delete(crmCases).where(eq(crmCases.id, params.id));
+    const { id: caseId } = await params;
+    await db.delete(crmCases).where(eq(crmCases.id, caseId));
 
     return NextResponse.json({ success: true });
   } catch (error) {
