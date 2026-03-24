@@ -1,128 +1,127 @@
 import 'server-only'
-import fs from 'fs'
-import path from 'path'
-import { ensureRedisConnected } from './redis'
+import { db, emailVerifications } from '@/db'
+import { eq, and, gt } from 'drizzle-orm'
 
-type VerificationRecord = {
-  email: string
-  formData: Record<string, unknown>
-  createdAt: string // ISO string
-  verified: boolean
-}
-
-// Persistenz: Verwende Projektordner 'data' statt '.next', damit der Store bei Deployments stabiler bleibt
-const STORE_PATH = path.join(process.cwd(), 'data', 'verification-store.json')
-
-function readStore(): Record<string, VerificationRecord> {
-  try {
-    const raw = fs.readFileSync(STORE_PATH, 'utf-8')
-    return JSON.parse(raw) as Record<string, VerificationRecord>
-  } catch {
-    return {}
-  }
-}
-
-function writeStore(store: Record<string, VerificationRecord>) {
-  try {
-    fs.mkdirSync(path.dirname(STORE_PATH), { recursive: true })
-    fs.writeFileSync(STORE_PATH, JSON.stringify(store))
-  } catch {
-    // noop
-  }
-}
-
+/**
+ * Verification-Token in der PostgreSQL-Datenbank speichern.
+ * Tokens überleben damit Redeployments und Container-Neustarts.
+ */
 export async function storeVerificationToken(
   token: string,
   email: string,
   formData: Record<string, unknown>
 ) {
-  const record: VerificationRecord = {
-    email,
+  // Falls bereits ein unverified Token für diese E-Mail existiert, löschen wir ihn
+  // um Duplikate zu vermeiden
+  try {
+    await db.delete(emailVerifications).where(
+      and(
+        eq(emailVerifications.email, email.toLowerCase()),
+        eq(emailVerifications.verified, false)
+      )
+    )
+  } catch (e) {
+    // Nicht kritisch – weitermachen
+    console.warn('Konnte alte unverified Tokens nicht löschen:', e)
+  }
+
+  // TTL aus ENV oder Standard 7 Tage
+  const ttlSeconds = parseInt(process.env.VERIFICATION_TTL_SECONDS || '', 10) || (7 * 24 * 60 * 60)
+  const expiresAt = new Date(Date.now() + ttlSeconds * 1000)
+
+  await db.insert(emailVerifications).values({
+    token,
+    email: email.toLowerCase(),
     formData,
-    createdAt: new Date().toISOString(),
     verified: false,
-  }
-
-  const redis = await ensureRedisConnected()
-  if (redis) {
-    try {
-      // Konfigurierbare TTL (Standard: 7 Tage)
-      const ttlSeconds = parseInt(process.env.VERIFICATION_TTL_SECONDS || '', 10) || (7 * 24 * 60 * 60)
-      await redis.set(`verification:tokens:${token}`, JSON.stringify(record), 'EX', ttlSeconds)
-      return
-    } catch (e) {
-      console.error('Redis storeVerificationToken error:', e)
-      // Fallback auf FS
-    }
-  }
-
-  const store = readStore()
-  store[token] = record
-  writeStore(store)
+    expiresAt,
+  })
 }
 
+/**
+ * Verification-Daten anhand des Tokens abrufen.
+ * Prüft automatisch ob der Token abgelaufen ist.
+ */
 export async function getVerificationData(token: string) {
-  const redis = await ensureRedisConnected()
-  if (redis) {
-    try {
-      const key = `verification:tokens:${token}`
-      const raw = await redis.get(key)
-      if (!raw) return undefined
-      const rec = JSON.parse(raw) as VerificationRecord
-      return {
-        email: rec.email,
-        formData: rec.formData,
-        createdAt: new Date(rec.createdAt),
-        verified: rec.verified,
-      }
-    } catch (e) {
-      console.error('Redis getVerificationData error:', e)
-    }
+  const record = await db.query.emailVerifications.findFirst({
+    where: eq(emailVerifications.token, token),
+  })
+
+  if (!record) return undefined
+
+  // Ablauf prüfen
+  if (record.expiresAt && new Date() > record.expiresAt) {
+    return undefined
   }
 
-  const store = readStore()
-  const rec = store[token]
-  if (!rec) return undefined
   return {
-    email: rec.email,
-    formData: rec.formData,
-    createdAt: new Date(rec.createdAt),
-    verified: rec.verified,
+    email: record.email,
+    formData: (record.formData || {}) as Record<string, unknown>,
+    createdAt: record.createdAt,
+    verified: record.verified ?? false,
+    caseId: ((record.formData as any)?.caseId as string) || undefined,
   }
 }
 
+/**
+ * Prüft ob ein Token als verifiziert markiert ist und noch gültig.
+ */
 export async function isTokenVerified(token: string): Promise<boolean> {
   const data = await getVerificationData(token)
   return !!data?.verified
 }
 
+/**
+ * Token als verifiziert markieren.
+ */
 export async function markTokenAsVerified(token: string): Promise<boolean> {
-  const redis = await ensureRedisConnected()
-  if (redis) {
-    try {
-      const key = `verification:tokens:${token}`
-      const raw = await redis.get(key)
-      if (!raw) return false
-      const rec = JSON.parse(raw) as VerificationRecord
-      rec.verified = true
-      const ttl = await redis.ttl(key)
-      if (ttl > 0) {
-        await redis.set(key, JSON.stringify(rec), 'EX', ttl)
-      } else {
-        await redis.set(key, JSON.stringify(rec))
-      }
-      return true
-    } catch (e) {
-      console.error('Redis markTokenAsVerified error:', e)
-      // Fallback auf FS
-    }
+  const record = await db.query.emailVerifications.findFirst({
+    where: eq(emailVerifications.token, token),
+  })
+
+  if (!record) return false
+
+  // Ablauf prüfen
+  if (record.expiresAt && new Date() > record.expiresAt) {
+    return false
   }
 
-  const store = readStore()
-  const rec = store[token]
-  if (!rec) return false
-  rec.verified = true
-  store[token] = rec
-  writeStore(store)
+  await db.update(emailVerifications)
+    .set({ verified: true })
+    .where(eq(emailVerifications.token, token))
+
   return true
+}
+
+/**
+ * Prüft ob eine E-Mail bereits verifiziert wurde (über irgendeinen gültigen Token).
+ * Nützlich für wiederkehrende Kunden.
+ */
+export async function isEmailVerified(email: string): Promise<boolean> {
+  const record = await db.query.emailVerifications.findFirst({
+    where: and(
+      eq(emailVerifications.email, email.toLowerCase()),
+      eq(emailVerifications.verified, true),
+      gt(emailVerifications.expiresAt, new Date())
+    ),
+  })
+
+  return !!record
+}
+
+/**
+ * Den neuesten gültigen Token für eine E-Mail finden.
+ * Wenn ein Kunde zurückkehrt und sein alter Token noch gültig ist,
+ * muss er sich nicht erneut verifizieren.
+ */
+export async function findValidTokenForEmail(email: string): Promise<string | null> {
+  const record = await db.query.emailVerifications.findFirst({
+    where: and(
+      eq(emailVerifications.email, email.toLowerCase()),
+      eq(emailVerifications.verified, true),
+      gt(emailVerifications.expiresAt, new Date())
+    ),
+  })
+
+  return record?.token || null
 }

@@ -188,7 +188,7 @@ export default function KreditanfrageForm() {
     return copy
   }
 
-  // Beim ersten Laden: aus localStorage wiederherstellen
+  // Beim ersten Laden: aus localStorage wiederherstellen + Token serverseitig validieren
   useEffect(() => {
     try {
       const raw = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null
@@ -201,9 +201,44 @@ export default function KreditanfrageForm() {
         const meta = JSON.parse(metaRaw)
         if (typeof meta.currentStep === 'number') setCurrentStep(meta.currentStep)
         if (typeof meta.emailVerificationSent === 'boolean') setEmailVerificationSent(meta.emailVerificationSent)
-        if (typeof meta.emailVerified === 'boolean') setEmailVerified(meta.emailVerified)
         if (typeof meta.verificationToken === 'string') setVerificationToken(meta.verificationToken)
         if (typeof meta.caseId === 'string') setCaseId(meta.caseId)
+
+        // Token serverseitig validieren – wenn ungültig/abgelaufen, Zustand zurücksetzen
+        if (meta.verificationToken && (meta.emailVerified || meta.emailVerificationSent)) {
+          ;(async () => {
+            try {
+              const resp = await fetch(`/api/check-verification/${meta.verificationToken}`)
+              if (resp.ok) {
+                const data = await resp.json()
+                if (data?.verified) {
+                  setEmailVerified(true)
+                  if (data?.formData?.caseId) setCaseId(data.formData.caseId as string)
+                } else {
+                  // Token existiert aber ist nicht verifiziert – E-Mail wurde noch nicht bestätigt
+                  setEmailVerified(false)
+                  // Auf Schritt 4 (Verifizierung) bleiben
+                  if (meta.currentStep > 4) setCurrentStep(4)
+                }
+              } else {
+                // Token nicht gefunden oder abgelaufen (404/410) – alles zurücksetzen
+                console.warn('Gespeicherter Token ist ungültig/abgelaufen. Zurück zu Schritt 3.')
+                setEmailVerified(false)
+                setEmailVerificationSent(false)
+                setVerificationToken('')
+                setCaseId(null)
+                if (meta.currentStep >= 4) setCurrentStep(3)
+                // localStorage bereinigen
+                const cleanMeta = { ...meta, emailVerified: false, emailVerificationSent: false, verificationToken: '', caseId: null, currentStep: 3 }
+                localStorage.setItem(STORAGE_META_KEY, JSON.stringify(cleanMeta))
+              }
+            } catch (e) {
+              console.warn('Token-Validierung fehlgeschlagen:', e)
+            }
+          })()
+        } else {
+          if (typeof meta.emailVerified === 'boolean') setEmailVerified(meta.emailVerified)
+        }
       }
     } catch (e) {
       console.warn('Konnte gespeicherte Formularwerte nicht laden:', e)
