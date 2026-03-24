@@ -457,27 +457,35 @@ export default function KreditanfrageForm() {
     const error = searchParams?.get('error')
     const tokenFromUrl = searchParams?.get('token')
 
-    if (success === 'email-verified' || success === 'already-verified') {
-      setEmailVerified(true)
-      setCurrentStep(5)
-      setUrlMessage({ type: 'success', message: success === 'email-verified' ? 'E-Mail erfolgreich bestätigt! Sie können nun Ihre Dokumente hochladen.' : 'E-Mail bereits bestätigt. Sie können Ihre Dokumente hochladen.' })
-      // Falls Token vorhanden: gespeicherte Formulardaten vom Server laden und zusammenführen
-      if (tokenFromUrl) {
-        setVerificationToken(tokenFromUrl)
-          ; (async () => {
-            try {
-              const resp = await fetch(`/api/check-verification/${tokenFromUrl}`)
-              if (resp.ok) {
-                const data = await resp.json()
-                if (data?.formData) {
-                  setFormData(prev => ({ ...prev, ...data.formData }))
-                }
+    if ((success === 'email-verified' || success === 'already-verified') && tokenFromUrl) {
+      // Server-seitige Verifizierung des Tokens, bevor wir emailVerified setzen
+      setVerificationToken(tokenFromUrl)
+      ;(async () => {
+        try {
+          const resp = await fetch(`/api/check-verification/${tokenFromUrl}`)
+          if (resp.ok) {
+            const data = await resp.json()
+            if (data?.verified) {
+              setEmailVerified(true)
+              setCurrentStep(5)
+              setUrlMessage({ type: 'success', message: success === 'email-verified' ? 'E-Mail erfolgreich bestätigt! Sie können nun Ihre Dokumente hochladen.' : 'E-Mail bereits bestätigt. Sie können Ihre Dokumente hochladen.' })
+              if (data?.formData) {
+                setFormData(prev => ({ ...prev, ...data.formData }))
               }
-            } catch (e) {
-              console.warn('Konnte gespeicherte Formulardaten nicht laden:', e)
+              if (data?.caseId) {
+                setCaseId(data.caseId)
+              }
+            } else {
+              setUrlMessage({ type: 'error', message: 'Der Bestätigungslink ist ungültig oder abgelaufen. Bitte fordern Sie einen neuen an.' })
             }
-          })()
-      }
+          } else {
+            setUrlMessage({ type: 'error', message: 'Token konnte nicht überprüft werden.' })
+          }
+        } catch (e) {
+          console.warn('Token-Verifizierung fehlgeschlagen:', e)
+          setUrlMessage({ type: 'error', message: 'Netzwerkfehler bei der Token-Überprüfung.' })
+        }
+      })()
     } else if (error) {
       let errorMessage = 'Ein Fehler ist aufgetreten.'
       switch (error) {
@@ -747,7 +755,7 @@ export default function KreditanfrageForm() {
       </div>
 
       {/* Schnellzugriff: Upload-Bereich öffnen / Link kopieren */}
-      {(verificationToken && (emailVerificationSent || emailVerified)) && (
+      {(verificationToken && emailVerified) && (
         <div className="mb-6 flex items-center justify-between bg-yellow-50 border border-yellow-200 rounded px-4 py-3">
           <span className="text-sm text-yellow-800">Sie können jederzeit zum Dokumenten-Upload zurückkehren.</span>
           <div className="flex gap-2">
