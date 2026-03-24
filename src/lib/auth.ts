@@ -89,8 +89,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.name = user.name;
       }
       
-      // Refresh user data from database on update trigger or periodically
-      if (trigger === 'update' || !token.lastRefresh || Date.now() - (token.lastRefresh as number) > 60000) {
+      // Refresh user data from database on update trigger or every 5 minutes
+      if (trigger === 'update' || !token.lastRefresh || Date.now() - (token.lastRefresh as number) > 300000) {
         try {
           if (token.role === 'customer') {
             const customerUser = await db
@@ -118,6 +118,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.lastRefresh = Date.now();
         } catch (error) {
           console.error('Error refreshing user data:', error);
+          // WICHTIG: lastRefresh trotzdem setzen, um endlosen Retry-Loop zu verhindern!
+          // Bei Fehler 5 Minuten warten bevor erneut versucht wird
+          token.lastRefresh = Date.now();
         }
       }
       
