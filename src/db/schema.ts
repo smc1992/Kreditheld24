@@ -412,7 +412,13 @@ export const whatsappMessages = pgTable('whatsapp_messages', {
   mediaMimeType: varchar('media_mime_type', { length: 100 }),
   mediaFileName: varchar('media_file_name', { length: 255 }),
   isFromMe: boolean('is_from_me').default(false),
-  isRead: boolean('is_read').default(false),
+  isRead: boolean('is_read').default(false), // Legacy, using status now
+  status: varchar('status', { length: 20 }).default('SENT'), // 'PENDING', 'SENT', 'DELIVERED', 'READ', 'PLAYED'
+  quotedMessageId: varchar('quoted_message_id', { length: 255 }),
+  quotedContent: text('quoted_content'),
+  isStarred: boolean('is_starred').default(false),
+  isDeleted: boolean('is_deleted').default(false),
+  isForwarded: boolean('is_forwarded').default(false),
   metadata: jsonb('metadata'), // raw Evolution API payload or extras
   timestamp: timestamp('timestamp', { withTimezone: true }).defaultNow().notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),

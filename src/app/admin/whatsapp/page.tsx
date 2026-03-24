@@ -35,6 +35,13 @@ import {
   BellOff,
   Download,
   UserPlus,
+  Star,
+  Reply,
+  Forward,
+  X,
+  Square,
+  Play,
+  Pause,
 } from 'lucide-react';
 import Link from 'next/link';
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
@@ -67,6 +74,12 @@ interface Message {
   mediaUrl: string | null;
   isFromMe: boolean;
   isRead: boolean;
+  status?: string;
+  quotedMessageId?: string | null;
+  quotedContent?: string | null;
+  isStarred?: boolean;
+  isDeleted?: boolean;
+  isForwarded?: boolean;
   timestamp: string;
 }
 
@@ -97,11 +110,22 @@ export default function WhatsAppPage() {
   const [showCreateCustomer, setShowCreateCustomer] = useState(false);
   const [creatingCustomer, setCreatingCustomer] = useState(false);
   const [newCustomerForm, setNewCustomerForm] = useState({ firstName: '', lastName: '', email: '' });
+  
+  // New feature states
+  const [replyingTo, setReplyingTo] = useState<Message | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const [messageSearch, setMessageSearch] = useState('');
+  const [showMessageSearch, setShowMessageSearch] = useState(false);
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const pollRef = useRef<NodeJS.Timeout | null>(null);
   const isPlayingAudio = useRef(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Load templates
   useEffect(() => {
@@ -272,10 +296,15 @@ export default function WhatsAppPage() {
     setMessages(prev => [...prev, optimisticMsg]);
 
     try {
+      const body: any = { text: msgText };
+      if (replyingTo) {
+        body.quotedMessageId = replyingTo.messageId;
+      }
+      
       const res = await fetch(`/api/admin/whatsapp/conversations/${selectedConv.id}/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: msgText }),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
       if (data.success) {
@@ -286,6 +315,7 @@ export default function WhatsAppPage() {
       console.error('Error sending message:', err);
     } finally {
       setSending(false);
+      setReplyingTo(null);
       inputRef.current?.focus();
     }
   };
@@ -325,6 +355,7 @@ export default function WhatsAppPage() {
       const formData = new FormData();
       formData.append('file', file);
       if (caption) formData.append('caption', caption);
+      if (replyingTo && replyingTo.messageId) formData.append('quotedMessageId', replyingTo.messageId);
 
       const res = await fetch(`/api/admin/whatsapp/conversations/${selectedConv.id}/messages`, {
         method: 'POST',
@@ -338,7 +369,139 @@ export default function WhatsAppPage() {
       console.error('Error uploading file:', err);
     } finally {
       setUploadingFile(false);
+      setReplyingTo(null);
       inputRef.current?.focus();
+    }
+  };
+
+  // ---------------------------------------------------------------------------
+  // Audio Recording Handlers
+  // ---------------------------------------------------------------------------
+  const handleStartRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+      setRecordingTime(0);
+
+      recordingIntervalRef.current = setInterval(() => {
+        setRecordingTime((prev) => prev + 1);
+      }, 1000);
+    } catch (err) {
+      console.error('Error accessing microphone:', err);
+      alert('Mikrofon konnte nicht aktiviert werden. Bitte prüfen Sie die Browser-Berechtigungen.');
+    }
+  };
+
+  const handleStopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        sendVoiceMessage(audioBlob);
+        
+        // Cleanup
+        mediaRecorderRef.current?.stream.getTracks().forEach(track => track.stop());
+        setIsRecording(false);
+        setRecordingTime(0);
+        if (recordingIntervalRef.current) clearInterval(recordingIntervalRef.current);
+      };
+      mediaRecorderRef.current.stop();
+    }
+  };
+
+  const handleCancelRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.onstop = () => {
+        // Cleanup without sending
+        mediaRecorderRef.current?.stream.getTracks().forEach(track => track.stop());
+        setIsRecording(false);
+        setRecordingTime(0);
+        audioChunksRef.current = [];
+        if (recordingIntervalRef.current) clearInterval(recordingIntervalRef.current);
+      };
+      mediaRecorderRef.current.stop();
+    }
+  };
+
+  const sendVoiceMessage = async (audioBlob: Blob) => {
+    if (!selectedConv) return;
+    setSending(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', audioBlob, 'voice-message.webm');
+      if (replyingTo && replyingTo.messageId) {
+        formData.append('quotedMessageId', replyingTo.messageId);
+      }
+
+      const res = await fetch(`/api/admin/whatsapp/conversations/${selectedConv.id}/messages/audio`, {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.success) {
+        setMessages(prev => [...prev, data.data]);
+        setReplyingTo(null);
+      }
+    } catch (err) {
+      console.error('Error sending voice message:', err);
+    } finally {
+      setSending(false);
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  // ---------------------------------------------------------------------------
+  // Message Actions
+  // ---------------------------------------------------------------------------
+  const handleMessageAction = async (msg: Message, action: 'reply' | 'star' | 'delete' | 'forward') => {
+    if (action === 'reply') {
+      setReplyingTo(msg);
+      inputRef.current?.focus();
+    } else if (action === 'star') {
+      const newStarredStatus = !msg.isStarred;
+      // Optimistic update
+      setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, isStarred: newStarredStatus } : m));
+      try {
+        await fetch(`/api/admin/whatsapp/messages/${msg.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ isStarred: newStarredStatus })
+        });
+      } catch (err) {
+        console.error('Failed to star message', err);
+        // Revert on error
+        setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, isStarred: !newStarredStatus } : m));
+      }
+    } else if (action === 'delete') {
+      if (!confirm('Möchten Sie diese Nachricht wirklich für alle löschen?')) return;
+      try {
+        const res = await fetch(`/api/admin/whatsapp/messages/${msg.id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) {
+          setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, isDeleted: true, content: 'Diese Nachricht wurde gelöscht.' } : m));
+        } else {
+          alert('Löschen fehlgeschlagen: ' + (data.error || 'Serverfehler'));
+        }
+      } catch (err) {
+        console.error('Failed to delete message', err);
+      }
+    } else if (action === 'forward') {
+      // Very basic forward implementation: puts contents into text box
+      if (msg.messageType === 'text' && msg.content) {
+        setNewMessage(msg.content);
+        inputRef.current?.focus();
+      } else {
+        alert('Das Weiterleiten von Medien ist aktuell in Entwicklung.');
+      }
     }
   };
 
@@ -790,27 +953,49 @@ export default function WhatsAppPage() {
                     >
                       <ArrowLeft className="h-5 w-5 text-slate-500" />
                     </button>
-                    <button 
-                      onClick={() => setShowContactInfo(!showContactInfo)}
-                      className="flex items-center gap-3 hover:bg-slate-50 p-1 -m-1 rounded-lg transition-all text-left flex-1 min-w-0"
-                    >
-                      {selectedConv.profilePicUrl ? (
-                        <img src={selectedConv.profilePicUrl} className="w-10 h-10 rounded-full object-cover flex-shrink-0" alt="" />
-                      ) : (
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                          {getInitials(selectedConv)}
+                    {!showMessageSearch ? (
+                      <button 
+                        onClick={() => setShowContactInfo(!showContactInfo)}
+                        className="flex items-center gap-3 hover:bg-slate-50 p-1 -m-1 rounded-lg transition-all text-left flex-1 min-w-0"
+                      >
+                        {selectedConv.profilePicUrl ? (
+                          <img src={selectedConv.profilePicUrl} className="w-10 h-10 rounded-full object-cover flex-shrink-0" alt="" />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                            {getInitials(selectedConv)}
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-sm font-bold text-slate-900 truncate">{getDisplayName(selectedConv)}</h3>
+                          <p className="text-xs text-slate-400 flex items-center gap-1 truncate">
+                            <Phone className="h-3 w-3 flex-shrink-0" />
+                            <span className="truncate">{formatPhone(selectedConv.phoneNumber || selectedConv.remoteJid || '')}</span>
+                          </p>
                         </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-bold text-slate-900 truncate">{getDisplayName(selectedConv)}</h3>
-                        <p className="text-xs text-slate-400 flex items-center gap-1 truncate">
-                          <Phone className="h-3 w-3 flex-shrink-0" />
-                          <span className="truncate">{formatPhone(selectedConv.phoneNumber || selectedConv.remoteJid || '')}</span>
-                        </p>
+                      </button>
+                    ) : (
+                      <div className="flex-1 flex items-center gap-2 px-2 bg-slate-50 rounded-lg py-1 border border-slate-200">
+                        <Search className="h-4 w-4 text-slate-400" />
+                        <input
+                          type="text"
+                          autoFocus
+                          placeholder="Nachrichten suchen..."
+                          value={messageSearch}
+                          onChange={(e) => setMessageSearch(e.target.value)}
+                          className="flex-1 bg-transparent text-sm focus:outline-none text-slate-700"
+                        />
+                        <button onClick={() => { setShowMessageSearch(false); setMessageSearch(''); }} className="p-1 hover:bg-slate-200 rounded text-slate-400 transition-colors">
+                          <X className="h-4 w-4" />
+                        </button>
                       </div>
-                    </button>
+                    )}
                   </div>
                   <div className="flex items-center gap-1 flex-shrink-0">
+                    {!showMessageSearch && (
+                      <button onClick={() => setShowMessageSearch(true)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all" title="Verlauf durchsuchen">
+                        <Search className="h-4 w-4" />
+                      </button>
+                    )}
                     <button
                       onClick={handleToggleAI}
                       className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all ${
@@ -1007,20 +1192,27 @@ export default function WhatsAppPage() {
                       <p className="text-sm text-slate-500 bg-white/80 px-4 py-2 rounded-lg shadow-sm">Noch keine Nachrichten</p>
                     </div>
                   ) : (
-                    messages.map(msg => (
+                    messages.filter(msg => !messageSearch || (msg.content && msg.content.toLowerCase().includes(messageSearch.toLowerCase()))).map(msg => (
                       <div
                         key={msg.id}
-                        className={`flex ${msg.isFromMe ? 'justify-end' : 'justify-start'}`}
+                        className={`flex items-end gap-2 mb-1 group ${msg.isFromMe ? 'flex-row-reverse' : 'flex-row'}`}
                       >
                         <div
-                          className={`max-w-[75%] rounded-xl px-3 py-2 shadow-sm ${
+                          className={`max-w-[75%] rounded-xl px-3 py-2 shadow-sm relative ${
                             msg.isFromMe
                               ? msg.sender === 'ai'
                                 ? 'bg-violet-100 text-violet-900'
                                 : 'bg-[#d9fdd3] text-slate-800'
                               : 'bg-white text-slate-800'
-                          }`}
+                          } ${msg.isDeleted ? 'opacity-60 italic' : ''}`}
                         >
+                          {/* Quoted Message display */}
+                          {msg.quotedContent && (
+                            <div className="mb-2 p-2 bg-black/5 border-l-2 border-emerald-500 rounded text-xs">
+                              <p className="font-bold text-emerald-700 opacity-80 mb-0.5">Antwort auf:</p>
+                              <p className="line-clamp-2 text-slate-700 opacity-90">{msg.quotedContent}</p>
+                            </div>
+                          )}
                           {/* Sender label for AI */}
                           {msg.sender === 'ai' && (
                             <div className="flex items-center gap-1 mb-1">
@@ -1119,16 +1311,29 @@ export default function WhatsAppPage() {
                           )}
 
                           {/* Timestamp */}
-                          <div className={`flex items-center justify-end gap-1 mt-1 ${msg.isFromMe ? 'text-slate-400' : 'text-slate-300'}`}>
+                          <div className={`flex items-center justify-end gap-1 mt-1 ${msg.isFromMe ? 'text-slate-500' : 'text-slate-400'}`}>
+                            {msg.isStarred && <Star className="h-2.5 w-2.5 fill-current text-amber-500 mr-1" />}
                             <span className="text-[10px]">
                               {new Date(msg.timestamp).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}
                             </span>
                             {msg.isFromMe && (
-                              msg.isRead
-                                ? <CheckCheck className="h-3 w-3 text-blue-500" />
-                                : <Check className="h-3 w-3" />
+                              msg.status === 'PLAYED' || msg.status === 'READ' || msg.isRead ? <CheckCheck className="h-3 w-3 text-blue-500" />
+                              : msg.status === 'DELIVERED' ? <CheckCheck className="h-3 w-3 text-slate-400" />
+                              : msg.status === 'SENT' ? <Check className="h-3 w-3 text-slate-400" />
+                              : msg.status === 'PENDING' ? <Clock className="h-3 w-3 text-slate-400" />
+                              : <Check className="h-3 w-3 text-slate-400" />
                             )}
                           </div>
+                        </div>
+
+                        {/* Context Menu */}
+                        <div className={`opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity ${msg.isDeleted ? 'hidden' : ''}`}>
+                          <button onClick={() => handleMessageAction(msg, 'reply')} className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-full" title="Antworten"><Reply className="h-3.5 w-3.5" /></button>
+                          <button onClick={() => handleMessageAction(msg, 'star')} className={`p-1.5 ${msg.isStarred ? 'text-amber-500 opacity-100' : 'text-slate-400 hover:text-amber-500 hover:bg-amber-50'} rounded-full`} title="Markieren"><Star className={`h-3.5 w-3.5 ${msg.isStarred ? 'fill-current' : ''}`} /></button>
+                          {msg.messageType === 'text' && (
+                            <button onClick={() => handleMessageAction(msg, 'forward')} className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-full" title="Weiterleiten"><Forward className="h-3.5 w-3.5" /></button>
+                          )}
+                          <button onClick={() => handleMessageAction(msg, 'delete')} className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-full" title="Löschen"><Trash2 className="h-3.5 w-3.5" /></button>
                         </div>
                       </div>
                     ))
@@ -1138,6 +1343,18 @@ export default function WhatsAppPage() {
 
                 {/* Message Input */}
                 <div className="px-4 py-3 border-t border-slate-100 bg-white relative">
+                  {/* Replying To Banner */}
+                  {replyingTo && (
+                    <div className="mb-2 p-2 bg-slate-50 border-l-4 border-emerald-500 rounded-lg flex items-start justify-between">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-bold text-emerald-600 mb-0.5">Antworten auf</p>
+                        <p className="text-xs text-slate-600 truncate">{replyingTo.content || replyingTo.messageType}</p>
+                      </div>
+                      <button onClick={() => setReplyingTo(null)} className="p-1 text-slate-400 hover:text-slate-600 rounded">
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  )}
                   {/* Template Picker Dropdown */}
                   {showTemplates && templates.length > 0 && (
                     <div className="absolute bottom-full left-4 right-4 mb-2 bg-white rounded-xl border border-slate-200 shadow-xl max-h-60 overflow-y-auto z-10">
@@ -1219,27 +1436,53 @@ export default function WhatsAppPage() {
                         <FileText className="h-5 w-5" />
                       </button>
                     )}
-                    <input
-                      ref={inputRef}
-                      type="text"
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      placeholder="Nachricht schreiben..."
-                      className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                      disabled={connectionStatus !== 'open'}
-                      onFocus={() => { setShowTemplates(false); setShowEmojiPicker(false); }}
-                    />
-                    <button
-                      type="submit"
-                      disabled={(!newMessage.trim() && !uploadingFile) || sending || connectionStatus !== 'open'}
-                      className="p-2.5 bg-emerald-600 text-white rounded-xl hover:bg-emerald-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-600/20"
-                    >
-                      {sending ? (
-                        <Loader2 className="h-5 w-5 animate-spin" />
-                      ) : (
-                        <Send className="h-5 w-5" />
-                      )}
-                    </button>
+                    {isRecording ? (
+                      <div className="flex-1 flex items-center justify-between px-4 py-2 bg-red-50 border border-red-200 rounded-xl">
+                        <div className="flex items-center gap-2 text-red-600 animate-pulse">
+                          <div className="w-2 h-2 rounded-full bg-red-500" />
+                          <span className="text-sm font-semibold">{Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button type="button" onClick={handleCancelRecording} className="p-1 text-red-500 hover:bg-red-100 rounded-md">
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                          <button type="button" onClick={handleStopRecording} className="p-1 text-emerald-600 hover:bg-emerald-100 rounded-md bg-white border border-emerald-200 shadow-sm ml-2">
+                            <Send className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <input
+                          ref={inputRef}
+                          type="text"
+                          value={newMessage}
+                          onChange={(e) => setNewMessage(e.target.value)}
+                          placeholder="Nachricht schreiben..."
+                          className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                          disabled={connectionStatus !== 'open'}
+                          onFocus={() => { setShowTemplates(false); setShowEmojiPicker(false); }}
+                        />
+                        {newMessage.trim() || uploadingFile ? (
+                          <button
+                            type="submit"
+                            disabled={sending || connectionStatus !== 'open'}
+                            className="p-2.5 bg-emerald-600 text-white rounded-xl hover:bg-emerald-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-600/20"
+                          >
+                            {sending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={handleStartRecording}
+                            disabled={connectionStatus !== 'open'}
+                            className="p-2.5 bg-emerald-600 text-white rounded-xl hover:bg-emerald-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-600/20"
+                          >
+                            <Mic className="h-5 w-5" />
+                          </button>
+                        )}
+                      </>
+                    )}
                   </form>
                 </div>
               </>

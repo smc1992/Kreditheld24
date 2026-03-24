@@ -39,6 +39,9 @@ export async function POST(request: NextRequest) {
       case 'chats.update':
         await handleChatsSync(body);
         break;
+      case 'presence.update':
+        await handlePresenceUpdate(body);
+        break;
       case 'connection.update':
         console.log('[Evolution Webhook] Connection update:', JSON.stringify(body.data));
         break;
@@ -198,20 +201,52 @@ async function handleMessageUpdate(payload: any) {
   const data = payload.data;
   const updates = Array.isArray(data) ? data : [data];
 
+  const statusMap: Record<number, string> = {
+    1: 'PENDING',
+    2: 'SENT',
+    3: 'DELIVERED',
+    4: 'READ',
+    5: 'PLAYED'
+  };
+
   for (const update of updates) {
     try {
       const msgId = update.key?.id;
       if (!msgId) continue;
 
-      // Handle read receipts
-      if (update.update?.status === 3 || update.update?.status === 4) {
+      const statusCode = update.update?.status;
+      if (statusCode && statusMap[statusCode]) {
+        const isRead = statusCode >= 3; // DELIVERED or higher is considered 'read' in legacy terms, but we mostly care about READ(4)/PLAYED(5)
+        
         await db.update(whatsappMessages)
-          .set({ isRead: true })
+          .set({ 
+            isRead: statusCode >= 4,
+            status: statusMap[statusCode] 
+          })
           .where(eq(whatsappMessages.messageId, msgId));
       }
     } catch (err) {
       console.error('[Evolution Webhook] Error updating message:', err);
     }
+  }
+}
+
+async function handlePresenceUpdate(payload: any) {
+  // Typical payload: data: { id: "remoteJid", presences: { "remoteJid": { lastKnownPresence: "composing" } } }
+  try {
+    const data = payload.data;
+    if (!data) return;
+    
+    // In the future this could be broadcast via WebSockets/Pusher to the frontend UI
+    // For now we just log it, as building a WebSockets connection is required for real-time typing indicators
+    const remoteJid = data.id;
+    const presenceData = data.presences?.[remoteJid];
+    
+    if (presenceData && presenceData.lastKnownPresence) {
+      console.log(`[Presence] ${remoteJid} is ${presenceData.lastKnownPresence}`); // e.g., 'composing', 'recording', 'available'
+    }
+  } catch (err) {
+    console.error('[Evolution Webhook] Error handling presence:', err);
   }
 }
 

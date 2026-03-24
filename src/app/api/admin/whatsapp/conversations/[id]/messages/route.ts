@@ -109,11 +109,40 @@ export async function POST(
       else if (mimeType.startsWith('video/')) mediaType = 'video';
       else if (mimeType.startsWith('audio/')) mediaType = 'audio';
 
+      // Retrieve quoted message if provided
+      const quotedMessageId = formData.get('quotedMessageId') as string | null;
+      let quotedContent = null;
+      let quotedObj = undefined;
+      
+      if (quotedMessageId) {
+        const quotedMsg = await db.select().from(whatsappMessages).where(eq(whatsappMessages.messageId, quotedMessageId)).limit(1);
+        if (quotedMsg.length > 0) {
+          quotedContent = quotedMsg[0].content || `[${quotedMsg[0].messageType}]`;
+          quotedObj = {
+            key: { id: quotedMessageId, remoteJid: conv.remoteJid },
+            message: { conversation: quotedContent }
+          };
+        }
+      }
+
       // Send via Evolution API
       const EVOLUTION_API_URL = process.env.EVOLUTION_API_URL || 'https://evolution.kreditheld24.de';
       const EVOLUTION_API_KEY = process.env.EVOLUTION_API_KEY || '';
       const INSTANCE_NAME = process.env.EVOLUTION_INSTANCE_NAME || 'kreditheld24';
       const phoneNumber = conv.remoteJid.replace('@s.whatsapp.net', '');
+
+      const bodyObj: any = {
+        number: phoneNumber,
+        mediatype: mediaType,
+        mimetype: mimeType,
+        caption: caption,
+        fileName: file.name,
+        media: `data:${mimeType};base64,${base64}`,
+      };
+      
+      if (quotedObj) {
+        bodyObj.options = { quoted: quotedObj };
+      }
 
       const result = await fetch(`${EVOLUTION_API_URL}/message/sendMedia/${INSTANCE_NAME}`, {
         method: 'POST',
@@ -121,14 +150,7 @@ export async function POST(
           'Content-Type': 'application/json',
           'apikey': EVOLUTION_API_KEY,
         },
-        body: JSON.stringify({
-          number: phoneNumber,
-          mediatype: mediaType,
-          mimetype: mimeType,
-          caption: caption,
-          fileName: file.name,
-          media: `data:${mimeType};base64,${base64}`,
-        }),
+        body: JSON.stringify(bodyObj),
       });
 
       const resultData = await result.json();
@@ -147,6 +169,9 @@ export async function POST(
         mediaFileName: file.name,
         isFromMe: true,
         isRead: true,
+        status: 'SENT',
+        quotedMessageId,
+        quotedContent,
         timestamp: new Date(),
       }).returning();
 
@@ -164,14 +189,28 @@ export async function POST(
 
     // Handle JSON text message
     const body = await request.json();
-    const { text } = body;
+    const { text, quotedMessageId, forwarded } = body;
 
-    if (!text?.trim()) {
+    if (!text?.trim() && !forwarded) {
       return NextResponse.json({ error: 'Message text is required' }, { status: 400 });
     }
 
+    let quotedContent = null;
+    let quotedObj = undefined;
+    
+    if (quotedMessageId) {
+      const quotedMsg = await db.select().from(whatsappMessages).where(eq(whatsappMessages.messageId, quotedMessageId)).limit(1);
+      if (quotedMsg.length > 0) {
+        quotedContent = quotedMsg[0].content || `[${quotedMsg[0].messageType}]`;
+        quotedObj = {
+          key: { id: quotedMessageId, remoteJid: conv.remoteJid },
+          message: { conversation: quotedContent }
+        };
+      }
+    }
+
     // Send via Evolution API
-    const result = await sendTextMessage(conv.remoteJid, text);
+    const result = await sendTextMessage(conv.remoteJid, text, quotedObj);
 
     // Save to our DB
     const messageId = result?.key?.id || null;
@@ -184,6 +223,10 @@ export async function POST(
       messageType: 'text',
       isFromMe: true,
       isRead: true,
+      status: 'SENT',
+      quotedMessageId,
+      quotedContent,
+      isForwarded: !!forwarded,
       timestamp: new Date(),
     }).returning();
 

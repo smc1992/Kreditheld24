@@ -59,24 +59,56 @@ export async function restartInstance() {
 // Messaging
 // ============================================
 
-export async function sendTextMessage(remoteJid: string, text: string) {
+export async function sendTextMessage(remoteJid: string, text: string, quoted?: any) {
+  const body: any = {
+    number: remoteJid.replace('@s.whatsapp.net', ''),
+    text,
+  };
+  if (quoted) {
+    body.options = { quoted };
+  }
   return evolutionFetch(`/message/sendText/${INSTANCE_NAME}`, {
     method: 'POST',
-    body: JSON.stringify({
-      number: remoteJid.replace('@s.whatsapp.net', ''),
-      text,
-    }),
+    body: JSON.stringify(body),
   });
 }
 
-export async function sendMediaMessage(remoteJid: string, mediaUrl: string, caption?: string, mediaType: 'image' | 'video' | 'audio' | 'document' = 'image') {
+export async function sendMediaMessage(remoteJid: string, mediaUrl: string, caption?: string, mediaType: 'image' | 'video' | 'audio' | 'document' = 'image', quoted?: any) {
+  const body: any = {
+    number: remoteJid.replace('@s.whatsapp.net', ''),
+    mediatype: mediaType,
+    media: mediaUrl,
+    caption: caption || '',
+  };
+  if (quoted) {
+    body.options = { quoted };
+  }
   return evolutionFetch(`/message/sendMedia/${INSTANCE_NAME}`, {
     method: 'POST',
+    body: JSON.stringify(body),
+  });
+}
+
+export async function sendWhatsAppAudio(remoteJid: string, base64Audio: string, quoted?: any) {
+  const body: any = {
+    number: remoteJid.replace('@s.whatsapp.net', ''),
+    audio: base64Audio,
+  };
+  if (quoted) {
+    body.options = { quoted };
+  }
+  return evolutionFetch(`/message/sendWhatsAppAudio/${INSTANCE_NAME}`, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+}
+
+export async function deleteMessageForEveryone(remoteJid: string, messageId: string, isFromMe: boolean = true) {
+  return evolutionFetch(`/chat/deleteMessageForEveryone/${INSTANCE_NAME}`, {
+    method: 'DELETE',
     body: JSON.stringify({
       number: remoteJid.replace('@s.whatsapp.net', ''),
-      mediatype: mediaType,
-      media: mediaUrl,
-      caption: caption || '',
+      messageId: messageId,
     }),
   });
 }
