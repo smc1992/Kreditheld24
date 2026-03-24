@@ -10,6 +10,9 @@ interface MultiFileUploadProps {
   onAddFiles: (files: FileList | File[]) => void
   onRemoveFile: (index: number) => void
   helpText?: string
+  error?: string
+  isUploading?: boolean
+  isSuccess?: boolean
 }
 
 export default function MultiFileUpload({
@@ -20,7 +23,10 @@ export default function MultiFileUpload({
   files,
   onAddFiles,
   onRemoveFile,
-  helpText
+  helpText,
+  error,
+  isUploading,
+  isSuccess
 }: MultiFileUploadProps) {
   const [isDragOver, setIsDragOver] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -73,9 +79,11 @@ export default function MultiFileUpload({
           relative border-2 border-dashed rounded-lg p-6 transition-all duration-200 cursor-pointer
           ${isDragOver 
             ? 'border-green-400 bg-green-50' 
-            : files.length > 0 
-              ? 'border-green-300 bg-green-50' 
-              : 'border-gray-300 bg-gray-50 hover:border-green-400 hover:bg-green-50'
+            : error
+              ? 'border-red-400 bg-red-50'
+              : files.length > 0 
+                ? 'border-green-300 bg-green-50' 
+                : 'border-gray-300 bg-gray-50 hover:border-green-400 hover:bg-green-50'
           }
         `}
         onDragEnter={handleDragEnter}
@@ -153,7 +161,11 @@ export default function MultiFileUpload({
 
       <div className="flex items-center justify-between">
         <p className="text-xs text-gray-500">Maximal {maxFiles} Dateien.</p>
-        {helpText && <p className="text-xs text-gray-500">{helpText}</p>}
+        {error ? (
+          <p className="text-xs font-semibold text-red-600">{error}</p>
+        ) : helpText ? (
+          <p className="text-xs text-gray-500">{helpText}</p>
+        ) : null}
       </div>
     </div>
   )

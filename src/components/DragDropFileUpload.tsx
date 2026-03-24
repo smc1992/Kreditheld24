@@ -10,6 +10,9 @@ interface DragDropFileUploadProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   onRemove?: (name: string) => void
   helpText?: string
+  error?: string
+  isUploading?: boolean
+  isSuccess?: boolean
 }
 
 export default function DragDropFileUpload({
@@ -20,7 +23,10 @@ export default function DragDropFileUpload({
   currentFile,
   onChange,
   onRemove,
-  helpText
+  helpText,
+  error,
+  isUploading = false,
+  isSuccess = false
 }: DragDropFileUploadProps) {
   const [isDragOver, setIsDragOver] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -100,9 +106,13 @@ export default function DragDropFileUpload({
           relative border-2 border-dashed rounded-lg p-6 transition-all duration-200 cursor-pointer
           ${isDragOver 
             ? 'border-green-400 bg-green-50' 
-            : currentFile 
-              ? 'border-green-300 bg-green-50' 
-              : 'border-gray-300 bg-gray-50 hover:border-green-400 hover:bg-green-50'
+            : error
+              ? 'border-red-400 bg-red-50'
+              : isSuccess
+                ? 'border-emerald-500 bg-emerald-50'
+                : currentFile 
+                  ? 'border-green-300 bg-green-50' 
+                  : 'border-gray-300 bg-gray-50 hover:border-green-400 hover:bg-green-50'
           }
         `}
         onDragEnter={handleDragEnter}
@@ -118,38 +128,65 @@ export default function DragDropFileUpload({
           accept={accept}
           required={required}
           onChange={handleFileChange}
-          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          disabled={isUploading || isSuccess}
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
         />
         
         <div className="text-center">
           {currentFile ? (
             <div className="space-y-2">
               <div className="flex items-center justify-center">
-                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                {isUploading ? (
+                  <svg className="w-8 h-8 text-green-500 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                ) : isSuccess ? (
+                  <svg className="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                ) : error ? (
+                  <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                ) : (
+                  <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                )}
               </div>
-              <p className="text-sm font-medium text-green-700">
-                ✓ Datei ausgewählt: {currentFile.name}
+              <p className={`text-sm font-medium ${error ? 'text-red-700' : isSuccess ? 'text-emerald-700' : 'text-green-700'}`}>
+                {isUploading ? 'Wird hochgeladen...' : isSuccess ? '✓ Erfolgreich hochgeladen' : error ? 'Fehler beim Upload' : `✓ Datei ausgewählt: ${currentFile.name}`}
               </p>
-              <p className="text-xs text-gray-500">
-                {(currentFile.size / 1024 / 1024).toFixed(2)} MB
-              </p>
-              {previewUrl && (
+              {!isSuccess && !error && !isUploading && (
+                <p className="text-xs text-gray-500">
+                  {(currentFile.size / 1024 / 1024).toFixed(2)} MB
+                </p>
+              )}
+              {error && (
+                <p className="text-xs font-semibold text-red-600">
+                  {error}
+                </p>
+              )}
+              {previewUrl && !isUploading && (
                 <div className="flex justify-center">
                   <img src={previewUrl} alt="Vorschau" className="mt-1 max-h-24 rounded border border-gray-200" />
                 </div>
               )}
-              <div className="flex items-center justify-center gap-3">
-                <button
-                  type="button"
-                  onClick={handleRemove}
-                  className="text-red-600 hover:text-red-700 text-xs underline"
-                >
-                  Entfernen
-                </button>
-                <span className="text-xs text-green-600">Klicken oder neue Datei hierher ziehen zum Ersetzen</span>
-              </div>
+              {!isUploading && (
+                <div className="flex flex-col items-center justify-center gap-1 mt-2">
+                  <button
+                    type="button"
+                    onClick={handleRemove}
+                    className="text-red-600 hover:text-red-700 text-xs hover:underline z-10 relative"
+                  >
+                    Datei entfernen
+                  </button>
+                  {!isSuccess && (
+                    <span className="text-xs text-green-600">Klicken oder hierher ziehen zum Ersetzen</span>
+                  )}
+                </div>
+              )}
             </div>
           ) : (
             <div className="space-y-2">
@@ -171,7 +208,7 @@ export default function DragDropFileUpload({
         </div>
       </div>
       
-      {helpText && (
+      {helpText && !error && (
         <p className="text-xs text-gray-500">
           {helpText}
         </p>

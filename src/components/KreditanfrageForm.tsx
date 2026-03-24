@@ -157,6 +157,8 @@ export default function KreditanfrageForm() {
   const [caseId, setCaseId] = useState<string | null>(null)
   const [europaceCaseUrl, setEuropaceCaseUrl] = useState<string | null>(null)
   const [uploadErrors, setUploadErrors] = useState<Record<string, string>>({})
+  const [uploadSuccesses, setUploadSuccesses] = useState<Record<string, boolean>>({})
+  const [uploadLoadings, setUploadLoadings] = useState<Record<string, boolean>>({})
 
   // Persistenz-Schlüssel
   const STORAGE_KEY = 'kh24_kreditanfrage_form_v1'
@@ -326,6 +328,12 @@ export default function KreditanfrageForm() {
         delete copy[fieldName];
         return copy;
       });
+      setUploadSuccesses(prev => {
+        const copy = { ...prev };
+        delete copy[fieldName];
+        return copy;
+      });
+      setUploadLoadings(prev => ({ ...prev, [fieldName]: true }));
 
       const res = await fetch('/api/kreditanfrage/upload', {
         method: 'POST',
@@ -338,6 +346,8 @@ export default function KreditanfrageForm() {
           ...prev,
           [fieldName]: data.error || 'Upload fehlgeschlagen'
         }));
+      } else {
+        setUploadSuccesses(prev => ({ ...prev, [fieldName]: true }));
       }
     } catch (error) {
       console.warn('Sofortiger Upload fehlgeschlagen:', error)
@@ -345,6 +355,12 @@ export default function KreditanfrageForm() {
         ...prev,
         [fieldName]: 'Netzwerkfehler beim Upload'
       }));
+    } finally {
+      setUploadLoadings(prev => {
+        const copy = { ...prev };
+        delete copy[fieldName];
+        return copy;
+      });
     }
   }
 
@@ -1649,6 +1665,9 @@ export default function KreditanfrageForm() {
                   currentFile={formData.steuerbescheid1}
                   onChange={handleFileChange}
                   onRemove={handleFileRemove}
+                  error={uploadErrors.steuerbescheid1}
+                  isUploading={uploadLoadings.steuerbescheid1}
+                  isSuccess={uploadSuccesses.steuerbescheid1}
                 />
                 <DragDropFileUpload
                   name="steuerbescheid2"
@@ -1656,6 +1675,9 @@ export default function KreditanfrageForm() {
                   currentFile={formData.steuerbescheid2}
                   onChange={handleFileChange}
                   onRemove={handleFileRemove}
+                  error={uploadErrors.steuerbescheid2}
+                  isUploading={uploadLoadings.steuerbescheid2}
+                  isSuccess={uploadSuccesses.steuerbescheid2}
                 />
                 <DragDropFileUpload
                   name="steuerbescheid3"
@@ -1663,6 +1685,9 @@ export default function KreditanfrageForm() {
                   currentFile={formData.steuerbescheid3}
                   onChange={handleFileChange}
                   onRemove={handleFileRemove}
+                  error={uploadErrors.steuerbescheid3}
+                  isUploading={uploadLoadings.steuerbescheid3}
+                  isSuccess={uploadSuccesses.steuerbescheid3}
                 />
               </div>
             ) : (
@@ -1673,6 +1698,9 @@ export default function KreditanfrageForm() {
                   currentFile={formData.gehaltsabrechnung1}
                   onChange={handleFileChange}
                   onRemove={handleFileRemove}
+                  error={uploadErrors.gehaltsabrechnung1}
+                  isUploading={uploadLoadings.gehaltsabrechnung1}
+                  isSuccess={uploadSuccesses.gehaltsabrechnung1}
                 />
                 <DragDropFileUpload
                   name="gehaltsabrechnung2"
@@ -1680,6 +1708,9 @@ export default function KreditanfrageForm() {
                   currentFile={formData.gehaltsabrechnung2}
                   onChange={handleFileChange}
                   onRemove={handleFileRemove}
+                  error={uploadErrors.gehaltsabrechnung2}
+                  isUploading={uploadLoadings.gehaltsabrechnung2}
+                  isSuccess={uploadSuccesses.gehaltsabrechnung2}
                 />
                 <DragDropFileUpload
                   name="gehaltsabrechnung3"
@@ -1687,6 +1718,9 @@ export default function KreditanfrageForm() {
                   currentFile={formData.gehaltsabrechnung3}
                   onChange={handleFileChange}
                   onRemove={handleFileRemove}
+                  error={uploadErrors.gehaltsabrechnung3}
+                  isUploading={uploadLoadings.gehaltsabrechnung3}
+                  isSuccess={uploadSuccesses.gehaltsabrechnung3}
                 />
               </div>
             )}
@@ -1703,6 +1737,9 @@ export default function KreditanfrageForm() {
               currentFile={formData.kontoauszug}
               onChange={handleFileChange}
               onRemove={handleFileRemove}
+              error={uploadErrors.kontoauszug}
+              isUploading={uploadLoadings.kontoauszug}
+              isSuccess={uploadSuccesses.kontoauszug}
             />
 
             {/* Meldebescheinigung für nicht-deutsche Staatsangehörigkeit */}
@@ -1713,6 +1750,9 @@ export default function KreditanfrageForm() {
                 currentFile={formData.meldebescheinigung}
                 onChange={handleFileChange}
                 onRemove={handleFileRemove}
+                error={uploadErrors.meldebescheinigung}
+                isUploading={uploadLoadings.meldebescheinigung}
+                isSuccess={uploadSuccesses.meldebescheinigung}
               />
             )}
 
@@ -1725,6 +1765,9 @@ export default function KreditanfrageForm() {
                   currentFile={formData.bestehendeKredite}
                   onChange={handleFileChange}
                   onRemove={handleFileRemove}
+                  error={uploadErrors.bestehendeKredite}
+                  isUploading={uploadLoadings.bestehendeKredite}
+                  isSuccess={uploadSuccesses.bestehendeKredite}
                 />
                 <DragDropFileUpload
                   name="jahreskontoauszug"
@@ -1732,6 +1775,9 @@ export default function KreditanfrageForm() {
                   currentFile={formData.jahreskontoauszug}
                   onChange={handleFileChange}
                   onRemove={handleFileRemove}
+                  error={uploadErrors.jahreskontoauszug}
+                  isUploading={uploadLoadings.jahreskontoauszug}
+                  isSuccess={uploadSuccesses.jahreskontoauszug}
                 />
               </>
             )}
@@ -1745,6 +1791,9 @@ export default function KreditanfrageForm() {
                   currentFile={formData.baufinanzierungNachweis}
                   onChange={handleFileChange}
                   onRemove={handleFileRemove}
+                  error={uploadErrors.baufinanzierungNachweis}
+                  isUploading={uploadLoadings.baufinanzierungNachweis}
+                  isSuccess={uploadSuccesses.baufinanzierungNachweis}
                 />
                 {!formData.hatBestehendeKredite && (
                   <DragDropFileUpload
@@ -1753,6 +1802,9 @@ export default function KreditanfrageForm() {
                     currentFile={formData.jahreskontoauszug}
                     onChange={handleFileChange}
                     onRemove={handleFileRemove}
+                    error={uploadErrors.jahreskontoauszug}
+                    isUploading={uploadLoadings.jahreskontoauszug}
+                    isSuccess={uploadSuccesses.jahreskontoauszug}
                   />
                 )}
               </>
@@ -1766,6 +1818,9 @@ export default function KreditanfrageForm() {
                 currentFile={formData.bwaGuV}
                 onChange={handleFileChange}
                 onRemove={handleFileRemove}
+                error={uploadErrors.bwaGuV}
+                isUploading={uploadLoadings.bwaGuV}
+                isSuccess={uploadSuccesses.bwaGuV}
               />
             )}
 
@@ -1777,6 +1832,9 @@ export default function KreditanfrageForm() {
                 currentFile={formData.expose}
                 onChange={handleFileChange}
                 onRemove={handleFileRemove}
+                error={uploadErrors.expose}
+                isUploading={uploadLoadings.expose}
+                isSuccess={uploadSuccesses.expose}
               />
             )}
           </div>
@@ -1793,6 +1851,9 @@ export default function KreditanfrageForm() {
               onAddFiles={handleAdditionalFilesAdd}
               onRemoveFile={handleAdditionalFileRemove}
               helpText="Sie können bis zu 10 PDF/JPG/PNG-Dateien ergänzen."
+              error={uploadErrors.additionalDocuments}
+              isUploading={uploadLoadings.additionalDocuments}
+              isSuccess={uploadSuccesses.additionalDocuments}
             />
           </div>
 
