@@ -90,7 +90,6 @@ export default function MultiFileUpload({
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        onClick={handleClick}
       >
         <input
           ref={fileInputRef}

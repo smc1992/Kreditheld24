@@ -119,7 +119,6 @@ export default function DragDropFileUpload({
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        onClick={handleClick}
       >
         <input
           ref={fileInputRef}
