@@ -21,8 +21,8 @@ export async function saveFile(file: File, subFolder?: string): Promise<string> 
   // Save file
   await writeFile(filepath, buffer);
 
-  // Return public URL
-  return subFolder ? `/uploads/${subFolder}/${uniqueFilename}` : `/uploads/${uniqueFilename}`;
+  // Return URL served through API route (Next.js doesn't serve dynamically written files from public/)
+  return subFolder ? `/api/uploads/${subFolder}/${uniqueFilename}` : `/api/uploads/${uniqueFilename}`;
 }
 
 export function getFileExtension(filename: string): string {
