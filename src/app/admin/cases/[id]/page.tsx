@@ -5,7 +5,9 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import DashboardLayout from '@/components/admin/DashboardLayout';
 import CaseMessaging from '@/components/admin/CaseMessaging';
+import ConfirmModal from '@/components/admin/ConfirmModal';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   ArrowLeft,
   Briefcase,
@@ -30,7 +32,9 @@ import {
   Download,
   X,
   Eye,
-  Trash2
+  Trash2,
+  ZoomIn,
+  ImageIcon
 } from 'lucide-react';
 
 export default function CaseDetailsPage() {
@@ -54,6 +58,13 @@ export default function CaseDetailsPage() {
   });
   const [selectedEmail, setSelectedEmail] = useState<any>(null);
   const [viewingEmail, setViewingEmail] = useState(false);
+  // Document preview modal
+  const [previewDoc, setPreviewDoc] = useState<any>(null);
+  // Confirm modal for document delete
+  const [docDeleteModal, setDocDeleteModal] = useState<{ isOpen: boolean; docId: string; docName: string }>({
+    isOpen: false, docId: '', docName: ''
+  });
+  const [docDeleting, setDocDeleting] = useState(false);
 
   const handleDeleteActivity = async (activityId: string) => {
     if (!confirm('Möchten Sie diese Aktivität wirklich löschen?')) return;
@@ -71,20 +82,38 @@ export default function CaseDetailsPage() {
     }
   };
 
-  const handleDeleteDocument = async (docId: string) => {
-    if (!confirm('Möchten Sie dieses Dokument wirklich löschen?')) return;
+  const openDocDeleteModal = (docId: string, docName: string) => {
+    setDocDeleteModal({ isOpen: true, docId, docName });
+  };
 
+  const handleDeleteDocument = async () => {
+    setDocDeleting(true);
     try {
-      const response = await fetch(`/api/admin/documents/${docId}`, {
+      const response = await fetch(`/api/admin/documents/${docDeleteModal.docId}`, {
         method: 'DELETE',
       });
       const result = await response.json();
       if (result.success) {
-        setDocuments(prev => prev.filter(d => d.id !== docId));
+        setDocuments(prev => prev.filter(d => d.id !== docDeleteModal.docId));
+        // Close preview if currently viewing this doc
+        if (previewDoc?.id === docDeleteModal.docId) setPreviewDoc(null);
       }
     } catch (error) {
       console.error('Error deleting document:', error);
+    } finally {
+      setDocDeleting(false);
+      setDocDeleteModal({ isOpen: false, docId: '', docName: '' });
     }
+  };
+
+  const isImageFile = (name: string, type?: string) => {
+    if (type?.startsWith('image/')) return true;
+    return /\.(jpg|jpeg|png|gif|webp|svg|bmp)$/i.test(name);
+  };
+
+  const isPdfFile = (name: string, type?: string) => {
+    if (type === 'application/pdf') return true;
+    return /\.pdf$/i.test(name);
   };
 
   const handleViewEmail = async (emailId: string) => {
@@ -324,10 +353,10 @@ export default function CaseDetailsPage() {
         {/* Tabs */}
         <div className="flex border-b border-slate-200">
           {[
-            { id: 'details', label: 'Übersicht', icon: FileText },
-            { id: 'activities', label: 'Aktivitäten', icon: ActivityIcon },
-            { id: 'documents', label: 'Dokumente', icon: Paperclip },
-            { id: 'messages', label: 'Nachrichten', icon: Mail },
+            { id: 'details', label: 'Übersicht', icon: FileText, count: 0 },
+            { id: 'activities', label: 'Aktivitäten', icon: ActivityIcon, count: activities.length },
+            { id: 'documents', label: 'Dokumente', icon: Paperclip, count: documents.length },
+            { id: 'messages', label: 'Nachrichten', icon: Mail, count: 0 },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -339,6 +368,11 @@ export default function CaseDetailsPage() {
             >
               <tab.icon className="h-4 w-4" />
               {tab.label}
+              {tab.count > 0 && (
+                <span className={`ml-1 inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 rounded-full text-[10px] font-bold ${activeTab === tab.id ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
+                  {tab.count}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -916,82 +950,221 @@ export default function CaseDetailsPage() {
           )}
 
           {activeTab === 'documents' && (
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-              <div className="border-b border-slate-100 bg-slate-50/50 px-6 py-4 flex items-center justify-between">
-                <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                  <Paperclip className="h-5 w-5 text-emerald-600" />
-                  Unterlagen & Dokumente
-                </h2>
-                <button className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition-all">
-                  <Plus className="h-4 w-4" />
-                  Upload
-                </button>
+            <>
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div className="border-b border-slate-100 bg-slate-50/50 px-6 py-4 flex items-center justify-between">
+                  <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <Paperclip className="h-5 w-5 text-emerald-600" />
+                    Unterlagen & Dokumente
+                    <span className="text-xs font-medium text-slate-400 ml-1">({documents.length})</span>
+                  </h2>
+                </div>
+                <div className="p-6">
+                  {documents.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {documents.map((doc) => {
+                        const isImage = isImageFile(doc.name, doc.type);
+                        const isPdf = isPdfFile(doc.name, doc.type);
+                        return (
+                          <div
+                            key={doc.id}
+                            className="group flex flex-col rounded-2xl border border-slate-200 hover:border-emerald-500 hover:shadow-md transition-all overflow-hidden"
+                          >
+                            {/* Preview Thumbnail */}
+                            <div
+                              className="relative h-40 bg-slate-50 flex items-center justify-center cursor-pointer overflow-hidden"
+                              onClick={() => setPreviewDoc(doc)}
+                            >
+                              {isImage ? (
+                                <img
+                                  src={doc.fileUrl}
+                                  alt={doc.name}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                />
+                              ) : isPdf ? (
+                                <div className="flex flex-col items-center gap-2">
+                                  <div className="h-14 w-14 rounded-xl bg-red-100 flex items-center justify-center">
+                                    <FileText className="h-8 w-8 text-red-500" />
+                                  </div>
+                                  <span className="text-[10px] font-bold text-red-500 uppercase">PDF</span>
+                                </div>
+                              ) : (
+                                <div className="flex flex-col items-center gap-2">
+                                  <div className="h-14 w-14 rounded-xl bg-slate-100 flex items-center justify-center">
+                                    <FileText className="h-8 w-8 text-slate-400" />
+                                  </div>
+                                  <span className="text-[10px] font-bold text-slate-400 uppercase">
+                                    {doc.name.split('.').pop()?.toUpperCase() || 'DATEI'}
+                                  </span>
+                                </div>
+                              )}
+                              {/* Hover overlay */}
+                              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-lg">
+                                  <ZoomIn className="h-5 w-5 text-slate-700" />
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Info */}
+                            <div className="p-4 flex-1 flex flex-col">
+                              <div className="font-bold text-slate-900 text-sm truncate" title={doc.name}>
+                                {doc.name}
+                              </div>
+                              <div className="flex items-center justify-between mt-2">
+                                <div className="text-xs text-slate-500">
+                                  {doc.fileSize ? (doc.fileSize > 1048576 ? `${(doc.fileSize / 1048576).toFixed(1)} MB` : `${(doc.fileSize / 1024).toFixed(0)} KB`) : 'Unbekannt'}
+                                </div>
+                                {doc.customerId && !doc.uploadedBy && (
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-bold rounded-full">
+                                    <User className="h-3 w-3" />
+                                    Kunde
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-xs text-slate-400 mt-1">
+                                {new Date(doc.createdAt).toLocaleDateString('de-DE', { day: '2-digit', month: 'short', year: 'numeric' })}
+                              </div>
+
+                              {/* Actions */}
+                              <div className="flex items-center gap-1 mt-3 pt-3 border-t border-slate-100">
+                                <button
+                                  onClick={() => setPreviewDoc(doc)}
+                                  className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-bold text-slate-600 bg-slate-50 hover:bg-emerald-50 hover:text-emerald-600 rounded-lg transition-all"
+                                >
+                                  <Eye className="h-3.5 w-3.5" />
+                                  Vorschau
+                                </button>
+                                <a
+                                  href={doc.fileUrl}
+                                  download
+                                  className="inline-flex items-center justify-center p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                                  title="Herunterladen"
+                                >
+                                  <Download className="h-4 w-4" />
+                                </a>
+                                <button
+                                  onClick={() => openDocDeleteModal(doc.id, doc.name)}
+                                  className="inline-flex items-center justify-center p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                  title="Dokument löschen"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <Paperclip className="h-12 w-12 text-slate-200 mx-auto mb-4" />
+                      <p className="text-slate-500 font-medium">Keine Dokumente hochgeladen.</p>
+                      <p className="text-xs text-slate-400 mt-1">Dokumente werden angezeigt, sobald der Kunde Unterlagen hochlädt.</p>
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="p-6">
-                {documents.length > 0 ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {documents.map((doc) => (
-                      <div
-                        key={doc.id}
-                        className="group flex flex-col p-4 rounded-2xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/30 transition-all cursor-pointer"
-                      >
-                        <div className="flex items-center justify-between mb-4">
-                          <div className="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-emerald-100 group-hover:text-emerald-600 transition-colors">
-                            <FileText className="h-6 w-6" />
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <button
-                              onClick={() => window.open(doc.fileUrl, '_blank')}
-                              className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all"
-                              title="Vorschau öffnen"
-                            >
-                              <Eye className="h-4 w-4" />
-                            </button>
-                            <a
-                              href={doc.fileUrl}
-                              download
-                              className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
-                              title="Herunterladen"
-                            >
-                              <Download className="h-4 w-4" />
-                            </a>
-                            <button
-                              onClick={() => handleDeleteDocument(doc.id)}
-                              className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
-                              title="Dokument löschen"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          </div>
-                        </div>
-                        <div className="font-bold text-slate-900 text-sm truncate" title={doc.name}>
-                          {doc.name}
-                        </div>
-                        <div className="flex items-center justify-between mt-2">
-                          <div className="text-xs text-slate-500">
-                            {doc.fileSize ? `${(doc.fileSize / 1024).toFixed(0)} KB` : 'Unbekannt'}
-                          </div>
-                          {doc.customerId && !doc.uploadedBy && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-bold rounded-full">
-                              <User className="h-3 w-3" />
-                              Kunde
-                            </span>
+
+              {/* Document Preview Modal */}
+              {previewDoc && (
+                <div
+                  className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+                  onClick={() => setPreviewDoc(null)}
+                >
+                  <div
+                    className="relative bg-white w-full max-w-5xl max-h-[90vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-200"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {/* Header */}
+                    <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50 shrink-0">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="h-9 w-9 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
+                          {isImageFile(previewDoc.name, previewDoc.type) ? (
+                            <ImageIcon className="h-5 w-5 text-emerald-600" />
+                          ) : (
+                            <FileText className="h-5 w-5 text-emerald-600" />
                           )}
                         </div>
-                        <div className="text-xs text-slate-400 mt-1">
-                          {new Date(doc.createdAt).toLocaleDateString('de-DE', { day: '2-digit', month: 'short', year: 'numeric' })}
+                        <div className="min-w-0">
+                          <h3 className="text-sm font-bold text-slate-900 truncate">{previewDoc.name}</h3>
+                          <p className="text-xs text-slate-400">
+                            {previewDoc.fileSize ? (previewDoc.fileSize > 1048576 ? `${(previewDoc.fileSize / 1048576).toFixed(1)} MB` : `${(previewDoc.fileSize / 1024).toFixed(0)} KB`) : ''}
+                            {' · '}{new Date(previewDoc.createdAt).toLocaleDateString('de-DE')}
+                          </p>
                         </div>
                       </div>
-                    ))}
+                      <div className="flex items-center gap-2">
+                        <a
+                          href={previewDoc.fileUrl}
+                          download
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-500 transition-all shadow-sm"
+                        >
+                          <Download className="h-4 w-4" />
+                          Download
+                        </a>
+                        <button
+                          onClick={() => openDocDeleteModal(previewDoc.id, previewDoc.name)}
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl text-sm font-semibold hover:bg-red-100 transition-all"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          Löschen
+                        </button>
+                        <button
+                          onClick={() => setPreviewDoc(null)}
+                          className="p-2 text-slate-400 hover:text-slate-600 hover:bg-white rounded-lg transition-all"
+                        >
+                          <X className="h-5 w-5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Preview Content */}
+                    <div className="flex-1 overflow-auto bg-slate-100 flex items-center justify-center min-h-[400px]">
+                      {isImageFile(previewDoc.name, previewDoc.type) ? (
+                        <img
+                          src={previewDoc.fileUrl}
+                          alt={previewDoc.name}
+                          className="max-w-full max-h-[75vh] object-contain"
+                        />
+                      ) : isPdfFile(previewDoc.name, previewDoc.type) ? (
+                        <iframe
+                          src={previewDoc.fileUrl}
+                          className="w-full h-[75vh] border-0"
+                          title={previewDoc.name}
+                        />
+                      ) : (
+                        <div className="text-center py-20">
+                          <FileText className="h-20 w-20 text-slate-300 mx-auto mb-6" />
+                          <p className="text-lg font-bold text-slate-600 mb-2">Vorschau nicht verfügbar</p>
+                          <p className="text-sm text-slate-400 mb-6">Dieses Dateiformat kann nicht direkt angezeigt werden.</p>
+                          <a
+                            href={previewDoc.fileUrl}
+                            download
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-xl text-sm font-bold hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-600/20"
+                          >
+                            <Download className="h-5 w-5" />
+                            Datei herunterladen
+                          </a>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                ) : (
-                  <div className="text-center py-12">
-                    <Paperclip className="h-12 w-12 text-slate-200 mx-auto mb-4" />
-                    <p className="text-slate-500 font-medium">Keine Dokumente hochgeladen.</p>
-                  </div>
-                )}
-              </div>
-            </div>
+                </div>
+              )}
+
+              {/* Delete Confirmation */}
+              <ConfirmModal
+                isOpen={docDeleteModal.isOpen}
+                title="Dokument löschen"
+                message={`Möchten Sie das Dokument "${docDeleteModal.docName}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`}
+                confirmText="Löschen"
+                variant="danger"
+                onConfirm={handleDeleteDocument}
+                onCancel={() => setDocDeleteModal({ isOpen: false, docId: '', docName: '' })}
+                isLoading={docDeleting}
+              />
+            </>
           )}
 
           {activeTab === 'messages' && (
