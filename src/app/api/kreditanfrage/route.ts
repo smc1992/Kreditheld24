@@ -30,9 +30,12 @@ export async function POST(request: NextRequest) {
     const verificationToken = form.get('verificationToken')?.toString()
     const email = form.get('email')?.toString()
 
-    // Server-seitige Durchsetzung: E-Mail muss verifiziert sein
-    if (!verificationToken || !(await isTokenVerified(verificationToken))) {
-      return NextResponse.json({ error: 'E-Mail nicht verifiziert' }, { status: 403 })
+    // Server-seitige Durchsetzung: Status loggen aber nicht blockieren!
+    if (!verificationToken) {
+      console.warn('[Kreditanfrage] Frontend sendet keinen Verifizierungs-Token!');
+    } else {
+      const isVerified = await isTokenVerified(verificationToken);
+      console.log(`[Kreditanfrage] Token-Status bei Final-Submission: ${isVerified ? 'VERIFIED' : 'PENDING'}`);
     }
 
     if (!email) {

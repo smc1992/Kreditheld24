@@ -29,32 +29,33 @@ export async function POST(request: NextRequest) {
 
     // 1. Check Verification Token (Public Flow)
     if (verificationToken) {
-      const verified = await isTokenVerified(verificationToken);
-      console.log(`[Upload API] Token verification status: ${verified}`);
-      if (verified) {
-        const tokenData = await getVerificationData(verificationToken);
-        // Check if token caseId matches, OR if the email matches the case owner
+      // Ab sofort erlauben wir Uploads AUCH wenn die E-Mail noch nicht bestätigt wurde (Double-Opt-In nach hinten verschoben)
+      const tokenData = await getVerificationData(verificationToken);
+      console.log(`[Upload API] Token found: ${!!tokenData}`);
+      
+      if (tokenData) {
+        // Check if token caseId matches
         const tokenCaseId = (tokenData?.formData as any)?.caseId;
         if (tokenCaseId === caseId) {
           isAuthorized = true;
-          console.log(`[Upload API] Authorized via token (caseId match)`);
-        } else if (tokenData?.email) {
+          console.log(`[Upload API] Authorized via token (caseId match, pending verification allowed)`);
+        } else if ((tokenData as any)?.email) {
           // Fallback: Prüfe ob die E-Mail im Token zum Case-Besitzer passt
           const existingCase = await db.query.crmCases.findFirst({
             where: eq(crmCases.id, caseId),
             with: { customer: true }
           });
-          if (existingCase?.customer?.email === tokenData.email) {
+          if (existingCase?.customer?.email === (tokenData as any).email) {
             isAuthorized = true;
             console.log(`[Upload API] Authorized via token (email match)`);
           } else {
-            console.warn(`[Upload API] Token email mismatch. Token email: ${tokenData.email}, Case customer email: ${existingCase?.customer?.email}`);
+            console.warn(`[Upload API] Token email mismatch. Token email: ${(tokenData as any).email}, Case customer email: ${existingCase?.customer?.email}`);
           }
         } else {
           console.warn(`[Upload API] Token caseId mismatch. Expected: ${caseId}, Token had: ${tokenCaseId}`);
         }
       } else {
-        console.warn(`[Upload API] Token nicht verifiziert oder abgelaufen.`);
+        console.warn(`[Upload API] Token nicht gefunden oder abgelaufen.`);
       }
     }
 

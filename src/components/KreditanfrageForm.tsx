@@ -597,7 +597,13 @@ export default function KreditanfrageForm() {
         const { verified } = await response.json()
         if (verified) {
           setEmailVerified(true)
-          setCurrentStep(5) // Zu Dokumenten-Upload
+          // Anfrage wurde validiert -> Jetzt zum Danke-Screen!
+          const newUrl = new URL(window.location.href)
+          newUrl.pathname = '/danke'
+          if (europaceCaseUrl) {
+            newUrl.searchParams.set('europace', europaceCaseUrl)
+          }
+          window.location.href = newUrl.toString()
         }
       }
     } catch (error) {
@@ -608,13 +614,7 @@ export default function KreditanfrageForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Sicherheit: E-Mail muss verifiziert sein, bevor die Anfrage gesendet wird
-    if (!emailVerified) {
-      setSubmitStatus('error')
-      setUrlMessage({ type: 'error', message: 'Bitte bestätigen Sie zuerst Ihre E-Mail-Adresse.' })
-      return
-    }
-
+    // Upload wird jetzt sofort erlaubt (Double-Opt-In-Logik erfolgt NACH dem Formularabschluss)
     setIsSubmitting(true)
 
     try {
@@ -685,17 +685,16 @@ export default function KreditanfrageForm() {
         console.warn('Europace Lead konnte nicht angelegt werden:', leadErr)
       }
 
-      setSubmitStatus('success')
-      // Nach erfolgreichem finalem Absenden: lokale Speicherung aus Datenschutzgründen leeren
+      // Anstelle des direkten Redirects zeigen wir jetzt den E-Mail-Verification-Screen
+      setCurrentStep(4)
+      setEmailVerificationSent(true)
+      
+      // Lokale Speicherung aus Datenschutzgründen leeren, da die Daten nun übermittelt wurden
       try {
         localStorage.removeItem(STORAGE_KEY)
         localStorage.removeItem(STORAGE_META_KEY)
       } catch { }
-      setFormData(initialFormData)
-      setCurrentStep(1)
-      setEmailVerificationSent(false)
-      setEmailVerified(false)
-      setVerificationToken('')
+      // Wir behalten formData und emailVerified für die Anzeige des success screens, leeren also nicht alles!
     } catch (err) {
       console.error('Fehler beim Absenden:', err)
       setSubmitStatus('error')
@@ -729,7 +728,9 @@ export default function KreditanfrageForm() {
   }
 
   const prevStep = () => {
-    if (currentStep > 1) {
+    if (currentStep === 5) {
+      setCurrentStep(3) // Überspringe E-Mail UI beim Zurückgehen
+    } else if (currentStep > 1) {
       setCurrentStep(currentStep - 1)
     }
   }
@@ -785,7 +786,7 @@ export default function KreditanfrageForm() {
       <div className="mb-8">
         <ProgressIndicator
           steps={kreditanfrageSteps}
-          currentStep={currentStep - 1}
+          currentStep={currentStep === 5 ? 3 : currentStep === 4 ? 3 : currentStep - 1}
         />
       </div>
 
@@ -1435,13 +1436,13 @@ export default function KreditanfrageForm() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <h4 className="text-lg font-semibold text-green-900 mb-2">E-Mail wurde gesendet!</h4>
+                <h4 className="text-lg font-semibold text-green-900 mb-2">Erfolgreich übermittelt! Bestätigen Sie kurz Ihre E-Mail</h4>
                 <p className="text-green-800 mb-4">
-                  Wir haben eine Bestätigungs-E-Mail an <strong>{formData.email}</strong> gesendet.
+                  Ihre Dokumente und Daten wurden gespeichert. Wir haben einen Aktivierungslink an <strong>{formData.email}</strong> gesendet.
                 </p>
                 <p className="text-green-700 text-sm mb-6">
-                  Bitte prüfen Sie Ihr E-Mail-Postfach und klicken Sie auf den Bestätigungslink.
-                  Die Seite wird automatisch aktualisiert, sobald Sie Ihre E-Mail bestätigt haben.
+                  Bitte prüfen Sie Ihr E-Mail-Postfach.
+                  Sobald Sie den Link anklicken, schließt diese Seite automatisch ab!
                 </p>
                 {verificationUrl && (
                   <div className="text-sm text-gray-700 mb-4">
@@ -1933,7 +1934,7 @@ export default function KreditanfrageForm() {
                 onClick={() => {
                   if (isStepValid(currentStep)) {
                     sendEmailVerification()
-                    setCurrentStep(4)
+                    setCurrentStep(5) // Direkt zum Dokumenten-Upload springen!
                   }
                 }}
                 disabled={!isStepValid(currentStep)}
@@ -1945,7 +1946,6 @@ export default function KreditanfrageForm() {
               <Button
                 type="button"
                 onClick={nextStep}
-                disabled={!emailVerified}
                 className="bg-green-600 hover:bg-green-700 px-6 py-2"
               >
                 Zu den Dokumenten
