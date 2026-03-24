@@ -326,13 +326,33 @@ export async function POST(request: NextRequest) {
             .where(eq(crmCustomers.id, existingCustomer[0].id));
         }
 
+        // Number parser für deutsche Formate (100.000,50 -> 100000.50)
+        const parseGermanNumber = (str: string | undefined): number | undefined => {
+          if (!str) return undefined;
+          const sanitized = str.replace(/\./g, '').replace(',', '.');
+          const parsed = parseFloat(sanitized);
+          return isNaN(parsed) ? undefined : parsed;
+        };
+
+        // Kreditsumme berechnen
+        let reqAmount: number | undefined = undefined;
+        if (data.produktKategorie === 'baufinanzierung') {
+            const kb = parseGermanNumber(data.kaufpreisBaukosten) || 0;
+            const ek = parseGermanNumber(data.eigenkapital) || 0;
+            if (kb > 0) {
+               reqAmount = Math.max(0, kb - ek); // Differenz aus Laufpreis und Eigenkapital
+            }
+        } else {
+            reqAmount = parseGermanNumber(data.kreditsumme);
+        }
+
         // Case im CRM finalisieren
         await db.update(crmCases)
           .set({
             status: 'open', // Von 'draft' auf 'open'
             formData: data,
             currentStep: 5,
-            requestedAmount: data.kreditsumme || undefined,
+            requestedAmount: reqAmount ? reqAmount.toString() : undefined, // Decimal als String übergeben um Precision Loss zu vermeiden
             bank: data.bank || undefined,
             duration: data.laufzeit ? parseInt(data.laufzeit) : undefined,
             updatedAt: new Date()
