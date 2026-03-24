@@ -486,8 +486,12 @@ export default function KreditanfrageForm() {
     if (!formData.gehaltsabrechnung3) missingDocs.push('Gehaltsabrechnung 3')
   }
   if (!formData.kontoauszug) missingDocs.push('Kontoauszug letzter Monat')
+  
   // Ausländische Staatsbürger: Meldebescheinigung
-  if ((formData.staatsangehoerigkeit || '').toLowerCase() !== 'deutsch' && !formData.meldebescheinigung) {
+  const staatsangehoerigkeitLower = (formData.staatsangehoerigkeit || '').toLowerCase()
+  const isGerman = staatsangehoerigkeitLower.includes('deutsch') || staatsangehoerigkeitLower.includes('german')
+  
+  if (!isGerman && !formData.meldebescheinigung) {
     missingDocs.push('Meldebescheinigung')
   }
   // Bestehende Kredite/Baufinanzierung: Nachweise + Jahreskontoauszug
@@ -1620,11 +1624,11 @@ export default function KreditanfrageForm() {
                   <span>Miete angegeben (Höhe)</span>
                 </li>
                 <li className="flex items-center">
-                  <svg className={`w-4 h-4 mr-2 ${((formData.staatsangehoerigkeit || '').toLowerCase() === 'deutsch' || formData.meldebescheinigung) ? 'text-green-600' : 'text-red-600'}`} fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d={((formData.staatsangehoerigkeit || '').toLowerCase() === 'deutsch' || formData.meldebescheinigung) ? 'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' : 'M10 2a8 8 0 100 16 8 8 0 000-16zm3.707 5.293a1 1 0 00-1.414-1.414L9 9.171 7.707 7.879a1 1 0 00-1.414 1.414L9 12l4.707-4.707z'} clipRule="evenodd" />
+                  <svg className={`w-4 h-4 mr-2 ${(isGerman || formData.meldebescheinigung) ? 'text-green-600' : 'text-red-600'}`} fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d={(isGerman || formData.meldebescheinigung) ? 'M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' : 'M10 2a8 8 0 100 16 8 8 0 000-16zm3.707 5.293a1 1 0 00-1.414-1.414L9 9.171 7.707 7.879a1 1 0 00-1.414 1.414L9 12l4.707-4.707z'} clipRule="evenodd" />
                   </svg>
                   <span>Meldebescheinigung (nur bei ausländischer Staatsbürgerschaft)</span>
-                  {(formData.staatsangehoerigkeit || '').toLowerCase() === 'deutsch' && (
+                  {isGerman && (
                     <span className="ml-2 text-xs text-gray-600">nicht erforderlich</span>
                   )}
                 </li>
@@ -1743,7 +1747,7 @@ export default function KreditanfrageForm() {
             />
 
             {/* Meldebescheinigung für nicht-deutsche Staatsangehörigkeit */}
-            {(formData.staatsangehoerigkeit || '').toLowerCase() !== 'deutsch' && (
+            {!isGerman && (
               <DragDropFileUpload
                 name="meldebescheinigung"
                 label="Meldebescheinigung"
