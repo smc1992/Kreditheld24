@@ -32,20 +32,29 @@ const nextConfig = {
     ],
   },
   async rewrites() {
-    const wordpressUrl = process.env.WORDPRESS_URL || process.env.NEXT_PUBLIC_WORDPRESS_URL
-    if (!wordpressUrl) {
-      return []
-    }
-    return [
+    const rules = [
+      // Serve dynamically uploaded files via API route (Next.js standalone doesn't serve runtime-written public/ files)
       {
-        source: '/wp-admin/:path*',
-        destination: `${wordpressUrl}/wp-admin/:path*`,
-      },
-      {
-        source: '/wp-content/:path*',
-        destination: `${wordpressUrl}/wp-content/:path*`,
+        source: '/uploads/:path*',
+        destination: '/api/uploads/:path*',
       },
     ]
+
+    const wordpressUrl = process.env.WORDPRESS_URL || process.env.NEXT_PUBLIC_WORDPRESS_URL
+    if (wordpressUrl) {
+      rules.push(
+        {
+          source: '/wp-admin/:path*',
+          destination: `${wordpressUrl}/wp-admin/:path*`,
+        },
+        {
+          source: '/wp-content/:path*',
+          destination: `${wordpressUrl}/wp-content/:path*`,
+        },
+      )
+    }
+
+    return rules
   },
   async headers() {
     return [
