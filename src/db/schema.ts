@@ -1,5 +1,5 @@
 import { pgTable, uuid, varchar, decimal, integer, timestamp, boolean, text, index, jsonb, inet } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
+import { sql, relations } from 'drizzle-orm';
 
 // Interest Rates Table
 export const interestRates = pgTable('interest_rates', {
@@ -473,3 +473,72 @@ export const whatsappTemplates = pgTable('whatsapp_templates', {
 export type WhatsAppAutomationLog = typeof whatsappAutomationLogs.$inferSelect;
 export type WhatsAppSetting = typeof whatsappSettings.$inferSelect;
 export type WhatsAppTemplate = typeof whatsappTemplates.$inferSelect;
+
+// ─── Drizzle Relations (required for db.query.*.findFirst({ with: ... })) ───
+
+export const crmCustomersRelations = relations(crmCustomers, ({ many }) => ({
+  cases: many(crmCases),
+  documents: many(crmDocuments),
+  activities: many(crmActivities),
+  emails: many(crmEmails),
+}));
+
+export const crmCasesRelations = relations(crmCases, ({ one, many }) => ({
+  customer: one(crmCustomers, {
+    fields: [crmCases.customerId],
+    references: [crmCustomers.id],
+  }),
+  documents: many(crmDocuments),
+  activities: many(crmActivities),
+  messages: many(crmCaseMessages),
+}));
+
+export const crmDocumentsRelations = relations(crmDocuments, ({ one }) => ({
+  case: one(crmCases, {
+    fields: [crmDocuments.caseId],
+    references: [crmCases.id],
+  }),
+  customer: one(crmCustomers, {
+    fields: [crmDocuments.customerId],
+    references: [crmCustomers.id],
+  }),
+  uploadedByUser: one(adminUsers, {
+    fields: [crmDocuments.uploadedBy],
+    references: [adminUsers.id],
+  }),
+}));
+
+export const crmActivitiesRelations = relations(crmActivities, ({ one }) => ({
+  case: one(crmCases, {
+    fields: [crmActivities.caseId],
+    references: [crmCases.id],
+  }),
+  customer: one(crmCustomers, {
+    fields: [crmActivities.customerId],
+    references: [crmCustomers.id],
+  }),
+  email: one(crmEmails, {
+    fields: [crmActivities.emailId],
+    references: [crmEmails.id],
+  }),
+  createdByUser: one(adminUsers, {
+    fields: [crmActivities.createdBy],
+    references: [adminUsers.id],
+  }),
+}));
+
+export const crmCaseMessagesRelations = relations(crmCaseMessages, ({ one }) => ({
+  case: one(crmCases, {
+    fields: [crmCaseMessages.caseId],
+    references: [crmCases.id],
+  }),
+}));
+
+export const crmEmailsRelations = relations(crmEmails, ({ one, many }) => ({
+  customer: one(crmCustomers, {
+    fields: [crmEmails.customerId],
+    references: [crmCustomers.id],
+  }),
+  activities: many(crmActivities),
+}));
+
